@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<org.rephial.angband.AngbandKeyboardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/keyboard"
+        android:layout_alignParentBottom="true"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:keyBackground="@drawable/keybg_background"
+        android:background="#222222"
+        android:padding="0dp"
+        />

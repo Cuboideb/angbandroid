@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout 
+	android:id="@+id/ll01" 
+	android:layout_width="fill_parent" 
+	android:layout_height="?android:attr/listPreferredItemHeight" 
+	android:gravity="center_vertical" 
+	android:padding="6dip" 
+	xmlns:android="http://schemas.android.com/apk/res/android">
+	
+	<TextView 
+		android:id="@+id/label" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceLarge"
+		>
+	</TextView>
+	
+	<LinearLayout	
+		android:id="@+id/ll02" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:gravity="right" 
+		>
+		
+		<ImageView 
+			android:id="@+id/icon" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:src="@drawable/btn_radio_off" 
+			>		
+		</ImageView>
+	
+	</LinearLayout>
+</LinearLayout>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+android:id="@+id/linlayoutBase"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+android:orientation="vertical"
+xmlns:android="http://schemas.android.com/apk/res/android">
+
+		<ScrollView
+		android:id="@+id/scrollview"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_weight="1"
+		>
+
+		<LinearLayout
+		android:id="@+id/widget30"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		>
+
+		        <TextView
+			android:id="@+id/txtCap1"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/profile_name_caption"
+			>
+			</TextView>
+
+			<EditText
+			android:id="@+id/editName"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:hint="Name"
+			android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345789!@#$%*()_-+={}[];:,.?/ "
+			>
+			</EditText>	
+<!-- 			android:textSize="18sp"-->
+
+		        <TextView
+			android:id="@+id/txtSpc1"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text=""
+			>
+			</TextView>
+	
+		        <TextView
+			android:id="@+id/txtCap2"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/profile_savefile_caption"
+			>
+			</TextView>
+
+			<EditText
+			android:id="@+id/editSaveFile"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:hint="SaveFile"
+			android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345789-"
+			android:textSize="18sp"
+			android:maxLength="20"
+			>
+			</EditText>		
+		</LinearLayout>
+
+		</ScrollView>
+
+		<LinearLayout
+		android:id="@+id/linlayoutButtons"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_weight="0"
+		>
+		<Button
+		android:id="@+id/btnOk"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="Ok"
+		android:layout_weight="1"
+		>
+		</Button>
+		<Button
+		android:id="@+id/btnCancel"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="Cancel"
+		android:layout_weight="1"
+		>
+		</Button>
+	</LinearLayout>
+</LinearLayout>
