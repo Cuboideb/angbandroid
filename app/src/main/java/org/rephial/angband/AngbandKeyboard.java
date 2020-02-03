@@ -132,7 +132,18 @@ public class AngbandKeyboard implements OnKeyboardActionListener
 		}
 
 		if (c != 0) {
-			state.addKey(c);
+			switch (c) {
+				case '1': case '2': case '3':
+				case '4': case '5': case '6':
+				case '7': case '8': case '9': {
+					state.addDirectionKey(c);
+					break;
+				}
+				default: {
+					state.addKey(c);
+					break;
+				}
+			}
 		}
 	}
 
