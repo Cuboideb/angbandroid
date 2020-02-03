@@ -17,9 +17,12 @@ public class AngbandKeyboard implements OnKeyboardActionListener
 	Keyboard kbLayoutSymbols;
 	Keyboard kbLayoutSymbolsShift;
 	StateManager state = null;
+	GameActivity _context = null;
 
 	AngbandKeyboard(Context ctx)
 	{
+		_context = (GameActivity)ctx;
+
 		state = ((GameActivity)ctx).getStateManager();
 
 		kbLayoutQwerty       = new Keyboard(ctx, R.xml.keyboard_qwerty);
@@ -144,6 +147,7 @@ public class AngbandKeyboard implements OnKeyboardActionListener
 	}
 	public void swipeDown()
 	{
+		_context.toggleKeyboard();
 	}
 	public void swipeLeft()
 	{

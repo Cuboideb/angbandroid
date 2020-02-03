@@ -30,6 +30,9 @@ public class AngbandKeyboardView extends KeyboardView
 	private boolean mControl = false;
 	private boolean mRunning = false;
 
+	public int canvas_width = 0;
+	public int canvas_height = 0;
+
 	final int TEXT_SIZE = 58;
 	final int LABEL_SIZE = 36;
 
@@ -106,6 +109,13 @@ public class AngbandKeyboardView extends KeyboardView
 	}
 
 	@Override
+	public void onSizeChanged(int w, int h, int oldw, int oldh) {
+		this.canvas_width = w;
+		this.canvas_height = h;
+		super.onSizeChanged(w, h, oldw, oldh);
+	}
+
+	@Override
 	public void onDraw(Canvas canvas) {
 //		super.onDraw(canvas);
 
@@ -128,8 +138,24 @@ public class AngbandKeyboardView extends KeyboardView
 					key.width - padding.right,
 					key.height - padding.bottom);
 
+			int use_alpha = alpha;
+			// Increase alpha in the middle if requested
+			int min_alpha = 30;
+			float pad_pct = 0.35f;
+			float alpha_reduction = 0.35f;
+			if (Preferences.getIncreaseMiddleAlpha()
+					&& alpha > min_alpha && alpha < 255) {
+				float pct = (float)key.x / this.canvas_width;
+				if (pct > pad_pct && pct < (1.0f - pad_pct)) {
+					use_alpha = (int)(alpha * (1.0f - alpha_reduction));
+					if (use_alpha < min_alpha) {
+						use_alpha = min_alpha;
+					}
+				}
+			}
+
 			// Transparency
-			keyBackground.setAlpha(alpha);
+			keyBackground.setAlpha(use_alpha);
 
 			keyBackground.draw(canvas);
 
@@ -152,7 +178,7 @@ public class AngbandKeyboardView extends KeyboardView
 
 				if (alpha < 255) {
 					mPainter.setShadowLayer(10f, 0, 0, Color.CYAN);
-					mPainter.setAlpha(alpha);
+					mPainter.setAlpha(use_alpha);
 				}
 
 				// Draw the text

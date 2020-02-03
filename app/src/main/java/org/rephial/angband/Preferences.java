@@ -30,6 +30,7 @@ final public class Preferences {
 
 	static final String KEY_KEYBOARDOVERLAP = "angband.allowKeyboardOverlap";
 	static final String KEY_KEYBOARDOPACITY = "angband.keyboardOpacity";
+	static final String KEY_MIDDLEALPHA = "angband.increaseMiddleAlpha";
 	static final String KEY_ENABLETOUCH = "angband.enabletouch";
 	static final String KEY_CENTERTAP = "angband.centerscreentap";
 	static final String KEY_PORTRAITKB = "angband.portraitkb";
@@ -120,6 +121,10 @@ final public class Preferences {
 
 	public static boolean getKeyboardOverlap() {
 		return pref.getBoolean(Preferences.KEY_KEYBOARDOVERLAP, true);
+	}
+
+	public static boolean getIncreaseMiddleAlpha() {
+		return pref.getBoolean(Preferences.KEY_MIDDLEALPHA, true);
 	}
 
 	public static int getKeyboardOpacity() {
