@@ -38,11 +38,14 @@
 
         <Key android:codes="55" android:keyLabel="7"
                 android:horizontalGap="3%p"
-                android:keyWidth="10%p" />
+                android:keyWidth="10%p"
+				android:isRepeatable="true" />
         <Key android:codes="56" android:keyLabel="8"
-                android:keyWidth="10%p" />
+                android:keyWidth="10%p"
+				android:isRepeatable="true"	/>
         <Key android:codes="57" android:keyLabel="9"
-                android:keyWidth="10%p" android:keyEdgeFlags="right"/>
+                android:keyWidth="10%p" android:keyEdgeFlags="right"
+				android:isRepeatable="true" />
     </Row>
 
     <Row>
@@ -59,11 +62,14 @@
 
         <Key android:codes="52" android:keyLabel="4"
                 android:horizontalGap="3%p"
-                android:keyWidth="10%p" />
+                android:keyWidth="10%p"
+				android:isRepeatable="true" />
         <Key android:codes="53" android:keyLabel="5"
-                android:keyWidth="10%p" />
+                android:keyWidth="10%p"
+				android:isRepeatable="true" />
         <Key android:codes="54" android:keyLabel="6"
-                android:keyWidth="10%p" android:keyEdgeFlags="right" />
+                android:keyWidth="10%p" android:keyEdgeFlags="right"
+				android:isRepeatable="true" />
     </Row>
 
     <Row>
@@ -79,11 +85,14 @@
 
         <Key android:codes="49" android:keyLabel="1"
                 android:horizontalGap="3%p"
-                android:keyWidth="10%p" />
+                android:keyWidth="10%p"
+				android:isRepeatable="true" />
         <Key android:codes="50" android:keyLabel="2"
-                android:keyWidth="10%p" />
+                android:keyWidth="10%p"
+				android:isRepeatable="true" />
         <Key android:codes="51" android:keyLabel="3"
-                android:keyWidth="10%p" android:keyEdgeFlags="right" />
+                android:keyWidth="10%p" android:keyEdgeFlags="right"
+				android:isRepeatable="true" />
      </Row>
 
     <Row android:rowEdgeFlags="bottom">
