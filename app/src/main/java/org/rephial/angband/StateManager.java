@@ -49,6 +49,12 @@ public class StateManager {
 		keyBuffer = new KeyBuffer(this);
 	}
 
+	public boolean isRoguelikeKeyboard()
+	{
+		boolean rogueLike = (nativew.gameQueryInt(1,new String[]{"rl"})==1);
+		return rogueLike;
+	}
+
 	public void link(TermView t, Handler h) {
 		handler = h;
 		nativew.link(t);

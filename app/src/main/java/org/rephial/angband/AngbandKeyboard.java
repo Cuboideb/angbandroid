@@ -132,17 +132,17 @@ public class AngbandKeyboard implements OnKeyboardActionListener
 		}
 
 		if (c != 0) {
-			switch (c) {
-				case '1': case '2': case '3':
-				case '4': case '5': case '6':
-				case '7': case '8': case '9': {
-					state.addDirectionKey(c);
-					break;
-				}
-				default: {
-					state.addKey(c);
-					break;
-				}
+			// Common direction keys
+			if ("12346789".indexOf(c) > -1) {
+				state.addDirectionKey(c);
+			}
+			// Roguelike directions keys
+			else if ("bjnhlyku".indexOf(c) > -1 && state.isRoguelikeKeyboard())
+			{
+				state.addDirectionKey(c);
+			}
+			else {
+				state.addKey(c);
 			}
 		}
 	}
