@@ -29,6 +29,7 @@ public class AngbandKeyboardView extends KeyboardView
 	private boolean mSymbolic = false;
 	private boolean mControl = false;
 	private boolean mRunning = false;
+	private boolean mMiniKeyboard = false;
 
 	public int canvas_width = 0;
 	public int canvas_height = 0;
@@ -48,6 +49,8 @@ public class AngbandKeyboardView extends KeyboardView
 
         // Make it transparent
         this.getBackground().setAlpha(0);
+
+        this.setPreviewEnabled(false);
 	}
 
 	public void setSymbolic(boolean on) {
@@ -56,6 +59,14 @@ public class AngbandKeyboardView extends KeyboardView
 
 	public void setControl(boolean on) {
 		mControl = on;
+	}
+
+	public void setMiniKeyboard(boolean on) {
+		mMiniKeyboard = on;
+	}
+
+	public boolean getMiniKeyboard() {
+		return mMiniKeyboard;
 	}
 
 	public void setRunning(boolean on) {
@@ -119,6 +130,8 @@ public class AngbandKeyboardView extends KeyboardView
 	public void onDraw(Canvas canvas) {
 //		super.onDraw(canvas);
 
+		String just_these = "-0-1-2-3-4-5-6-7-8-9-.-...-⏎-Ctrl^-123-";
+
 		int alpha = Preferences.getKeyboardOverlap() ? (int)(255 * (Preferences.getKeyboardOpacity() / 100f)) : 255;
 
 		Rect padding = new Rect(4, 4, 4, 4);
@@ -141,7 +154,7 @@ public class AngbandKeyboardView extends KeyboardView
 			int use_alpha = alpha;
 			// Increase alpha in the middle if requested
 			int min_alpha = 30;
-			float pad_pct = 0.35f;
+			float pad_pct = 0.25f;
 			float alpha_reduction = 0.35f;
 			if (Preferences.getIncreaseMiddleAlpha()
 					&& alpha > min_alpha && alpha < 255) {
@@ -160,6 +173,17 @@ public class AngbandKeyboardView extends KeyboardView
 			keyBackground.draw(canvas);
 
 			keyBackground.setAlpha(255);
+
+			// Cancel text/icon if mMiniKeyboard is requested
+			if (this.mMiniKeyboard && key.label != null) {
+				String find = ("-" + key.label.toString() + "-");
+				// Cancel if not found
+				if (just_these.indexOf(find) == -1) {
+					// Reset translation
+					canvas.translate(-key.x, -key.y);
+					continue;
+				}
+			}
 
 			if (key.label != null) {
 				String label = fixCase(key.label);

@@ -115,6 +115,13 @@ public class AngbandKeyboard implements OnKeyboardActionListener
 				break;
 			}
 
+			case -7: {
+				boolean shouldMini = !virtualKeyboardView.getMiniKeyboard();
+				virtualKeyboardView.setMiniKeyboard(shouldMini);
+				c = 0;
+				break;
+			}
+
 			default: {
 				c = (char)primaryCode;
 				if (virtualKeyboardView.getKeyboard() == kbLayoutQwerty &&
@@ -132,6 +139,7 @@ public class AngbandKeyboard implements OnKeyboardActionListener
 		}
 
 		if (c != 0) {
+			/*
 			// Common direction keys
 			if ("12346789".indexOf(c) > -1) {
 				state.addDirectionKey(c);
@@ -144,6 +152,9 @@ public class AngbandKeyboard implements OnKeyboardActionListener
 			else {
 				state.addKey(c);
 			}
+			*/
+
+			state.addKey(c);
 		}
 	}
 
