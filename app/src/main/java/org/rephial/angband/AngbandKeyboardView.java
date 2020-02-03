@@ -42,6 +42,9 @@ public class AngbandKeyboardView extends KeyboardView
 		mPainter.setColor(Color.WHITE);
         mPainter.setAntiAlias(true);
         mPainter.setTextAlign(Paint.Align.CENTER);
+
+        // Make it transparent
+        this.getBackground().setAlpha(0);
 	}
 
 	public void setSymbolic(boolean on) {
@@ -124,11 +127,11 @@ public class AngbandKeyboardView extends KeyboardView
 					key.height - padding.bottom);
 
 			// Transparency
-			//keyBackground.setAlpha(100);
+			keyBackground.setAlpha(200);
 
 			keyBackground.draw(canvas);
 
-			//keyBackground.setAlpha(255);
+			keyBackground.setAlpha(255);
 
 			if (key.label != null) {
 				String label = fixCase(key.label);
@@ -143,7 +146,10 @@ public class AngbandKeyboardView extends KeyboardView
 				}
 
 				// Draw a drop shadow for the text
-				mPainter.setShadowLayer(0f, 0, 0, 0);
+				//mPainter.setShadowLayer(0f, 0, 0, 0);
+
+				mPainter.setShadowLayer(10f, 0, 0, Color.CYAN);
+				mPainter.setAlpha(200);
 
 				// Draw the text
 				canvas.drawText(label,
@@ -155,6 +161,7 @@ public class AngbandKeyboardView extends KeyboardView
 
 				// Remove drop shadow
 				mPainter.setShadowLayer(0, 0, 0, 0);
+				mPainter.setAlpha(255);
 			} else if (key.icon != null) {
 				final int drawableX = (key.width - padding.left - padding.right
 								- key.icon.getIntrinsicWidth()) / 2 + padding.left;

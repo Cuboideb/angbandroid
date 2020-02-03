@@ -43,14 +43,18 @@ import android.content.pm.ComponentInfo;
 import android.content.pm.PackageInfo;
 import android.os.Handler;
 import android.os.Message;
+import android.widget.RelativeLayout;
 
 public class GameActivity extends Activity {
 
 	public static StateManager state = null;
 	private AngbandDialog dialog = null;
 
-	private LinearLayout screenLayout = null; 
+	//private LinearLayout screenLayout = null;
+	private RelativeLayout screenLayout = null;
 	private TermView term = null;
+	AngbandKeyboard virtualKeyboard = null;
+	AngbandKeyboardView virtualKeyboardView = null;
 
 	protected final int CONTEXTMENU_FITWIDTH_ITEM = 0;
 	protected final int CONTEXTMENU_FITHEIGHT_ITEM = 1;
@@ -171,7 +175,8 @@ public class GameActivity extends Activity {
 			}
 
 			if (screenLayout != null) screenLayout.removeAllViews();
-			screenLayout = new LinearLayout(this);
+			//screenLayout = new LinearLayout(this);
+			screenLayout = new RelativeLayout(this);
 
 			term = new TermView(this);
 			term.setLayoutParams(
@@ -183,7 +188,7 @@ public class GameActivity extends Activity {
 			registerForContextMenu(term);
 			state.link(term, handler);
 
-			screenLayout.setOrientation(LinearLayout.VERTICAL);
+			//screenLayout.setOrientation(LinearLayout.VERTICAL);
 			screenLayout.addView(term);
 
 			Boolean kb = false;
@@ -193,8 +198,20 @@ public class GameActivity extends Activity {
 				kb = Preferences.getLandscapeKeyboard();
 
 			if (kb) {
-				AngbandKeyboard virtualKeyboard = new AngbandKeyboard(this);
-				screenLayout.addView(virtualKeyboard.virtualKeyboardView);
+				virtualKeyboard = new AngbandKeyboard(this);
+
+				virtualKeyboardView = virtualKeyboard.virtualKeyboardView;
+				LayoutParams params_temp = new LayoutParams(
+						LayoutParams.MATCH_PARENT,
+						LayoutParams.WRAP_CONTENT);
+				RelativeLayout.LayoutParams params =
+					new RelativeLayout.LayoutParams(params_temp);
+				params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+				virtualKeyboardView.setLayoutParams(params);
+
+				screenLayout.addView(virtualKeyboardView);
+
+				//screenLayout.addView(virtualKeyboard.virtualKeyboardView);
 			}
 
 			setContentView(screenLayout);
