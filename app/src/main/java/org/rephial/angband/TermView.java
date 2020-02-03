@@ -66,7 +66,7 @@ public class TermView extends View implements OnGestureListener {
 	private boolean vibrate;
 	private Handler handler = null;
 	private StateManager state = null;
-	private Context _context;
+	private GameActivity _context;
 
 	private GestureDetector gesture;
 
@@ -85,7 +85,7 @@ public class TermView extends View implements OnGestureListener {
 	}
 
 	protected void initTermView(Context context) {
-		_context = context;
+		_context = (GameActivity)context;
 		fore = new Paint();
 		fore.setTextAlign(Paint.Align.LEFT);
 		if ( isHighRes() ) fore.setAntiAlias(true);
@@ -311,7 +311,8 @@ public class TermView extends View implements OnGestureListener {
 
 		int r, c;
 		c = (x * 3) / getWidth();
-		r = (y * 3) / getHeight();
+		//r = (y * 3) / getHeight();
+		r = (y * 3) / (getHeight() - _context.getKeyboardOverlapHeight());
 
 		int key = (2 - r) * 3 + c + '1';
 

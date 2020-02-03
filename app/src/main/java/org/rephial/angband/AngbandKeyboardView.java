@@ -109,6 +109,8 @@ public class AngbandKeyboardView extends KeyboardView
 	public void onDraw(Canvas canvas) {
 //		super.onDraw(canvas);
 
+		int alpha = Preferences.getKeyboardOverlap() ? (int)(255 * (Preferences.getKeyboardOpacity() / 100f)) : 255;
+
 		Rect padding = new Rect(4, 4, 4, 4);
 
 		final List<Key> keys = getKeyboard().getKeys();
@@ -127,7 +129,7 @@ public class AngbandKeyboardView extends KeyboardView
 					key.height - padding.bottom);
 
 			// Transparency
-			keyBackground.setAlpha(200);
+			keyBackground.setAlpha(alpha);
 
 			keyBackground.draw(canvas);
 
@@ -148,8 +150,10 @@ public class AngbandKeyboardView extends KeyboardView
 				// Draw a drop shadow for the text
 				//mPainter.setShadowLayer(0f, 0, 0, 0);
 
-				mPainter.setShadowLayer(10f, 0, 0, Color.CYAN);
-				mPainter.setAlpha(200);
+				if (alpha < 255) {
+					mPainter.setShadowLayer(10f, 0, 0, Color.CYAN);
+					mPainter.setAlpha(alpha);
+				}
 
 				// Draw the text
 				canvas.drawText(label,

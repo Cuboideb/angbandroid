@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.view.WindowManager;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.util.Log;
@@ -30,7 +31,8 @@ import android.preference.PreferenceCategory;
 import android.preference.ListPreference;
 
 public class PreferencesActivity
-	extends PreferenceActivity implements OnSharedPreferenceChangeListener {
+	extends PreferenceActivity implements OnSharedPreferenceChangeListener,
+		OnPreferenceChangeListener {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,10 @@ public class PreferencesActivity
 		getPreferenceManager().setSharedPreferencesName(Preferences.NAME);
 
 		addPreferencesFromResource(R.xml.preferences);
+
+		// Enable or disable keyboard transparency based on overlap setting
+		findPreference(Preferences.KEY_KEYBOARDOVERLAP).setOnPreferenceChangeListener(this);
+		findPreference(Preferences.KEY_KEYBOARDOPACITY).setEnabled(Preferences.getKeyboardOverlap());
 	}
 
 	@Override
@@ -120,5 +126,12 @@ public class PreferencesActivity
 			Preference pref = findPreference(key);
 			setSummaryPref(pref);
 		}
+	}
+
+	public boolean onPreferenceChange(Preference preference, Object newValue) {
+		boolean shouldBeEnabled = (Boolean)newValue;
+		findPreference(Preferences.KEY_KEYBOARDOPACITY).setEnabled(shouldBeEnabled);
+
+		return true;
 	}
 }

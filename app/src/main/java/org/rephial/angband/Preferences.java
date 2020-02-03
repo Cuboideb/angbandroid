@@ -28,6 +28,8 @@ final public class Preferences {
 	static final String KEY_FULLSCREEN = "angband.fullscreen";
 	static final String KEY_ORIENTATION = "angband.orientation";
 
+	static final String KEY_KEYBOARDOVERLAP = "angband.allowKeyboardOverlap";
+	static final String KEY_KEYBOARDOPACITY = "angband.keyboardOpacity";
 	static final String KEY_ENABLETOUCH = "angband.enabletouch";
 	static final String KEY_CENTERTAP = "angband.centerscreentap";
 	static final String KEY_PORTRAITKB = "angband.portraitkb";
@@ -114,6 +116,14 @@ final public class Preferences {
 
 	public static int getOrientation() {
 		return Integer.parseInt(pref.getString(Preferences.KEY_ORIENTATION, "0"));
+	}
+
+	public static boolean getKeyboardOverlap() {
+		return pref.getBoolean(Preferences.KEY_KEYBOARDOVERLAP, true);
+	}
+
+	public static int getKeyboardOpacity() {
+		return pref.getInt(Preferences.KEY_KEYBOARDOPACITY, 50);
 	}
 
 	public static int getDefaultFontSize() {

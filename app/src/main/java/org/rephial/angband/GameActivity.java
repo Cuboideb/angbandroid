@@ -50,11 +50,11 @@ public class GameActivity extends Activity {
 	public static StateManager state = null;
 	private AngbandDialog dialog = null;
 
-	//private LinearLayout screenLayout = null;
 	private RelativeLayout screenLayout = null;
 	private TermView term = null;
 	AngbandKeyboard virtualKeyboard = null;
 	AngbandKeyboardView virtualKeyboardView = null;
+    boolean kbOverlappingAndVisible = false;
 
 	protected final int CONTEXTMENU_FITWIDTH_ITEM = 0;
 	protected final int CONTEXTMENU_FITHEIGHT_ITEM = 1;
@@ -175,21 +175,7 @@ public class GameActivity extends Activity {
 			}
 
 			if (screenLayout != null) screenLayout.removeAllViews();
-			//screenLayout = new LinearLayout(this);
 			screenLayout = new RelativeLayout(this);
-
-			term = new TermView(this);
-			term.setLayoutParams(
-					new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
-						LayoutParams.WRAP_CONTENT,
-						1.0f)
-					);
-			term.setFocusable(false);
-			registerForContextMenu(term);
-			state.link(term, handler);
-
-			//screenLayout.setOrientation(LinearLayout.VERTICAL);
-			screenLayout.addView(term);
 
 			Boolean kb = false;
 			if(Preferences.isScreenPortraitOrientation())
@@ -197,22 +183,42 @@ public class GameActivity extends Activity {
 			else		
 				kb = Preferences.getLandscapeKeyboard();
 
-			if (kb) {
-				virtualKeyboard = new AngbandKeyboard(this);
+			virtualKeyboard = null;
+            virtualKeyboardView = null;
+            kbOverlappingAndVisible = false;
+            if (kb) {
+                virtualKeyboard = new AngbandKeyboard(this);
+                virtualKeyboardView = virtualKeyboard.virtualKeyboardView;
+                virtualKeyboardView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+            }
 
-				virtualKeyboardView = virtualKeyboard.virtualKeyboardView;
-				LayoutParams params_temp = new LayoutParams(
-						LayoutParams.MATCH_PARENT,
-						LayoutParams.WRAP_CONTENT);
-				RelativeLayout.LayoutParams params =
-					new RelativeLayout.LayoutParams(params_temp);
-				params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-				virtualKeyboardView.setLayoutParams(params);
+            term = new TermView(this);
+            term.setFocusable(false);
+            registerForContextMenu(term);
+            state.link(term, handler);
 
-				screenLayout.addView(virtualKeyboardView);
-
-				//screenLayout.addView(virtualKeyboard.virtualKeyboardView);
-			}
+            if (Preferences.getKeyboardOverlap()) {
+                // Add both term and keyboard to our existing RelativeLayout
+                term.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+                screenLayout.addView(term);
+                if (kb) {
+                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(virtualKeyboardView.getLayoutParams());
+                    params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                    virtualKeyboardView.setLayoutParams(params);
+                    screenLayout.addView(virtualKeyboardView);
+                    kbOverlappingAndVisible = true;
+                }
+            }
+            else {
+                // If we don't want overlap, enclose both items inside of a LinearLayout
+                LinearLayout enclosure = new LinearLayout(this);
+                enclosure.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+                enclosure.setOrientation(LinearLayout.VERTICAL);
+                term.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, 1.0f));
+                enclosure.addView(term);
+                if (kb) enclosure.addView(virtualKeyboardView);
+                screenLayout.addView(enclosure);
+            }
 
 			setContentView(screenLayout);
 			dialog.restoreDialog();
@@ -332,4 +338,8 @@ public class GameActivity extends Activity {
 	public StateManager getStateManager() { 
 		return state;
 	}
+
+    public int getKeyboardOverlapHeight() {
+        return kbOverlappingAndVisible ? virtualKeyboardView.getHeight() : 0;
+    }
 }

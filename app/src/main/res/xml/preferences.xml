@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:seekBar="http://schemas.android.com/apk/res-auto">
   <PreferenceCategory android:title="@string/game_category">
 	<Preference android:title="Game Profile" 
 				android:key="angband.gameprofile">
@@ -39,6 +40,17 @@
 	   android:entryValues="@array/orientations" />
   </PreferenceCategory>
   <PreferenceCategory android:title="@string/control_category">
+	  <CheckBoxPreference
+		  android:key="angband.allowKeyboardOverlap"
+		  android:defaultValue="true"
+		  android:title="@string/preferences_keyboardOverlap_title"
+		  android:summary="@string/preferences_keyboardOverlap_summary" />
+	  <org.rephial.angband.SeekBarPreference
+		  android:key="angband.keyboardOpacity"
+		  android:title="Keyboard Opacity"
+		  seekBar:min="0"
+		  seekBar:max="100"
+		  seekBar:defaultVal="50" />
 	<PreferenceScreen
 	   android:title="Hardware Key Mapping"
 	   android:summary="Configure hardware buttons on your device to perform various functions">	  
