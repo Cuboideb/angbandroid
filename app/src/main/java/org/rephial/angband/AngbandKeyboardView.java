@@ -177,9 +177,9 @@ public class AngbandKeyboardView extends KeyboardView
 
 			// Cancel text/icon if mMiniKeyboard is requested
 			if (this.mMiniKeyboard && key.label != null) {
-				String find = ("-" + key.label.toString() + "-");
+				String find = ("-" + key.label.toString().trim() + "-");
 				// Cancel if not found
-				if (just_these.indexOf(find) == -1) {
+				if ((find == "--") || (just_these.indexOf(find) == -1)) {
 					// Reset translation
 					canvas.translate(-key.x, -key.y);
 					continue;
@@ -202,7 +202,7 @@ public class AngbandKeyboardView extends KeyboardView
 				//mPainter.setShadowLayer(0f, 0, 0, 0);
 
 				if (alpha < 255) {
-					mPainter.setShadowLayer(20f, 0, 0, Color.BLACK);
+					mPainter.setShadowLayer(20f, 0, 0, Color.BLUE);
 					mPainter.setAlpha(use_alpha);
 				}
 

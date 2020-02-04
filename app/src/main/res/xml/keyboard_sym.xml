@@ -36,11 +36,11 @@
         <Key android:codes="60" android:keyLabel="&lt;"/>
         <Key android:codes="62" android:keyLabel="&gt;"/>
 
-        <Key android:codes="132" android:keyLabel="F1"
+        <Key android:codes="132" android:keyLabel="F1 "
             android:horizontalGap="5%p"/>
-        <Key android:codes="133" android:keyLabel="F2"/>
-        <Key android:codes="134" android:keyLabel="F3"/>
-        <Key android:codes="135" android:keyLabel="F4"
+        <Key android:codes="133" android:keyLabel="F2 "/>
+        <Key android:codes="134" android:keyLabel="F3 "/>
+        <Key android:codes="135" android:keyLabel="F4 "
             android:keyEdgeFlags="right"/>
     </Row>
 
@@ -55,11 +55,11 @@
         <Key android:codes="123" android:keyLabel="{"/>
         <Key android:codes="125" android:keyLabel="}"/>
 
-        <Key android:codes="136" android:keyLabel="F5"
+        <Key android:codes="136" android:keyLabel="F5 "
             android:horizontalGap="5%p"/>
-        <Key android:codes="137" android:keyLabel="F6"/>
-        <Key android:codes="138" android:keyLabel="F7"/>
-        <Key android:codes="139" android:keyLabel="F8"
+        <Key android:codes="137" android:keyLabel="F6 "/>
+        <Key android:codes="138" android:keyLabel="F7 "/>
+        <Key android:codes="139" android:keyLabel="F8 "
             android:keyEdgeFlags="right"/>
     </Row>
 
@@ -74,7 +74,7 @@
         <Key android:codes="59" android:keyLabel=";"/>
         <Key android:codes="34" android:keyLabel="&quot;"/>
 
-        <Key android:codes="140" android:keyLabel="F9"
+        <Key android:codes="140" android:keyLabel="F9 "
             android:horizontalGap="5%p"/>
         <Key android:codes="141" android:keyLabel="F10"/>
         <Key android:codes="142" android:keyLabel="F11"/>
