@@ -202,7 +202,7 @@ public class AngbandKeyboardView extends KeyboardView
 				//mPainter.setShadowLayer(0f, 0, 0, 0);
 
 				if (alpha < 255) {
-					mPainter.setShadowLayer(10f, 0, 0, Color.CYAN);
+					mPainter.setShadowLayer(20f, 0, 0, Color.BLACK);
 					mPainter.setAlpha(use_alpha);
 				}
 
