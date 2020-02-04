@@ -65,7 +65,7 @@
 
     <Row android:rowEdgeFlags="bottom">
         <Key android:codes="-7000" android:keyLabel="..."
-            android:isSticky="true"
+            android:isSticky="false"
             android:keyEdgeFlags="left"/>
 
         <Key android:codes="-6" android:keyLabel="Ctrl^"

@@ -116,8 +116,12 @@ public class AngbandKeyboard implements OnKeyboardActionListener
 			}
 
 			case -7000: {
-				boolean shouldMini = !virtualKeyboardView.getMiniKeyboard();
+				boolean shouldMini = false;
+				if (!virtualKeyboardView.isSemiOpaque()) {
+					shouldMini = !virtualKeyboardView.getMiniKeyboard();
+				}
 				virtualKeyboardView.setMiniKeyboard(shouldMini);
+				virtualKeyboardView.setSemiOpaque(false);
 				break;
 			}
 
@@ -153,19 +157,23 @@ public class AngbandKeyboard implements OnKeyboardActionListener
 	}
 	public void swipeDown()
 	{
-		_context.toggleKeyboard();
+		//_context.toggleKeyboard();
 	}
 	public void swipeLeft()
 	{
+		/*
 		int value = Preferences.getKeyboardOpacity();
 		value = (int)(value * 0.7f);
 		Preferences.setKeyboardOpacity(value);
+		 */
 	}
 	public void swipeRight()
 	{
+		/*
 		int value = Preferences.getKeyboardOpacity();
 		value = (int)(value * 1.3f);
 		Preferences.setKeyboardOpacity(value);
+		*/
 	}
 	public void swipeUp()
 	{

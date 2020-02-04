@@ -30,6 +30,7 @@ public class AngbandKeyboardView extends KeyboardView
 	private boolean mControl = false;
 	private boolean mRunning = false;
 	private boolean mMiniKeyboard = false;
+	private boolean mSemiOpaque = false;
 
 	public int canvas_width = 0;
 	public int canvas_height = 0;
@@ -51,6 +52,14 @@ public class AngbandKeyboardView extends KeyboardView
         this.getBackground().setAlpha(0);
 
         this.setPreviewEnabled(false);
+	}
+
+	public boolean isSemiOpaque() {
+		return mSemiOpaque;
+	}
+
+	public void setSemiOpaque(boolean mSemiOpaque) {
+		this.mSemiOpaque = mSemiOpaque;
 	}
 
 	public void setSymbolic(boolean on) {
@@ -100,7 +109,9 @@ public class AngbandKeyboardView extends KeyboardView
 
 		if ((mSymbolic && key.codes[0] == -2) ||
 				(mControl && key.codes[0] == -6) ||
-				(mRunning && key.codes[0] == -4)) {
+				(mRunning && key.codes[0] == -4)
+				// || (mMiniKeyboard && key.codes[0] == -7000)
+			) {
 			newStates[0] = android.R.attr.state_checkable;
 			newStates[1] = android.R.attr.state_checked;
 			newLength = 2;
@@ -127,13 +138,24 @@ public class AngbandKeyboardView extends KeyboardView
 	}
 
 	@Override
+	protected boolean onLongPress(Key popupKey) {
+		if (!popupKey.label.equals("...")) {
+			return super.onLongPress(popupKey);
+		}
+		boolean shouldActivate = !this.isSemiOpaque();
+		this.setSemiOpaque(shouldActivate);
+		return true;
+	}
+
+	@Override
 	public void onDraw(Canvas canvas) {
 //		super.onDraw(canvas);
 
 		String just_these = "-0-1-2-3-4-5-6-7-8-9-.-...-⏎-Ctrl^-Sym-"
 				+ "F1-F2-F3-F4-F5-F6-F7-F8-F9-F10-F11-F12-";
 
-		int alpha = Preferences.getKeyboardOverlap() ? (int)(255 * (Preferences.getKeyboardOpacity() / 100f)) : 255;
+		boolean overlap = Preferences.getKeyboardOverlap();
+		int alpha_pref = overlap ? (int)(255 * (Preferences.getKeyboardOpacity() / 100f)) : 255;
 
 		Rect padding = new Rect(4, 4, 4, 4);
 
@@ -152,31 +174,40 @@ public class AngbandKeyboardView extends KeyboardView
 					key.width - padding.right,
 					key.height - padding.bottom);
 
-			int use_alpha = alpha;
+			int alpha_fore = alpha_pref;
+			int alpha_back = overlap ? 80: 255;
+
 			// Increase alpha in the middle if requested
 			int min_alpha = 30;
 			float pad_pct = 0.25f;
 			float alpha_reduction = 0.35f;
-			if (Preferences.getIncreaseMiddleAlpha()
-					&& alpha > min_alpha && alpha < 255) {
+			if (Preferences.getIncreaseMiddleAlpha() && overlap && (alpha_fore > min_alpha)) {
 				float pct = (float)key.x / this.canvas_width;
 				if (pct > pad_pct && pct < (1.0f - pad_pct)) {
-					use_alpha = (int)(alpha * (1.0f - alpha_reduction));
-					if (use_alpha < min_alpha) {
-						use_alpha = min_alpha;
+					alpha_fore = (int)(alpha_fore * (1.0f - alpha_reduction));
+					if (alpha_fore < min_alpha) {
+						alpha_fore = min_alpha;
 					}
 				}
 			}
 
-			// Transparency
-			keyBackground.setAlpha(use_alpha);
+			if (alpha_fore < 0) alpha_fore = 0;
+			if (alpha_fore > 255) alpha_fore = 255;
 
+			if (this.mSemiOpaque) {
+				// Almost opaque
+				alpha_fore = 250;
+				alpha_back = 200;
+			}
+
+			// Draw background
+			// Apply transparency and reset
+			keyBackground.setAlpha(alpha_back);
 			keyBackground.draw(canvas);
-
 			keyBackground.setAlpha(255);
 
 			// Cancel text/icon if mMiniKeyboard is requested
-			if (this.mMiniKeyboard && key.label != null) {
+			if (this.mMiniKeyboard && !this.mSemiOpaque && key.label != null) {
 				String find = ("-" + key.label.toString().trim() + "-");
 				// Cancel if not found
 				if ((find == "--") || (just_these.indexOf(find) == -1)) {
@@ -199,11 +230,10 @@ public class AngbandKeyboardView extends KeyboardView
 				}
 
 				// Draw a drop shadow for the text
-				//mPainter.setShadowLayer(0f, 0, 0, 0);
-
-				if (alpha < 255) {
-					mPainter.setShadowLayer(20f, 0, 0, Color.BLUE);
-					mPainter.setAlpha(use_alpha);
+				// Use transparency if needed
+				if (overlap) {
+					mPainter.setShadowLayer(10f, 0, 0, Color.CYAN);
+					mPainter.setAlpha(alpha_fore);
 				}
 
 				// Draw the text
@@ -214,7 +244,7 @@ public class AngbandKeyboardView extends KeyboardView
 							+ (mPainter.getTextSize() - mPainter.descent()) / 2 + padding.top,
 					mPainter);
 
-				// Remove drop shadow
+				// Remove drop shadow and alpha
 				mPainter.setShadowLayer(0, 0, 0, 0);
 				mPainter.setAlpha(255);
 			} else if (key.icon != null) {
