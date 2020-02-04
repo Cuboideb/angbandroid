@@ -130,7 +130,8 @@ public class AngbandKeyboardView extends KeyboardView
 	public void onDraw(Canvas canvas) {
 //		super.onDraw(canvas);
 
-		String just_these = "-0-1-2-3-4-5-6-7-8-9-.-...-⏎-Ctrl^-123-";
+		String just_these = "-0-1-2-3-4-5-6-7-8-9-.-...-⏎-Ctrl^-Sym-"
+				+ "F1-F2-F3-F4-F5-F6-F7-F8-F9-F10-F11-F12-";
 
 		int alpha = Preferences.getKeyboardOverlap() ? (int)(255 * (Preferences.getKeyboardOpacity() / 100f)) : 255;
 

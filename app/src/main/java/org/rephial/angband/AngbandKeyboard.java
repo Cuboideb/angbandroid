@@ -115,10 +115,9 @@ public class AngbandKeyboard implements OnKeyboardActionListener
 				break;
 			}
 
-			case -7: {
+			case -7000: {
 				boolean shouldMini = !virtualKeyboardView.getMiniKeyboard();
 				virtualKeyboardView.setMiniKeyboard(shouldMini);
-				c = 0;
 				break;
 			}
 
@@ -139,21 +138,6 @@ public class AngbandKeyboard implements OnKeyboardActionListener
 		}
 
 		if (c != 0) {
-			/*
-			// Common direction keys
-			if ("12346789".indexOf(c) > -1) {
-				state.addDirectionKey(c);
-			}
-			// Roguelike directions keys
-			else if ("bjnhlyku".indexOf(c) > -1 && state.isRoguelikeKeyboard())
-			{
-				state.addDirectionKey(c);
-			}
-			else {
-				state.addKey(c);
-			}
-			*/
-
 			state.addKey(c);
 		}
 	}

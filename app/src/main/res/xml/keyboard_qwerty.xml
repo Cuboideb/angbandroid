@@ -91,13 +91,13 @@
     </Row>
 
     <Row android:rowEdgeFlags="bottom">
-        <Key android:codes="-7" android:keyLabel="..."
+        <Key android:codes="-7000" android:keyLabel="..."
             android:isSticky="true"
             android:keyEdgeFlags="left"/>
 
         <Key android:codes="-6" android:keyLabel="Ctrl^"
                 android:keyWidth="12%p"/>
-        <Key android:codes="-2" android:keyLabel="123"
+        <Key android:codes="-2" android:keyLabel="Sym"
                 android:keyWidth="11%p"/>
 
         <Key android:codes="32" android:keyLabel=" "

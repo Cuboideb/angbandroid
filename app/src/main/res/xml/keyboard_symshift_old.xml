@@ -64,14 +64,10 @@
     </Row>
 
     <Row android:rowEdgeFlags="bottom">
-        <Key android:codes="-7000" android:keyLabel="..."
-            android:isSticky="true"
-            android:keyEdgeFlags="left"/>
-
         <Key android:codes="-6" android:keyLabel="Ctrl^"
-            android:keyWidth="12%p"/>
-        <Key android:codes="-2" android:keyLabel="Sym"
-            android:keyWidth="11%p"/>
+                android:keyWidth="20%p" android:keyEdgeFlags="left"/>
+        <Key android:codes="-2" android:keyLabel="123"
+                android:keyWidth="20%p"/>
 
         <Key android:codes="57344" android:keyLabel="Esc"
                 android:horizontalGap="20%p"
