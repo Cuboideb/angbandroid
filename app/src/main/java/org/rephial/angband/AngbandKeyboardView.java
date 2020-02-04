@@ -209,11 +209,9 @@ public class AngbandKeyboardView extends KeyboardView
 			// Cancel text/icon if mMiniKeyboard is requested
 			if (this.mMiniKeyboard && !this.mSemiOpaque && key.label != null) {
 				String find = ("-" + key.label.toString().trim() + "-");
-				// Cancel if not found
+				// Make almost invisible if not found
 				if ((find == "--") || (just_these.indexOf(find) == -1)) {
-					// Reset translation
-					canvas.translate(-key.x, -key.y);
-					continue;
+					alpha_fore = 10;
 				}
 			}
 
