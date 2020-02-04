@@ -131,6 +131,19 @@ final public class Preferences {
 		return pref.getInt(Preferences.KEY_KEYBOARDOPACITY, 50);
 	}
 
+	public static void setKeyboardOpacity(int value)
+	{
+		if (value < 0) {
+			value = 0;
+		}
+		if (value > 255) {
+			value = 255;
+		}
+		SharedPreferences.Editor ed = pref.edit();
+		ed.putInt(Preferences.KEY_KEYBOARDOPACITY, value);
+		ed.commit();
+	}
+
 	public static int getDefaultFontSize() {
 		return fontSize;
 	}

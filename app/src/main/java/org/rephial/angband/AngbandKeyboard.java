@@ -157,9 +157,15 @@ public class AngbandKeyboard implements OnKeyboardActionListener
 	}
 	public void swipeLeft()
 	{
+		int value = Preferences.getKeyboardOpacity();
+		value = (int)(value * 0.7f);
+		Preferences.setKeyboardOpacity(value);
 	}
 	public void swipeRight()
 	{
+		int value = Preferences.getKeyboardOpacity();
+		value = (int)(value * 1.3f);
+		Preferences.setKeyboardOpacity(value);
 	}
 	public void swipeUp()
 	{
