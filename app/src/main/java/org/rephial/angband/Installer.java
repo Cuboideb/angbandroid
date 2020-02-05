@@ -66,7 +66,7 @@ public class Installer {
 
 							ActivityCompat.requestPermissions(activity,
 									new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-									500);
+									1);
 
 							// Wait until the user responds
 							while (!userResponded) {
