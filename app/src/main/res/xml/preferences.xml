@@ -5,16 +5,16 @@
   <PreferenceCategory android:title="@string/game_category">
 	<Preference android:title="Game Profile" 
 				android:key="angband.gameprofile">
-	  <intent android:action="org.rephial.angband.PROFILES" />
+	  <intent android:action="org.rephial.xyangband.PROFILES" />
 	</Preference>
-<!--	<org.rephial.angband.ProfileListPreference 
+<!--	<org.rephial.xyangband.ProfileListPreference
 	   android:title="@string/preferences_gameplugin_title"
 	   android:key="angband.gameplugin"
 	   android:summary="@string/preferences_gameplugin_summary"
 	   android:entries="@array/gamePluginDescriptions"
 	   android:entryValues="@array/gamePlugins" />
 -->
-	<org.rephial.angband.ProfileCheckBoxPreference 
+	<org.rephial.xyangband.ProfileCheckBoxPreference
 	   android:title="@string/preferences_skipwelcome_title"
 	   android:key="angband.skipwelcome"
 	   android:defaultValue="false" 
@@ -50,7 +50,7 @@
 		  android:defaultValue="true"
 		  android:title="Increase Middle Alpha"
 		  android:summary="Make the middle portion of keyboard more transparent" />
-	  <org.rephial.angband.SeekBarPreference
+	  <org.rephial.xyangband.SeekBarPreference
 		  android:key="angband.keyboardOpacity"
 		  android:title="Keyboard Opacity"
 		  seekBar:min="0"
@@ -62,100 +62,100 @@
 	  <PreferenceScreen
 		 android:title="Display Functions"
 		 android:summary="Change display, font size, virtual keyboard">	  
-		<org.rephial.angband.KeyMapPreference android:key="angband.virtkeykey" android:title="Toggle Virtual Keyboard"/> 
-		<org.rephial.angband.KeyMapPreference android:key="angband.zoominkey" android:title="Zoom In"/> 
-		<org.rephial.angband.KeyMapPreference android:key="angband.zoomoutkey" android:title="Zoom Out"/> 
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.virtkeykey" android:title="Toggle Virtual Keyboard"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.zoominkey" android:title="Zoom In"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.zoomoutkey" android:title="Zoom Out"/>
 	  </PreferenceScreen>
 	  <PreferenceScreen
 		 android:title="Letters and Numbers"
 		 android:summary="A-Z, 0-9">
-		<org.rephial.angband.KeyMapPreference android:key="angband.akey" android:title="A"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.bkey" android:title="B"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.ckey" android:title="C"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.dkey" android:title="D"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.ekey" android:title="E"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.fkey" android:title="F"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.gkey" android:title="G"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.hkey" android:title="H"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.ikey" android:title="I"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.jkey" android:title="J"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.kkey" android:title="K"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.lkey" android:title="L"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.mkey" android:title="M"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.nkey" android:title="N"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.okey" android:title="O"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.pkey" android:title="P"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.qkey" android:title="Q"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.rkey" android:title="R"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.skey" android:title="S"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.tkey" android:title="T"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.ukey" android:title="U"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.vkey" android:title="V"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.wkey" android:title="W"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.xkey" android:title="X"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.ykey" android:title="Y"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.zkey" android:title="Z"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.0key" android:title="0"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.1key" android:title="1"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.2key" android:title="2"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.3key" android:title="3"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.4key" android:title="4"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.5key" android:title="5"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.6key" android:title="6"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.7key" android:title="7"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.8key" android:title="8"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.9key" android:title="9"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.akey" android:title="A"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.bkey" android:title="B"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.ckey" android:title="C"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.dkey" android:title="D"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.ekey" android:title="E"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.fkey" android:title="F"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.gkey" android:title="G"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.hkey" android:title="H"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.ikey" android:title="I"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.jkey" android:title="J"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.kkey" android:title="K"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.lkey" android:title="L"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.mkey" android:title="M"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.nkey" android:title="N"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.okey" android:title="O"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.pkey" android:title="P"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.qkey" android:title="Q"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.rkey" android:title="R"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.skey" android:title="S"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.tkey" android:title="T"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.ukey" android:title="U"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.vkey" android:title="V"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.wkey" android:title="W"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.xkey" android:title="X"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.ykey" android:title="Y"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.zkey" android:title="Z"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.0key" android:title="0"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.1key" android:title="1"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.2key" android:title="2"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.3key" android:title="3"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.4key" android:title="4"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.5key" android:title="5"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.6key" android:title="6"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.7key" android:title="7"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.8key" android:title="8"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.9key" android:title="9"/>
 	  </PreferenceScreen>
 	  <PreferenceScreen
 		 android:title="Modifiers and Movers"
 		 android:summary="Esc, Ctrl, Shift, Alt, Space, Enter, Directions">	  
-		<org.rephial.angband.KeyMapPreference android:key="angband.downkey" android:title="Arrow Down"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.leftkey" android:title="Arrow Left"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.rightkey" android:title="Arrow Right"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.upkey" android:title="Arrow Up"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.bkspacekey" android:title="Backspace"/>
-		<org.rephial.angband.KeyMapModPreference android:key="angband.ctrlkey" android:title="Control Key"/> 
-		<org.rephial.angband.KeyMapPreference android:key="angband.enterkey" android:title="Enter Key"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.esckey" android:title="Esc Key"/> 
-		<org.rephial.angband.KeyMapModPreference android:key="angband.laltkey" android:title="Left Alt/Fn Key"/>
-		<org.rephial.angband.KeyMapModPreference android:key="angband.lshiftkey" android:title="Left Shift Key"/>
-		<org.rephial.angband.KeyMapModPreference android:key="angband.raltkey" android:title="Right Alt/Fn Key"/>
-		<org.rephial.angband.KeyMapModPreference android:key="angband.rshiftkey" android:title="Right Shift Key"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.spacekey" android:title="Space"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.downkey" android:title="Arrow Down"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.leftkey" android:title="Arrow Left"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.rightkey" android:title="Arrow Right"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.upkey" android:title="Arrow Up"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.bkspacekey" android:title="Backspace"/>
+		<org.rephial.xyangband.KeyMapModPreference android:key="angband.ctrlkey" android:title="Control Key"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.enterkey" android:title="Enter Key"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.esckey" android:title="Esc Key"/>
+		<org.rephial.xyangband.KeyMapModPreference android:key="angband.laltkey" android:title="Left Alt/Fn Key"/>
+		<org.rephial.xyangband.KeyMapModPreference android:key="angband.lshiftkey" android:title="Left Shift Key"/>
+		<org.rephial.xyangband.KeyMapModPreference android:key="angband.raltkey" android:title="Right Alt/Fn Key"/>
+		<org.rephial.xyangband.KeyMapModPreference android:key="angband.rshiftkey" android:title="Right Shift Key"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.spacekey" android:title="Space"/>
 	  </PreferenceScreen>
 	  <PreferenceScreen
 		 android:title="Symbols"
 		 android:summary="Punctuation and other non-alpha numeric keys">	  
-		<org.rephial.angband.KeyMapPreference android:key="angband.ampkey" android:title="Ampersand &amp;"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.astkey" android:title="Asterisk *"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.atkey" android:title="At @"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.bslashkey" android:title="Back Slash \\"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.colonkey" android:title="Colon :"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.commakey" android:title="Comma ,"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.dollarkey" android:title="Dollar $"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.dquotekey" android:title="Double Quote &quot;"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.equalkey" android:title="Equals ="/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.exclkey" android:title="Exclamation !"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.fslashkey" android:title="Forward Slash /"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.gtkey" android:title="Greater Than &gt;"/> 
-		<org.rephial.angband.KeyMapPreference android:key="angband.lbkey" android:title="Left Brace ["/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.lckey" android:title="Left Curly {"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.lpkey" android:title="Left Paren ("/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.ltkey" android:title="Less Than &lt;"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.minuskey" android:title="Minus -"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.percentkey" android:title="Percent %"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.periodkey" android:title="Period ."/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.pipekey" android:title="Pipe |"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.pluskey" android:title="Plus +"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.poundkey" android:title="Pound #"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.questkey" android:title="Question ?"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.rbkey" android:title="Right Brace ]"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.rckey" android:title="Right Curly }"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.rpkey" android:title="Right Paren )"/>	
-		<org.rephial.angband.KeyMapPreference android:key="angband.scolonkey" android:title="Semicolon ;"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.squotekey" android:title="Single Quote '"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.tildekey" android:title="Tilde ~"/>
-		<org.rephial.angband.KeyMapPreference android:key="angband.underkey" android:title="Underscore _"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.ampkey" android:title="Ampersand &amp;"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.astkey" android:title="Asterisk *"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.atkey" android:title="At @"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.bslashkey" android:title="Back Slash \\"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.colonkey" android:title="Colon :"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.commakey" android:title="Comma ,"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.dollarkey" android:title="Dollar $"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.dquotekey" android:title="Double Quote &quot;"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.equalkey" android:title="Equals ="/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.exclkey" android:title="Exclamation !"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.fslashkey" android:title="Forward Slash /"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.gtkey" android:title="Greater Than &gt;"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.lbkey" android:title="Left Brace ["/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.lckey" android:title="Left Curly {"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.lpkey" android:title="Left Paren ("/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.ltkey" android:title="Less Than &lt;"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.minuskey" android:title="Minus -"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.percentkey" android:title="Percent %"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.periodkey" android:title="Period ."/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.pipekey" android:title="Pipe |"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.pluskey" android:title="Plus +"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.poundkey" android:title="Pound #"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.questkey" android:title="Question ?"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.rbkey" android:title="Right Brace ]"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.rckey" android:title="Right Curly }"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.rpkey" android:title="Right Paren )"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.scolonkey" android:title="Semicolon ;"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.squotekey" android:title="Single Quote '"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.tildekey" android:title="Tilde ~"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.underkey" android:title="Underscore _"/>
 	  </PreferenceScreen>
 	  <ListPreference
 		 android:title="Ctrl Key Double-Tap"
@@ -164,7 +164,7 @@
 		 android:defaultValue="EnterKey"
 		 android:entries="@array/virtKeyActionDescriptions"
 		 android:entryValues="@array/virtKeyActions"/>
-	  <org.rephial.angband.KeyMapResetPreference 
+	  <org.rephial.xyangband.KeyMapResetPreference
 		 android:key="angband.resetallkeys" 
 		 android:title="Reset all hardware keys"
 		 android:summary="Restores all key mappings back to the default configuration"/> 

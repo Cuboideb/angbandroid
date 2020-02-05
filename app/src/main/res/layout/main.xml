@@ -3,7 +3,7 @@
 	android:orientation="horizontal" android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
 	
-	<org.rephial.angband.TermView android:id="@+id/term"
+	<org.rephial.xyangband.TermView android:id="@+id/term"
 		android:layout_width="fill_parent" android:layout_height="fill_parent" />
 
 </LinearLayout>

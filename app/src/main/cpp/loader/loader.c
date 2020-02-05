@@ -100,13 +100,13 @@ void gameStart
 	//LOGD("loader.return");
 }
 
-JNIEXPORT void JNICALL Java_org_rephial_angband_NativeWrapper_gameStart
+JNIEXPORT void JNICALL Java_org_rephial_xyangband_NativeWrapper_gameStart
 (JNIEnv *env1, jobject obj1, jstring pluginPath, jint argc, jobjectArray argv)
 {
 	gameStart(env1,obj1,pluginPath,argc,argv);
 }
 
-JNIEXPORT jstring JNICALL Java_org_rephial_angband_NativeWrapper_gameQueryString
+JNIEXPORT jstring JNICALL Java_org_rephial_xyangband_NativeWrapper_gameQueryString
   (JNIEnv *env1, jobject obj1, jint argc, jobjectArray argv)
 {
 	return (jstring)0; // null indicates error
@@ -140,7 +140,7 @@ jint gameQueryInt
 	return result;
 }
 
-JNIEXPORT jint JNICALL Java_org_rephial_angband_NativeWrapper_gameQueryInt
+JNIEXPORT jint JNICALL Java_org_rephial_xyangband_NativeWrapper_gameQueryInt
 (JNIEnv *env1, jobject obj1, jint argc, jobjectArray argv)
 {
 	return gameQueryInt(env1,obj1,argc,argv);

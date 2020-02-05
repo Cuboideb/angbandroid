@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.rephial.angband"
+    package="org.rephial.xyangband"
     android:versionCode="420"
 	android:versionName="4.2.0"
 	android:installLocation="auto"
@@ -30,7 +30,7 @@
 				  android:launchMode="singleTask" 
 				  android:windowSoftInputMode="stateHidden">
 			<intent-filter>
-				<action android:name="org.rephial.angband.GAME" />
+				<action android:name="org.rephial.xyangband.GAME" />
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
@@ -38,7 +38,7 @@
 		<activity android:name=".HelpActivity" android:label="@string/angband_help"
 			>
 			<intent-filter>
-				<action android:name="org.rephial.angband.HELP" />
+				<action android:name="org.rephial.xyangband.HELP" />
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
@@ -46,7 +46,7 @@
 		<activity android:name=".PreferencesActivity" android:label="@string/preferences"
 			>
 			<intent-filter>
-				<action android:name="org.rephial.angband.PREF" />
+				<action android:name="org.rephial.xyangband.PREF" />
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
@@ -54,7 +54,7 @@
 		<activity android:name=".ProfilesActivity" android:label="@string/profiles"
 			>
 			<intent-filter>
-				<action android:name="org.rephial.angband.PROFILES" />
+				<action android:name="org.rephial.xyangband.PROFILES" />
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
@@ -62,7 +62,7 @@
 		<activity android:name=".ProfileAddActivity" android:label="@string/profileadd"
 			>
 			<intent-filter>
-				<action android:name="org.rephial.angband.PROFILEADD" />
+				<action android:name="org.rephial.xyangband.PROFILEADD" />
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
