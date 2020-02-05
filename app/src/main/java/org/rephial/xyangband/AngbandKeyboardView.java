@@ -18,7 +18,7 @@ import java.util.List;
 
 public class AngbandKeyboardView extends KeyboardView
 {
-	private Context mContext;
+	private GameActivity mContext;
 	private Paint mPainter;
 
 	private boolean mSymbolic = false;
@@ -37,7 +37,7 @@ public class AngbandKeyboardView extends KeyboardView
 	public AngbandKeyboardView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 
-		mContext = context;
+		mContext = (GameActivity)context;
 
 		mPainter = new Paint();
 		mPainter.setColor(Color.WHITE);
@@ -155,6 +155,11 @@ public class AngbandKeyboardView extends KeyboardView
 			this.setSemiOpaque(false);
 			this.setMiniKeyboard(false);
 			this.setBareMinimum(shouldActivate);
+			return true;
+		}
+		if (!popupKey.repeatable) {
+			// Add escape key
+			mContext.getStateManager().addKey(57344);
 			return true;
 		}
 		return super.onLongPress(popupKey);

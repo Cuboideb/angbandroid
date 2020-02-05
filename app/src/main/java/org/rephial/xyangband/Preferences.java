@@ -120,7 +120,7 @@ final public class Preferences {
 	}
 
 	public static boolean getIncreaseMiddleAlpha() {
-		return pref.getBoolean(Preferences.KEY_MIDDLEALPHA, true);
+		return pref.getBoolean(Preferences.KEY_MIDDLEALPHA, false);
 	}
 
 	public static int getKeyboardOpacity() {

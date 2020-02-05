@@ -97,22 +97,24 @@
             android:keyEdgeFlags="left"/>
 
         <Key android:codes="-6" android:keyLabel="Ctrl^"
-                android:keyWidth="12%p"/>
+                android:keyWidth="10%p"/>
         <Key android:codes="-2" android:keyLabel="Sym"
                 android:keyWidth="11%p"/>
 
         <Key android:codes="32" android:keyLabel=" "
-                android:keyWidth="20%p" android:isRepeatable="true"/>
+                android:keyWidth="17%p" android:isRepeatable="true"/>
 
         <Key android:codes="-4" android:keyLabel="RUN"
-                android:keyWidth="12%p"/>
+                android:keyWidth="15%p"/>
 
         <Key android:codes="45" android:keyLabel="-"/>
-        <Key android:codes="57344" android:keyLabel="Esc"/>
+        <!--<Key android:codes="57344" android:keyLabel="Esc"/>-->
         <Key android:codes="48" android:keyLabel="0"/>
-        <Key android:codes="46" android:keyLabel="."/>
+        <Key android:codes="46" android:keyLabel="."
+            android:keyWidth="7%p"/>
 
         <Key android:codes="156" android:keyLabel="⏎"
+            android:keyWidth="15%p"
             android:keyEdgeFlags="right"/>
     </Row>
 </Keyboard>
