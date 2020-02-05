@@ -19,6 +19,7 @@
 package org.rephial.angband;
 
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.util.Log;
@@ -34,13 +35,16 @@ import android.app.AlertDialog;
 
 import android.os.Message;
 import android.os.Handler;
+import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback;
 
-public class AngbandActivity extends Activity {
+public class AngbandActivity extends Activity
+	implements OnRequestPermissionsResultCallback {
 
 	protected boolean active = true;
 	protected int splashTime = 500;
 	protected ProgressDialog progressDialog = null;
 	protected Handler handler = null;
+	protected Installer installer = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -111,7 +115,7 @@ public class AngbandActivity extends Activity {
 		    @Override
 			public void run() {
 				Log.d("Angband", "splashThread.run");	
-				Installer installer = new Installer();
+				installer = new Installer(splash);
 				try {
 					int waited = 0;
 					Log.d("Angband", "splashThread.installer.needsInstall");	
@@ -157,5 +161,14 @@ public class AngbandActivity extends Activity {
 			active = false;
 		}
 		return true;
+	}
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+		// Granted pemission - proceed with installation
+		boolean accepted = (requestCode == 1 && grantResults.length > 0
+				&& grantResults[0] == PackageManager.PERMISSION_GRANTED);
+
+		installer.userRespondedToPermissionRequest(accepted);
 	}
 }

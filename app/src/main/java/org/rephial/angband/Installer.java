@@ -11,9 +11,16 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.Scanner;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.util.Log;
 import android.os.Environment;
 import android.os.Handler;
+
+import android.app.Activity;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 public class Installer {
 
@@ -36,9 +43,13 @@ public class Installer {
 	private static Thread installWorker = null;
 	public InstallState state;
 	public String message = "";
+	public Activity activity = null;
+	public boolean userResponded = false;
 
-	public Installer() {
+	public Installer(Activity _activity)
+	{
 		state = InstallState.Unknown;
+		activity = _activity;
 	}
 
 	public synchronized void startInstall() {
@@ -47,7 +58,31 @@ public class Installer {
 			
 			installWorker = new Thread() {  
 					public void run() {
-						install();
+
+						// Check write permission
+						if (ContextCompat.checkSelfPermission(activity,
+								Manifest.permission.WRITE_EXTERNAL_STORAGE)
+								!= PackageManager.PERMISSION_GRANTED) {
+
+							ActivityCompat.requestPermissions(activity,
+									new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+									500);
+
+							// Wait until the user responds
+							while (!userResponded) {
+								try { Thread.sleep(100); }
+								catch (InterruptedException e) { }
+							}
+
+							// Check state to see if permissions were granted
+							if (state != InstallState.Success) {
+								message = "Error: Cannot create necessary library files without WRITE permissions.";
+							}
+						}
+						// Permission already granted
+						else {
+							install();
+						}
 					}
 				};
 			installWorker.start();
@@ -60,7 +95,6 @@ public class Installer {
 	public boolean failed() {
 		return state != InstallState.Success;
 	}
-
 
 	public String errorMessage() {
 		String errorMsg = "Error: failed to write and verify files to external storage, cannot continue.";
@@ -104,6 +138,7 @@ public class Installer {
 
 	public void install() {
 		message = "";
+
 		boolean success = true;
 		int[] plugins = Preferences.getInstalledPlugins();
 		for(int i = 0; i < plugins.length; i++) {
@@ -121,8 +156,9 @@ public class Installer {
 			//Preferences.setInstalledVersion(Preferences.getVersion());
 			state = InstallState.Success;
 		}
-		else
+		else {
 			state = InstallState.Failure;
+		}
 	}
 
 	private boolean doesCrcMatch(int plugin) {
@@ -288,4 +324,14 @@ public class Installer {
 		return dir.delete();
 	}
 	*/
+
+	public void userRespondedToPermissionRequest(boolean accepted) {
+		if (accepted) {
+			install();
+		}
+		else {
+			state = InstallState.Failure;
+		}
+		userResponded = true;
+	}
 }
