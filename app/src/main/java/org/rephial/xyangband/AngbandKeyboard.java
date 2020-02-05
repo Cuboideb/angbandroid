@@ -113,12 +113,14 @@ public class AngbandKeyboard implements OnKeyboardActionListener
 			}
 
 			case -7000: {
-				boolean shouldMini = false;
-				if (!virtualKeyboardView.isSemiOpaque()) {
-					shouldMini = !virtualKeyboardView.getMiniKeyboard();
+				boolean shouldMini = !virtualKeyboardView.getMiniKeyboard();
+				if (virtualKeyboardView.isSemiOpaque() ||
+                    virtualKeyboardView.isBareMinimum()) {
+					shouldMini = false;
 				}
-				virtualKeyboardView.setMiniKeyboard(shouldMini);
 				virtualKeyboardView.setSemiOpaque(false);
+				virtualKeyboardView.setBareMinimum(false);
+                virtualKeyboardView.setMiniKeyboard(shouldMini);
 				break;
 			}
 

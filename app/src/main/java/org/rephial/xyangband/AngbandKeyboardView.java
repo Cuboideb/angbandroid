@@ -26,6 +26,7 @@ public class AngbandKeyboardView extends KeyboardView
 	private boolean mRunning = false;
 	private boolean mMiniKeyboard = false;
 	private boolean mSemiOpaque = false;
+	private boolean mBareMinimum = false;
 
 	public int canvas_width = 0;
 	public int canvas_height = 0;
@@ -47,6 +48,14 @@ public class AngbandKeyboardView extends KeyboardView
         this.getBackground().setAlpha(0);
 
         this.setPreviewEnabled(false);
+	}
+
+	public boolean isBareMinimum() {
+		return mBareMinimum;
+	}
+
+	public void setBareMinimum(boolean mBareMinimum) {
+		this.mBareMinimum = mBareMinimum;
 	}
 
 	public boolean isSemiOpaque() {
@@ -134,12 +143,21 @@ public class AngbandKeyboardView extends KeyboardView
 
 	@Override
 	protected boolean onLongPress(Key popupKey) {
-		if (!popupKey.label.equals("...")) {
-			return super.onLongPress(popupKey);
+		if (popupKey.label.equals("...")) {
+			boolean shouldActivate = !this.isSemiOpaque();
+			this.setMiniKeyboard(false);
+			this.setBareMinimum(false);
+			this.setSemiOpaque(shouldActivate);
+			return true;
 		}
-		boolean shouldActivate = !this.isSemiOpaque();
-		this.setSemiOpaque(shouldActivate);
-		return true;
+		if (popupKey.label.equals("Ctrl^")) {
+			boolean shouldActivate = !this.isBareMinimum();
+			this.setSemiOpaque(false);
+			this.setMiniKeyboard(false);
+			this.setBareMinimum(shouldActivate);
+			return true;
+		}
+		return super.onLongPress(popupKey);
 	}
 
 	@Override
@@ -149,7 +167,16 @@ public class AngbandKeyboardView extends KeyboardView
 		String[] temp = {"0","1","2","3","4","5","6","7","8","9",
 				".","...","⏎","Ctrl^","Sym",
 				"F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12"};
-		List<String> just_these = Arrays.asList(temp);
+		List<String> miniKeyboard = Arrays.asList(temp);
+		List<String> bareKeyboard = Arrays.asList(new String[] {"..."});
+		List<String> keep_these = null;
+
+		if (mBareMinimum) {
+			keep_these = bareKeyboard;
+		}
+		else if (mMiniKeyboard) {
+			keep_these = miniKeyboard;
+		}
 
 		int min_alpha = 30;
 		float alpha_reduction = 0.35f;
@@ -196,10 +223,10 @@ public class AngbandKeyboardView extends KeyboardView
 				alpha_back = 200;
 			}
 			// Hide some keys
-			else if (this.mMiniKeyboard && key.label != null) {
+			else if (keep_these != null && key.label != null) {
 				String find = key.label.toString().trim();
 				// Make almost invisible if not found
-				if (!just_these.contains(find)) {
+				if (!keep_these.contains(find)) {
 					alpha_fore = 10;
 					alpha_back = 30;
 				}
