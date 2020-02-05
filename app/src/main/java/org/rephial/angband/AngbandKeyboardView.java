@@ -151,8 +151,14 @@ public class AngbandKeyboardView extends KeyboardView
 	public void onDraw(Canvas canvas) {
 //		super.onDraw(canvas);
 
-		String just_these = "-0-1-2-3-4-5-6-7-8-9-.-...-⏎-Ctrl^-Sym-"
-				+ "F1-F2-F3-F4-F5-F6-F7-F8-F9-F10-F11-F12-";
+		String[] temp = {"0","1","2","3","4","5","6","7","8","9",
+				".","...","⏎","Ctrl^","Sym",
+				"F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12"};
+		List<String> just_these = Arrays.asList(temp);
+
+		int min_alpha = 30;
+		float alpha_reduction = 0.35f;
+		float pad_pct = 0.25f;
 
 		boolean overlap = Preferences.getKeyboardOverlap();
 		int alpha_pref = overlap ? (int)(255 * (Preferences.getKeyboardOpacity() / 100f)) : 255;
@@ -165,6 +171,12 @@ public class AngbandKeyboardView extends KeyboardView
 					mContext.getResources().getDrawable(R.drawable.keybg_background);
 			setState(key, keyBackground);
 
+			float pct = (float)key.x / this.canvas_width;
+			boolean at_center = false;
+			if (pct > pad_pct && pct < (1.0f - pad_pct)) {
+				at_center = true;
+			}
+
 			// Set the offset
 			canvas.translate(key.x, key.y);
 
@@ -175,45 +187,45 @@ public class AngbandKeyboardView extends KeyboardView
 					key.height - padding.bottom);
 
 			int alpha_fore = alpha_pref;
-			int alpha_back = overlap ? 80: 255;
+			int alpha_back = 80;
 
-			// Increase alpha in the middle if requested
-			int min_alpha = 30;
-			float pad_pct = 0.25f;
-			float alpha_reduction = 0.35f;
-			if (Preferences.getIncreaseMiddleAlpha() && overlap && (alpha_fore > min_alpha)) {
-				float pct = (float)key.x / this.canvas_width;
-				if (pct > pad_pct && pct < (1.0f - pad_pct)) {
-					alpha_fore = (int)(alpha_fore * (1.0f - alpha_reduction));
-					if (alpha_fore < min_alpha) {
-						alpha_fore = min_alpha;
-					}
+			// Default
+			if (!overlap) {
+				alpha_fore = 255;
+				alpha_back = 255;
+			}
+			// See the keyboard
+			else if (this.mSemiOpaque) {
+				// Almost opaque
+				alpha_fore = 250;
+				alpha_back = 200;
+			}
+			// Hide some keys
+			else if (this.mMiniKeyboard && key.label != null) {
+				String find = key.label.toString().trim();
+				// Make almost invisible if not found
+				if (!just_these.contains(find)) {
+					alpha_fore = 10;
+					alpha_back = 30;
+				}
+			}
+			// Make the middle more transparent?
+			else if (at_center && (alpha_fore > min_alpha)
+					&& Preferences.getIncreaseMiddleAlpha()) {
+				alpha_fore = (int)(alpha_fore * (1.0f - alpha_reduction));
+				if (alpha_fore < min_alpha) {
+					alpha_fore = min_alpha;
 				}
 			}
 
 			if (alpha_fore < 0) alpha_fore = 0;
 			if (alpha_fore > 255) alpha_fore = 255;
 
-			if (this.mSemiOpaque) {
-				// Almost opaque
-				alpha_fore = 250;
-				alpha_back = 200;
-			}
-
 			// Draw background
 			// Apply transparency and reset
 			keyBackground.setAlpha(alpha_back);
 			keyBackground.draw(canvas);
 			keyBackground.setAlpha(255);
-
-			// Cancel text/icon if mMiniKeyboard is requested
-			if (this.mMiniKeyboard && !this.mSemiOpaque && key.label != null) {
-				String find = ("-" + key.label.toString().trim() + "-");
-				// Make almost invisible if not found
-				if ((find == "--") || (just_these.indexOf(find) == -1)) {
-					alpha_fore = 10;
-				}
-			}
 
 			if (key.label != null) {
 				String label = fixCase(key.label);
