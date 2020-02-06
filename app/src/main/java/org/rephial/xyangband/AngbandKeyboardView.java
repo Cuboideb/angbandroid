@@ -13,6 +13,7 @@ import android.util.AttributeSet;
 
 import org.rephial.xyangband.R;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -187,11 +188,16 @@ public class AngbandKeyboardView extends KeyboardView
 //		super.onDraw(canvas);
 
 		String[] temp = {"0","1","2","3","4","5","6","7","8","9",
-				".","...","⏎","Ctrl^","Sym","RUN",
+				".","...","⏎","Ctrl^","Sym","RUN"," ",
 				"F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12"};
-		List<String> miniKeyboard = Arrays.asList(temp);
+		List<String> miniKeyboard = new ArrayList<>(Arrays.asList(temp));
 		List<String> bareKeyboard = Arrays.asList(new String[] {"..."});
 		List<String> keep_these = null;
+
+		// Remove this if keyboard is not qwerty
+		if (this.getKeyboard() != this.mContext.virtualKeyboard.kbLayoutQwerty) {
+			miniKeyboard.remove(".");
+		}
 
 		if (mBareMinimum) {
 			keep_these = bareKeyboard;
@@ -246,7 +252,10 @@ public class AngbandKeyboardView extends KeyboardView
 			}
 			// Hide some keys
 			else if (keep_these != null && key.label != null) {
-				String find = key.label.toString().trim();
+				String find = key.label.toString();
+				if (!find.equals(" ")) {
+					find = find.trim(); // Take away extra blank
+				}
 				// Make almost invisible if not found
 				if (!keep_these.contains(find)) {
 					alpha_fore = 10;
