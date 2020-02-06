@@ -143,14 +143,20 @@ public class AngbandKeyboardView extends KeyboardView
 
 	@Override
 	protected boolean onLongPress(Key popupKey) {
-		if (popupKey.label.equals("...")) {
+		if (popupKey.label == null) {
+			super.onLongPress(popupKey);
+		}
+
+		String label = popupKey.label.toString();
+
+		if (label.equals("...")) {
 			boolean shouldActivate = !this.isSemiOpaque();
 			this.setMiniKeyboard(false);
 			this.setBareMinimum(false);
 			this.setSemiOpaque(shouldActivate);
 			return true;
 		}
-		if (popupKey.label.equals("Ctrl^")) {
+		if (label.equals("Ctrl^")) {
 			boolean shouldActivate = !this.isBareMinimum();
 			this.setSemiOpaque(false);
 			this.setMiniKeyboard(false);
@@ -158,6 +164,14 @@ public class AngbandKeyboardView extends KeyboardView
 			return true;
 		}
 		if (!popupKey.repeatable) {
+			List<String> ctrl = Arrays.asList(new String[] {"p","f"});
+
+			if (popupKey.codes.length > 0 &&
+					ctrl.contains(label.toString())) {
+				mContext.getStateManager().addKey(94); // Add Ctrl
+				mContext.getStateManager().addKey(popupKey.codes[0]);
+			}
+
 			// Add escape key
 			mContext.getStateManager().addKey(57344);
 			return true;
