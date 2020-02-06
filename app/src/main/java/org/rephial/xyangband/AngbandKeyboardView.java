@@ -14,6 +14,7 @@ import android.util.AttributeSet;
 import org.rephial.xyangband.R;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class AngbandKeyboardView extends KeyboardView
@@ -164,12 +165,14 @@ public class AngbandKeyboardView extends KeyboardView
 			return true;
 		}
 		if (!popupKey.repeatable) {
-			List<String> ctrl = Arrays.asList(new String[] {"p","f"});
+			HashMap<String, Integer> map = new HashMap<>();
+			// Some common control-keys
+			map.put("p", 16);
+			map.put("f", 6);
 
-			if (popupKey.codes.length > 0 &&
-					ctrl.contains(label.toString())) {
-				mContext.getStateManager().addKey(94); // Add Ctrl
-				mContext.getStateManager().addKey(popupKey.codes[0]);
+			if (map.containsKey(label)) {
+				mContext.getStateManager().addKey(map.get(label).intValue());
+				return true;
 			}
 
 			// Add escape key
@@ -184,7 +187,7 @@ public class AngbandKeyboardView extends KeyboardView
 //		super.onDraw(canvas);
 
 		String[] temp = {"0","1","2","3","4","5","6","7","8","9",
-				".","...","⏎","Ctrl^","Sym",
+				".","...","⏎","Ctrl^","Sym","RUN",
 				"F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12"};
 		List<String> miniKeyboard = Arrays.asList(temp);
 		List<String> bareKeyboard = Arrays.asList(new String[] {"..."});
