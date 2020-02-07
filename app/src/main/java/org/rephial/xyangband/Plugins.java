@@ -3,6 +3,7 @@ package org.rephial.xyangband;
 import org.rephial.xyangband.R;
 
 import java.io.InputStream;
+import java.util.Scanner;
 import java.util.zip.ZipInputStream;
 
 final public class Plugins {
@@ -56,13 +57,14 @@ final public class Plugins {
 		return new ZipInputStream(is);
 	}
 	public static String getPluginCrc(int plugin) {
-		/*
 		InputStream is = null;
-		if (plugin == Plugin.angband.getId())
+		if (plugin == Plugin.angband.getId()) {
 			is = Preferences.getResources().openRawResource(R.raw.crcangband);
+		}
+		else {
+			return "";
+		}
 		return new Scanner(is).useDelimiter("\\A").next().trim();
-		*/
-		return "";
 	}
 
 	public static String getUpgradePath(Plugin p) {

@@ -171,7 +171,7 @@ public class Installer {
 			String currentCrc = new Scanner(fis).useDelimiter("\\A").next().trim();
 			//Log.d("Angband","doesCrcMatch.currentcrc="+currentCrc);
 			//Log.d("Angband","doesCrcMatch.plugincrc="+Plugins.getPluginCrc(plugin));
-			//result = (Plugins.getPluginCrc(plugin).compareTo(currentCrc) == 0);
+			result = (Plugins.getPluginCrc(plugin).compareTo(currentCrc) == 0);
 			result = true;
 		} catch (Exception e) {
 			Log.v("Angband", "doesCrcMatch.error reading crc: " + e);
