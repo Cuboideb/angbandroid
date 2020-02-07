@@ -230,9 +230,24 @@ int monster_list_standard_compare(const void *a, const void *b)
 	const struct monster_race *ar = ((monster_list_entry_t *)a)->race;
 	const struct monster_race *br = ((monster_list_entry_t *)b)->race;
 
+	long a_exp, b_exp;
+
 	/* If this happens, something might be wrong in the collect function. */
 	if (ar == NULL || br == NULL)
 		return 1;
+
+	/* Experience, integer part */
+	a_exp = (long)ar->mexp * ar->level / player->lev;
+	b_exp = (long)br->mexp * br->level / player->lev;
+
+	/* Firt. Evaluate exp gained when killing */
+	if (a_exp > b_exp)
+	    return -1;
+
+	if (a_exp < b_exp)
+	    return 1;
+
+	/* Same exp */
 
 	/* Check depth first.*/
 	if (ar->level > br->level)
