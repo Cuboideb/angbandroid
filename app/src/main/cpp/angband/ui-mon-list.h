@@ -23,7 +23,7 @@
 #include "angband.h"
 
 void monster_list_show_subwindow(int height, int width);
-void monster_list_show_interactive(int height, int width);
+void monster_list_show_interactive(int height, int width, int sort_exp);
 void monster_list_force_subwindow_update(void);
 
 #endif /* UI_MONSTER_LIST_H */

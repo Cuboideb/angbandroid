@@ -230,6 +230,28 @@ int monster_list_standard_compare(const void *a, const void *b)
 	const struct monster_race *ar = ((monster_list_entry_t *)a)->race;
 	const struct monster_race *br = ((monster_list_entry_t *)b)->race;
 
+	/* If this happens, something might be wrong in the collect function. */
+	if (ar == NULL || br == NULL)
+		return 1;
+
+	/* Check depth first.*/
+	if (ar->level > br->level)
+		return -1;
+
+	if (ar->level < br->level)
+		return 1;
+
+	return 0;
+}
+
+/**
+ * Comparison function for the monster list: sort by exp
+ */
+int monster_list_compare_exp(const void *a, const void *b)
+{
+	const struct monster_race *ar = ((monster_list_entry_t *)a)->race;
+	const struct monster_race *br = ((monster_list_entry_t *)b)->race;
+
 	long a_exp, b_exp;
 
 	/* If this happens, something might be wrong in the collect function. */
@@ -240,20 +262,11 @@ int monster_list_standard_compare(const void *a, const void *b)
 	a_exp = (long)ar->mexp * ar->level / player->lev;
 	b_exp = (long)br->mexp * br->level / player->lev;
 
-	/* Firt. Evaluate exp gained when killing */
+	/* Evaluate exp gained when killing */
 	if (a_exp > b_exp)
-	    return -1;
-
-	if (a_exp < b_exp)
-	    return 1;
-
-	/* Same exp */
-
-	/* Check depth first.*/
-	if (ar->level > br->level)
 		return -1;
 
-	if (ar->level < br->level)
+	if (a_exp < b_exp)
 		return 1;
 
 	return 0;

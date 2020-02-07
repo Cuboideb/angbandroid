@@ -380,7 +380,7 @@ void monster_list_show_subwindow(int height, int width)
  * \param height is the height limit for the list.
  * \param width is the width limit for the list.
  */
-void monster_list_show_interactive(int height, int width)
+void monster_list_show_interactive(int height, int width, int sort_exp)
 {
 	textblock *tb;
 	monster_list_t *list;
@@ -396,7 +396,7 @@ void monster_list_show_interactive(int height, int width)
 
 	monster_list_collect(list);
 	monster_list_get_glyphs(list);
-	monster_list_sort(list, monster_list_standard_compare);
+	monster_list_sort(list, sort_exp ? monster_list_compare_exp: monster_list_standard_compare);
 
 	/* Figure out optimal display rect. Large numbers are passed as the height
 	 * and width limit so that we can calculate the maximum number of rows and

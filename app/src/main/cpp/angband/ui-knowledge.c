@@ -3390,12 +3390,25 @@ void do_cmd_monlist(void)
 	/* Save the screen and display the list */
 	screen_save();
 
-    monster_list_show_interactive(Term->hgt, Term->wid);
+	monster_list_show_interactive(Term->hgt, Term->wid, 0);
 
 	/* Return */
 	screen_load();
 }
 
+/**
+ * Display the main-screen monster list.
+ */
+void do_cmd_monlist_exp(void)
+{
+    /* Save the screen and display the list */
+    screen_save();
+
+    monster_list_show_interactive(Term->hgt, Term->wid, 1);
+
+    /* Return */
+    screen_load();
+}
 
 /**
  * Display the main-screen item list.
