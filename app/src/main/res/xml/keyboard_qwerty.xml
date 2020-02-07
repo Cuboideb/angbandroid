@@ -101,11 +101,11 @@
         <Key android:codes="-2" android:keyLabel="Sym"
                 android:keyWidth="11%p"/>
 
-        <Key android:codes="-4" android:keyLabel="RUN"
-            android:keyWidth="15%p"/>
-
         <Key android:codes="32" android:keyLabel=" "
-                android:keyWidth="17%p" android:isRepeatable="true"/>
+            android:keyWidth="20%p" android:isRepeatable="true"/>
+
+        <Key android:codes="-4" android:keyLabel="RUN"
+            android:keyWidth="12%p"/>
 
         <Key android:codes="45" android:keyLabel="-"/>
         <!--<Key android:codes="57344" android:keyLabel="Esc"/>-->
