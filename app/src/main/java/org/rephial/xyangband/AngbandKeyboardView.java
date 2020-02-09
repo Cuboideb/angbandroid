@@ -163,7 +163,7 @@ public class AngbandKeyboardView extends KeyboardView
 			keep_these = miniKeyboard;
 		}
 
-		if (label != " ") {
+		if (!label.equals(" ")) {
 			label = label.trim();
 		}
 
