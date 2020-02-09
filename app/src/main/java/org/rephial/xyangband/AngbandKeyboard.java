@@ -65,6 +65,17 @@ public class AngbandKeyboard implements OnKeyboardActionListener
 	{
 		char c = 0;
 
+		// Show the keyboard, consume the keypress
+		if (virtualKeyboardView.isBareMinimum() ||
+				virtualKeyboardView.getMiniKeyboard()) {
+			String label = virtualKeyboardView.getLabelFromKeyCode(primaryCode);
+			if (virtualKeyboardView.keyShouldHide(label)) {
+				virtualKeyboardView.setBareMinimum(false);
+				virtualKeyboardView.setMiniKeyboard(false);
+                return;
+			}
+		}
+
 		switch (primaryCode) {
 			case Keyboard.KEYCODE_DELETE:
 				c = 0x9F;

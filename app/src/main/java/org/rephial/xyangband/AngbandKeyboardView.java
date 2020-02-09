@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.Keyboard.Key;
 import android.inputmethodservice.KeyboardView;
 import android.util.AttributeSet;
@@ -136,6 +137,59 @@ public class AngbandKeyboardView extends KeyboardView
 		}
 	}
 
+	public boolean keyShouldHide(String label)
+	{
+		if (label == null || label.length() == 0) {
+			return false;
+		}
+
+		String[] temp = {"0","1","2","3","4","5","6","7","8","9",
+				".","...","⏎","Ctrl^","Sym","RUN"," ",
+				"F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12"};
+		List<String> miniKeyboard = new ArrayList<>(Arrays.asList(temp));
+		List<String> bareKeyboard = Arrays.asList(new String[] {"..."});
+
+		List<String> keep_these = null;
+
+		// Remove this if keyboard is not qwerty
+		if (this.getKeyboard() != this.mContext.virtualKeyboard.kbLayoutQwerty) {
+			miniKeyboard.remove(".");
+		}
+
+		if (mBareMinimum) {
+			keep_these = bareKeyboard;
+		}
+		else if (mMiniKeyboard) {
+			keep_these = miniKeyboard;
+		}
+
+		if (label != " ") {
+			label = label.trim();
+		}
+
+		if (keep_these != null && !keep_these.contains(label)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public String getLabelFromKeyCode(int keycode) {
+		String label = "";
+		List<Keyboard.Key> lst = this.getKeyboard().getKeys();
+		for (Keyboard.Key key: lst) {
+			if (key.label != null && key.codes.length > 0) {
+				int i;
+				for (i = 0; i < key.codes.length; i++) {
+					if (key.codes[i] == keycode) {
+						return key.label.toString();
+					}
+				}
+			}
+		}
+		return "";
+	}
+
 	@Override
 	public void onSizeChanged(int w, int h, int oldw, int oldh) {
 		this.canvas_width = w;
@@ -187,25 +241,6 @@ public class AngbandKeyboardView extends KeyboardView
 	public void onDraw(Canvas canvas) {
 //		super.onDraw(canvas);
 
-		String[] temp = {"0","1","2","3","4","5","6","7","8","9",
-				".","...","⏎","Ctrl^","Sym","RUN"," ",
-				"F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12"};
-		List<String> miniKeyboard = new ArrayList<>(Arrays.asList(temp));
-		List<String> bareKeyboard = Arrays.asList(new String[] {"..."});
-		List<String> keep_these = null;
-
-		// Remove this if keyboard is not qwerty
-		if (this.getKeyboard() != this.mContext.virtualKeyboard.kbLayoutQwerty) {
-			miniKeyboard.remove(".");
-		}
-
-		if (mBareMinimum) {
-			keep_these = bareKeyboard;
-		}
-		else if (mMiniKeyboard) {
-			keep_these = miniKeyboard;
-		}
-
 		int min_alpha = 30;
 		float alpha_reduction = 0.35f;
 		float pad_pct = 0.25f;
@@ -251,16 +286,9 @@ public class AngbandKeyboardView extends KeyboardView
 				alpha_back = 200;
 			}
 			// Hide some keys
-			else if (keep_these != null && key.label != null) {
-				String find = key.label.toString();
-				if (!find.equals(" ")) {
-					find = find.trim(); // Take away extra blank
-				}
-				// Make almost invisible if not found
-				if (!keep_these.contains(find)) {
-					alpha_fore = 10;
-					alpha_back = 30;
-				}
+			else if (keyShouldHide(key.label.toString())) {
+				alpha_fore = 10;
+				alpha_back = 30;
 			}
 			// Make the middle more transparent?
 			else if (at_center && (alpha_fore > min_alpha)
