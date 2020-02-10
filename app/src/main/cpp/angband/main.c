@@ -474,14 +474,13 @@ int main(int argc, char *argv[])
 
 	if (setlocale(LC_CTYPE, "")) {
 		/* Require UTF-8 */
-		/*
 		if (strcmp(nl_langinfo(CODESET), "UTF-8") != 0)
 			quit("Angband requires UTF-8 support");
-		*/
 	}
 
+	/* Commented out for android */
+#if !defined(ANGBAND_ANDROID)
 	/* Try the modules in the order specified by modules[] */
-	if (false) {
 	for (i = 0; i < (int)N_ELEMENTS(modules); i++) {
 		/* User requested a specific module? */
 		if (!mstr || (streq(mstr, modules[i].name))) {
@@ -495,7 +494,7 @@ int main(int argc, char *argv[])
 
 	/* Make sure we have a display! */
 	if (!done) quit("Unable to prepare any 'display module'!");
-	}
+#endif
 
 #ifdef UNIX
 

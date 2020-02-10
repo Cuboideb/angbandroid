@@ -63,8 +63,14 @@
 # define DEFAULT_DATA_PATH "." PATH_SEP "lib" PATH_SEP
 #endif 
 
-#if (defined(ANDROID) || defined(__ANDROID__)) && !defined(USE_PRIVATE_PATHS)
-# define USE_PRIVATE_PATHS 1
+#if defined(ANDROID) || defined(__ANDROID__)
+
+#   define ANGBAND_ANDROID 1
+#   if !defined(USE_PRIVATE_PATHS)
+#       define USE_PRIVATE_PATHS 1
+#   endif
+
+
 #else
 
 /**
