@@ -56,7 +56,8 @@
         <Key android:codes="106" android:keyLabel="j"/>
         <Key android:codes="107" android:keyLabel="k"/>
         <Key android:codes="108" android:keyLabel="l"/>
-        <Key android:codes="42"  android:keyLabel="*"/>
+        <Key android:codes="-5" android:keyLabel="⌫"
+            android:isRepeatable="true" />
         <Key android:codes="52" android:keyLabel="4"
             android:isRepeatable="true"/>
         <Key android:codes="53" android:keyLabel="5"
@@ -79,8 +80,7 @@
         <Key android:codes="110" android:keyLabel="n"/>
         <Key android:codes="109" android:keyLabel="m"/>
         <Key android:codes="39" android:keyLabel="'"/>
-        <Key android:codes="-5" android:keyLabel="⌫"
-                android:isRepeatable="true" />
+        <Key android:codes="42"  android:keyLabel="*"/>
         <Key android:codes="49" android:keyLabel="1"
             android:isRepeatable="true"/>
         <Key android:codes="50" android:keyLabel="2"
@@ -109,8 +109,9 @@
 
         <Key android:codes="45" android:keyLabel="-"/>
         <!--<Key android:codes="57344" android:keyLabel="Esc"/>-->
-        <Key android:codes="48" android:keyLabel="0"/>
-        <Key android:codes="46" android:keyLabel="."
+
+        <Key android:codes="46" android:keyLabel="."/>
+        <Key android:codes="48" android:keyLabel="0"
             android:keyWidth="7%p"/>
 
         <Key android:codes="156" android:keyLabel="⏎"

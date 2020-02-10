@@ -205,14 +205,14 @@ public class AngbandKeyboardView extends KeyboardView
 
 		String label = popupKey.label.toString();
 
-		if (label.equals("...")) {
+		if (label.equals("Ctrl^")) {
 			boolean shouldActivate = !this.isSemiOpaque();
 			this.setMiniKeyboard(false);
 			this.setBareMinimum(false);
 			this.setSemiOpaque(shouldActivate);
 			return true;
 		}
-		if (label.equals("Ctrl^")) {
+		if (label.equals("...")) {
 			boolean shouldActivate = !this.isBareMinimum();
 			this.setSemiOpaque(false);
 			this.setMiniKeyboard(false);
@@ -224,6 +224,7 @@ public class AngbandKeyboardView extends KeyboardView
 			// Some common control-keys
 			map.put("p", 16);
 			map.put("f", 6);
+			map.put("o", 15);
 
 			if (map.containsKey(label)) {
 				mContext.getStateManager().addKey(map.get(label).intValue());
