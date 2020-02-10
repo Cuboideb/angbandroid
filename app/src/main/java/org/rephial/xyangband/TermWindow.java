@@ -211,10 +211,15 @@ public class TermWindow {
 
 		String str;
 		try {
-			str = new String(cp, "ISO-8859-1");
+			//str = new String(cp, "ISO-8859-1");
+			str = new String(cp, "UTF-8");
 		} catch(java.io.UnsupportedEncodingException e) {
 			str = "";
 		}
+
+		// Overwrite n, because the parameter was expressed in bytes,
+		// not in UTF-8 characters
+		n = str.length();
 		
 		for (int i = 0; i < n; i++) {
 		    addch(str.charAt(i));

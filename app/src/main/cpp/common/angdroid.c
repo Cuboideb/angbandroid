@@ -483,7 +483,7 @@ int queryInt(const char* argv0) {
 		result = player->grid.x;
 	} else if (strcmp(argv0, "rl") == 0) {
 		result = 0;
-		//if (op_ptr && OPT(rogue_like_commands)) result=1;
+		if (player && OPT(player, rogue_like_commands)) result=1;
 	} else {
 		result = -1; //unknown command
 	}

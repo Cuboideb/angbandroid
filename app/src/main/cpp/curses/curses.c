@@ -158,7 +158,7 @@ int waddnwstr(WINDOW* w, int n, const wchar_t *ws) {
 
 	free(wbuf);
 
-	waddnstr(w, n, s);
+	waddnstr(w, len, s);
 
 	free(s);
 	return 0;
