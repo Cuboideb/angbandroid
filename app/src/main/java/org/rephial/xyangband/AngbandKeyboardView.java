@@ -215,14 +215,6 @@ public class AngbandKeyboardView extends KeyboardView
 
 		String label = popupKey.label.toString();
 
-		// Hide some keys
-		/*
-		if (label.equals("⏎")) {
-			this.requestHideSomeKeys(true);
-			return true;
-		}
-		*/
-
 		// Hide almost all keys
 		if (label.equals("...")) {
 			boolean shouldActivate = !this.getHideAllKeys();
@@ -240,7 +232,8 @@ public class AngbandKeyboardView extends KeyboardView
 			return true;
 		}
 
-		if (!popupKey.repeatable) {
+		// Non repeatable (exclude Return)
+		if (!popupKey.repeatable && !label.equals("⏎")) {
 			HashMap<String, Integer> map = new HashMap<>();
 			// Some common key combinations
 			map.put("p", 16); // Ctrl^P (recall messages)
