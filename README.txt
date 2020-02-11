@@ -1,4 +1,4 @@
-
+--------------------
 
 "..." -> Hide some keys (pressing a hidden key displays the keyboard again)
 Long-Press "..." -> Hide all keys
