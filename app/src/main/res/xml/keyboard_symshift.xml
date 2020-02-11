@@ -73,8 +73,10 @@
         <Key android:codes="-2" android:keyLabel="Sym"
             android:keyWidth="11%p"/>
 
+        <Key android:codes="32" android:keyLabel=" "
+            android:keyWidth="20%p" android:isRepeatable="true"/>
+
         <Key android:codes="57344" android:keyLabel="Esc"
-                android:horizontalGap="20%p"
                 android:keyWidth="20%p" />
         <Key android:codes="94" android:keyLabel="^"
                 android:keyWidth="20%p" android:keyEdgeFlags="right" />
