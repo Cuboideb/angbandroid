@@ -12,8 +12,6 @@ import android.inputmethodservice.Keyboard.Key;
 import android.inputmethodservice.KeyboardView;
 import android.util.AttributeSet;
 
-import org.rephial.xyangband.R;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,9 +25,9 @@ public class AngbandKeyboardView extends KeyboardView
 	private boolean mSymbolic = false;
 	private boolean mControl = false;
 	private boolean mRunning = false;
-	private boolean mMiniKeyboard = false;
-	private boolean mSemiOpaque = false;
-	private boolean mBareMinimum = false;
+	private boolean mHideSomeKeys = false;
+	private boolean mHideAllKeys = false;
+	private boolean mOpaqueKeyboard = false;
 
 	public int canvas_width = 0;
 	public int canvas_height = 0;
@@ -53,20 +51,20 @@ public class AngbandKeyboardView extends KeyboardView
         this.setPreviewEnabled(false);
 	}
 
-	public boolean isBareMinimum() {
-		return mBareMinimum;
+	public boolean getHideAllKeys() {
+		return mHideAllKeys;
 	}
 
-	public void setBareMinimum(boolean mBareMinimum) {
-		this.mBareMinimum = mBareMinimum;
+	public void setHideAllKeys(boolean on) {
+		this.mHideAllKeys = on;
 	}
 
-	public boolean isSemiOpaque() {
-		return mSemiOpaque;
+	public boolean getOpaqueKeyboard() {
+		return mOpaqueKeyboard;
 	}
 
-	public void setSemiOpaque(boolean mSemiOpaque) {
-		this.mSemiOpaque = mSemiOpaque;
+	public void setOpaqueKeyboard(boolean on) {
+		this.mOpaqueKeyboard = on;
 	}
 
 	public void setSymbolic(boolean on) {
@@ -77,12 +75,10 @@ public class AngbandKeyboardView extends KeyboardView
 		mControl = on;
 	}
 
-	public void setMiniKeyboard(boolean on) {
-		mMiniKeyboard = on;
-	}
+	public void setHideSomeKeys(boolean on) { mHideSomeKeys = on; }
 
-	public boolean getMiniKeyboard() {
-		return mMiniKeyboard;
+	public boolean getHideSomeKeys() {
+		return mHideSomeKeys;
 	}
 
 	public void setRunning(boolean on) {
@@ -116,9 +112,7 @@ public class AngbandKeyboardView extends KeyboardView
 
 		if ((mSymbolic && key.codes[0] == -2) ||
 				(mControl && key.codes[0] == -6) ||
-				(mRunning && key.codes[0] == -4)
-				// || (mMiniKeyboard && key.codes[0] == -7000)
-			) {
+				(mRunning && key.codes[0] == -4)) {
 			newStates[0] = android.R.attr.state_checkable;
 			newStates[1] = android.R.attr.state_checked;
 			newLength = 2;
@@ -147,7 +141,7 @@ public class AngbandKeyboardView extends KeyboardView
 				".","...","⏎","Ctrl^","Sym","RUN"," ",
 				"F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12"};
 		List<String> miniKeyboard = new ArrayList<>(Arrays.asList(temp));
-		List<String> bareKeyboard = Arrays.asList(new String[] {"..."});
+		List<String> emptyKeyboard = Arrays.asList(new String[] {"..."});
 
 		List<String> keep_these = null;
 
@@ -156,10 +150,10 @@ public class AngbandKeyboardView extends KeyboardView
 			miniKeyboard.remove(".");
 		}
 
-		if (mBareMinimum) {
-			keep_these = bareKeyboard;
+		if (this.getHideAllKeys()) {
+			keep_these = emptyKeyboard;
 		}
-		else if (mMiniKeyboard) {
+		else if (this.getHideSomeKeys()) {
 			keep_these = miniKeyboard;
 		}
 
@@ -190,6 +184,22 @@ public class AngbandKeyboardView extends KeyboardView
 		return "";
 	}
 
+	public void toggleHideSomeKeys()
+	{
+		boolean shouldHide = !this.getHideSomeKeys();
+		if (this.getOpaqueKeyboard() || this.getHideAllKeys()) {
+			shouldHide = false;
+		}
+		this.requestHideSomeKeys(shouldHide);
+	}
+
+	public void requestHideSomeKeys(boolean on)
+	{
+		this.setOpaqueKeyboard(false);
+		this.setHideAllKeys(false);
+		this.setHideSomeKeys(on);
+	}
+
 	@Override
 	public void onSizeChanged(int w, int h, int oldw, int oldh) {
 		this.canvas_width = w;
@@ -205,26 +215,38 @@ public class AngbandKeyboardView extends KeyboardView
 
 		String label = popupKey.label.toString();
 
-		if (label.equals("Ctrl^")) {
-			boolean shouldActivate = !this.isSemiOpaque();
-			this.setMiniKeyboard(false);
-			this.setBareMinimum(false);
-			this.setSemiOpaque(shouldActivate);
+		// Hide some keys
+		/*
+		if (label.equals("⏎")) {
+			this.requestHideSomeKeys(true);
 			return true;
 		}
+		*/
+
+		// Hide almost all keys
 		if (label.equals("...")) {
-			boolean shouldActivate = !this.isBareMinimum();
-			this.setSemiOpaque(false);
-			this.setMiniKeyboard(false);
-			this.setBareMinimum(shouldActivate);
+			boolean shouldActivate = !this.getHideAllKeys();
+			this.setOpaqueKeyboard(false);
+			this.setHideSomeKeys(false);
+			this.setHideAllKeys(shouldActivate);
 			return true;
 		}
+		// Show opaque keyboard
+		if (label.equals("Ctrl^")) {
+			boolean shouldActivate = !this.getOpaqueKeyboard();
+			this.setHideSomeKeys(false);
+			this.setHideAllKeys(false);
+			this.setOpaqueKeyboard(shouldActivate);
+			return true;
+		}
+
 		if (!popupKey.repeatable) {
 			HashMap<String, Integer> map = new HashMap<>();
-			// Some common control-keys
-			map.put("p", 16);
-			map.put("f", 6);
-			map.put("o", 15);
+			// Some common key combinations
+			map.put("p", 16); // Ctrl^P (recall messages)
+			map.put("f", 6);  // Ctrl^F (recall level feeling)
+			map.put("o", 15); // Ctrl^O (recall last message)
+			map.put("u", 85); // "U" (use item)
 
 			if (map.containsKey(label)) {
 				mContext.getStateManager().addKey(map.get(label).intValue());
@@ -232,9 +254,13 @@ public class AngbandKeyboardView extends KeyboardView
 			}
 
 			// Add escape key
-			mContext.getStateManager().addKey(57344);
+			// mContext.getStateManager().addKey(57344);
+
+			// Hide some keys
+			this.requestHideSomeKeys(true);
 			return true;
 		}
+
 		return super.onLongPress(popupKey);
 	}
 
@@ -281,7 +307,7 @@ public class AngbandKeyboardView extends KeyboardView
 				alpha_back = 255;
 			}
 			// See the keyboard
-			else if (this.mSemiOpaque) {
+			else if (this.getOpaqueKeyboard()) {
 				// Almost opaque
 				alpha_fore = 250;
 				alpha_back = 200;

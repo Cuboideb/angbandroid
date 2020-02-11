@@ -5,8 +5,6 @@ import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView.OnKeyboardActionListener;
 import android.view.LayoutInflater;
 
-import org.rephial.xyangband.R;
-
 public class AngbandKeyboard implements OnKeyboardActionListener
 {
 	AngbandKeyboardView virtualKeyboardView;
@@ -66,12 +64,12 @@ public class AngbandKeyboard implements OnKeyboardActionListener
 		char c = 0;
 
 		// Show the keyboard, consume the keypress
-		if (virtualKeyboardView.isBareMinimum() ||
-				virtualKeyboardView.getMiniKeyboard()) {
+		if (virtualKeyboardView.getHideAllKeys() ||
+				virtualKeyboardView.getHideSomeKeys()) {
 			String label = virtualKeyboardView.getLabelFromKeyCode(primaryCode);
 			if (virtualKeyboardView.keyShouldHide(label)) {
-				virtualKeyboardView.setBareMinimum(false);
-				virtualKeyboardView.setMiniKeyboard(false);
+				virtualKeyboardView.setHideAllKeys(false);
+				virtualKeyboardView.setHideSomeKeys(false);
                 return;
 			}
 		}
@@ -124,14 +122,7 @@ public class AngbandKeyboard implements OnKeyboardActionListener
 			}
 
 			case -7000: {
-				boolean shouldMini = !virtualKeyboardView.getMiniKeyboard();
-				if (virtualKeyboardView.isSemiOpaque() ||
-                    virtualKeyboardView.isBareMinimum()) {
-					shouldMini = false;
-				}
-				virtualKeyboardView.setSemiOpaque(false);
-				virtualKeyboardView.setBareMinimum(false);
-                virtualKeyboardView.setMiniKeyboard(shouldMini);
+				virtualKeyboardView.toggleHideSomeKeys();
 				break;
 			}
 
