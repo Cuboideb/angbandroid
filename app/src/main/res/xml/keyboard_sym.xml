@@ -92,8 +92,10 @@
         <Key android:codes="-2" android:keyLabel="Sym"
             android:keyWidth="11%p"/>
 
-        <Key android:codes="44" android:keyLabel=","
-                android:horizontalGap="14%p" />
+        <Key android:codes="32" android:keyLabel=" "
+            android:keyWidth="14%p" android:isRepeatable="true"/>
+
+        <Key android:codes="44" android:keyLabel=","/>
         <Key android:codes="46" android:keyLabel="."/>
 
         <Key android:codes="156" android:keyLabel="⏎"
