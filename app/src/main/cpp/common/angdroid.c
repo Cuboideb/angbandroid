@@ -99,7 +99,9 @@ void try_save(void) {
 	if (!save_in_progress
 			&& should_save
 			&& player != NULL
-			&& !player->is_dead) {
+			// Save dead characters
+			//&& !player->is_dead
+			) {
 
 		LOGD("TERM_XTRA_EVENT trying to save");
 
