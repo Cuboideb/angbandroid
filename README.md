@@ -2,7 +2,7 @@
 
 An unofficial port of the roguelike Angband to Android.
 
-This port is based on the excellent port of Angband found [here](https://github.com/takkaria/angband-android).
+This work is based on the excellent port of **Angband** found [here](https://github.com/takkaria/angband-android).
 
 The transparent keyboard was borrowed from [here](https://github.com/Shaosil/Android-Sil) (with modifications).
 
