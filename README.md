@@ -19,3 +19,6 @@ Some keyboard shorcuts:
     Long-Press "f" -> Ctrl+F (recall level feeling)
     Long-Press "u" -> U (use item)
     Long-Press over other keys (most of them) -> shorcut for Hide some keys
+
+Angband homepage: http://rephial.org
+Forum and resources: http://angband.oook.cz
