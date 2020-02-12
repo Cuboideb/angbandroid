@@ -2,13 +2,13 @@ Angband for Android 4.2.0
 
 =========================
 
-An unofficial port of the roguelike Sil to Android.
+An unofficial port of the roguelike Angband to Android.
 
 This work is based in the excellent port of Angband found here: https://github.com/takkaria/angband-android
 
 The transparent keyboard was borrowed from here: https://github.com/Shaosil/Android-Sil (with modifications)
 
-Recommended game experience is with Landscape Orientation and center-player (in-game) option.
+Recommended game experience is with Landscape Orientation and center_player option on.
 
 Some keyboard shorcuts:
 
