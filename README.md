@@ -20,5 +20,5 @@ Some keyboard shorcuts:
     Long-Press "u" -> U (use item)
     Long-Press over other keys (most of them) -> shorcut for Hide some keys
 
-Angband homepage: http://rephial.org
+Angband homepage: http://rephial.org  
 Forum and resources: http://angband.oook.cz
