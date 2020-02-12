@@ -2,7 +2,7 @@
 
 An unofficial port of the roguelike Sil to Android
 
-https://github.com/takkaria/angband-android
+[Previous](https://github.com/takkaria/angband-android)
 
 "..." -> Hide some keys (pressing a hidden key displays the keyboard again)
 Long-Press "..." -> Hide all keys
