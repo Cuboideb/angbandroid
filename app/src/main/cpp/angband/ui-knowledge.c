@@ -524,15 +524,13 @@ static bool glyph_command(ui_event ke, bool *glyph_picker_ptr,
 	
 	/* Get mouse movement */
 	if (*glyph_picker_ptr && (ke.type == EVT_MOUSE)) {
-	        byte a = *cur_attr_ptr;
-
 		int mx = logical_width(ke.mouse.x - col);
 		
 		if (ke.mouse.y != row + height/2) return false;
 		
 		if ((mx >= 0) && (mx < MAX_COLORS) && (ke.mouse.button == 1)) {
 		        /* Set the visual */
-		        *cur_attr_ptr = a = mx - 14;
+			*cur_attr_ptr = mx - 14;
 
 			/* Accept change */
 			remove_tiles(col, row, glyph_picker_ptr, width, height);
@@ -732,7 +730,7 @@ static void display_knowledge(const char *title, int *obj_list, int o_count,
 	int g_cur = 0, grp_old = -1; /* group list positions */
 	int o_cur = 0;					/* object list positions */
 	int g_o_count = 0;				 /* object count for group */
-	int oid = -1;  				/* object identifiers */
+	int oid;  				/* object identifiers */
 
 	region title_area = { 0, 0, 0, 4 };
 	region group_region = { 0, 6, MISSING, -2 };
@@ -2222,7 +2220,7 @@ static void display_feature(int col, int row, bool cursor, int oid )
 				feat_x_char[LIGHTING_LIT][feat->fidx]);
 		col += big_pad(col, row, feat_x_attr[LIGHTING_TORCH][feat->fidx],
 				feat_x_char[LIGHTING_TORCH][feat->fidx]);
-		col += big_pad(col, row, feat_x_attr[LIGHTING_LOS][feat->fidx],
+		(void) big_pad(col, row, feat_x_attr[LIGHTING_LOS][feat->fidx],
 				feat_x_char[LIGHTING_LOS][feat->fidx]);
 	}
 }
@@ -2385,7 +2383,7 @@ static void display_trap(int col, int row, bool cursor, int oid )
 				trap_x_char[LIGHTING_LIT][trap->tidx]);
 		col += big_pad(col, row, trap_x_attr[LIGHTING_TORCH][trap->tidx],
 				trap_x_char[LIGHTING_TORCH][trap->tidx]);
-		col += big_pad(col, row, trap_x_attr[LIGHTING_LOS][trap->tidx],
+		(void) big_pad(col, row, trap_x_attr[LIGHTING_LOS][trap->tidx],
 				trap_x_char[LIGHTING_LOS][trap->tidx]);
 	}
 }
@@ -2745,7 +2743,7 @@ void do_cmd_messages(void)
 			Term_putstr(0, hgt - 3 - j, -1, attr, msg);
 
 			/* Highlight "shower" */
-			if (shower[0]) {
+			if (strlen(shower)) {
 				str = msg;
 
 				/* Display matches */
@@ -2766,7 +2764,7 @@ void do_cmd_messages(void)
 				   i, i + j - 1, n, q), 0, 0);
 
 		/* Display prompt (not very informative) */
-		if (shower[0])
+		if (strlen(shower))
 			prt("[Movement keys to navigate, '-' for next, '=' to find]",
 				hgt - 1, 0);
 		else
@@ -2844,7 +2842,7 @@ void do_cmd_messages(void)
 		}
 
 		/* Find the next item */
-		if (ke.key.code == '-' && shower[0]) {
+		if (ke.key.code == '-' && strlen(shower)) {
 			s16b z;
 
 			/* Scan messages */
