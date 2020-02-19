@@ -316,6 +316,8 @@ public class AngbandKeyboardView extends KeyboardView
 			else if (at_center && alpha_reduction < 1.0f) {
 				// Apply
 				alpha_fore = (int)(alpha_fore * alpha_reduction);
+				// Halve background opacity
+				alpha_back = (int) (alpha_back * 0.5f);
 			}
 
 			if (alpha_fore < 0) alpha_fore = 0;

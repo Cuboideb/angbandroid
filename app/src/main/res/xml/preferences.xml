@@ -53,7 +53,7 @@
 		  seekBar:defaultVal="50" />
 	  <org.rephial.xyangband.SeekBarPreference
 		  android:key="angband.middleOpacity"
-		  android:title="Opacity at the center (percentage of above value)"
+		  android:title="Middle Opacity"
 		  seekBar:min="0"
 		  seekBar:max="100"
 		  seekBar:defaultVal="100" />
