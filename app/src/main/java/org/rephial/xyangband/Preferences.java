@@ -26,7 +26,7 @@ final public class Preferences {
 
 	static final String KEY_KEYBOARDOVERLAP = "angband.allowKeyboardOverlap";
 	static final String KEY_KEYBOARDOPACITY = "angband.keyboardOpacity";
-	static final String KEY_MIDDLEALPHA = "angband.increaseMiddleAlpha";
+	static final String KEY_MIDDLEOPACITY = "angband.middleOpacity";
 	static final String KEY_ENABLETOUCH = "angband.enabletouch";
 	static final String KEY_CENTERTAP = "angband.centerscreentap";
 	static final String KEY_PORTRAITKB = "angband.portraitkb";
@@ -119,8 +119,21 @@ final public class Preferences {
 		return pref.getBoolean(Preferences.KEY_KEYBOARDOVERLAP, true);
 	}
 
-	public static boolean getIncreaseMiddleAlpha() {
-		return pref.getBoolean(Preferences.KEY_MIDDLEALPHA, false);
+	public static int getMiddleOpacity() {
+		return pref.getInt(Preferences.KEY_MIDDLEOPACITY, 100);
+	}
+
+	public static void setMiddleOpacity(int value)
+	{
+		if (value < 0) {
+			value = 0;
+		}
+		if (value > 100) {
+			value = 100;
+		}
+		SharedPreferences.Editor ed = pref.edit();
+		ed.putInt(Preferences.KEY_MIDDLEOPACITY, value);
+		ed.commit();
 	}
 
 	public static int getKeyboardOpacity() {
@@ -132,8 +145,8 @@ final public class Preferences {
 		if (value < 0) {
 			value = 0;
 		}
-		if (value > 255) {
-			value = 255;
+		if (value > 100) {
+			value = 100;
 		}
 		SharedPreferences.Editor ed = pref.edit();
 		ed.putInt(Preferences.KEY_KEYBOARDOPACITY, value);

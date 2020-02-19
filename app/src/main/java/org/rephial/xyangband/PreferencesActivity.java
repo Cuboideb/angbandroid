@@ -46,7 +46,7 @@ public class PreferencesActivity
 		// Enable or disable keyboard transparency based on overlap setting
 		findPreference(Preferences.KEY_KEYBOARDOVERLAP).setOnPreferenceChangeListener(this);
 		findPreference(Preferences.KEY_KEYBOARDOPACITY).setEnabled(Preferences.getKeyboardOverlap());
-		findPreference(Preferences.KEY_MIDDLEALPHA).setEnabled(Preferences.getKeyboardOverlap());
+		findPreference(Preferences.KEY_MIDDLEOPACITY).setEnabled(Preferences.getKeyboardOverlap());
 	}
 
 	@Override
@@ -133,7 +133,7 @@ public class PreferencesActivity
 	public boolean onPreferenceChange(Preference preference, Object newValue) {
 		boolean shouldBeEnabled = (Boolean)newValue;
 		findPreference(Preferences.KEY_KEYBOARDOPACITY).setEnabled(shouldBeEnabled);
-		findPreference(Preferences.KEY_MIDDLEALPHA).setEnabled(shouldBeEnabled);
+		findPreference(Preferences.KEY_MIDDLEOPACITY).setEnabled(shouldBeEnabled);
 
 		return true;
 	}

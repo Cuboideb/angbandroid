@@ -45,17 +45,18 @@
 		  android:defaultValue="true"
 		  android:title="@string/preferences_keyboardOverlap_title"
 		  android:summary="@string/preferences_keyboardOverlap_summary" />
-	  <CheckBoxPreference
-		  android:key="angband.increaseMiddleAlpha"
-		  android:defaultValue="false"
-		  android:title="Increase Middle Alpha"
-		  android:summary="Make the middle portion of keyboard more transparent" />
 	  <org.rephial.xyangband.SeekBarPreference
 		  android:key="angband.keyboardOpacity"
 		  android:title="Keyboard Opacity"
 		  seekBar:min="0"
 		  seekBar:max="100"
-		  seekBar:defaultVal="70" />
+		  seekBar:defaultVal="50" />
+	  <org.rephial.xyangband.SeekBarPreference
+		  android:key="angband.middleOpacity"
+		  android:title="Opacity at the center (percentage of above value)"
+		  seekBar:min="0"
+		  seekBar:max="100"
+		  seekBar:defaultVal="100" />
 	<PreferenceScreen
 	   android:title="Hardware Key Mapping"
 	   android:summary="Configure hardware buttons on your device to perform various functions">	  

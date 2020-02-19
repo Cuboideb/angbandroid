@@ -261,9 +261,11 @@ public class AngbandKeyboardView extends KeyboardView
 	public void onDraw(Canvas canvas) {
 //		super.onDraw(canvas);
 
-		int min_alpha = 30;
-		float alpha_reduction = 0.35f;
 		float pad_pct = 0.25f;
+
+		float alpha_reduction = Preferences.getMiddleOpacity() / 100.0f;
+		if (alpha_reduction < 0.0f) alpha_reduction = 0.0f;
+		if (alpha_reduction > 1.0f) alpha_reduction = 1.0f;
 
 		boolean overlap = Preferences.getKeyboardOverlap();
 		int alpha_pref = overlap ? (int)(255 * (Preferences.getKeyboardOpacity() / 100f)) : 255;
@@ -311,12 +313,9 @@ public class AngbandKeyboardView extends KeyboardView
 				alpha_back = 30;
 			}
 			// Make the middle more transparent?
-			else if (at_center && (alpha_fore > min_alpha)
-					&& Preferences.getIncreaseMiddleAlpha()) {
-				alpha_fore = (int)(alpha_fore * (1.0f - alpha_reduction));
-				if (alpha_fore < min_alpha) {
-					alpha_fore = min_alpha;
-				}
+			else if (at_center && alpha_reduction < 1.0f) {
+				// Apply
+				alpha_fore = (int)(alpha_fore * alpha_reduction);
 			}
 
 			if (alpha_fore < 0) alpha_fore = 0;
