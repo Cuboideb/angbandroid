@@ -189,6 +189,7 @@ public class GameThread implements Runnable {
 		running_plugin = Preferences.getActivePluginName();
 		running_profile = Preferences.getActiveProfile().getName();
 
+		// Old scheme
 	    //String pluginPath = Preferences.getActivityFilesDirectory()
 		//	+"/../lib/lib"+running_plugin+".so";
 
