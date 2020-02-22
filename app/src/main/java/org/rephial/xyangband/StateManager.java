@@ -29,6 +29,8 @@ public class StateManager {
 	/* native angband library interface */
 	public NativeWrapper nativew = null;
 
+	public GameActivity context = null;
+
 	/* game thread */
 	public GameThread gameThread = null;
 
@@ -38,8 +40,10 @@ public class StateManager {
 	/* running mode */
 	private boolean runningMode = false;
 
-	StateManager() {
+	StateManager(GameActivity p_context) {
 		endWin();
+
+		this.context = p_context;
 
 		nativew = new NativeWrapper(this);
 		gameThread = new GameThread(this, nativew);

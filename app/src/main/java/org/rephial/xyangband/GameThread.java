@@ -189,8 +189,11 @@ public class GameThread implements Runnable {
 		running_plugin = Preferences.getActivePluginName();
 		running_profile = Preferences.getActiveProfile().getName();
 
-	    String pluginPath = Preferences.getActivityFilesDirectory()
-			+"/../lib/lib"+running_plugin+".so";
+	    //String pluginPath = Preferences.getActivityFilesDirectory()
+		//	+"/../lib/lib"+running_plugin+".so";
+
+		String pluginPath = this.state.context.getApplicationInfo().nativeLibraryDir
+				+ "/lib" + running_plugin + ".so";
 
 		/* game is not running, so start it up */
 		nativew.gameStart(

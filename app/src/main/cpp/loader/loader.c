@@ -57,7 +57,7 @@ void gameStart
 
 	// load game plugin lib
 	const char *copy_pluginPath = (*env1)->GetStringUTFChars(env1, pluginPath, 0);
-	//LOGD("loader.dlopen %s", copy_pluginPath);
+	LOGD("loader.dlopen %s", copy_pluginPath);
 	handle = dlopen(copy_pluginPath,RTLD_LOCAL | RTLD_LAZY);  
 	if (!handle) {
 		LOGE("dlopen failed on %s", copy_pluginPath);

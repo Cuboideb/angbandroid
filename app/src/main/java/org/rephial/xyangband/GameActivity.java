@@ -82,7 +82,7 @@ public class GameActivity extends Activity {
 		//Log.d("Angband", "onCreate");
 
 		if (state == null) {
-			state = new StateManager();
+			state = new StateManager(this);
 		}
 
 		if (dialog == null) dialog = new AngbandDialog(this,state);
