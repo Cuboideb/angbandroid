@@ -487,7 +487,7 @@ static void use_aux(struct command *cmd, struct object *obj, enum use use,
 		}
 
 		/* Boost damage effects if skill > difficulty */
-		boost = MAX(player->state.skills[SKILL_DEVICE] - level, 0);
+		boost = MAX((player->state.skills[SKILL_DEVICE] - level) / 2, 0);
 
 		/* Do effect */
 		target_fix();
@@ -974,7 +974,7 @@ void do_cmd_cast(struct command *cmd)
 	target_fix();
 	if (spell_cast(spell_index, dir)) {
 		if (player->timed[TMD_FASTCAST]) {
-			player->upkeep->energy_use = z_info->move_energy / 2;
+			player->upkeep->energy_use = (z_info->move_energy * 3) / 4;
 		} else {
 			player->upkeep->energy_use = z_info->move_energy;
 		}

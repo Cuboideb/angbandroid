@@ -144,6 +144,7 @@ add_library( # Sets the name of the library.
             ui-store.c
             ui-target.c
             ui-term.c
+            ui-visuals.c
             wiz-debug.c
             wiz-spoil.c
             wiz-stats.c

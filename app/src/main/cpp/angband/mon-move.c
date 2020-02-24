@@ -44,6 +44,7 @@
 #include "obj-tval.h"
 #include "obj-util.h"
 #include "player-calcs.h"
+#include "player-timed.h"
 #include "player-util.h"
 #include "project.h"
 #include "trap.h"
@@ -66,7 +67,7 @@ static bool monster_near_permwall(const struct monster *mon, struct chunk *c)
 	int mx = mon->grid.x;
 
 	/* If player is in LOS, there's no need to go around walls */
-    if (projectable(c, mon->grid, player->grid, PROJECT_NONE))
+    if (projectable(c, mon->grid, player->grid, PROJECT_SHORT))
 		return false;
 
     /* PASS_WALL & KILL_WALL monsters occasionally flow for a turn anyway */
@@ -81,6 +82,18 @@ static bool monster_near_permwall(const struct monster *mon, struct chunk *c)
 		}
 	}
 	return false;
+}
+
+/**
+ * Check if the monster can see the player
+ */
+static bool monster_can_see_player(struct chunk *c, struct monster *mon)
+{
+	if (!square_isview(c, mon->grid)) return false;
+	if (player->timed[TMD_COVERTRACKS] && (mon->cdis > z_info->max_sight / 4)) {
+		return false;
+	}
+	return true;
 }
 
 /**
@@ -209,6 +222,9 @@ static void get_move_find_range(struct monster *mon)
 	} else {
 		/* Minimum distance - stay at least this far if possible */
 		mon->min_range = 1;
+
+		/* Taunted monsters just want to get in your face */
+		if (player->timed[TMD_TAUNT]) return;
 
 		/* Examine player power (level) */
 		p_lev = player->lev;
@@ -396,11 +412,13 @@ static bool get_move_advance(struct chunk *c, struct monster *mon, bool *track)
 	}
 
 	/* If the player can see monster, set target and run towards them */
-	if (square_isview(c, mon->grid)) {
+	if (monster_can_see_player(c, mon)) {
 		mon->target.grid = target;
 		return true;
 	}
 
+	/* Try to use sound */
+	if (monster_can_hear(c, mon)) {
 	/* Check nearby sound, giving preference to the cardinal directions */
 	for (i = 0; i < 8; i++) {
 		/* Get the location */
@@ -418,7 +436,8 @@ static bool get_move_advance(struct chunk *c, struct monster *mon, bool *track)
 		}
 
 		/* There's a monster blocking that we can't deal with */
-		if (!monster_can_kill(c, mon, grid) && !monster_can_move(c, mon, grid)){
+			if (!monster_can_kill(c, mon, grid) &&
+				!monster_can_move(c, mon, grid)) {
 			continue;
 		}
 
@@ -439,9 +458,10 @@ static bool get_move_advance(struct chunk *c, struct monster *mon, bool *track)
 			continue;
 		}
 	}
+	}
 
-	/* If no good sound, use scent */
-	if (!found) {
+	/* If both vision and sound are no good, use scent */
+	if (monster_can_smell(c, mon) && !found) {
 		for (i = 0; i < 8; i++) {
 			/* Get the location */
 			struct loc grid = loc_sum(mon->grid, ddgrid_ddd[i]);
@@ -786,7 +806,7 @@ static bool get_move(struct chunk *c, struct monster *mon, int *dir, bool *good)
 	bool group_ai = rf_has(mon->race->flags, RF_GROUP_AI);
 
 	/* Offset to current position to move toward */
-	struct loc grid;
+	struct loc grid = loc(0, 0);
 
 	/* Monsters will run up to z_info->flee_range grids out of sight */
 	int flee_range = z_info->max_sight + z_info->flee_range;
@@ -806,10 +826,10 @@ static bool get_move(struct chunk *c, struct monster *mon, int *dir, bool *good)
 		struct monster *tracker = group_monster_tracking(c, mon);
 		if (tracker && los(c, mon->grid, tracker->grid)) { /* Need los? */
 			grid = loc_diff(tracker->grid, mon->grid);
-		} else {
+		} //else {
 			/* Head blindly straight for the "player" if no better idea */
-			grid = loc_diff(target, mon->grid);
-		}
+			//grid = loc_diff(target, mon->grid);
+		//}
 
 		/* No longer tracking */
 		mflag_off(mon->mflag, MFLAG_TRACKING);
