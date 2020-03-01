@@ -43,6 +43,7 @@ public class TermView extends View implements OnGestureListener {
 	Paint fore;
 	Paint back;
 	Paint cursor;
+	Paint dirZone;
 
 	//	int row = 0;
 	//  int col = 0;
@@ -91,11 +92,37 @@ public class TermView extends View implements OnGestureListener {
 		cursor.setStyle(Paint.Style.STROKE);
 		cursor.setStrokeWidth(0);
 
+		dirZone = new Paint();
+		dirZone.setColor(Color.GRAY);
+		dirZone.setStyle(Paint.Style.FILL);
+		dirZone.setAlpha(40);
+		dirZone.setStrokeWidth(0);
+
 		vibrator = (Vibrator) context
 				.getSystemService(Context.VIBRATOR_SERVICE);
 
 		setFocusableInTouchMode(true);
 		gesture = new GestureDetector(context, this);
+	}
+
+	protected void drawDirZones(Canvas p_canvas)
+	{
+		int totalw = getWidth();
+		int totalh = getHeight() - _context.getKeyboardOverlapHeight();
+		int w = (int)(totalw * 0.20f);
+		int h = (int)(totalh * 0.20f);
+
+		if (h > w) h = w;
+		if (w > h) w = h;
+
+		float pct[] = {0.165f, 0.5f, 0.825f};
+		for (int px = 0; px < 3; px++) {
+			for (int py = 0; py < 3; py++) {
+				int x = (int)(totalw * pct[px]) - w / 2;
+				int y = (int)(totalh * pct[py]) - h / 2;
+				p_canvas.drawRect(x, y, x + w - 1, y + h - -1, dirZone);
+			}
+		}
 	}
 
 	protected void onDraw(Canvas canvas) {
@@ -115,6 +142,8 @@ public class TermView extends View implements OnGestureListener {
 				canvas.drawRect(cl, ct, cr, cb, cursor);
 			}
 		}
+
+		this.drawDirZones(canvas);
 	}
 
 	public void computeCanvasSize() {

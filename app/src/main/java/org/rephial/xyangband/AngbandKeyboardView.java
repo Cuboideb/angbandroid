@@ -240,14 +240,13 @@ public class AngbandKeyboardView extends KeyboardView
 			map.put("f", 6);  // Ctrl^F (recall level feeling)
 			map.put("o", 15); // Ctrl^O (recall last message)
 			map.put("u", 85); // "U" (use item)
+			map.put("q", 57344); // ESCAPE
+			map.put("~", 57344); // ESCAPE
 
 			if (map.containsKey(label)) {
 				mContext.getStateManager().addKey(map.get(label).intValue());
 				return true;
 			}
-
-			// Add escape key
-			// mContext.getStateManager().addKey(57344);
 
 			// Hide some keys
 			this.requestHideSomeKeys(true);
