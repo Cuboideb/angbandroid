@@ -112,15 +112,22 @@ public class TermView extends View implements OnGestureListener {
 		int w = (int)(totalw * 0.20f);
 		int h = (int)(totalh * 0.20f);
 
-		if (h > w) h = w;
-		if (w > h) w = h;
+		if (h > w) h = Math.max(w, (int)(h * 0.7f));
+		else if (w > h) w = Math.max(h, (int)(w * 0.7f));;
 
-		float pct[] = {0.165f, 0.5f, 0.825f};
+		float pct[] = {0.0f, 0.5f, 1.0f};
 		for (int px = 0; px < 3; px++) {
 			for (int py = 0; py < 3; py++) {
+
 				int x = (int)(totalw * pct[px]) - w / 2;
+				if (x < 0) x = 0;
+				if (x + w >= totalw) x = totalw - w;
+
 				int y = (int)(totalh * pct[py]) - h / 2;
-				p_canvas.drawRect(x, y, x + w - 1, y + h - -1, dirZone);
+				if (y < 0) y = 0;
+				if (y + h >= totalh) y = totalh - h;
+
+				p_canvas.drawRect(x, y, x + w - 1, y + h - 1, dirZone);
 			}
 		}
 	}
@@ -143,7 +150,9 @@ public class TermView extends View implements OnGestureListener {
 			}
 		}
 
-		this.drawDirZones(canvas);
+		if (Preferences.getEnableTouch()) {
+			this.drawDirZones(canvas);
+		}
 	}
 
 	public void computeCanvasSize() {
