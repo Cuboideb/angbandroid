@@ -112,6 +112,9 @@ public class TermView extends View implements OnGestureListener {
 		int w = (int)(totalw * 0.20f);
 		int h = (int)(totalh * 0.20f);
 
+		int padx = (int)(totalw * 0.07f);
+		int pady = (int)(totalh * 0.07f);
+
 		if (h > w) h = Math.max(w, (int)(h * 0.7f));
 		else if (w > h) w = Math.max(h, (int)(w * 0.7f));;
 
@@ -120,12 +123,12 @@ public class TermView extends View implements OnGestureListener {
 			for (int py = 0; py < 3; py++) {
 
 				int x = (int)(totalw * pct[px]) - w / 2;
-				if (x < 0) x = 0;
-				if (x + w >= totalw) x = totalw - w;
+				if (x < padx) x = padx;
+				if (x + w >= totalw - padx) x = totalw - w - padx;
 
 				int y = (int)(totalh * pct[py]) - h / 2;
-				if (y < 0) y = 0;
-				if (y + h >= totalh) y = totalh - h;
+				if (y < pady) y = pady;
+				if (y + h >= totalh - pady) y = totalh - h - pady;
 
 				p_canvas.drawRect(x, y, x + w - 1, y + h - 1, dirZone);
 			}
