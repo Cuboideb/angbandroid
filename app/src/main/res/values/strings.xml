@@ -55,6 +55,8 @@
     <string name="preferences_enablevolkeyfontsize_summary">Font size changed by volume up &amp; down keys</string>
     <string name="preferences_enabletouch_title">Enable touch directionals</string>
     <string name="preferences_enabletouch_summary">Turn on touchscreen directional controls</string>
+    <string name="preferences_touchtopright_title">Touch directionals at Top Right</string>
+    <string name="preferences_touchtopright_summary">Place the touch directionals at the Top Right corner</string>
 
     <string name="preferences_skipwelcome_title">Skip welcome screen</string>
     <string name="preferences_skipwelcome_summary">Automatically skip the Angband welcome screen at startup</string>
@@ -76,6 +78,7 @@
 		<item>Enter Key</item>
 		<item>Esc Key</item>
 		<item>Period</item>
+        <item>Comma</item>
 		<item>Shift Key</item>
 		<item>Space</item>
 		<item>Virtual Keyboard</item>
@@ -89,6 +92,7 @@
 		<item>EnterKey</item>
 		<item>EscKey</item>
 		<item>Period</item>
+        <item>Comma</item>
 		<item>ShiftKey</item>
 		<item>Space</item>
 		<item>VirtualKeyboard</item>

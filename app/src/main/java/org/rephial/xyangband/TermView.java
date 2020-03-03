@@ -62,7 +62,7 @@ public class TermView extends View implements OnGestureListener {
 	private boolean vibrate;
 	private Handler handler = null;
 	private StateManager state = null;
-	private GameActivity _context;
+	private GameActivity game_context;
 
 	private GestureDetector gesture;
 
@@ -83,7 +83,7 @@ public class TermView extends View implements OnGestureListener {
 	}
 
 	protected void initTermView(Context context) {
-		_context = (GameActivity)context;
+		game_context = (GameActivity)context;
 		fore = new Paint();
 		fore.setTextAlign(Paint.Align.LEFT);
 		if ( isHighRes() ) fore.setAntiAlias(true);
@@ -110,12 +110,12 @@ public class TermView extends View implements OnGestureListener {
 		gesture = new GestureDetector(context, this);
 	}
 
-	protected void drawDirZones(Canvas p_canvas)
+	protected void drawDirZonesFull(Canvas p_canvas)
 	{
 	    this.zones.clear();
 
 		int totalw = getWidth();
-		int totalh = getHeight() - _context.getKeyboardOverlapHeight();
+		int totalh = getHeight() - game_context.getKeyboardOverlapHeight();
 		int w = (int)(totalw * 0.20f);
 		int h = (int)(totalh * 0.20f);
 
@@ -142,12 +142,12 @@ public class TermView extends View implements OnGestureListener {
 		}
 	}
 
-	protected void drawDirZonesRight(Canvas p_canvas)
+	protected void drawDirZonesTopRight(Canvas p_canvas)
 	{
         this.zones.clear();
 
 		int totalw = getWidth();
-		int totalh = getHeight() - _context.getKeyboardOverlapHeight();
+		int totalh = getHeight() - game_context.getKeyboardOverlapHeight();
 		int w = (int)(totalw * 0.2f);
 		int h = (int)(totalh * 0.2f);
 
@@ -160,14 +160,15 @@ public class TermView extends View implements OnGestureListener {
 		if (h > w) h = w;
 		else if (w > h) w = h;
 
-		for (int px = 1; px <= 3; px++) {
-			for (int py = 1; py <= 3; py++) {
+		for (int py = 1; py <= 3; py++) {
+			for (int px = 1; px <= 3; px++) {
 
 				int x = totalw - (w + padx) * (3 - px + 1);
 				int y = pady + (h + pady) * (1 + py - 2);
 
                 Rect r = new Rect(x, y, x + w - 1, y + h - 1);
 
+                // Remember for single tap
                 this.zones.add(r);
 
                 p_canvas.drawRect(r, dirZone);
@@ -194,7 +195,12 @@ public class TermView extends View implements OnGestureListener {
 		}
 
 		if (Preferences.getEnableTouch()) {
-			this.drawDirZonesRight(canvas);
+			if (Preferences.getTouchTopRight()) {
+				this.drawDirZonesTopRight(canvas);
+			}
+			else {
+				this.drawDirZonesFull(canvas);
+			}
 		}
 	}
 
@@ -254,7 +260,7 @@ public class TermView extends View implements OnGestureListener {
 	}
 
 	public boolean isHighRes() {
-		Display display = ((WindowManager) _context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+		Display display = ((WindowManager) game_context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
 		int maxWidth = display.getWidth();
 		int maxHeight = display.getHeight();
 
@@ -382,30 +388,29 @@ public class TermView extends View implements OnGestureListener {
 		int x = (int) event.getX();
 		int y = (int) event.getY();
 
-		int r, c;
+		int r = 0, c = 0;
 
 		int w = getWidth();
-		int h = (getHeight() - _context.getKeyboardOverlapHeight());
+		int h = (getHeight() - game_context.getKeyboardOverlapHeight());
 
 		if (this.zones.isEmpty()) {
+			// Use the whole screen
             c = (x * 3) / w;
             r = (y * 3) / h;
         }
 		else {
+			// Find the rectangle
 		    int i = 0;
-		    c = 0;
-		    r = 0;
-		    for (Rect re: this.zones) {
-		        if (re.contains(x, y)) {
-		            r = i / 3;
-		            c = i % 3;
-		            break;
-                }
-                i = i + 1;
-            }
-		    if (c + r == 0) {
-		        return false;
-            }
+		    while (i < this.zones.size() && !this.zones.get(i).contains(x,y)) {
+		    	i = i + 1;
+			}
+		    // Not found
+		    if (i >= this.zones.size()) {
+				return false;
+			}
+		    // Get row and col
+		    r = i / 3;
+		    c = i % 3;
         }
 
 		int key = (2 - r) * 3 + c + '1';

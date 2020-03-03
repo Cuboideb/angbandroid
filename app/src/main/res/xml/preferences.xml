@@ -185,6 +185,12 @@
 	   android:defaultValue="true" 
 	   android:title="@string/preferences_enabletouch_title"
 	   android:summary="@string/preferences_enabletouch_summary" />
+	<CheckBoxPreference
+		  android:key="angband.touchtopright"
+		  android:defaultValue="false"
+		  android:dependency="angband.enabletouch"
+		  android:title="@string/preferences_touchtopright_title"
+		  android:summary="@string/preferences_touchtopright_summary" />
 	<ListPreference
 	   android:title="Center screen tap action"
 	   android:summary="Select functionality for center screen tap"

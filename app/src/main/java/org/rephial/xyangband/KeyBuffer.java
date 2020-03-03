@@ -260,6 +260,9 @@ public class KeyBuffer {
 		case Period:
 			add('.');
 			break;
+		case Comma:
+			add(',');
+			break;
 		case CenterPlayer:
 			add('@');
 			break;

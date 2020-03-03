@@ -2,6 +2,7 @@ package org.rephial.xyangband;
 
 import android.content.SharedPreferences;
 import android.view.KeyEvent;
+import android.widget.Space;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -114,6 +115,7 @@ public class KeyMapper {
 			EnterKey,
 			EscKey,
 			Period,
+			Comma,
 			ShiftKey,
 			Space,
 			VirtualKeyboard,
@@ -217,7 +219,7 @@ public class KeyMapper {
 			initKeyMap(KEY_ATKEY, '@');
 			initKeyMap(KEY_BSLASHKEY, '\\');
 			initKeyMap(KEY_COLONKEY, ':');
-			initKeyMap(KEY_COMMAKEY, ',');
+			initKeyMap(KEY_COMMAKEY, KeyAction.Comma);
 			initKeyMap(KEY_DOLLARKEY, '$');
 			initKeyMap(KEY_DQUOTEKEY, '"');
 			initKeyMap(KEY_EQUALKEY, '=');

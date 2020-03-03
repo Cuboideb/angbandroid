@@ -28,6 +28,7 @@ final public class Preferences {
 	static final String KEY_KEYBOARDOPACITY = "angband.keyboardOpacity";
 	static final String KEY_MIDDLEOPACITY = "angband.middleOpacity";
 	static final String KEY_ENABLETOUCH = "angband.enabletouch";
+	static final String KEY_TOUCHTOPRIGHT = "angband.touchtopright";
 	static final String KEY_CENTERTAP = "angband.centerscreentap";
 	static final String KEY_PORTRAITKB = "angband.portraitkb";
 	static final String KEY_LANDSCAPEKB = "angband.landscapekb";
@@ -200,6 +201,10 @@ final public class Preferences {
 
 	public static boolean getEnableTouch() {
 		return pref.getBoolean(Preferences.KEY_ENABLETOUCH, true);
+	}
+
+	public static boolean getTouchTopRight() {
+		return pref.getBoolean(Preferences.KEY_TOUCHTOPRIGHT, false);
 	}
 
 	public static boolean getSkipWelcome() {
