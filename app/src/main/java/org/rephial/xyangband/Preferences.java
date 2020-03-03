@@ -204,7 +204,7 @@ final public class Preferences {
 	}
 
 	public static boolean getTouchTopRight() {
-		return pref.getBoolean(Preferences.KEY_TOUCHTOPRIGHT, false);
+		return pref.getBoolean(Preferences.KEY_TOUCHTOPRIGHT, true);
 	}
 
 	public static boolean getSkipWelcome() {
