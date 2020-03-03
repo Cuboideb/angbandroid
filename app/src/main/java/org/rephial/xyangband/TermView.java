@@ -23,6 +23,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Vibrator;
@@ -33,6 +34,8 @@ import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+
+import java.util.ArrayList;
 
 public class TermView extends View implements OnGestureListener {
 
@@ -62,6 +65,8 @@ public class TermView extends View implements OnGestureListener {
 	private GameActivity _context;
 
 	private GestureDetector gesture;
+
+	private ArrayList<Rect> zones = new ArrayList<>();
 
 	public TermView(Context context) {
 		super(context);
@@ -107,16 +112,18 @@ public class TermView extends View implements OnGestureListener {
 
 	protected void drawDirZones(Canvas p_canvas)
 	{
+	    this.zones.clear();
+
 		int totalw = getWidth();
 		int totalh = getHeight() - _context.getKeyboardOverlapHeight();
 		int w = (int)(totalw * 0.20f);
 		int h = (int)(totalh * 0.20f);
 
-		int padx = (int)(totalw * 0.07f);
-		int pady = (int)(totalh * 0.07f);
+		int padx = (int)(totalw * 0.03f);
+		int pady = (int)(totalh * 0.03f);
 
-		if (h > w) h = Math.max(w, (int)(h * 0.7f));
-		else if (w > h) w = Math.max(h, (int)(w * 0.7f));;
+		if (h > w) h = w;
+		else if (w > h) w = h;
 
 		float pct[] = {0.0f, 0.5f, 1.0f};
 		for (int px = 0; px < 3; px++) {
@@ -131,6 +138,41 @@ public class TermView extends View implements OnGestureListener {
 				if (y + h >= totalh - pady) y = totalh - h - pady;
 
 				p_canvas.drawRect(x, y, x + w - 1, y + h - 1, dirZone);
+			}
+		}
+	}
+
+	protected void drawDirZonesRight(Canvas p_canvas)
+	{
+        this.zones.clear();
+
+		int totalw = getWidth();
+		int totalh = getHeight() - _context.getKeyboardOverlapHeight();
+		int w = (int)(totalw * 0.2f);
+		int h = (int)(totalh * 0.2f);
+
+		int padx = (int)(totalw * 0.01f);
+		int pady = (int)(totalh * 0.01f);
+
+		if (padx < pady) padx = pady;
+		if (pady < padx) pady = padx;
+
+		if (h > w) h = w;
+		else if (w > h) w = h;
+
+		for (int px = 1; px <= 3; px++) {
+			for (int py = 1; py <= 3; py++) {
+
+				int x = totalw - (w + padx) * (3 - px + 1);
+				int y = pady + (h + pady) * (2 - py + 1);
+
+				//p_canvas.drawRect(x, y, x + w - 1, y + h - 1, dirZone);
+
+                Rect r = new Rect(x, y, x + w - 1, y + h - 1);
+
+                this.zones.add(r);
+
+                p_canvas.drawRect(r, dirZone);
 			}
 		}
 	}
@@ -154,7 +196,7 @@ public class TermView extends View implements OnGestureListener {
 		}
 
 		if (Preferences.getEnableTouch()) {
-			this.drawDirZones(canvas);
+			this.drawDirZonesRight(canvas);
 		}
 	}
 
@@ -343,9 +385,34 @@ public class TermView extends View implements OnGestureListener {
 		int y = (int) event.getY();
 
 		int r, c;
-		c = (x * 3) / getWidth();
+
+		int totalw = getWidth();
+		int totalh = (getHeight() - _context.getKeyboardOverlapHeight());
+
+		int padx = (int)(totalw * 0.01f);
+		int pady = (int)(totalh * 0.01f);
+
+		if (padx < pady) padx = pady;
+		if (pady < padx) pady = padx;
+
+		int w = (int)(totalw * 0.2f);
+        int h = (int)(totalh * 0.2f);
+
+        if (w > h) w = h;
+        if (y > w) h = w;
+
+		w = (w+padx)*3;
+		h = (h+pady)*3;
+
+        if (x < (totalw - w) || y > h) {
+            return false;
+        }
+
+        x = x - (totalw - w);
+
+		c = (x * 3) / w;
 		//r = (y * 3) / getHeight();
-		r = (y * 3) / (getHeight() - _context.getKeyboardOverlapHeight());
+		r = (y * 3) / h;
 
 		int key = (2 - r) * 3 + c + '1';
 
