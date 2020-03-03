@@ -28,6 +28,7 @@ import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
@@ -50,6 +51,9 @@ public class TermView extends View implements OnGestureListener {
 
 	//	int row = 0;
 	//  int col = 0;
+
+	public int cols = 0;
+	public int rows = 0;
 
 	public int canvas_width = 0;
 	public int canvas_height = 0;
@@ -108,6 +112,14 @@ public class TermView extends View implements OnGestureListener {
 
 		setFocusableInTouchMode(true);
 		gesture = new GestureDetector(context, this);
+
+		this.resetDimensions();
+	}
+
+	protected void resetDimensions()
+	{
+		this.rows = Preferences.rows;
+		this.cols = Preferences.cols;
 	}
 
 	protected void drawDirZonesFull(Canvas p_canvas)
@@ -216,8 +228,10 @@ public class TermView extends View implements OnGestureListener {
 		back.setColor(a);
 	}
 
-	public void autoSizeFontByHeight(int maxHeight) {
+	public void autoSizeFontByHeight(int maxWidth, int maxHeight) {
+		if (maxWidth == 0) maxWidth = getMeasuredWidth();
 		if (maxHeight == 0) maxHeight = getMeasuredHeight();
+
 		setFontFace();
 
 		// HACK -- keep 480x320 fullscreen as-is
@@ -235,10 +249,23 @@ public class TermView extends View implements OnGestureListener {
 			setFontSize(font_text_size);
 		}
 		//Log.d("Angband","autoSizeFontHeight "+font_text_size);
+
+		resetDimensions();
+		while ((maxWidth > 0) && ((this.cols+1) * this.char_width < maxWidth)) {
+			++this.cols;
+		}
+
+		Log.d("Angband","autoSizeFontHeight "+font_text_size
+				+" maxwidth "+maxWidth+" maxHeight "+maxHeight
+				+" rows "+this.rows+" cols "+this.cols);
+
+		this.state.nativew.gameQueryResize(this.cols, this.rows);
 	}
 
-	public void autoSizeFontByWidth(int maxWidth) {
+	public void autoSizeFontByWidth(int maxWidth, int maxHeight) {
 		if (maxWidth == 0) maxWidth = getMeasuredWidth();
+		if (maxHeight == 0) maxHeight = getMeasuredHeight();
+
 		setFontFace();
 
 		// HACK -- keep 480x320 fullscreen as-is
@@ -257,6 +284,17 @@ public class TermView extends View implements OnGestureListener {
 			setFontSize(font_text_size);
 		}
 		//Log.d("Angband","autoSizeFontWidth "+font_text_size+","+maxWidth);
+
+		resetDimensions();
+		while ((maxHeight > 0) && ((this.rows+1) * this.char_height < maxHeight)) {
+			++this.rows;
+		}
+
+		Log.d("Angband","autoSizeFontWidth "+font_text_size
+				+" maxwidth "+maxWidth+" maxHeight "+maxHeight
+				+" rows "+this.rows+" cols "+this.cols);
+
+		this.state.nativew.gameQueryResize(this.cols, this.rows);
 	}
 
 	public boolean isHighRes() {
@@ -334,16 +372,17 @@ public class TermView extends View implements OnGestureListener {
 			fs = Preferences.getLandscapeFontSize();
 
 		if (fs == 0)
-			autoSizeFontByWidth(width);
+			autoSizeFontByWidth(width, height);
 		else
 			setFontSize(fs, false);
 
 		fore.setTextAlign(Paint.Align.LEFT);
 
-		int minheight = getSuggestedMinimumHeight();
-		int minwidth = getSuggestedMinimumWidth();
+		//int minheight = getSuggestedMinimumHeight();
+		//int minwidth = getSuggestedMinimumWidth();
 
 		setMeasuredDimension(width, height);
+
 		//Log.d("Angband","onMeasure "+canvas_width+","+canvas_height+";"+width+","+height);
 	}
 
@@ -444,6 +483,9 @@ public class TermView extends View implements OnGestureListener {
 		*/
 
 		state.currentPlugin = Plugins.Plugin.convert(Preferences.getActiveProfile().getPlugin());
+
+		Log.d("Angband", "onGameStart !!!");
+
    		return true;
 	}
 

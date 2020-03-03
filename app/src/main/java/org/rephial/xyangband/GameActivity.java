@@ -244,11 +244,11 @@ public class GameActivity extends Activity {
 		Intent intent;
 		switch (aItem.getItemId()) {
 		case CONTEXTMENU_FITWIDTH_ITEM:
-			term.autoSizeFontByWidth(0);
+			term.autoSizeFontByWidth(0, 0);
 			state.nativew.resize();
 			return true;
 		case CONTEXTMENU_FITHEIGHT_ITEM:
-			term.autoSizeFontByHeight(0);
+			term.autoSizeFontByHeight(0, 0);
 			state.nativew.resize();
 			return true;
 		case CONTEXTMENU_VKEY_ITEM:

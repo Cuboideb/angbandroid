@@ -18,6 +18,7 @@
 
 void( * angdroid_gameStart ) (JNIEnv*, jobject, jint, jobjectArray) = NULL;
 jint( * angdroid_gameQueryRedraw ) (JNIEnv*, jobject, jint, jint, jint, jint) = NULL;
+jint( * angdroid_gameQueryResize ) (JNIEnv*, jobject, jint, jint) = NULL;
 jint( * angdroid_gameQueryInt ) (JNIEnv*, jobject, jint, jobjectArray) = NULL;
 jstring( * angdroid_gameQueryString ) (JNIEnv*, jobject, jint, jobjectArray) = NULL;
 
@@ -88,6 +89,7 @@ void gameStart
 	handle = NULL;
 	angdroid_gameQueryInt = NULL;
 	angdroid_gameQueryString = NULL;
+	angdroid_gameQueryResize = NULL;
 
 	// signal game has exited
 	(*env1)->CallVoidMethod(env1, NativeWrapperObj, NativeWrapper_onGameExit);
@@ -144,4 +146,38 @@ JNIEXPORT jint JNICALL Java_org_rephial_xyangband_NativeWrapper_gameQueryInt
 (JNIEnv *env1, jobject obj1, jint argc, jobjectArray argv)
 {
 	return gameQueryInt(env1,obj1,argc,argv);
+}
+
+jint gameQueryResize
+		(JNIEnv *env1, jobject obj1, jint width, jint height)
+{
+	jint result = -1; // -1 indicates error
+
+	// begin synchronize
+	pthread_mutex_lock (&muQuery);
+
+	if (handle) {
+		if (!angdroid_gameQueryResize)
+			// find entry point
+			angdroid_gameQueryResize = dlsym(handle, "angdroid_gameQueryResize");
+
+		if (angdroid_gameQueryResize)
+			result = angdroid_gameQueryResize(env1, obj1, width, height);
+		else
+			LOGE("dlsym failed on angdroid_gameQueryResize");
+	}
+	else {
+		LOGE("dlopen failed -- angdroid_gameQueryResize");
+	}
+
+	// end synchronize
+	pthread_mutex_unlock (&muQuery);
+
+	return result;
+}
+
+JNIEXPORT jint JNICALL Java_org_rephial_xyangband_NativeWrapper_gameQueryResize
+		(JNIEnv *env1, jobject obj1, jint width, jint height)
+{
+	return gameQueryResize(env1,obj1,width,height);
 }

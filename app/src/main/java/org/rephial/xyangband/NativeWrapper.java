@@ -17,6 +17,7 @@ public class NativeWrapper {
 	native void gameStart(String pluginPath, int argc, String[] argv);
 	native int gameQueryInt(int argc, String[] argv);
 	native String gameQueryString(int argc, String[] argv);
+	native int gameQueryResize(int width, int height);
 
 	public NativeWrapper(StateManager s) {
 		state = s;

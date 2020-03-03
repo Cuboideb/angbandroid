@@ -493,6 +493,14 @@ int queryInt(const char* argv0) {
 	return result;
 }
 
+int queryResize(int width, int height)
+{
+	if (width < 80) width = 80;
+	if (height < 24) height = 24;
+	Term_resize(width, height);
+	return 0;
+}
+
 void angdroid_process_argv(int i, const char* argv)
 {
 	switch(i) {

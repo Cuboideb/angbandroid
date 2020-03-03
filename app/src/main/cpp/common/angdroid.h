@@ -31,6 +31,9 @@ JNIEXPORT jint JNICALL Java_org_rephial_angband_NativeWrapper_gameQueryInt
 JNIEXPORT jstring JNICALL Java_org_rephial_angband_NativeWrapper_gameQueryString
   (JNIEnv *, jobject, jint, jobjectArray);
 
+JNIEXPORT jstring JNICALL Java_org_rephial_angband_NativeWrapper_gameQueryResize
+        (JNIEnv *, jobject, jint, jint);
+
 #ifdef __cplusplus
 }
 #endif

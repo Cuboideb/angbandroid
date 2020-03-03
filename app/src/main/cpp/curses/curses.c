@@ -551,3 +551,10 @@ JNIEXPORT jstring JNICALL angdroid_gameQueryString
 	(JNIEnv *env1, jobject obj1, jint argc, jobjectArray argv) {
 	return (jstring)0; // null indicates error, i.e. not implemented
 }
+
+JNIEXPORT jint JNICALL angdroid_gameQueryResize
+		(JNIEnv *env1, jobject obj1, jint width, jint height) {
+	jint result = -1; // -1 indicates error
+	result = (jint)queryResize((int)width, (int)height);
+	return result;
+}
