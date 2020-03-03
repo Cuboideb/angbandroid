@@ -164,9 +164,7 @@ public class TermView extends View implements OnGestureListener {
 			for (int py = 1; py <= 3; py++) {
 
 				int x = totalw - (w + padx) * (3 - px + 1);
-				int y = pady + (h + pady) * (2 - py + 1);
-
-				//p_canvas.drawRect(x, y, x + w - 1, y + h - 1, dirZone);
+				int y = pady + (h + pady) * (1 + py - 2);
 
                 Rect r = new Rect(x, y, x + w - 1, y + h - 1);
 
@@ -386,33 +384,29 @@ public class TermView extends View implements OnGestureListener {
 
 		int r, c;
 
-		int totalw = getWidth();
-		int totalh = (getHeight() - _context.getKeyboardOverlapHeight());
+		int w = getWidth();
+		int h = (getHeight() - _context.getKeyboardOverlapHeight());
 
-		int padx = (int)(totalw * 0.01f);
-		int pady = (int)(totalh * 0.01f);
-
-		if (padx < pady) padx = pady;
-		if (pady < padx) pady = padx;
-
-		int w = (int)(totalw * 0.2f);
-        int h = (int)(totalh * 0.2f);
-
-        if (w > h) w = h;
-        if (y > w) h = w;
-
-		w = (w+padx)*3;
-		h = (h+pady)*3;
-
-        if (x < (totalw - w) || y > h) {
-            return false;
+		if (this.zones.isEmpty()) {
+            c = (x * 3) / w;
+            r = (y * 3) / h;
         }
-
-        x = x - (totalw - w);
-
-		c = (x * 3) / w;
-		//r = (y * 3) / getHeight();
-		r = (y * 3) / h;
+		else {
+		    int i = 0;
+		    c = 0;
+		    r = 0;
+		    for (Rect re: this.zones) {
+		        if (re.contains(x, y)) {
+		            r = i / 3;
+		            c = i % 3;
+		            break;
+                }
+                i = i + 1;
+            }
+		    if (c + r == 0) {
+		        return false;
+            }
+        }
 
 		int key = (2 - r) * 3 + c + '1';
 
