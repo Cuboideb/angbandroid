@@ -495,8 +495,6 @@ int queryInt(const char* argv0) {
 
 int queryResize(int width, int height)
 {
-	if (width < 80) width = 80;
-	if (height < 24) height = 24;
 	Term_resize(width, height);
 	return 0;
 }

@@ -62,6 +62,20 @@ public class TermWindow {
 		}
 	}
 
+	public void resize(int width, int height)
+	{
+		this.cols = width;
+		this.rows = height;
+		this.col = 0;
+		this.row = 0;
+		this.buffer = new TermPoint[this.rows][this.cols];
+		for (int r=0;r<this.rows;r++) {
+			for (int c=0;c<this.cols;c++) {
+				buffer[r][c] = new TermPoint();
+			}
+		}
+	}
+
 	public static void init_color(int c, int rgb) {
 		color_table.put(c, rgb);
 	}

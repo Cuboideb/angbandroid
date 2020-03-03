@@ -217,8 +217,8 @@ public class TermView extends View implements OnGestureListener {
 	}
 
 	public void computeCanvasSize() {
-		canvas_width = Preferences.cols*char_width;
-	    canvas_height = Preferences.rows*char_height;
+		canvas_width = this.cols*char_width;
+	    canvas_height = this.rows*char_height;
 	}
 
 	protected void setForeColor(int a) {
@@ -248,18 +248,9 @@ public class TermView extends View implements OnGestureListener {
 			font_text_size -= 1;
 			setFontSize(font_text_size);
 		}
-		//Log.d("Angband","autoSizeFontHeight "+font_text_size);
+		Log.d("Angband","autoSizeFontHeight "+font_text_size);
 
-		resetDimensions();
-		while ((maxWidth > 0) && ((this.cols+1) * this.char_width < maxWidth)) {
-			++this.cols;
-		}
-
-		Log.d("Angband","autoSizeFontHeight "+font_text_size
-				+" maxwidth "+maxWidth+" maxHeight "+maxHeight
-				+" rows "+this.rows+" cols "+this.cols);
-
-		this.state.nativew.gameQueryResize(this.cols, this.rows);
+		this.evalTermSize(maxWidth, maxHeight);
 	}
 
 	public void autoSizeFontByWidth(int maxWidth, int maxHeight) {
@@ -283,18 +274,40 @@ public class TermView extends View implements OnGestureListener {
 			font_text_size -= 1;
 			setFontSize(font_text_size);
 		}
-		//Log.d("Angband","autoSizeFontWidth "+font_text_size+","+maxWidth);
+		Log.d("Angband","autoSizeFontWidth "+font_text_size);
+
+		this.evalTermSize(maxWidth, maxHeight);
+	}
+
+	public void evalTermSize(int maxWidth, int maxHeight)
+	{
+		if (maxWidth == 0) maxWidth = getMeasuredWidth();
+		if (maxHeight == 0) maxHeight = getMeasuredHeight();
 
 		resetDimensions();
+
 		while ((maxHeight > 0) && ((this.rows+1) * this.char_height < maxHeight)) {
 			++this.rows;
 		}
 
-		Log.d("Angband","autoSizeFontWidth "+font_text_size
-				+" maxwidth "+maxWidth+" maxHeight "+maxHeight
+		while ((maxWidth > 0) && ((this.cols+1) * this.char_width < maxWidth)) {
+			++this.cols;
+		}
+
+		// Check values
+		this.rows = Math.max(this.rows, Preferences.rows);
+		this.cols = Math.max(this.cols, Preferences.cols);
+
+		Log.d("Angband", "Resize. maxwidth "+maxWidth
+				+" maxHeight "+maxHeight
 				+" rows "+this.rows+" cols "+this.cols);
 
+		this.state.stdscr.resize(this.cols, this.rows);
+		this.state.virtscr.resize(this.cols, this.rows);
+		// Tell core we changed dimensions
 		this.state.nativew.gameQueryResize(this.cols, this.rows);
+		// Hack, force a redraw
+		this.state.addKey(18); // Ctrl-R
 	}
 
 	public boolean isHighRes() {
@@ -327,10 +340,12 @@ public class TermView extends View implements OnGestureListener {
 
 	public void increaseFontSize() {
 		setFontSize(font_text_size+1);
+		evalTermSize(0,0);
 	}
 
 	public void decreaseFontSize() {
 		setFontSize(font_text_size-1);
+		evalTermSize(0,0);
 	}
 
 	private boolean setFontSize(int size) {
@@ -373,8 +388,10 @@ public class TermView extends View implements OnGestureListener {
 
 		if (fs == 0)
 			autoSizeFontByWidth(width, height);
-		else
+		else {
 			setFontSize(fs, false);
+			evalTermSize(0,0);
+		}
 
 		fore.setTextAlign(Paint.Align.LEFT);
 
