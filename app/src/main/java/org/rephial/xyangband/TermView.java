@@ -390,7 +390,7 @@ public class TermView extends View implements OnGestureListener {
 			autoSizeFontByWidth(width, height);
 		else {
 			setFontSize(fs, false);
-			evalTermSize(0,0);
+			//evalTermSize(width, height);
 		}
 
 		fore.setTextAlign(Paint.Align.LEFT);
