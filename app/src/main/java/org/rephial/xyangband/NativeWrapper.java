@@ -82,13 +82,15 @@ public class NativeWrapper {
 	}
 
 	public void resize() {
+		//Log.d("Angband", "Native resize");
 		synchronized (display_lock) {
-			term.onGameStart(); // recalcs TermView canvas dimension
+			term.onGameStart(); // recalculate TermView canvas dimension
 			frosh(null);
 		}
 	}
 
 	public void wrefresh(int w) {
+		//Log.d("Angband", "Native wrefresh");
 		synchronized (display_lock) {
 			TermWindow t = state.getWin(w);
 			if (t != null) frosh(t);
@@ -96,6 +98,14 @@ public class NativeWrapper {
 	}
 
 	private void frosh(TermWindow w) {
+		/*
+		if (w != null) {
+			Log.d("Angband", "Native frosh with w <> null");
+		}
+		else {
+			Log.d("Angband", "Native frosh NULL");
+		}
+		*/
 
 		synchronized(display_lock) {
 			/* for forcing a redraw due to an Android event, w should be null */
@@ -227,6 +237,7 @@ public class NativeWrapper {
 	}
 
 	public void wclear(final int w) {
+		//Log.d("Angband", "Native wclear");
 		synchronized (display_lock) {
 			TermWindow t = state.getWin(w);
 			if (t != null) t.clear();
@@ -269,6 +280,7 @@ public class NativeWrapper {
 	}
 
 	public void touchwin (final int w) {
+		//Log.d("Angband", "Native touchwin");
 		synchronized (display_lock) {
 			TermWindow t = state.getWin(w);
 			if (t != null) t.touch();

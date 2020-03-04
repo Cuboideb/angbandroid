@@ -19,6 +19,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include <string.h>
+#include <stdlib.h>
 #include "curses.h"
 
 #include "angband.h"
@@ -33,6 +34,8 @@
 static char android_files_path[1024];
 static char android_savefile[50];
 static int turn_save = 0;
+static int initial_width = 80;
+static int initial_height = 24;
 
 /*
  * Android's terms are boring
@@ -339,7 +342,7 @@ static void term_data_link(int i)
 	term *t = &td->t;
 
 	/* Initialize the term */
-	term_init(t, 80, 24, 256);
+	term_init(t, initial_width, initial_height, 256);
 
 	t->complex_input = true;
 
@@ -501,6 +504,8 @@ int queryResize(int width, int height)
 
 void angdroid_process_argv(int i, const char* argv)
 {
+    int aux;
+
 	switch(i) {
 		case 0: //files path
 			my_strcpy(android_files_path, argv, sizeof(android_files_path));
@@ -508,6 +513,18 @@ void angdroid_process_argv(int i, const char* argv)
 		case 1: //savefile
 			my_strcpy(android_savefile, argv, sizeof(android_savefile));
 			break;
+	    case 2: // width
+	        aux = atoi(argv);
+	        if (aux > initial_width) {
+	            initial_width = aux;
+	        }
+            break;
+        case 3: // height
+            aux = atoi(argv);
+            if (aux > initial_height) {
+                initial_height = aux;
+            }
+            break;
 		default:
 			break;
 	}

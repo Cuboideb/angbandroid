@@ -60,6 +60,13 @@ public class StateManager {
 	public void link(TermView t, Handler h) {
 		handler = h;
 		nativew.link(t);
+
+		/*
+		// Hack - Remember size of current window, because the core has that size
+        if (this.stdscr != null) {
+            t.resize(this.stdscr.cols, this.stdscr.rows);
+        }
+        */
 	}
 
 	public void endWin() {

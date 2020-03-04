@@ -38,8 +38,6 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import org.rephial.xyangband.R;
-
 public class GameActivity extends Activity {
 
 	public static StateManager state = null;
@@ -245,10 +243,12 @@ public class GameActivity extends Activity {
 		switch (aItem.getItemId()) {
 		case CONTEXTMENU_FITWIDTH_ITEM:
 			term.autoSizeFontByWidth(0, 0);
+			term.adjustTermSize(0,0);
 			state.nativew.resize();
 			return true;
 		case CONTEXTMENU_FITHEIGHT_ITEM:
 			term.autoSizeFontByHeight(0, 0);
+			term.adjustTermSize(0,0);
 			state.nativew.resize();
 			return true;
 		case CONTEXTMENU_VKEY_ITEM:

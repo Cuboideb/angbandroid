@@ -113,13 +113,8 @@ public class TermView extends View implements OnGestureListener {
 		setFocusableInTouchMode(true);
 		gesture = new GestureDetector(context, this);
 
-		this.resetDimensions();
-	}
-
-	protected void resetDimensions()
-	{
-		this.rows = Preferences.rows;
-		this.cols = Preferences.cols;
+		this.cols = Preferences.getTermWidth();
+		this.rows = Preferences.getTermHeight();
 	}
 
 	protected void drawDirZonesFull(Canvas p_canvas)
@@ -217,8 +212,8 @@ public class TermView extends View implements OnGestureListener {
 	}
 
 	public void computeCanvasSize() {
-		canvas_width = this.cols*char_width;
-	    canvas_height = this.rows*char_height;
+		canvas_width = Preferences.getTermWidth()*char_width;
+	    canvas_height = Preferences.getTermHeight()*char_height;
 	}
 
 	protected void setForeColor(int a) {
@@ -243,14 +238,12 @@ public class TermView extends View implements OnGestureListener {
 			do {
 				font_text_size += 1;
 				setFontSize(font_text_size, false);
-			} while (char_height* Preferences.rows <= maxHeight);
+			} while (char_height * Preferences.rows <= maxHeight);
 
 			font_text_size -= 1;
 			setFontSize(font_text_size);
 		}
 		Log.d("Angband","autoSizeFontHeight "+font_text_size);
-
-		this.evalTermSize(maxWidth, maxHeight);
 	}
 
 	public void autoSizeFontByWidth(int maxWidth, int maxHeight) {
@@ -275,16 +268,19 @@ public class TermView extends View implements OnGestureListener {
 			setFontSize(font_text_size);
 		}
 		Log.d("Angband","autoSizeFontWidth "+font_text_size);
-
-		this.evalTermSize(maxWidth, maxHeight);
 	}
 
-	public void evalTermSize(int maxWidth, int maxHeight)
+	public void adjustTermSize(int maxWidth, int maxHeight)
 	{
+        if (!this.state.gameThread.gameRunning()) {
+            return;
+        }
+
+        this.rows = Preferences.rows;
+        this.cols = Preferences.cols;
+
 		if (maxWidth == 0) maxWidth = getMeasuredWidth();
 		if (maxHeight == 0) maxHeight = getMeasuredHeight();
-
-		resetDimensions();
 
 		while ((maxHeight > 0) && ((this.rows+1) * this.char_height < maxHeight)) {
 			++this.rows;
@@ -298,16 +294,31 @@ public class TermView extends View implements OnGestureListener {
 		this.rows = Math.max(this.rows, Preferences.rows);
 		this.cols = Math.max(this.cols, Preferences.cols);
 
-		Log.d("Angband", "Resize. maxwidth "+maxWidth
+		Log.d("Angband", "Resize. maxWidth "+maxWidth
 				+" maxHeight "+maxHeight
 				+" rows "+this.rows+" cols "+this.cols);
 
-		this.state.stdscr.resize(this.cols, this.rows);
-		this.state.virtscr.resize(this.cols, this.rows);
+		// Do nothing
+		if (this.rows == Preferences.getTermHeight() && this.cols == Preferences.getTermWidth()) {
+			return;
+		}
+
+        // Remember for later
+        Preferences.setSize(this.cols, this.rows);
+
+		if (this.state.stdscr != null) {
+            this.state.stdscr.resize(this.cols, this.rows);
+        }
+        if (this.state.virtscr != null) {
+            this.state.virtscr.resize(this.cols, this.rows);
+        }
+
+        Log.d("Angband", "Going to core");
+
 		// Tell core we changed dimensions
 		this.state.nativew.gameQueryResize(this.cols, this.rows);
-		// Hack, force a redraw
-		this.state.addKey(18); // Ctrl-R
+		// Hack, add a keyboard event so the core can process the pending redraw event
+        this.state.addKey(32); // Space (do nothing)
 	}
 
 	public boolean isHighRes() {
@@ -340,12 +351,14 @@ public class TermView extends View implements OnGestureListener {
 
 	public void increaseFontSize() {
 		setFontSize(font_text_size+1);
-		evalTermSize(0,0);
+		adjustTermSize(0,0);
+        this.state.nativew.resize();
 	}
 
 	public void decreaseFontSize() {
 		setFontSize(font_text_size-1);
-		evalTermSize(0,0);
+		adjustTermSize(0,0);
+		this.state.nativew.resize();
 	}
 
 	private boolean setFontSize(int size) {
@@ -386,11 +399,11 @@ public class TermView extends View implements OnGestureListener {
 		else
 			fs = Preferences.getLandscapeFontSize();
 
-		if (fs == 0)
-			autoSizeFontByWidth(width, height);
+		if (fs == 0) {
+            autoSizeFontByWidth(width, height);
+        }
 		else {
 			setFontSize(fs, false);
-			//evalTermSize(width, height);
 		}
 
 		fore.setTextAlign(Paint.Align.LEFT);

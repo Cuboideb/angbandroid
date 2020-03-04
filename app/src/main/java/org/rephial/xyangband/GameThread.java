@@ -32,6 +32,11 @@ public class GameThread implements Runnable {
 		state = s;
 	}
 
+	public boolean gameRunning()
+	{
+		return this.game_thread_running && this.game_fully_initialized;
+	}
+
 	public synchronized void send(Request rq) {
 		switch (rq) {
 		case StartGame:
@@ -198,13 +203,18 @@ public class GameThread implements Runnable {
 		// Plain lib name, android set the folder?
 		String pluginPath = "lib" + running_plugin + ".so";
 
+		String width = "" + Preferences.getTermWidth();
+		String height = "" + Preferences.getTermHeight();
+
 		/* game is not running, so start it up */
 		nativew.gameStart(
 				  pluginPath,
-				  2,
+				  4,
 				  new String[]{
 					  Preferences.getAngbandFilesDirectory(),
-					  Preferences.getActiveProfile().getSaveFile()
+					  Preferences.getActiveProfile().getSaveFile(),
+					  width,
+					  height
 				  }
 		);
 	}

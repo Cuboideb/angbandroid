@@ -48,9 +48,9 @@ public class TermWindow {
 	public int begin_x = 0;
 
 	public TermWindow(int rows, int cols, int begin_y, int begin_x) {
-		if (cols == 0) this.cols = Preferences.cols;
+		if (cols == 0) this.cols = Preferences.getTermWidth();
 		else this.cols = cols;
-		if (rows == 0) this.rows = Preferences.rows;
+		if (rows == 0) this.rows = Preferences.getTermHeight();
 		else this.rows = rows;
 		this.begin_y = begin_y;
 		this.begin_x = begin_x;

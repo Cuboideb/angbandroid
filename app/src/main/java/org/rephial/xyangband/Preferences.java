@@ -35,6 +35,9 @@ final public class Preferences {
 	static final String KEY_PORTRAITFONTSIZE = "angband.portraitfontsize";
 	static final String KEY_LANDSCAPEFONTSIZE = "angband.landscapefontsize";
 
+	static final String KEY_TERMWIDTH = "angband.termwidth";
+	static final String KEY_TERMHEIGHT = "angband.termheight";
+
 	static final String KEY_GAMEPLUGIN = "angband.gameplugin";
 	static final String KEY_GAMEPROFILE = "angband.gameprofile";
 	static final String KEY_SKIPWELCOME = "angband.skipwelcome";
@@ -180,6 +183,34 @@ final public class Preferences {
 		SharedPreferences.Editor ed = pref.edit();
 		ed.putBoolean(Preferences.KEY_LANDSCAPEKB, value);
 		ed.commit();
+	}
+
+	public static int getTermWidth()
+	{
+		return pref.getInt(Preferences.KEY_TERMWIDTH, 80);
+	}
+	public static void setTermWidth(int value)
+	{
+		SharedPreferences.Editor ed = pref.edit();
+		ed.putInt(Preferences.KEY_TERMWIDTH, value);
+		ed.commit();
+	}
+	public static int getTermHeight()
+	{
+		return pref.getInt(Preferences.KEY_TERMHEIGHT, 24);
+	}
+	public static void setTermHeight(int value)
+	{
+		SharedPreferences.Editor ed = pref.edit();
+		ed.putInt(Preferences.KEY_TERMHEIGHT, value);
+		ed.commit();
+	}
+	public static void setSize(int width, int height)
+	{
+		if (width == 0) width = Preferences.cols;
+		if (height == 0) height = Preferences.rows;
+		setTermWidth(width);
+		setTermHeight(height);
 	}
 
 	public static int getPortraitFontSize() {
