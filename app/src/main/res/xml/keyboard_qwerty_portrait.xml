@@ -49,11 +49,11 @@
         <Key android:codes="106" android:keyLabel="j"/>
         <Key android:codes="107" android:keyLabel="k"/>
         <Key android:codes="108" android:keyLabel="l"/>
-        <Key android:codes="49" android:keyLabel="1"
+        <Key android:codes="55" android:keyLabel="7"
             android:isRepeatable="true"/>
-        <Key android:codes="50" android:keyLabel="2"
+        <Key android:codes="56" android:keyLabel="8"
             android:isRepeatable="true"/>
-        <Key android:codes="51" android:keyLabel="3"
+        <Key android:codes="57" android:keyLabel="9"
             android:isRepeatable="true"
             android:keyEdgeFlags="right"/>
     </Row>
@@ -88,11 +88,11 @@
         <Key android:codes="42" android:keyLabel="*"/>
         <Key android:codes="39" android:keyLabel="'"/>
         <Key android:codes="48" android:keyLabel="0"/>
-        <Key android:codes="55" android:keyLabel="7"
+        <Key android:codes="49" android:keyLabel="1"
             android:isRepeatable="true"/>
-        <Key android:codes="56" android:keyLabel="8"
+        <Key android:codes="50" android:keyLabel="2"
             android:isRepeatable="true"/>
-        <Key android:codes="57" android:keyLabel="9"
+        <Key android:codes="51" android:keyLabel="3"
             android:isRepeatable="true"
             android:keyEdgeFlags="right"/>
     </Row>
