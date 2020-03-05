@@ -149,7 +149,7 @@ public class TermView extends View implements OnGestureListener {
 		}
 	}
 
-	protected void drawDirZonesTopRight(Canvas p_canvas)
+	protected void drawDirZonesRight(Canvas p_canvas)
 	{
         this.zones.clear();
 
@@ -203,8 +203,8 @@ public class TermView extends View implements OnGestureListener {
 		}
 
 		if (Preferences.getEnableTouch()) {
-			if (Preferences.getTouchTopRight()) {
-				this.drawDirZonesTopRight(canvas);
+			if (Preferences.getTouchRight()) {
+				this.drawDirZonesRight(canvas);
 			}
 			else {
 				this.drawDirZonesFull(canvas);

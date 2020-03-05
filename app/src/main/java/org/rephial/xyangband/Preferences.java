@@ -8,8 +8,6 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Environment;
 
-import org.rephial.xyangband.R;
-
 import java.io.File;
 import java.lang.reflect.Array;
 
@@ -28,7 +26,7 @@ final public class Preferences {
 	static final String KEY_KEYBOARDOPACITY = "angband.keyboardOpacity";
 	static final String KEY_MIDDLEOPACITY = "angband.middleOpacity";
 	static final String KEY_ENABLETOUCH = "angband.enabletouch";
-	static final String KEY_TOUCHTOPRIGHT = "angband.touchtopright";
+	static final String KEY_TOUCHRIGHT = "angband.touchright";
 	static final String KEY_CENTERTAP = "angband.centerscreentap";
 	static final String KEY_PORTRAITKB = "angband.portraitkb";
 	static final String KEY_LANDSCAPEKB = "angband.landscapekb";
@@ -234,8 +232,8 @@ final public class Preferences {
 		return pref.getBoolean(Preferences.KEY_ENABLETOUCH, true);
 	}
 
-	public static boolean getTouchTopRight() {
-		return pref.getBoolean(Preferences.KEY_TOUCHTOPRIGHT, true);
+	public static boolean getTouchRight() {
+		return pref.getBoolean(Preferences.KEY_TOUCHRIGHT, false);
 	}
 
 	public static boolean getSkipWelcome() {
