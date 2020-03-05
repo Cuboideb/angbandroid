@@ -32,8 +32,8 @@ public class AngbandKeyboardView extends KeyboardView
 	public int canvas_width = 0;
 	public int canvas_height = 0;
 
-	final int TEXT_SIZE = 58;
-	final int LABEL_SIZE = 36;
+	final int TEXT_SIZE = 52;
+	final int LABEL_SIZE = 32;
 
 	public AngbandKeyboardView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -273,8 +273,14 @@ public class AngbandKeyboardView extends KeyboardView
 
 		final List<Key> keys = getKeyboard().getKeys();
 		for (final Key key: keys) {
-			Drawable keyBackground =
-					mContext.getResources().getDrawable(R.drawable.keybg_background);
+			Drawable keyBackground;
+			// Special color for spacebar
+			if (key.label != null && key.label.equals(" ")) {
+				keyBackground = mContext.getResources().getDrawable(R.drawable.keybg_bright);
+			}
+			else {
+				keyBackground = mContext.getResources().getDrawable(R.drawable.keybg_background);
+			}
 			setState(key, keyBackground);
 
 			int midx = key.x + key.width / 2;
@@ -333,12 +339,14 @@ public class AngbandKeyboardView extends KeyboardView
 				String label = fixCase(key.label);
 
 				// For characters, use large font. For labels like "Done", use small font.
-				if (label.length() > 2) {
+				if (label.length() > 1) {
 					mPainter.setTextSize(LABEL_SIZE);
 					mPainter.setTypeface(Typeface.DEFAULT_BOLD);
+					//mPainter.setTypeface(Typeface.DEFAULT);
 				} else {
 					mPainter.setTextSize(TEXT_SIZE);
-					mPainter.setTypeface(Typeface.DEFAULT);
+					mPainter.setTypeface(Typeface.DEFAULT_BOLD);
+					//mPainter.setTypeface(Typeface.DEFAULT);
 				}
 
 				// Draw a drop shadow for the text

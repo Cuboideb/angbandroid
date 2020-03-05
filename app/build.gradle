@@ -8,8 +8,8 @@ android {
         applicationId "org.rephial.xyangband"
         minSdkVersion 22
         targetSdkVersion 29
-        versionCode 8
-        versionName "1.8"
+        versionCode 9
+        versionName "1.9"
         externalNativeBuild {
             cmake {
                 cppFlags ""
