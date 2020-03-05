@@ -19,7 +19,7 @@
 -->
 
 <resources>
-	<dimen name="key_height">10%p</dimen>
+	<dimen name="key_height">8%p</dimen>
 	<dimen name="key_gap">0dp</dimen>
 	<dimen name="candidate_font_height">16sp</dimen>
 	<dimen name="candidate_vertical_padding">6sp</dimen>

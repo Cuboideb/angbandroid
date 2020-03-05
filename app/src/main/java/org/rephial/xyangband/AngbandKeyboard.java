@@ -20,8 +20,8 @@ public class AngbandKeyboard implements OnKeyboardActionListener
 
 		state = ((GameActivity)ctx).getStateManager();
 
-		kbLayoutQwerty       = new Keyboard(ctx, R.xml.keyboard_qwerty);
-		kbLayoutSymbols      = new Keyboard(ctx, R.xml.keyboard_sym);
+		kbLayoutQwerty       = new Keyboard(ctx, R.xml.keyboard_qwerty_portrait);
+		kbLayoutSymbols      = new Keyboard(ctx, R.xml.keyboard_sym_portrait);
 		kbLayoutSymbolsShift = new Keyboard(ctx, R.xml.keyboard_symshift);
 
 		LayoutInflater inflater = LayoutInflater.from(ctx);

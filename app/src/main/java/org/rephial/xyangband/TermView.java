@@ -158,8 +158,8 @@ public class TermView extends View implements OnGestureListener {
 		int w = (int)(totalw * 0.2f);
 		int h = (int)(totalh * 0.2f);
 
-		int padx = (int)(totalw * 0.02f);
-		int pady = (int)(totalh * 0.02f);
+		int padx = (int)(totalw * 0.01f);
+		int pady = (int)(totalh * 0.01f);
 
 		if (padx < pady) padx = pady;
 		if (pady < padx) pady = padx;
@@ -171,7 +171,8 @@ public class TermView extends View implements OnGestureListener {
 			for (int px = 1; px <= 3; px++) {
 
 				int x = totalw - (w + padx) * (3 - px + 1);
-				int y = pady + (h + pady) * (1 + py - 2);
+				//int y = pady + (h + pady) * (1 + py - 2);
+				int y = totalh - (h + pady) * (3 - py + 1);
 
                 Rect r = new Rect(x, y, x + w - 1, y + h - 1);
 
