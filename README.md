@@ -18,6 +18,8 @@ Some keyboard shorcuts:
     Long-Press "o" -> Ctrl+F (recall last message)
     Long-Press "f" -> Ctrl+F (recall level feeling)
     Long-Press "u" -> U (use item)
+    Long-Press "q" -> Escape
+    Long-Press "~" -> Escape
     Long-Press over other keys (most of them) -> shorcut for Hide some keys
 
 Angband homepage: http://rephial.org  
