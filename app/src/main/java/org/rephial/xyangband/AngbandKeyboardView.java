@@ -260,7 +260,7 @@ public class AngbandKeyboardView extends KeyboardView
 	public void onDraw(Canvas canvas) {
 //		super.onDraw(canvas);
 
-		float pad_pct = 0.25f;
+		float pad_pct = 0.33f;
 
 		float alpha_reduction = Preferences.getMiddleOpacity() / 100.0f;
 		if (alpha_reduction < 0.0f) alpha_reduction = 0.0f;
@@ -277,7 +277,8 @@ public class AngbandKeyboardView extends KeyboardView
 					mContext.getResources().getDrawable(R.drawable.keybg_background);
 			setState(key, keyBackground);
 
-			float pct = (float)key.x / this.canvas_width;
+			int midx = key.x + key.width / 2;
+			float pct = (float)midx / this.canvas_width;
 			boolean at_center = false;
 			if (pct > pad_pct && pct < (1.0f - pad_pct)) {
 				at_center = true;
