@@ -71,9 +71,10 @@ public class KeyBuffer {
 	}
 
 	public void addDirection(int key) {
-		boolean rogueLike = (nativew.gameQueryInt(1,new String[]{"rl"})==1);
+		boolean rogueLike = state.isRoguelikeKeyboard();
 		boolean runningMode = state.getRunningMode();
 
+		/*
 		if (rogueLike) {
 			switch(key) {
 			case '1': key = 'b'; break;
@@ -88,6 +89,7 @@ public class KeyBuffer {
 			default: break;
 			}
 		}
+		*/
 
 		if (key == '5') { // center tap
 			KeyAction act = Preferences.getKeyMapper().getCenterScreenTapAction();
