@@ -62,9 +62,7 @@
         <Key android:codes="58" android:keyLabel=":"/>
         <Key android:codes="59" android:keyLabel=";"/>
         <Key android:codes="34" android:keyLabel="&quot;"/>
-        <Key android:codes="157" android:keyLabel="tab"/>
-        <Key android:codes="142" android:keyLabel="F11"/>
-        <Key android:codes="143" android:keyLabel="F12"
+        <Key android:codes="157" android:keyLabel="tab"
             android:keyEdgeFlags="right"/>
     </Row>
 
@@ -97,8 +95,11 @@
         <Key android:codes="32" android:keyLabel=" "
             android:keyWidth="20%p" android:isRepeatable="true"/>
 
+        <Key android:codes="142" android:keyLabel="F11"
+            android:horizontalGap="7%p"/>
+        <Key android:codes="143" android:keyLabel="F12"/>
+
         <Key android:codes="156" android:keyLabel="⏎"
-             android:horizontalGap="27%p"
 		     android:keyWidth="20%p"
              android:keyEdgeFlags="right"/>
     </Row>
