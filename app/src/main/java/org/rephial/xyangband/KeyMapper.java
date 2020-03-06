@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.view.KeyEvent;
 import android.widget.Space;
 
+import java.time.Period;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -17,6 +18,7 @@ public class KeyMapper {
 
 	String KEY_CTRLKEY = "angband.ctrlkey";
 	String KEY_ESCKEY = "angband.esckey";
+	String KEY_ESCKEYREAL = "angband.esckeyreal"; // Escape from external keyboard
 	String KEY_LALTKEY = "angband.laltkey";
 	String KEY_RALTKEY = "angband.raltkey";
 	String KEY_LSHIFTKEY = "angband.lshiftkey";
@@ -104,7 +106,7 @@ public class KeyMapper {
 
 	public enum KeyAction
 	{
-		None,
+		    None,
 			AltKey,
 			ArrowDownKey,
 			ArrowLeftKey,
@@ -114,6 +116,7 @@ public class KeyMapper {
 			CharacterKey,
 			EnterKey,
 			EscKey,
+			EscKeyReal,
 			Period,
 			Comma,
 			ShiftKey,
@@ -204,6 +207,7 @@ public class KeyMapper {
 			initKeyMap(KEY_CTRLKEY, KeyAction.CtrlKey);
 			initKeyMap(KEY_ENTERKEY, KeyAction.EnterKey);
 			initKeyMap(KEY_ESCKEY, KeyAction.EscKey);
+			initKeyMap(KEY_ESCKEYREAL, KeyAction.EscKeyReal);
 			initKeyMap(KEY_DOWNKEY, KeyAction.ArrowDownKey);
 			initKeyMap(KEY_LEFTKEY, KeyAction.ArrowLeftKey);
 			initKeyMap(KEY_RIGHTKEY, KeyAction.ArrowRightKey);
@@ -308,6 +312,7 @@ public class KeyMapper {
 			assignKeyMap(KEY_LALTKEY, KeyEvent.KEYCODE_ALT_LEFT);
 			assignKeyMap(KEY_RALTKEY, KeyEvent.KEYCODE_ALT_RIGHT);
 			assignKeyMap(KEY_ESCKEY, KeyEvent.KEYCODE_BACK);
+			assignKeyMap(KEY_ESCKEYREAL, KeyEvent.KEYCODE_ESCAPE);
 			assignKeyMap(KEY_ENTERKEY, KeyEvent.KEYCODE_ENTER);
 			assignKeyMap(KEY_SPACEKEY, KeyEvent.KEYCODE_SPACE);
 			assignKeyMap(KEY_DOWNKEY, KeyEvent.KEYCODE_DPAD_DOWN);

@@ -57,6 +57,11 @@
 		  seekBar:min="0"
 		  seekBar:max="100"
 		  seekBar:defaultVal="100" />
+	  <CheckBoxPreference
+		  android:key="angband.qwertynumpad"
+		  android:defaultValue="false"
+		  android:title="Qwerty NumPad"
+		  android:summary="Qwerty keyboard comes with NumPad" />
 	<PreferenceScreen
 	   android:title="Hardware Key Mapping"
 	   android:summary="Configure hardware buttons on your device to perform various functions">	  
@@ -118,6 +123,7 @@
 		<org.rephial.xyangband.KeyMapModPreference android:key="angband.ctrlkey" android:title="Control Key"/>
 		<org.rephial.xyangband.KeyMapPreference android:key="angband.enterkey" android:title="Enter Key"/>
 		<org.rephial.xyangband.KeyMapPreference android:key="angband.esckey" android:title="Esc Key"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.esckeyreal" android:title="Esc Key (Real)"/>
 		<org.rephial.xyangband.KeyMapModPreference android:key="angband.laltkey" android:title="Left Alt/Fn Key"/>
 		<org.rephial.xyangband.KeyMapModPreference android:key="angband.lshiftkey" android:title="Left Shift Key"/>
 		<org.rephial.xyangband.KeyMapModPreference android:key="angband.raltkey" android:title="Right Alt/Fn Key"/>

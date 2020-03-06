@@ -250,6 +250,9 @@ public class KeyBuffer {
 		case EscKey:
 			add(state.getKeyEsc());
 			break;
+		case EscKeyReal:
+			add(state.getKeyEsc());
+			break;
 		case BackspaceKey:
 			add(state.getKeyBackspace());
 			break;

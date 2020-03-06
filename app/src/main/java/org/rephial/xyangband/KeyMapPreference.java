@@ -209,6 +209,8 @@ public class KeyMapPreference
 			return "Right Thumb";
 		case KeyEvent.KEYCODE_ENTER:
 			return "Enter";
+		case KeyEvent.KEYCODE_ESCAPE:
+			return "Escape";
 		case 97: //Samsung Epic 4G
 			return "Emoticon";
 		default:
