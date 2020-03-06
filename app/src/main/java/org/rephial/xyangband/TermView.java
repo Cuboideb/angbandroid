@@ -171,8 +171,17 @@ public class TermView extends View implements OnGestureListener {
 			for (int px = 1; px <= 3; px++) {
 
 				int x = totalw - (w + padx) * (3 - px + 1);
+
 				//int y = pady + (h + pady) * (1 + py - 2);
-				int y = totalh - (h + pady) * (3 - py + 1);
+                int y = totalh - (h + pady) * (3 - py + 1);
+
+                // More space between rows if we have keyboard
+                if (Preferences.isKeyboardVisible()) {
+                    float pct[] = {0.0f, 0.5f, 1.0f};
+                    y = (int) (totalh * pct[py - 1]) - h / 2;
+                    if (y < pady) y = pady;
+                    if (y + h >= totalh - pady) y = totalh - h - pady;
+                }
 
                 Rect r = new Rect(x, y, x + w - 1, y + h - 1);
 

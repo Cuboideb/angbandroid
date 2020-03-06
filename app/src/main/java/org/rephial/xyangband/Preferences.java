@@ -236,6 +236,16 @@ final public class Preferences {
 		return pref.getBoolean(Preferences.KEY_TOUCHRIGHT, false);
 	}
 
+	public static boolean isKeyboardVisible()
+	{
+		if(Preferences.isScreenPortraitOrientation()) {
+			return Preferences.getPortraitKeyboard();
+		}
+		else {
+			return Preferences.getLandscapeKeyboard();
+		}
+	}
+
 	public static boolean getSkipWelcome() {
 		return getActiveProfile().getSkipWelcome();
 	}

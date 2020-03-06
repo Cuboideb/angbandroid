@@ -150,6 +150,12 @@ public class AngbandKeyboardView extends KeyboardView
 			miniKeyboard.remove(".");
 		}
 
+		if (false) {
+			for (int i = 0; i <= 9; i++) {
+				miniKeyboard.remove("" + i);
+			}
+		}
+
 		if (this.getHideAllKeys()) {
 			keep_these = emptyKeyboard;
 		}
