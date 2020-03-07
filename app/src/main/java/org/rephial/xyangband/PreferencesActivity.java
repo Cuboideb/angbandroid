@@ -31,6 +31,9 @@ import android.view.WindowManager;
 
 import org.rephial.xyangband.R;
 
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
+
 public class PreferencesActivity
 	extends PreferenceActivity implements OnSharedPreferenceChangeListener,
 		OnPreferenceChangeListener {

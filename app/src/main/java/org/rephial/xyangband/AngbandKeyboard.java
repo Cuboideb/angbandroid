@@ -20,7 +20,7 @@ public class AngbandKeyboard implements OnKeyboardActionListener
 
 		state = ((GameActivity)ctx).getStateManager();
 
-		kbLayoutQwerty       = new Keyboard(ctx, R.xml.keyboard_qwerty_classic);
+		//kbLayoutQwerty       = new Keyboard(ctx, R.xml.keyboard_qwerty_classic);
 		kbLayoutSymbols      = new Keyboard(ctx, R.xml.keyboard_sym_portrait);
 		kbLayoutSymbolsShift = new Keyboard(ctx, R.xml.keyboard_symshift);
 
@@ -28,7 +28,9 @@ public class AngbandKeyboard implements OnKeyboardActionListener
 		virtualKeyboardView = (AngbandKeyboardView)inflater.inflate(R.layout.input, null);
 		virtualKeyboardView.setOnKeyboardActionListener(this);
 
-		switchKeyboard(kbLayoutQwerty);
+		//switchKeyboard(kbLayoutQwerty);
+
+		this.setQwertyNumPad(Preferences.getQwertyNumPad());
 
 		boolean shouldRun = state.getRunningMode();
 		virtualKeyboardView.setRunning(shouldRun);

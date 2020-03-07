@@ -36,6 +36,8 @@ final public class Preferences {
 	static final String KEY_TERMWIDTH = "angband.termwidth";
 	static final String KEY_TERMHEIGHT = "angband.termheight";
 
+	static final String KEY_QWERTYNUMPAD = "angband.qwertynumpad";
+
 	static final String KEY_GAMEPLUGIN = "angband.gameplugin";
 	static final String KEY_GAMEPROFILE = "angband.gameprofile";
 	static final String KEY_SKIPWELCOME = "angband.skipwelcome";
@@ -75,6 +77,11 @@ final public class Preferences {
 		version = pversion;
 
 		keymapper = new KeyMapper(pref);
+	}
+
+	public static boolean getQwertyNumPad()
+	{
+		return pref.getBoolean(Preferences.KEY_QWERTYNUMPAD, false);
 	}
 
 	public static String getVersion() {

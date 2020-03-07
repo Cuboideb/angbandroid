@@ -150,11 +150,13 @@ public class AngbandKeyboardView extends KeyboardView
 			miniKeyboard.remove(".");
 		}
 
-		if (false) {
+		/*
+		if (!Preferences.getQwertyNumPad()) {
 			for (int i = 0; i <= 9; i++) {
 				miniKeyboard.remove("" + i);
 			}
 		}
+		*/
 
 		if (this.getHideAllKeys()) {
 			keep_these = emptyKeyboard;
@@ -293,6 +295,13 @@ public class AngbandKeyboardView extends KeyboardView
 			float pct = (float)midx / this.canvas_width;
 			boolean at_center = false;
 			if (pct > pad_pct && pct < (1.0f - pad_pct)) {
+				at_center = true;
+			}
+
+			String the_label = (key.label != null) ? key.label.toString(): "";
+			List<String> temp = Arrays.asList(new String[] {"I","O","P"});
+			if (Preferences.getQwertyNumPad() &&
+					temp.contains(the_label.toUpperCase())) {
 				at_center = true;
 			}
 
