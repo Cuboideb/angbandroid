@@ -512,6 +512,13 @@ public class TermView extends View implements OnGestureListener {
 
 	    int y = (int)e.getY();
 	    int x = (int)e.getX();
+
+	    // In the zone of directionals
+	    if (Preferences.getEnableTouch() && Preferences.getTouchRight() &&
+                (this.zones.size() > 0) && (x >= this.zones.get(0).left)) {
+	        return;
+        }
+
 	    // Directional button, do nothing
 	    if (this.getDirFromZone(y, x) > 0) {
 	        return;
