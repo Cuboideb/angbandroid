@@ -49,6 +49,12 @@ public class TermView extends View implements OnGestureListener {
 	Paint cursor;
 	Paint dirZone;
 
+	Handler timerHandler;
+	Runnable timerRunnable;
+	private int lastDirection = 0;
+	private int longDelay = 350;
+	private int shortDelay = 100;
+
 	//	int row = 0;
 	//  int col = 0;
 
@@ -115,6 +121,21 @@ public class TermView extends View implements OnGestureListener {
 
 		this.cols = Preferences.getTermWidth();
 		this.rows = Preferences.getTermHeight();
+
+        timerHandler = new Handler();
+        timerRunnable = new Runnable() {
+            @Override
+            public void run() {
+                //Log.d("Angband", "CLICK!");
+                if (lastDirection == 0) {
+                    timerHandler.removeCallbacks(this);
+                }
+                else {
+                    state.addKey(lastDirection);
+                    timerHandler.postDelayed(this, shortDelay);
+                }
+            }
+        };
 	}
 
 	protected void drawDirZonesFull(Canvas p_canvas)
@@ -435,8 +456,26 @@ public class TermView extends View implements OnGestureListener {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent me) {
-		return gesture.onTouchEvent(me);
+        int tempDirection = this.getDirFromZone((int)me.getY(), (int)me.getX());
+        if (tempDirection != lastDirection) {
+            timerHandler.removeCallbacks(timerRunnable);
+            lastDirection = tempDirection;
+        }
+        if (me.getAction() == MotionEvent.ACTION_DOWN && lastDirection > 0) {
+            //Log.d("Angband", "DOWN!");
+            state.addDirectionKey(lastDirection);
+            timerHandler.postDelayed(timerRunnable, longDelay);
+            return true;
+        }
+	    if (me.getAction() == MotionEvent.ACTION_UP && lastDirection > 0) {
+	        lastDirection = 0;
+	        timerHandler.removeCallbacks(timerRunnable);
+	        //Log.d("Angband", "UP!");
+	        return true;
+        }
+	    return gesture.onTouchEvent(me);
 	}
+
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 		int newscrollx = this.getScrollX() + (int)distanceX;
 		int newscrolly = this.getScrollY() + (int)distanceY;
@@ -457,19 +496,27 @@ public class TermView extends View implements OnGestureListener {
 
 		return true;
 	}
+
 	public boolean onDown(MotionEvent e) {
 		return true;
 	}
+
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 		return true;
 	}
+
 	public void onLongPress(MotionEvent e) {
+	    if (lastDirection > 0) {
+	        return;
+        }
+
 	    int y = (int)e.getY();
 	    int x = (int)e.getX();
 	    // Directional button, do nothing
 	    if (this.getDirFromZone(y, x) > 0) {
 	        return;
         }
+
 		handler.sendEmptyMessage(AngbandDialog.Action.OpenContextMenu.ordinal());
 	}
 	public void onShowPress(MotionEvent e) {
@@ -494,6 +541,10 @@ public class TermView extends View implements OnGestureListener {
     }
 
 	public boolean onSingleTapUp(MotionEvent event) {
+	    if (lastDirection > 0) {
+	        return true;
+        }
+
 		if (!Preferences.getEnableTouch()) return false;
 
 		int x = (int) event.getX();
@@ -610,5 +661,8 @@ public class TermView extends View implements OnGestureListener {
 		// this is the only guaranteed safe place to save state 
 		// according to SDK docs
 		state.gameThread.send(GameThread.Request.SaveGame);
+
+		timerHandler.removeCallbacks(timerRunnable);
+		lastDirection = 0;
 	}
 }
