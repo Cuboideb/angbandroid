@@ -76,8 +76,8 @@
 		<item>None</item>
 		<item>Ctrl Key</item>
 		<item>Enter Key</item>
-		<item>Esc Key</item>
-        <item>Esc Key (Real)</item>
+		<item>Back</item>
+        <item>Esc Key</item>
 		<item>Period</item>
         <item>Comma</item>
 		<item>Shift Key</item>
@@ -91,8 +91,8 @@
 		<item>None</item>
 		<item>CtrlKey</item>
 		<item>EnterKey</item>
-		<item>EscKey</item>
-        <item>EscKeyReal</item>
+		<item>BackKey</item>
+        <item>EscKey</item>
 		<item>Period</item>
         <item>Comma</item>
 		<item>ShiftKey</item>

@@ -133,18 +133,23 @@ public class TermView extends View implements OnGestureListener {
 		else if (w > h) w = h;
 
 		float pct[] = {0.0f, 0.5f, 1.0f};
-		for (int px = 0; px < 3; px++) {
-			for (int py = 0; py < 3; py++) {
+        for (int py = 1; py <= 3; py++) {
+		    for (int px = 1; px <= 3; px++) {
 
-				int x = (int)(totalw * pct[px]) - w / 2;
+				int x = (int)(totalw * pct[px-1]) - w / 2;
 				if (x < padx) x = padx;
 				if (x + w >= totalw - padx) x = totalw - w - padx;
 
-				int y = (int)(totalh * pct[py]) - h / 2;
+				int y = (int)(totalh * pct[py-1]) - h / 2;
 				if (y < pady) y = pady;
 				if (y + h >= totalh - pady) y = totalh - h - pady;
 
-				p_canvas.drawRect(x, y, x + w - 1, y + h - 1, dirZone);
+                Rect r = new Rect(x, y, x + w - 1, y + h - 1);
+
+                // Remember for single tap
+                this.zones.add(r);
+
+				p_canvas.drawRect(r, dirZone);
 			}
 		}
 	}
@@ -194,6 +199,8 @@ public class TermView extends View implements OnGestureListener {
 	}
 
 	protected void onDraw(Canvas canvas) {
+	    this.zones.clear();
+
 		if (bitmap != null) {
 			canvas.drawBitmap(bitmap, 0, 0, null);
 
@@ -457,10 +464,35 @@ public class TermView extends View implements OnGestureListener {
 		return true;
 	}
 	public void onLongPress(MotionEvent e) {
+	    int y = (int)e.getY();
+	    int x = (int)e.getX();
+	    // Directional button, do nothing
+	    if (this.getDirFromZone(y, x) > 0) {
+	        return;
+        }
 		handler.sendEmptyMessage(AngbandDialog.Action.OpenContextMenu.ordinal());
 	}
 	public void onShowPress(MotionEvent e) {
 	}
+
+	public int getDirFromZone(int y, int x) {
+	    int r, c;
+        // Find the rectangle
+        int i = 0;
+        while (i < this.zones.size() && !this.zones.get(i).contains(x,y)) {
+            i = i + 1;
+        }
+        // Not found
+        if (i >= this.zones.size()) {
+            return 0;
+        }
+        // Get row and col
+        r = i / 3;
+        c = i % 3;
+        int key = (2 - r) * 3 + c + '1';
+        return key;
+    }
+
 	public boolean onSingleTapUp(MotionEvent event) {
 		if (!Preferences.getEnableTouch()) return false;
 
@@ -471,28 +503,21 @@ public class TermView extends View implements OnGestureListener {
 
 		int w = getWidth();
 		int h = (getHeight() - game_context.getKeyboardOverlapHeight());
+		int key;
 
 		if (this.zones.isEmpty()) {
 			// Use the whole screen
             c = (x * 3) / w;
             r = (y * 3) / h;
+            key = (2 - r) * 3 + c + '1';
         }
 		else {
-			// Find the rectangle
-		    int i = 0;
-		    while (i < this.zones.size() && !this.zones.get(i).contains(x,y)) {
-		    	i = i + 1;
-			}
-		    // Not found
-		    if (i >= this.zones.size()) {
-				return false;
-			}
-		    // Get row and col
-		    r = i / 3;
-		    c = i % 3;
+		    key = this.getDirFromZone(y, x);
         }
 
-		int key = (2 - r) * 3 + c + '1';
+        if (key == 0) {
+            return false;
+        }
 
 		state.addDirectionKey(key);
 

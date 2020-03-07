@@ -122,8 +122,8 @@
 		<org.rephial.xyangband.KeyMapPreference android:key="angband.bkspacekey" android:title="Backspace"/>
 		<org.rephial.xyangband.KeyMapModPreference android:key="angband.ctrlkey" android:title="Control Key"/>
 		<org.rephial.xyangband.KeyMapPreference android:key="angband.enterkey" android:title="Enter Key"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.backkey" android:title="Back"/>
 		<org.rephial.xyangband.KeyMapPreference android:key="angband.esckey" android:title="Esc Key"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.esckeyreal" android:title="Esc Key (Real)"/>
 		<org.rephial.xyangband.KeyMapModPreference android:key="angband.laltkey" android:title="Left Alt/Fn Key"/>
 		<org.rephial.xyangband.KeyMapModPreference android:key="angband.lshiftkey" android:title="Left Shift Key"/>
 		<org.rephial.xyangband.KeyMapModPreference android:key="angband.raltkey" android:title="Right Alt/Fn Key"/>
@@ -136,6 +136,7 @@
 		<org.rephial.xyangband.KeyMapPreference android:key="angband.ampkey" android:title="Ampersand &amp;"/>
 		<org.rephial.xyangband.KeyMapPreference android:key="angband.astkey" android:title="Asterisk *"/>
 		<org.rephial.xyangband.KeyMapPreference android:key="angband.atkey" android:title="At @"/>
+		<org.rephial.xyangband.KeyMapPreference android:key="angband.bquotekey" android:title="Back Quote `"/>
 		<org.rephial.xyangband.KeyMapPreference android:key="angband.bslashkey" android:title="Back Slash \\"/>
 		<org.rephial.xyangband.KeyMapPreference android:key="angband.colonkey" android:title="Colon :"/>
 		<org.rephial.xyangband.KeyMapPreference android:key="angband.commakey" android:title="Comma ,"/>

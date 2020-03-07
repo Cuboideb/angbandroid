@@ -74,6 +74,7 @@ public class KeyBuffer {
 		boolean rogueLike = state.isRoguelikeKeyboard();
 		boolean runningMode = state.getRunningMode();
 
+		// Translation broke roguelike keyboard
 		/*
 		if (rogueLike) {
 			switch(key) {
@@ -247,10 +248,10 @@ public class KeyBuffer {
 		case CharacterKey:
 			add(character);
 			break;
-		case EscKey:
+		case BackKey:
 			add(state.getKeyEsc());
 			break;
-		case EscKeyReal:
+		case EscKey:
 			add(state.getKeyEsc());
 			break;
 		case BackspaceKey:

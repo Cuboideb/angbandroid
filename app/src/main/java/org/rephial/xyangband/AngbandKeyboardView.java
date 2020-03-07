@@ -150,13 +150,13 @@ public class AngbandKeyboardView extends KeyboardView
 			miniKeyboard.remove(".");
 		}
 
-		/*
-		if (!Preferences.getQwertyNumPad()) {
+		// In classic keyboard, hide numbers if we have touch directionals
+		if (!Preferences.getQwertyNumPad() &&
+				Preferences.getEnableTouch()) {
 			for (int i = 0; i <= 9; i++) {
 				miniKeyboard.remove("" + i);
 			}
 		}
-		*/
 
 		if (this.getHideAllKeys()) {
 			keep_these = emptyKeyboard;

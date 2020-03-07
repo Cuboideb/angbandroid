@@ -18,9 +18,14 @@ public class AngbandKeyboard implements OnKeyboardActionListener
 	{
 		game_context = (GameActivity)ctx;
 
-		state = ((GameActivity)ctx).getStateManager();
+		state = game_context.getStateManager();
 
-		//kbLayoutQwerty       = new Keyboard(ctx, R.xml.keyboard_qwerty_classic);
+        if (Preferences.getQwertyNumPad()) {
+            kbLayoutQwerty = new Keyboard(ctx, R.xml.keyboard_qwerty_portrait);
+        }
+        else {
+            kbLayoutQwerty = new Keyboard(ctx, R.xml.keyboard_qwerty_classic);
+        }
 		kbLayoutSymbols      = new Keyboard(ctx, R.xml.keyboard_sym_portrait);
 		kbLayoutSymbolsShift = new Keyboard(ctx, R.xml.keyboard_symshift);
 
@@ -28,25 +33,10 @@ public class AngbandKeyboard implements OnKeyboardActionListener
 		virtualKeyboardView = (AngbandKeyboardView)inflater.inflate(R.layout.input, null);
 		virtualKeyboardView.setOnKeyboardActionListener(this);
 
-		//switchKeyboard(kbLayoutQwerty);
-
-		this.setQwertyNumPad(Preferences.getQwertyNumPad());
+		switchKeyboard(kbLayoutQwerty);
 
 		boolean shouldRun = state.getRunningMode();
 		virtualKeyboardView.setRunning(shouldRun);
-
-	}
-
-	public void setQwertyNumPad(boolean enable)
-	{
-		if (enable) {
-			kbLayoutQwerty = new Keyboard(this.game_context, R.xml.keyboard_qwerty_portrait);
-		}
-		else {
-			kbLayoutQwerty = new Keyboard(this.game_context, R.xml.keyboard_qwerty_classic);
-		}
-
-		this.switchKeyboard(this.kbLayoutQwerty);
 	}
 
 	private void switchKeyboard(Keyboard newKb)
