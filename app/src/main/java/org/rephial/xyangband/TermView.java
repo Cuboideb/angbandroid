@@ -51,8 +51,8 @@ public class TermView extends View implements OnGestureListener {
 	Paint dirZoneStroke;
 
 	private int color1 = Color.parseColor("#4a4855");
-	private int color2 = Color.parseColor("#a29eb0");
-	private int alpha = 40;
+	private int color2 = Color.parseColor("#807c93");
+	private int alpha = 70;
 
 	Handler timerHandler;
 	Runnable timerRunnable;
