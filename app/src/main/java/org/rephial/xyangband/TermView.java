@@ -54,7 +54,7 @@ public class TermView extends View implements OnGestureListener {
 	Runnable timerRunnable;
 	private int lastDirection = 0;
 	private int longDelay = 350;
-	private int shortDelay = 100;
+	private int shortDelay = 80;
 	private long savedTime = 0;
 
 	//	int row = 0;
@@ -209,8 +209,8 @@ public class TermView extends View implements OnGestureListener {
 
 		int totalw = getWidth();
 		int totalh = getHeight() - game_context.getKeyboardOverlapHeight();
-		int w = (int)(totalw * 0.25f);
-		int h = (int)(totalh * 0.25f);
+		int w = (int)(totalw * 0.10f);
+		int h = (int)(getHeight() * 0.10f);
 
 		int padx = (int)(totalw * 0.01f);
 		int pady = (int)(totalh * 0.01f);
@@ -218,8 +218,8 @@ public class TermView extends View implements OnGestureListener {
 		if (padx < pady) padx = pady;
 		if (pady < padx) pady = padx;
 
-		if (h > w) h = w;
-		else if (w > h) w = h;
+		//if (h > w) h = w;
+		//else if (w > h) w = h;
 
 		for (int py = 1; py <= 3; py++) {
 			for (int px = 1; px <= 3; px++) {
@@ -545,7 +545,8 @@ public class TermView extends View implements OnGestureListener {
 
 	    // In the zone of directionals
 	    if (Preferences.getEnableTouch() && Preferences.getTouchRight() &&
-                (this.zones.size() > 0) && (x >= this.zones.get(0).left)) {
+                (this.zones.size() > 0) && (x >= this.zones.get(0).left) &&
+                (y >= this.zones.get(0).top)) {
 	        return;
         }
 
