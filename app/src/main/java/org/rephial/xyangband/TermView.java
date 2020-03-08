@@ -23,7 +23,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Vibrator;
@@ -47,13 +47,15 @@ public class TermView extends View implements OnGestureListener {
 	Paint fore;
 	Paint back;
 	Paint cursor;
-	Paint dirZone;
+	Paint dirZoneFill;
+	Paint dirZoneStroke;
 
 	Handler timerHandler;
 	Runnable timerRunnable;
 	private int lastDirection = 0;
 	private int longDelay = 350;
 	private int shortDelay = 100;
+	private long savedTime = 0;
 
 	//	int row = 0;
 	//  int col = 0;
@@ -76,7 +78,7 @@ public class TermView extends View implements OnGestureListener {
 
 	private GestureDetector gesture;
 
-	private ArrayList<Rect> zones = new ArrayList<>();
+	private ArrayList<RectF> zones = new ArrayList<>();
 
 	public TermView(Context context) {
 		super(context);
@@ -107,11 +109,17 @@ public class TermView extends View implements OnGestureListener {
 		cursor.setStyle(Paint.Style.STROKE);
 		cursor.setStrokeWidth(0);
 
-		dirZone = new Paint();
-		dirZone.setColor(Color.GRAY);
-		dirZone.setStyle(Paint.Style.FILL);
-		dirZone.setAlpha(40);
-		dirZone.setStrokeWidth(0);
+		dirZoneFill = new Paint();
+		dirZoneFill.setColor(0x555555);
+		dirZoneFill.setStyle(Paint.Style.FILL);
+		dirZoneFill.setAlpha(40);
+
+		dirZoneStroke = new Paint();
+		dirZoneStroke.setColor(0xDDDDDD);
+		dirZoneStroke.setStyle(Paint.Style.STROKE);
+		dirZoneStroke.setAlpha(40);
+		dirZoneStroke.setStrokeWidth(2);
+		dirZoneStroke.setStrokeCap(Paint.Cap.ROUND);
 
 		vibrator = (Vibrator) context
 				.getSystemService(Context.VIBRATOR_SERVICE);
@@ -128,15 +136,34 @@ public class TermView extends View implements OnGestureListener {
             public void run() {
                 //Log.d("Angband", "CLICK!");
                 if (lastDirection == 0) {
-                    timerHandler.removeCallbacks(this);
+                    stopTimer();
                 }
                 else {
+                    timerHandler.removeCallbacks(this);
+
+                    long currTime = System.currentTimeMillis();
+                    long delta = 0;
+                    if (savedTime > 0 && currTime > savedTime) {
+                        delta = currTime - savedTime;
+                    }
+                    savedTime = currTime;
+                    delta = Math.min(delta, longDelay);
+                    int effectiveDelay = (int)Math.max(delta, shortDelay);
+                    //Log.d("Angband", "Delay: " + effectiveDelay);
+                    timerHandler.postDelayed(this, effectiveDelay);
+
                     state.addKey(lastDirection);
-                    timerHandler.postDelayed(this, shortDelay);
                 }
             }
         };
 	}
+
+	public void stopTimer()
+    {
+        lastDirection = 0;
+        savedTime = 0;
+        timerHandler.removeCallbacks(timerRunnable);
+    }
 
 	protected void drawDirZonesFull(Canvas p_canvas)
 	{
@@ -144,11 +171,11 @@ public class TermView extends View implements OnGestureListener {
 
 		int totalw = getWidth();
 		int totalh = getHeight() - game_context.getKeyboardOverlapHeight();
-		int w = (int)(totalw * 0.20f);
-		int h = (int)(totalh * 0.20f);
+		int w = (int)(totalw * 0.25f);
+		int h = (int)(totalh * 0.25f);
 
-		int padx = (int)(totalw * 0.03f);
-		int pady = (int)(totalh * 0.03f);
+		int padx = (int)(totalw * 0.01f);
+		int pady = (int)(totalh * 0.01f);
 
 		if (h > w) h = w;
 		else if (w > h) w = h;
@@ -165,12 +192,13 @@ public class TermView extends View implements OnGestureListener {
 				if (y < pady) y = pady;
 				if (y + h >= totalh - pady) y = totalh - h - pady;
 
-                Rect r = new Rect(x, y, x + w - 1, y + h - 1);
+                RectF r = new RectF(x, y, x + w - 1, y + h - 1);
 
                 // Remember for single tap
                 this.zones.add(r);
 
-				p_canvas.drawRect(r, dirZone);
+				p_canvas.drawRoundRect(r, 10, 10, dirZoneFill);
+				p_canvas.drawRoundRect(r, 10, 10, dirZoneStroke);
 			}
 		}
 	}
@@ -181,11 +209,11 @@ public class TermView extends View implements OnGestureListener {
 
 		int totalw = getWidth();
 		int totalh = getHeight() - game_context.getKeyboardOverlapHeight();
-		int w = (int)(totalw * 0.2f);
-		int h = (int)(totalh * 0.2f);
+		int w = (int)(totalw * 0.25f);
+		int h = (int)(totalh * 0.25f);
 
-		int padx = (int)(totalw * 0.02f);
-		int pady = (int)(totalh * 0.02f);
+		int padx = (int)(totalw * 0.01f);
+		int pady = (int)(totalh * 0.01f);
 
 		if (padx < pady) padx = pady;
 		if (pady < padx) pady = padx;
@@ -197,24 +225,25 @@ public class TermView extends View implements OnGestureListener {
 			for (int px = 1; px <= 3; px++) {
 
 				int x = totalw - (w + padx) * (3 - px + 1);
-
-				//int y = pady + (h + pady) * (1 + py - 2);
                 int y = totalh - (h + pady) * (3 - py + 1);
 
                 // More space between rows if we have keyboard
+				/*
                 if (Preferences.isKeyboardVisible()) {
                     float pct[] = {0.0f, 0.5f, 1.0f};
                     y = (int) (totalh * pct[py - 1]) - h / 2;
                     if (y < pady) y = pady;
                     if (y + h >= totalh - pady) y = totalh - h - pady;
                 }
+                */
 
-                Rect r = new Rect(x, y, x + w - 1, y + h - 1);
+                RectF r = new RectF(x, y, x + w - 1, y + h - 1);
 
                 // Remember for single tap
                 this.zones.add(r);
 
-                p_canvas.drawRect(r, dirZone);
+				p_canvas.drawRoundRect(r, 10, 10, dirZoneFill);
+				p_canvas.drawRoundRect(r, 10, 10, dirZoneStroke);
 			}
 		}
 	}
@@ -234,7 +263,8 @@ public class TermView extends View implements OnGestureListener {
 			int ct = Math.max(y-char_height,0);
 			int cb = Math.min(y,canvas_height-1);
 
-			if (state.stdscr.cursor_visible) {
+			// No cursor when running
+			if (state.stdscr.cursor_visible && savedTime == 0) {
 				canvas.drawRect(cl, ct, cr, cb, cursor);
 			}
 		}
@@ -402,6 +432,7 @@ public class TermView extends View implements OnGestureListener {
 	private boolean setFontSize(int size) {
 		return setFontSize(size,true);
 	}
+
 	private boolean setFontSize(int size, boolean persist) {
 
 		setFontFace();
@@ -456,20 +487,19 @@ public class TermView extends View implements OnGestureListener {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent me) {
-        int tempDirection = this.getDirFromZone((int)me.getY(), (int)me.getX());
+        int tempDirection = this.getDirFromZone(me.getY(), me.getX());
         if (tempDirection != lastDirection) {
-            timerHandler.removeCallbacks(timerRunnable);
+            this.stopTimer();
             lastDirection = tempDirection;
         }
         if (me.getAction() == MotionEvent.ACTION_DOWN && lastDirection > 0) {
             //Log.d("Angband", "DOWN!");
-            state.addDirectionKey(lastDirection);
             timerHandler.postDelayed(timerRunnable, longDelay);
+            state.addDirectionKey(lastDirection);
             return true;
         }
 	    if (me.getAction() == MotionEvent.ACTION_UP && lastDirection > 0) {
-	        lastDirection = 0;
-	        timerHandler.removeCallbacks(timerRunnable);
+	        this.stopTimer();
 	        //Log.d("Angband", "UP!");
 	        return true;
         }
@@ -510,8 +540,8 @@ public class TermView extends View implements OnGestureListener {
 	        return;
         }
 
-	    int y = (int)e.getY();
-	    int x = (int)e.getX();
+	    float y = e.getY();
+	    float x = e.getX();
 
 	    // In the zone of directionals
 	    if (Preferences.getEnableTouch() && Preferences.getTouchRight() &&
@@ -529,7 +559,7 @@ public class TermView extends View implements OnGestureListener {
 	public void onShowPress(MotionEvent e) {
 	}
 
-	public int getDirFromZone(int y, int x) {
+	public int getDirFromZone(float y, float x) {
 	    int r, c;
         // Find the rectangle
         int i = 0;
@@ -669,7 +699,6 @@ public class TermView extends View implements OnGestureListener {
 		// according to SDK docs
 		state.gameThread.send(GameThread.Request.SaveGame);
 
-		timerHandler.removeCallbacks(timerRunnable);
-		lastDirection = 0;
+		this.stopTimer();
 	}
 }
