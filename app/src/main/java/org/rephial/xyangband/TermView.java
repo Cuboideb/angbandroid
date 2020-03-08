@@ -492,6 +492,10 @@ public class TermView extends View implements OnGestureListener {
             this.stopTimer();
             lastDirection = tempDirection;
         }
+        // Ignore center tap
+        if (lastDirection == '5') {
+        	lastDirection = 0;
+		}
         if (me.getAction() == MotionEvent.ACTION_DOWN && lastDirection > 0) {
             //Log.d("Angband", "DOWN!");
             timerHandler.postDelayed(timerRunnable, longDelay);
