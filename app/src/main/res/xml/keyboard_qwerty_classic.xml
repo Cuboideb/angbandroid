@@ -66,11 +66,8 @@
     </Row>
 
     <Row>
-        <Key android:codes="-1" android:keyLabel="⇧"
-            android:isModifier="true"
-            android:isSticky="true"
+        <Key android:codes="97" android:keyLabel="a"
             android:keyEdgeFlags="left"/>
-        <Key android:codes="97" android:keyLabel="a"/>
         <Key android:codes="115" android:keyLabel="s"/>
         <Key android:codes="100" android:keyLabel="d"/>
         <Key android:codes="102" android:keyLabel="f"/>
@@ -79,10 +76,14 @@
         <Key android:codes="106" android:keyLabel="j"/>
         <Key android:codes="107" android:keyLabel="k"/>
         <Key android:codes="108" android:keyLabel="l"/>
+        <Key android:codes="42" android:keyLabel="*"
+            android:keyEdgeFlags="right"/>
     </Row>
 
     <Row>
-        <Key android:codes="42" android:keyLabel="*"
+        <Key android:codes="-1" android:keyLabel="⇧"
+            android:isModifier="true"
+            android:isSticky="true"
             android:keyEdgeFlags="left"/>
         <Key android:codes="122" android:keyLabel="z"/>
         <Key android:codes="120" android:keyLabel="x"/>
