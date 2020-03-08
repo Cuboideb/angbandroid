@@ -50,6 +50,10 @@ public class TermView extends View implements OnGestureListener {
 	Paint dirZoneFill;
 	Paint dirZoneStroke;
 
+	private int color1 = Color.parseColor("#4a4855");
+	private int color2 = Color.parseColor("#807c93");
+	private int alpha = 40;
+
 	Handler timerHandler;
 	Runnable timerRunnable;
 	private int lastDirection = 0;
@@ -110,14 +114,14 @@ public class TermView extends View implements OnGestureListener {
 		cursor.setStrokeWidth(0);
 
 		dirZoneFill = new Paint();
-		dirZoneFill.setColor(0x555555);
+		dirZoneFill.setColor(color1);
 		dirZoneFill.setStyle(Paint.Style.FILL);
-		dirZoneFill.setAlpha(40);
+		dirZoneFill.setAlpha(alpha);
 
 		dirZoneStroke = new Paint();
 		dirZoneStroke.setColor(0xDDDDDD);
 		dirZoneStroke.setStyle(Paint.Style.STROKE);
-		dirZoneStroke.setAlpha(40);
+		dirZoneStroke.setAlpha(alpha);
 		dirZoneStroke.setStrokeWidth(2);
 		dirZoneStroke.setStrokeCap(Paint.Cap.ROUND);
 
@@ -242,10 +246,22 @@ public class TermView extends View implements OnGestureListener {
                 // Remember for single tap
                 this.zones.add(r);
 
+                if (px == 2 || py == 2) {
+                    dirZoneFill.setColor(color2);
+                }
+                else {
+                    dirZoneFill.setColor(color1);
+                }
+                dirZoneFill.setAlpha(alpha);
+
 				p_canvas.drawRoundRect(r, 10, 10, dirZoneFill);
 				p_canvas.drawRoundRect(r, 10, 10, dirZoneStroke);
 			}
 		}
+
+		// Restore
+        dirZoneFill.setColor(color1);
+        dirZoneFill.setAlpha(alpha);
 	}
 
 	protected void onDraw(Canvas canvas) {
@@ -263,7 +279,7 @@ public class TermView extends View implements OnGestureListener {
 			int ct = Math.max(y-char_height,0);
 			int cb = Math.min(y,canvas_height-1);
 
-			// No cursor when running
+			// Dont draw the cursor if we are using the timer
 			if (state.stdscr.cursor_visible && savedTime == 0) {
 				canvas.drawRect(cl, ct, cr, cb, cursor);
 			}

@@ -146,9 +146,11 @@ public class AngbandKeyboardView extends KeyboardView
 		List<String> keep_these = null;
 
 		// Remove this if keyboard is not qwerty
+		/*
 		if (this.getKeyboard() != this.mContext.virtualKeyboard.kbLayoutQwerty) {
 			miniKeyboard.remove(".");
 		}
+		*/
 
 		// In classic keyboard, hide numbers if we have touch directionals
 		if (!Preferences.getQwertyNumPad() &&
