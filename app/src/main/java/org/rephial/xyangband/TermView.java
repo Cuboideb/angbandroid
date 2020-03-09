@@ -23,6 +23,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.Handler;
@@ -35,6 +36,13 @@ import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+
+import org.rephial.xyangband.AngbandDialog;
+import org.rephial.xyangband.GameActivity;
+import org.rephial.xyangband.GameThread;
+import org.rephial.xyangband.Plugins;
+import org.rephial.xyangband.Preferences;
+import org.rephial.xyangband.StateManager;
 
 import java.util.ArrayList;
 
@@ -49,7 +57,8 @@ public class TermView extends View implements OnGestureListener {
 	Paint cursor;
 	Paint dirZoneFill;
 	Paint dirZoneStroke;
-	Display display;
+	Display fullDisplay;
+	Display windowDisplay;
 
 	private int color1 = Color.parseColor("#4a4855");
 	private int color2 = Color.parseColor("#807c93");
@@ -102,7 +111,13 @@ public class TermView extends View implements OnGestureListener {
 	protected void initTermView(Context context) {
 		game_context = (GameActivity)context;
 
-        display = ((WindowManager)game_context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+		// The display of the device
+		WindowManager wm = (WindowManager)game_context.getSystemService(Context.WINDOW_SERVICE);
+        fullDisplay = wm.getDefaultDisplay();
+
+        // Just the activity window
+		WindowManager wm2 = game_context.getWindowManager();
+		windowDisplay = wm2.getDefaultDisplay();
 
 		fore = new Paint();
 		fore.setTextAlign(Paint.Align.LEFT);
@@ -218,7 +233,10 @@ public class TermView extends View implements OnGestureListener {
 		int totalw = getWidth();
 		int totalh = getHeight() - game_context.getKeyboardOverlapHeight();
 		int w = (int)(totalw * 0.10f);
-		int h = (int)(display.getHeight() * 0.10f);
+		// Get the height of the activity window
+		Point winSize = new Point();
+		windowDisplay.getSize(winSize);
+		int h = (int)(winSize.y * 0.10f);
 
 		int padx = (int)(totalw * 0.01f);
 		int pady = (int)(totalh * 0.01f);
@@ -410,8 +428,10 @@ public class TermView extends View implements OnGestureListener {
 	}
 
 	public boolean isHighRes() {
-		int maxWidth = display.getWidth();
-		int maxHeight = display.getHeight();
+		Point size = new Point();
+		fullDisplay.getSize(size);
+		int maxWidth = size.x;
+		int maxHeight = size.y;
 
 		//Log.d("Angband","isHighRes "+maxHeight+","+maxWidth +","+ (Math.max(maxWidth,maxHeight)>480));
 		return Math.max(maxWidth,maxHeight)>480;

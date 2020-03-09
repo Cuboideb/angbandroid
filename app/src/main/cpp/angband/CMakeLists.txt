@@ -95,6 +95,7 @@ add_library( # Sets the name of the library.
             player-history.c
             player-path.c
             player-quest.c
+            player-properties.c
             player-race.c
             player-spell.c
             player-timed.c
