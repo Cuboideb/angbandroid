@@ -49,6 +49,7 @@ public class TermView extends View implements OnGestureListener {
 	Paint cursor;
 	Paint dirZoneFill;
 	Paint dirZoneStroke;
+	Display display;
 
 	private int color1 = Color.parseColor("#4a4855");
 	private int color2 = Color.parseColor("#807c93");
@@ -100,6 +101,9 @@ public class TermView extends View implements OnGestureListener {
 
 	protected void initTermView(Context context) {
 		game_context = (GameActivity)context;
+
+        display = ((WindowManager)game_context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+
 		fore = new Paint();
 		fore.setTextAlign(Paint.Align.LEFT);
 		if ( isHighRes() ) fore.setAntiAlias(true);
@@ -214,7 +218,7 @@ public class TermView extends View implements OnGestureListener {
 		int totalw = getWidth();
 		int totalh = getHeight() - game_context.getKeyboardOverlapHeight();
 		int w = (int)(totalw * 0.10f);
-		int h = (int)(getHeight() * 0.10f);
+		int h = (int)(display.getHeight() * 0.10f);
 
 		int padx = (int)(totalw * 0.01f);
 		int pady = (int)(totalh * 0.01f);
@@ -406,7 +410,6 @@ public class TermView extends View implements OnGestureListener {
 	}
 
 	public boolean isHighRes() {
-		Display display = ((WindowManager) game_context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
 		int maxWidth = display.getWidth();
 		int maxHeight = display.getHeight();
 
