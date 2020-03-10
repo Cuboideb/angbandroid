@@ -74,9 +74,8 @@ public class KeyBuffer {
 		boolean rogueLike = state.isRoguelikeKeyboard();
 		boolean runningMode = state.getRunningMode();
 
-		// Translation broke roguelike keyboard
-		/*
-		if (rogueLike) {
+		// Translate numbers when running
+		if (rogueLike && runningMode) {
 			switch(key) {
 			case '1': key = 'b'; break;
 			case '2': key = 'j'; break;
@@ -90,7 +89,6 @@ public class KeyBuffer {
 			default: break;
 			}
 		}
-		*/
 
 		if (key == '5') { // center tap
 			KeyAction act = Preferences.getKeyMapper().getCenterScreenTapAction();
