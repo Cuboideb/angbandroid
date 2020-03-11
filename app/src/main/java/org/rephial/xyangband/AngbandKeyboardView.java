@@ -286,7 +286,7 @@ public class AngbandKeyboardView extends KeyboardView
 			Drawable keyBackground;
 			// Special color for spacebar
 			if (key.label != null && key.label.equals(" ")) {
-				keyBackground = mContext.getResources().getDrawable(R.drawable.keybg_bright);
+				keyBackground = mContext.getResources().getDrawable(R.drawable.keybg_background_alt);
 			}
 			else {
 				keyBackground = mContext.getResources().getDrawable(R.drawable.keybg_background);
