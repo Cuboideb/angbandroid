@@ -169,6 +169,21 @@ public class NativeWrapper {
 		}
 	}
 
+	public void control_msg(final int what, final int n, final byte[] cp)
+	{
+		String str;
+
+		try {
+			str = new String(cp, "UTF-8");
+		}
+		catch (java.io.UnsupportedEncodingException ex) {
+			Log.d("Angband", ex.getMessage());
+			return;
+		}
+
+		Log.d("Angband", "Control: " + what + " - " + str);
+	}
+
 	public void waddnstr(final int w, final int n, final byte[] cp) {
 		synchronized (display_lock) {
 			TermWindow t = state.getWin(w);

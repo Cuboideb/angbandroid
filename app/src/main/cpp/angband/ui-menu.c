@@ -774,7 +774,7 @@ static void keys_to_ui(struct menu *menu)
 	//plog_fmt("Keys %s\n", buf);
 
 	if (strlen(buf) > 0) {
-		Term_control_msg_mb(TERM_CONTROL_LIST_KEYS, buf);
+		Term_control_msg(TERM_CONTROL_LIST_KEYS, buf);
 	}
 }
 

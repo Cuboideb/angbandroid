@@ -59,6 +59,7 @@ static jmethodID NativeWrapper_wcstombs;
 static jmethodID NativeWrapper_score_start;
 static jmethodID NativeWrapper_score_detail;
 static jmethodID NativeWrapper_score_submit;
+static jmethodID NativeWrapper_control_msg;
 
 void (*angdroid_quit_hook)(void) = NULL;
 
@@ -142,6 +143,19 @@ int waddnstr(WINDOW* w, int n, const char *s) {
 	(*env)->SetByteArrayRegion(env, array, 0, n, (void*)s);
 	LOGC("curses.waddnstr %d %d %c",w->w,n,s[0]);
 	JAVA_CALL(NativeWrapper_waddnstr, w->w, n, array);
+	(*env)->DeleteLocalRef(env, array);
+	return 0;
+}
+
+int control_msg(int what, const char *s)
+{
+	int len = strlen(s);
+	/* Make java byte array */
+	jbyteArray array = (*env)->NewByteArray(env, len);
+	if (array == NULL) angdroid_quit("Error: Out of memory");
+	(*env)->SetByteArrayRegion(env, array, 0, len, (void*)s);
+	/*LOGC("curses.control_msg %d %d %c", what, len, s[0]);*/
+	JAVA_CALL(NativeWrapper_control_msg, what, len, array);
 	(*env)->DeleteLocalRef(env, array);
 	return 0;
 }
@@ -481,6 +495,7 @@ JNIEXPORT void JNICALL angdroid_gameStart
 	NativeWrapper_fatal = JAVA_METHOD("fatal", "(Ljava/lang/String;)V");	
 	NativeWrapper_warn = JAVA_METHOD("warn", "(Ljava/lang/String;)V");
 	NativeWrapper_waddnstr = JAVA_METHOD("waddnstr", "(II[B)V");
+	NativeWrapper_control_msg = JAVA_METHOD("control_msg", "(II[B)V");
 	NativeWrapper_wattrset = JAVA_METHOD("wattrset", "(II)V");
 	NativeWrapper_wattrget = JAVA_METHOD("wattrget", "(III)I");
 	NativeWrapper_wbgattrset = JAVA_METHOD("wbgattrset", "(II)V");

@@ -45,6 +45,7 @@ int waddnstr(WINDOW*, int, const char *);
 int waddnwstr(WINDOW*, int, const wchar_t *);
 int move(int, int);
 int mvaddch(int, int, const char);
+int control_msg(int, const char *);
 int mvaddwch(int, int, const wchar_t);
 int mvwaddch(WINDOW *,int, int, const char);
 int mvwaddwch(WINDOW *,int, int, const wchar_t);

@@ -451,7 +451,7 @@ static errr Term_curs_hack(int x, int y)
 	return (-1);
 }
 
-static errr Term_control_msg_hack(const char *what, const wchar_t *msg)
+static errr Term_control_msg_hack(int what, const char *msg)
 {
 	return -1;
 }
@@ -2516,7 +2516,7 @@ int big_pad(int col, int row, byte a, wchar_t c)
 	return tile_width;
 }
 
-errr Term_control_msg(const char *what, const wchar_t *msg)
+errr Term_control_msg(int what, const char *msg)
 {
 	/* Verify the hook */
 	if (!Term->control_msg_hook) return (-1);
@@ -2525,26 +2525,21 @@ errr Term_control_msg(const char *what, const wchar_t *msg)
 	return ((*Term->control_msg_hook)(what, msg));
 }
 
-errr Term_control_msg_mb(const char *what, const char *msg)
+errr Term_control_msg_ws(int what, const wchar_t *ws)
 {
-	errr status = -1;
-	wchar_t *buf;
-	size_t len;
+	/* Make a copy */
+	int n = wcslen(ws);
+	wchar_t* wbuf = mem_alloc(sizeof(wchar_t)*(n+1));
+	memcpy(wbuf,ws,sizeof(wchar_t)*n);
+	wbuf[n]=0;
 
-	len = text_mbstowcs(NULL,msg,0);
-	if (len == (size_t)-1) {
-		return (-1);
-	}
+	/* Transform to multi-byte */
+	size_t len = wcstombs((char*)NULL, wbuf, (size_t)32000);
+	char* s = mem_alloc(len+1);
+	wcstombs(s, wbuf, len+1);
+	mem_free(wbuf);
 
-	buf = mem_alloc((len + 1) * sizeof(wchar_t));
-
-	len = text_mbstowcs(buf,msg,len+1);
-	if (len == (size_t)-1) {
-		mem_free(buf);
-		return (-1);
-	}
-
-	status = Term_control_msg(what, buf);
-	mem_free(buf);
+	errr status = Term_control_msg(what, s);
+	mem_free(s);
 	return (status);
 }
