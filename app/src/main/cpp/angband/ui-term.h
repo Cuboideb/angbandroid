@@ -233,11 +233,8 @@ struct term
 
 	void (*view_map_hook)(term *t);
 
+	errr (*control_msg_hook)(const char *what, const wchar_t *msg);
 };
-
-
-
-
 
 /**
  * ------------------------------------------------------------------------
@@ -297,6 +294,8 @@ struct term
 #define TERM_XTRA_ALIVE 11    /* Change the "hard" level (optional) */
 #define TERM_XTRA_LEVEL 12    /* Change the "soft" level (optional) */
 #define TERM_XTRA_DELAY 13    /* Delay some milliseconds (optional) */
+
+#define TERM_CONTROL_LIST_KEYS "LIST_KEYS"
 
 /**
  * Bit flags for the "window_flag" variable.
@@ -387,6 +386,9 @@ extern errr Term_keypress(keycode_t k, byte mods);
 extern errr Term_key_push(int k);
 extern errr Term_event_push(const ui_event *ke);
 extern errr Term_inkey(ui_event *ch, bool wait, bool take);
+
+extern errr Term_control_msg(const char *what, const wchar_t *msg);
+extern errr Term_control_msg_mb(const char *what, const char *msg);
 
 extern errr Term_save(void);
 extern errr Term_load(void);

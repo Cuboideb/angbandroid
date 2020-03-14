@@ -451,6 +451,11 @@ static errr Term_curs_hack(int x, int y)
 	return (-1);
 }
 
+static errr Term_control_msg_hack(const char *what, const wchar_t *msg)
+{
+	return -1;
+}
+
 /**
  * Hack -- fake hook for "Term_wipe()" (see above)
  */
@@ -1166,6 +1171,7 @@ errr Term_fresh(void)
 	if (!Term->wipe_hook) Term->wipe_hook = Term_wipe_hack;
 	if (!Term->text_hook) Term->text_hook = Term_text_hack;
 	if (!Term->pict_hook) Term->pict_hook = Term_pict_hack;
+	if (!Term->control_msg_hook) Term->control_msg_hook = Term_control_msg_hack;
 
 
 	/* Handle "total erase" */
@@ -2508,4 +2514,37 @@ int big_pad(int col, int row, byte a, wchar_t c)
 		Term_big_putch(col, row, a, c);
 
 	return tile_width;
+}
+
+errr Term_control_msg(const char *what, const wchar_t *msg)
+{
+	/* Verify the hook */
+	if (!Term->control_msg_hook) return (-1);
+
+	/* Call the hook */
+	return ((*Term->control_msg_hook)(what, msg));
+}
+
+errr Term_control_msg_mb(const char *what, const char *msg)
+{
+	errr status = -1;
+	wchar_t *buf;
+	size_t len;
+
+	len = text_mbstowcs(NULL,msg,0);
+	if (len == (size_t)-1) {
+		return (-1);
+	}
+
+	buf = mem_alloc((len + 1) * sizeof(wchar_t));
+
+	len = text_mbstowcs(buf,msg,len+1);
+	if (len == (size_t)-1) {
+		mem_free(buf);
+		return (-1);
+	}
+
+	status = Term_control_msg(what, buf);
+	mem_free(buf);
+	return (status);
 }

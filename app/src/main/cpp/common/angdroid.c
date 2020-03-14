@@ -315,6 +315,24 @@ static errr Term_pict_android(int x, int y, int n, const int *ap, const wchar_t 
 	return 0;
 }
 
+static errr Term_control_msg_android(const char *what, const wchar_t *msg)
+{
+	wchar_t *buf;
+	char str1[200] = "<control_msg>";
+	my_strcat(str1, what, sizeof(str1));
+	my_strcat(str1, "</control_msg>", sizeof(str1));
+	size_t len_prefix = strlen(str1);
+	size_t len_msg = wcslen(msg);
+	size_t status;
+	buf = mem_alloc((len_prefix+len_msg+1) * sizeof(wchar_t));
+	status = text_mbstowcs(buf, what, len_prefix);
+	if (status >= 0) {
+		memcpy(buf+len_prefix, msg, (len_msg+1)*sizeof(wchar_t));
+		addnwstr(len_prefix+len_msg, buf);
+	}
+	mem_free(buf);
+	return status;
+}
 
 /*** Internal Functions ***/
 
@@ -378,6 +396,7 @@ static void term_data_link(int i)
 	t->wipe_hook = Term_wipe_android;
 	t->text_hook = Term_text_android;
 	t->pict_hook = Term_pict_android;
+	t->control_msg_hook = Term_control_msg_android;
 
 	/* Remember where we came from */
 	t->data = td;

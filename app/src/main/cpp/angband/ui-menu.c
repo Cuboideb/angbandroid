@@ -736,6 +736,47 @@ bool menu_handle_keypress(struct menu *menu, const ui_event *in,
 	return eat;
 }
 
+static void keys_to_ui(struct menu *menu)
+{
+	char buf[256] = "";
+
+	if (menu->inscriptions) {
+		int i, j;
+		char used[20];
+		for (i = 0, j = 0; i < 10; i++) {
+			if (menu->inscriptions[i]) {
+				used[j++] = ('0' + i);
+			}
+		}
+		used[j] = '\0';
+		my_strcat(buf, used, sizeof(buf));
+	}
+	if (menu->selections) {
+		int i, j;
+		char sel[256];
+		int n = menu->filter_list ? menu->filter_count : menu->count;
+		/*plog_fmt("count: %d", menu->count);*/
+		for (i = 0, j = 0; i < n; i++) {
+			if (is_valid_row(menu, i)) {
+				sel[j++] = menu->selections[i];
+			}
+		}
+		sel[j] = '\0';
+		my_strcat(buf, sel, sizeof(buf));
+	}
+	if (menu->cmd_keys) {
+		my_strcat(buf, menu->cmd_keys, sizeof(buf));
+	}
+	if (menu->switch_keys) {
+		my_strcat(buf, menu->switch_keys, sizeof(buf));
+	}
+
+	//plog_fmt("Keys %s\n", buf);
+
+	if (strlen(buf) > 0) {
+		Term_control_msg_mb(TERM_CONTROL_LIST_KEYS, buf);
+	}
+}
 
 /**
  * Run a menu.
@@ -761,6 +802,9 @@ ui_event menu_select(struct menu *menu, int notify, bool popup)
 		int cursor = menu->cursor;
 
 		menu_refresh(menu, popup);
+
+		keys_to_ui(menu);
+
 		in = inkey_ex();
 
 		/* Handle mouse & keyboard commands */
