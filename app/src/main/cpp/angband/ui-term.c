@@ -2525,10 +2525,9 @@ errr Term_control_msg(int what, const char *msg)
 	return ((*Term->control_msg_hook)(what, msg));
 }
 
-errr Term_control_msg_ws(int what, const wchar_t *ws)
+errr Term_control_msg_ws(int what, int n, const wchar_t *ws)
 {
 	/* Make a copy */
-	int n = wcslen(ws);
 	wchar_t* wbuf = mem_alloc(sizeof(wchar_t)*(n+1));
 	memcpy(wbuf,ws,sizeof(wchar_t)*n);
 	wbuf[n]=0;

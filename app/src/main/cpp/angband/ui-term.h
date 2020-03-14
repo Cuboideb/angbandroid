@@ -387,7 +387,7 @@ extern errr Term_key_push(int k);
 extern errr Term_event_push(const ui_event *ke);
 extern errr Term_inkey(ui_event *ch, bool wait, bool take);
 
-extern errr Term_control_msg_ws(int what, const wchar_t *msg);
+extern errr Term_control_msg_ws(int what, int n, const wchar_t *msg);
 extern errr Term_control_msg(int what, const char *msg);
 
 extern errr Term_save(void);
