@@ -29,6 +29,12 @@ public class NativeWrapper {
 		}
 	}
 
+	public void clearFastKeys()
+	{
+		this.term.setFastKeys("");
+		this.frosh(null);
+	}
+
 	int getch(final int v) {
 		state.gameThread.setFullyInitialized();
 		int key = state.getKey(v);
@@ -181,7 +187,13 @@ public class NativeWrapper {
 			return;
 		}
 
-		Log.d("Angband", "Control: " + what + " - " + str);
+		//Log.d("Angband", "Control: " + what + " - " + str);
+
+		if (what == 1) {
+			synchronized (display_lock) {
+				this.term.setFastKeys(str);
+			}
+		}
 	}
 
 	public void waddnstr(final int w, final int n, final byte[] cp) {

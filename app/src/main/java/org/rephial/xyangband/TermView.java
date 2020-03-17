@@ -94,6 +94,8 @@ public class TermView extends View implements OnGestureListener {
 
 	private ArrayList<RectF> zones = new ArrayList<>();
 
+	private String fastKeys = "";
+
 	public TermView(Context context) {
 		super(context);
 		initTermView(context);
@@ -226,6 +228,20 @@ public class TermView extends View implements OnGestureListener {
 		}
 	}
 
+	public void setFastKeys(String p_keys)
+	{
+		this.fastKeys = p_keys;
+	}
+
+	public void clearFastKeys()
+	{
+		String old = this.fastKeys;
+		this.fastKeys = "";
+		if (old.length() > 0) {
+			this.state.stdscr.touch();
+		}
+	}
+
 	protected void drawDirZonesRight(Canvas p_canvas)
 	{
         this.zones.clear();
@@ -286,6 +302,21 @@ public class TermView extends View implements OnGestureListener {
         dirZoneFill.setAlpha(alpha);
 	}
 
+	protected void drawFastKeys()
+	{
+		if (this.fastKeys.length() == 0) {
+			return;
+		}
+
+		int x = 20;
+		int y = 15;
+
+		for (char c: this.fastKeys.toCharArray()) {
+			this.drawPoint(y, x++, c, Color.WHITE,
+					Color.argb(0,0,0,0), false);
+		}
+	}
+
 	protected void onDraw(Canvas canvas) {
 	    this.zones.clear();
 
@@ -315,6 +346,8 @@ public class TermView extends View implements OnGestureListener {
 				this.drawDirZonesFull(canvas);
 			}
 		}
+
+		this.drawFastKeys();
 	}
 
 	public void computeCanvasSize() {
