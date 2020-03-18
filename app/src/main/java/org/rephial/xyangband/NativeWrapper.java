@@ -31,8 +31,10 @@ public class NativeWrapper {
 
 	public void clearFastKeys()
 	{
-		this.term.setFastKeys("");
-		this.frosh(null);
+		synchronized (display_lock) {
+			this.term.setFastKeys("");
+			this.frosh(null);
+		}
 	}
 
 	int getch(final int v) {
