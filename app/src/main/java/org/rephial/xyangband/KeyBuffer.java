@@ -43,8 +43,6 @@ public class KeyBuffer {
 
 	public void add(int key) {
 
-		this.state.nativew.clearFastKeys();
-
 		//Log.d("Angband", "KebBuffer.add:"+key);
 		synchronized (keybuffer) {
 			ctrl_key_overload = false;

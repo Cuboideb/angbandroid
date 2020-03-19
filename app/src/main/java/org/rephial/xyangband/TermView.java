@@ -94,10 +94,6 @@ public class TermView extends View implements OnGestureListener {
 
 	private ArrayList<RectF> zones = new ArrayList<>();
 
-	private ArrayList<RectF> fastZones = new ArrayList<>();
-
-	private String fastKeys = "";
-
 	public TermView(Context context) {
 		super(context);
 		initTermView(context);
@@ -230,45 +226,6 @@ public class TermView extends View implements OnGestureListener {
 		}
 	}
 
-	public void setFastKeys(String p_keys)
-	{
-		this.fastKeys = p_keys;
-
-		this.fastZones.clear();
-
-		if (this.fastKeys.length() == 0) {
-		    return;
-        }
-
-        // Get the height of the activity window
-        Point winSize = new Point();
-        windowDisplay.getSize(winSize);
-        int h = (int)(winSize.y * 0.10f);
-        int w = (int)(winSize.x * 0.10f);
-
-        if (h > w) h = w;
-        if (w > h) w = h;
-
-        int y = (int)(winSize.x * 0.01f);
-        int padx = (int)(w * 0.1f);
-        int x = winSize.x - (padx + w);
-
-        for (int i = this.fastKeys.length() - 1; i >= 0; i--) {
-            RectF rect = new RectF(x, y, x + w - 1, y + h - 1);
-            this.fastZones.add(0, rect);
-            x = x - (padx + w);
-        }
-	}
-
-	public void clearFastKeys()
-	{
-		String old = this.fastKeys;
-		this.fastKeys = "";
-		if (old.length() > 0) {
-			this.state.stdscr.touch();
-		}
-	}
-
 	protected void drawDirZonesRight(Canvas p_canvas)
 	{
         this.zones.clear();
@@ -329,36 +286,6 @@ public class TermView extends View implements OnGestureListener {
         dirZoneFill.setAlpha(alpha);
 	}
 
-	protected void drawFastKeys(Canvas p_canvas)
-	{
-		if (this.fastKeys.length() == 0) {
-			return;
-		}
-
-        dirZoneFill.setColor(color1);
-        dirZoneFill.setAlpha(alpha);
-
-        int i = 0;
-
-		for (RectF r: this.fastZones) {
-            p_canvas.drawRoundRect(r, 10, 10, dirZoneFill);
-            p_canvas.drawRoundRect(r, 10, 10, dirZoneStroke);
-
-            int w = (int)(r.right - r.left + 1);
-            int h = (int)(r.bottom - r.top + 1);
-
-            int x = (int)(r.left + w / 2 - char_width / 2);
-            int y = (int)(r.top + h / 2 - char_height / 2);
-
-            //setBackColor(Color.argb(0,0,0,0));
-            setForeColor(Color.WHITE);
-
-            String str = "" + this.fastKeys.charAt(i++);
-
-            p_canvas.drawText(str, x, y + char_height - fore.descent(), fore);
-        }
-	}
-
 	protected void onDraw(Canvas canvas) {
 	    this.zones.clear();
 
@@ -388,8 +315,6 @@ public class TermView extends View implements OnGestureListener {
 				this.drawDirZonesFull(canvas);
 			}
 		}
-
-		this.drawFastKeys(canvas);
 	}
 
 	public void computeCanvasSize() {
@@ -696,20 +621,6 @@ public class TermView extends View implements OnGestureListener {
         return key;
     }
 
-    public int getFromFastKeys(float y, float x)
-	{
-		int i = 0;
-
-		for (RectF r: this.fastZones) {
-			if (r.contains(x, y)) {
-				return this.fastKeys.charAt(i);
-			}
-			++i;
-		}
-
-		return 0;
-	}
-
 	public boolean onSingleTapUp(MotionEvent event) {
 	    if (lastDirection > 0) {
 	        return true;
@@ -733,11 +644,7 @@ public class TermView extends View implements OnGestureListener {
             key = (2 - r) * 3 + c + '1';
         }
 		else {
-			key = this.getFromFastKeys(y, x);
-
-			if (key == 0) {
-				key = this.getDirFromZone(y, x);
-			}
+			key = this.getDirFromZone(y, x);
         }
 
         if (key == 0) {
