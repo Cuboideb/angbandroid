@@ -141,7 +141,6 @@ struct cmd_info cmd_info[] =
 	{ "Toggle ignoring of items", { 'K', 'O' }, CMD_NULL, textui_cmd_toggle_ignore, NULL },
 	{ "Display visible item list", { ']' }, CMD_NULL, do_cmd_itemlist, NULL },
 	{ "Display visible monster list", { '[' }, CMD_NULL, do_cmd_monlist, NULL },
-	{ "Display visible monster list (EXP)", { KTRL('U') }, CMD_NULL, do_cmd_monlist_exp, NULL },
 	{ "Locate player on map", { 'L', 'W' }, CMD_NULL, do_cmd_locate, NULL },
 	{ "Help", { '?' }, CMD_NULL, do_cmd_help, NULL },
 	{ "Identify symbol", { '/' }, CMD_NULL, do_cmd_query_symbol, NULL },

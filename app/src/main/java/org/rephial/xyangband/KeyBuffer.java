@@ -1,5 +1,6 @@
 package org.rephial.xyangband;
 
+import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
 
@@ -43,6 +44,9 @@ public class KeyBuffer {
 
 	public void add(int key) {
 
+	    // Clear fast keys
+        //state.controlMsg(GameActivity.TERM_CONTROL_LIST_KEYS, "");
+
 		//Log.d("Angband", "KebBuffer.add:"+key);
 		synchronized (keybuffer) {
 			ctrl_key_overload = false;
@@ -75,6 +79,8 @@ public class KeyBuffer {
 		boolean rogueLike = state.isRoguelikeKeyboard();
 		boolean runningMode = state.getRunningMode();
 
+		//state.context.setFastKeys("");
+
 		// Translate numbers when running
 		if (rogueLike && runningMode) {
 			switch(key) {
@@ -88,6 +94,21 @@ public class KeyBuffer {
 			case '8': key = 'k'; break;
 			case '9': key = 'u'; break;
 			default: break;
+			}
+		}
+		else {
+			// Translate to better keys
+			switch(key) {
+				case '2':
+					key = ButtonRibbon.KC_ARROW_DOWN; break;
+				case '4':
+					key = ButtonRibbon.KC_ARROW_LEFT; break;
+				case '6':
+					key = ButtonRibbon.KC_ARROW_RIGHT; break;
+				case '8':
+					key = ButtonRibbon.KC_ARROW_UP; break;
+				default:
+					break;
 			}
 		}
 

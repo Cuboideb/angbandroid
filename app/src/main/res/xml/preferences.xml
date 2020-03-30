@@ -62,6 +62,11 @@
 		  android:defaultValue="false"
 		  android:title="Qwerty NumPad"
 		  android:summary="Qwerty keyboard comes with NumPad" />
+	  <CheckBoxPreference
+		  android:key="angband.useicons"
+		  android:defaultValue="true"
+		  android:title="Use Icons"
+		  android:summary="Use Icons for command buttons" />
 	<PreferenceScreen
 	   android:title="Hardware Key Mapping"
 	   android:summary="Configure hardware buttons on your device to perform various functions">	  
@@ -198,6 +203,12 @@
 		  android:dependency="angband.enabletouch"
 		  android:title="@string/preferences_touchright_title"
 		  android:summary="@string/preferences_touchright_summary" />
+	<org.rephial.xyangband.SeekBarPreference
+		  android:key="angband.touchmultiplier"
+		  android:title="Touch directional size multiplier"
+		  seekBar:min="0"
+		  seekBar:max="100"
+		  seekBar:defaultVal="0" />
 	<ListPreference
 	   android:title="Center screen tap action"
 	   android:summary="Select functionality for center screen tap"

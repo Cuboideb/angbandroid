@@ -1,5 +1,6 @@
 package org.rephial.xyangband;
 
+import android.os.Message;
 import android.util.Log;
 
 public class NativeWrapper {
@@ -183,9 +184,7 @@ public class NativeWrapper {
 
 		//Log.d("Angband", "Control: " + what + " - " + str);
 
-		if (what == 1) {
-
-		}
+		state.controlMsg(what, str);
 	}
 
 	public void waddnstr(final int w, final int n, final byte[] cp) {

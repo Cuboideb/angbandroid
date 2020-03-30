@@ -213,6 +213,9 @@ void textui_cmd_suicide(void)
 		/* Special Verification for suicide */
 		prt("Please verify KILLING THIS CHARACTER by typing the '@' sign: ", 0, 0);
 		event_signal(EVENT_INPUT_FLUSH);
+
+        keys_flash("@");
+
 		ch = inkey();
 		prt("", 0, 0);
 		if (ch.code != '@') return;
@@ -229,6 +232,8 @@ void textui_cmd_rest(void)
 	const char *p = "Rest (0-9999, '!' for HP or SP, '*' for HP and SP, '&' as needed): ";
 
 	char out_val[5] = "& ";
+
+    keys_linger("!*&0123456789");
 
 	/* Ask for duration */
 	if (!get_string(p, out_val, sizeof(out_val))) return;

@@ -1,6 +1,8 @@
 package org.rephial.xyangband;
 
 import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.KeyEvent;
 
 import java.util.HashMap;
@@ -133,6 +135,15 @@ public class StateManager {
 		this.keyBuffer = new KeyBuffer(this);
 	}
 
+	public void controlMsg(int type, String body)
+	{
+		Message msg = Message.obtain();
+		msg.what = AngbandDialog.Action.ControlMsg.ordinal();
+		msg.arg1 = type;
+		msg.obj = body;
+		handler.sendMessage(msg);
+	}
+
 	public void addKey(int k) {
 		if (this.keyBuffer == null) {
 			return;
@@ -146,6 +157,41 @@ public class StateManager {
 			this.keyBuffer.add(k);
 		}
 	}
+
+    public static int set_bit(int n) {
+        return (1 << (n));
+    }
+
+    public static int make_mask(int n) {
+        int i, mask = 0;
+        for (i = 0; i < n; i++) {
+            mask |= set_bit(i);
+        }
+        return mask;
+    }
+
+	public void addMousePress(int y, int x, int button)
+    {
+        if (this.keyBuffer == null) {
+            return;
+        }
+
+        if (y < 0 || y >= 1024) return;
+        if (x < 0 || x >= 1024) return;
+        if (button < 0 || button >= 8) return;
+
+        // Mouse bit
+        int ch = set_bit(30);
+        // Encode button
+        ch |= ((button & make_mask(3)) << 20);
+        // Encode coordinates
+        ch |= (y & make_mask(10));
+        ch |= ((x & make_mask(10)) << 10);
+
+        //Log.d("Angband", "mouse " + ch);
+
+        this.keyBuffer.add(ch);
+    }
 
 	public int getKey(int v) {
 		if (this.keyBuffer != null)

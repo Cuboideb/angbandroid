@@ -19,8 +19,9 @@ public class AngbandDialog {
 			,StartGame
 			,OnGameExit
 			,Toast
-			,ToggleKeyboard,
-			Score;
+			,ToggleKeyboard
+			,Score
+			,ControlMsg;
 
 		public static Action convert(int value)
 		{
@@ -38,6 +39,9 @@ public class AngbandDialog {
 		//Log.d("Angband","handleMessage: "+msg.what);		
 
 		switch (Action.convert(msg.what)) {
+		case ControlMsg:
+			activity.controlMsg(msg.arg1, (String)msg.obj);
+			break;
 		case OpenContextMenu: // display context menu
 			activity.openContextMenu();
 			break;

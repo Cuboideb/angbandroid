@@ -42,6 +42,7 @@
 #include "target.h"
 #include "trap.h"
 #include "ui-context.h"
+#include "ui-display.h"
 #include "ui-history.h"
 #include "ui-menu.h"
 #include "ui-mon-list.h"
@@ -700,6 +701,9 @@ static void display_group_member(struct menu *menu, int oid,
 static const char *recall_prompt(int oid)
 {
 	(void)oid;
+
+	keys_flash("r");
+
 	return ", 'r' to recall";
 }
 
@@ -896,6 +900,8 @@ static void display_knowledge(const char *title, int *obj_list, int o_count,
 
 		/* Print prompt */
 		{
+			keys_clear(true);
+
 			const char *pedit = (!o_funcs.xattr) ? "" :
 					(!(attr_idx|char_idx) ?
 					 ", 'c' to copy" : ", 'c', 'p' to paste");
@@ -903,9 +909,22 @@ static void display_knowledge(const char *title, int *obj_list, int o_count,
 				o_funcs.xtra_prompt(oid) : "";
 			const char *pvs = "";
 
+			if (strlen(pedit) > 0) {
+				keys_flash("c");
+				if (strstr(pedit, "paste") != NULL) {
+					keys_flash("p");
+				}
+			}
+
 			if (tile_picker) pvs = ", ENTER to accept";
-			else if (glyph_picker) pvs = ", 'i' to insert, ENTER to accept";
-			else if (o_funcs.xattr) pvs = ", 'v' for visuals";
+			else if (glyph_picker) {
+				pvs = ", 'i' to insert, ENTER to accept";
+				keys_flash("i");
+			}
+			else if (o_funcs.xattr) {
+				pvs = ", 'v' for visuals";
+				keys_flash("v");
+			}
 
 			prt(format("<dir>%s%s%s, ESC", pvs, pedit, xtra), hgt - 1, 0);
 		}
@@ -958,6 +977,9 @@ static void display_knowledge(const char *title, int *obj_list, int o_count,
 		}
 
 		ke = inkey_ex();
+
+		keys_clear(true);
+
 		if (!tile_picker && !glyph_picker) {
 			ui_event ke0 = EVENT_EMPTY;
 
@@ -1925,11 +1947,18 @@ static const char *o_xtra_prompt(int oid)
 
 	if (!kind) return NULL;
 
+	const char *sel;
+
 	/* Appropriate prompt */
 	if (kind->aware)
-		return kind->note_aware ? with_insc : no_insc;
+		sel = kind->note_aware ? with_insc : no_insc;
 	else
-		return kind->note_unaware ? with_insc : no_insc;
+		sel = kind->note_unaware ? with_insc : no_insc;
+
+	keys_flash("sr{");
+	if (sel == with_insc) keys_flash("}");
+
+	return sel;
 }
 
 /**
@@ -2099,8 +2128,15 @@ static const char *rune_xtra_prompt(int oid)
 	const char *no_insc = ", 'r'ecall, '{'";
 	const char *with_insc = ", 'r'ecall, '{', '}'";
 
+	keys_flash("r{");
+
 	/* Appropriate prompt */
-	return rune_note(oid) ? with_insc : no_insc;
+	if (rune_note(oid)) {
+		keys_flash("}");
+		return with_insc;
+	}
+
+	return no_insc;
 }
 
 /**
@@ -2283,12 +2319,15 @@ static void feat_lore(int oid)
 static const char *feat_prompt(int oid)
 {
 	(void)oid;
-		switch (f_uik_lighting) {
-				case LIGHTING_LIT:  return ", 'l/L' for lighting (lit)";
-                case LIGHTING_TORCH: return ", 'l/L' for lighting (torch)";
-				case LIGHTING_LOS:  return ", 'l/L' for lighting (LOS)";
-				default:	return ", 'l/L' for lighting (dark)";
-		}		
+
+	keys_flash("lL");
+
+	switch (f_uik_lighting) {
+			case LIGHTING_LIT:  return ", 'l/L' for lighting (lit)";
+			case LIGHTING_TORCH: return ", 'l/L' for lighting (torch)";
+			case LIGHTING_LOS:  return ", 'l/L' for lighting (LOS)";
+			default:	return ", 'l/L' for lighting (dark)";
+	}
 }
 
 /**
@@ -2469,6 +2508,9 @@ static void trap_lore(int oid)
 static const char *trap_prompt(int oid)
 {
 	(void)oid;
+
+	keys_flash("l");
+
 	return ", 'l' to cycle lighting";
 }
 
@@ -2654,6 +2696,8 @@ void textui_browse_knowledge(void)
 	else
 		knowledge_actions[4].flags = MN_ACT_GRAYED;
 
+	send_control_not_playing();
+
 	screen_save();
 	menu_layout(&knowledge_menu, &knowledge_region);
 
@@ -2661,6 +2705,8 @@ void textui_browse_knowledge(void)
 	menu_select(&knowledge_menu, 0, false);
 
 	screen_load();
+
+	send_control_playing_now();
 }
 
 
@@ -3400,24 +3446,10 @@ void do_cmd_monlist(void)
 	/* Save the screen and display the list */
 	screen_save();
 
-	monster_list_show_interactive(Term->hgt, Term->wid, 0);
+	monster_list_show_interactive(Term->hgt, Term->wid);
 
 	/* Return */
 	screen_load();
-}
-
-/**
- * Display the main-screen monster list.
- */
-void do_cmd_monlist_exp(void)
-{
-    /* Save the screen and display the list */
-    screen_save();
-
-    monster_list_show_interactive(Term->hgt, Term->wid, 1);
-
-    /* Return */
-    screen_load();
 }
 
 /**

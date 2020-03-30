@@ -23,11 +23,14 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -47,7 +50,12 @@ public class GameActivity extends Activity {
 	private TermView term = null;
 	AngbandKeyboard virtualKeyboard = null;
 	AngbandKeyboardView virtualKeyboardView = null;
-    boolean kbOverlappingAndVisible = false;
+
+    private LinearLayout ribbonZone = null;
+    private ButtonRibbon bottomRibbon = null;
+	private ButtonRibbon topRibbon = null;
+
+	public String coreKeymaps = "";
 
 	protected final int CONTEXTMENU_FITWIDTH_ITEM = 0;
 	protected final int CONTEXTMENU_FITHEIGHT_ITEM = 1;
@@ -57,7 +65,16 @@ public class GameActivity extends Activity {
 	protected final int CONTEXTMENU_HELP_ITEM = 5;
 	protected final int CONTEXTMENU_QUIT_ITEM = 6;
 
+	public static final int TERM_CONTROL_LIST_KEYS = 1;
+	public static final int TERM_CONTROL_NOT_PLAYING = 2;
+	public static final int TERM_CONTROL_PLAYING_NOW = 3;
+
 	protected Handler handler = null;
+
+	protected Handler keyHandler = null;
+	protected Runnable keyRunnable = null;
+	protected String lastKeys = "";
+	protected boolean keyHandlerIsRunning = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -83,7 +100,25 @@ public class GameActivity extends Activity {
 			state = new StateManager(this);
 		}
 
-		if (dialog == null) dialog = new AngbandDialog(this,state);
+		if (dialog == null) {
+			dialog = new AngbandDialog(this,state);
+		}
+
+		if (keyHandler == null) {
+			keyHandler = new Handler();
+		}
+
+		if (keyRunnable == null) {
+			keyRunnable = new Runnable() {
+
+				@Override
+				public void run() {
+					Log.d("Angband", "Clear fast keys!");
+					clearKeyTimer();
+					setFastKeysAux("");
+				}
+			};
+		}
 	}
 
 	@Override
@@ -142,12 +177,94 @@ public class GameActivity extends Activity {
 		return super.onMenuItemSelected(featureId, item);
 	}
 
+	public Point getMySize()
+	{
+		WindowManager wm2 = this.getWindowManager();
+		Display display = wm2.getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		return size;
+	}
+
 	@Override
 	public void finish() {
 		//Log.d("Angband","finish");
 		state.gameThread.send(GameThread.Request.StopGame);
 		super.finish();
 	}
+
+	public void controlMsg(int what, String msg)
+	{
+		if (what == TERM_CONTROL_LIST_KEYS) {
+			setFastKeys(msg);
+		}
+		if (what == TERM_CONTROL_NOT_PLAYING &&
+			bottomRibbon != null) {
+			bottomRibbon.setCommandMode(false);
+		}
+		if (what == TERM_CONTROL_PLAYING_NOW) {
+
+			//Log.d("Angband", "Refresh: " + msg);
+
+			// Save keymaps for later
+			if (msg.startsWith("keymaps:")) {
+				coreKeymaps = msg.substring("keymaps:".length());
+				Preferences.setCoreKeymaps(coreKeymaps);
+			}
+
+			rebuildViews();
+		}
+	}
+
+	public void setFastKeysAux(String keys)
+	{
+		if (ribbonZone != null) {
+			topRibbon.setKeys(keys, ButtonRibbon.CmdLocation.Dynamic);
+			bottomRibbon.setShift(false);
+		}
+	}
+
+	public void clearKeyTimer()
+	{
+		if (keyHandler != null && keyRunnable != null) {
+			keyHandler.removeCallbacks(keyRunnable);
+			keyHandlerIsRunning = false;
+		}
+	}
+
+	public void setFastKeys(String keys)
+	{
+		if (keys.equals("[[:clear:]]")) {
+			keys = "";
+		}
+
+		// If we are already deleting the fast keys, do nothing
+		if (keys.length() == 0 && keyHandlerIsRunning) {
+			return;
+		}
+
+		clearKeyTimer();
+
+		if (ribbonZone != null && !keys.equals(lastKeys)) {
+			// Delay the deletion of the fast keys
+			if (keys.length() == 0) {
+				keyHandler.postDelayed(keyRunnable, 200);
+				keyHandlerIsRunning = true;
+			}
+			else {
+				setFastKeysAux(keys);
+			}
+		}
+		lastKeys = keys;
+	}
+
+	public Point getWinSize()
+    {
+        Point aux = new Point();
+        WindowManager wm2 = this.getWindowManager();
+        wm2.getDefaultDisplay().getSize(aux);
+        return aux;
+    }
 
 	protected void rebuildViews() {
 		synchronized (state.progress_lock) {
@@ -170,15 +287,15 @@ public class GameActivity extends Activity {
 			if (screenLayout != null) screenLayout.removeAllViews();
 			screenLayout = new RelativeLayout(this);
 
-			Boolean kb = false;
-			if(Preferences.isScreenPortraitOrientation())
-				kb = Preferences.getPortraitKeyboard();
-			else
-				kb = Preferences.getLandscapeKeyboard();
+			Boolean kb = Preferences.isKeyboardVisible();
 
 			virtualKeyboard = null;
             virtualKeyboardView = null;
-            kbOverlappingAndVisible = false;
+
+			ribbonZone = null;
+			bottomRibbon = null;
+			topRibbon = null;
+
             if (kb) {
                 virtualKeyboard = new AngbandKeyboard(this);
                 virtualKeyboardView = virtualKeyboard.virtualKeyboardView;
@@ -190,28 +307,33 @@ public class GameActivity extends Activity {
             registerForContextMenu(term);
             state.link(term, handler);
 
-            if (Preferences.getKeyboardOverlap()) {
-                // Add both term and keyboard to our existing RelativeLayout
-                term.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-                screenLayout.addView(term);
-                if (kb) {
-                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(virtualKeyboardView.getLayoutParams());
-                    params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                    virtualKeyboardView.setLayoutParams(params);
-                    screenLayout.addView(virtualKeyboardView);
-                    kbOverlappingAndVisible = true;
-                }
-            }
-            else {
-                // If we don't want overlap, enclose both items inside of a LinearLayout
-                LinearLayout enclosure = new LinearLayout(this);
-                enclosure.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-                enclosure.setOrientation(LinearLayout.VERTICAL);
-                term.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, 1.0f));
-                enclosure.addView(term);
-                if (kb) enclosure.addView(virtualKeyboardView);
-                screenLayout.addView(enclosure);
-            }
+			term.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+					LayoutParams.WRAP_CONTENT));
+			screenLayout.addView(term);
+
+			RelativeLayout.LayoutParams rLParams =
+					new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+							LayoutParams.WRAP_CONTENT);
+			rLParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 1);
+
+			if (kb) {
+				screenLayout.addView(virtualKeyboardView, rLParams);
+			}
+			else {
+				ribbonZone = new LinearLayout(this);
+				ribbonZone.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+						LayoutParams.WRAP_CONTENT));
+				ribbonZone.setOrientation(LinearLayout.VERTICAL);
+
+				topRibbon = new ButtonRibbon(this, state, true);
+				ribbonZone.addView(topRibbon.rootView);
+
+				bottomRibbon = new ButtonRibbon(this, state, false);
+				ribbonZone.addView(bottomRibbon.rootView);
+				bottomRibbon.addSibling(topRibbon);
+
+				screenLayout.addView(ribbonZone, rLParams);
+			}
 
 			setContentView(screenLayout);
 			dialog.restoreDialog();
@@ -288,6 +410,8 @@ public class GameActivity extends Activity {
 
 		setScreen();
 
+		setFastKeysAux("");
+
 		term.onResume();
 	}
 
@@ -295,6 +419,9 @@ public class GameActivity extends Activity {
 	protected void onPause() {
 		//Log.d("Angband", "onPause");
 		super.onPause();
+
+		clearKeyTimer();
+
 		term.onPause();
 	}
 
@@ -334,7 +461,17 @@ public class GameActivity extends Activity {
 		return state;
 	}
 
-    public int getKeyboardOverlapHeight() {
-        return kbOverlappingAndVisible ? virtualKeyboardView.getHeight() : 0;
+    public int getKeyboardHeight() {
+		int h = 0;
+
+        if (Preferences.isKeyboardVisible()) {
+			h += virtualKeyboardView.getHeight();
+		}
+
+        if (ribbonZone != null) {
+        	h += ribbonZone.getHeight();
+		}
+
+        return h;
     }
 }

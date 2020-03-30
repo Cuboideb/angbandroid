@@ -296,6 +296,8 @@ struct term
 #define TERM_XTRA_DELAY 13    /* Delay some milliseconds (optional) */
 
 #define TERM_CONTROL_LIST_KEYS 1
+#define TERM_CONTROL_NOT_PLAYING 2
+#define TERM_CONTROL_PLAYING_NOW 3
 
 /**
  * Bit flags for the "window_flag" variable.
@@ -389,6 +391,7 @@ extern errr Term_inkey(ui_event *ch, bool wait, bool take);
 
 extern errr Term_control_msg_ws(int what, int n, const wchar_t *msg);
 extern errr Term_control_msg(int what, const char *msg);
+#define send_control_keys(msg) Term_control_msg(TERM_CONTROL_LIST_KEYS,msg)
 
 extern errr Term_save(void);
 extern errr Term_load(void);

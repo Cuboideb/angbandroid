@@ -21,6 +21,7 @@
 #include "z-color.h"
 #include "z-util.h"
 #include "z-virt.h"
+#include "z-form.h"
 
 /**
  * This file provides a generic, efficient, terminal window package,
@@ -1955,6 +1956,9 @@ errr Term_keypress(keycode_t k, byte mods)
 errr Term_mousepress(int x, int y, char button)/*, byte mods);*/
 {
 	/* Store the char, advance the queue */
+
+    //plog_fmt("Mouse y x btn %d %d %d", y, x, (int)button);
+
 	Term->key_queue[Term->key_head].type = EVT_MOUSE;
 	Term->key_queue[Term->key_head].mouse.x = x;
 	Term->key_queue[Term->key_head].mouse.y = y;
@@ -2518,6 +2522,10 @@ int big_pad(int col, int row, byte a, wchar_t c)
 
 errr Term_control_msg(int what, const char *msg)
 {
+	if (strlen(msg) == 0) {
+		return (-1);
+	}
+
 	/* Verify the hook */
 	if (!Term->control_msg_hook) return (-1);
 
@@ -2527,6 +2535,10 @@ errr Term_control_msg(int what, const char *msg)
 
 errr Term_control_msg_ws(int what, int n, const wchar_t *ws)
 {
+	if (n == 0) {
+		return (-1);
+	}
+
 	/* Make a copy */
 	wchar_t* wbuf = mem_alloc(sizeof(wchar_t)*(n+1));
 	memcpy(wbuf,ws,sizeof(wchar_t)*n);

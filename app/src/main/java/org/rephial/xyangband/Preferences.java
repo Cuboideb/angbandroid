@@ -26,7 +26,10 @@ final public class Preferences {
 	static final String KEY_KEYBOARDOPACITY = "angband.keyboardOpacity";
 	static final String KEY_MIDDLEOPACITY = "angband.middleOpacity";
 	static final String KEY_ENABLETOUCH = "angband.enabletouch";
+
 	static final String KEY_TOUCHRIGHT = "angband.touchright";
+	static final String KEY_TOUCHMULTIPLIER = "angband.touchmultiplier";
+
 	static final String KEY_CENTERTAP = "angband.centerscreentap";
 	static final String KEY_PORTRAITKB = "angband.portraitkb";
 	static final String KEY_LANDSCAPEKB = "angband.landscapekb";
@@ -37,6 +40,11 @@ final public class Preferences {
 	static final String KEY_TERMHEIGHT = "angband.termheight";
 
 	static final String KEY_QWERTYNUMPAD = "angband.qwertynumpad";
+
+	static final String KEY_USEICONS = "angband.useicons";
+
+	static final String KEY_COREKEYMAPS = "angband.corekeymaps";
+	static final String KEY_RIBBONALPHA = "angband.ribbonalpha";
 
 	static final String KEY_GAMEPLUGIN = "angband.gameplugin";
 	static final String KEY_GAMEPROFILE = "angband.gameprofile";
@@ -124,12 +132,20 @@ final public class Preferences {
 		return Integer.parseInt(pref.getString(Preferences.KEY_ORIENTATION, "0"));
 	}
 
+	public static boolean getIconsEnabled() {
+		return pref.getBoolean(Preferences.KEY_USEICONS, true);
+	}
+
 	public static boolean getKeyboardOverlap() {
 		return pref.getBoolean(Preferences.KEY_KEYBOARDOVERLAP, true);
 	}
 
 	public static int getMiddleOpacity() {
 		return pref.getInt(Preferences.KEY_MIDDLEOPACITY, 100);
+	}
+
+	public static int getTouchMultiplier() {
+		return pref.getInt(Preferences.KEY_TOUCHMULTIPLIER, 0);
 	}
 
 	public static void setMiddleOpacity(int value)
@@ -216,6 +232,28 @@ final public class Preferences {
 		if (height == 0) height = Preferences.rows;
 		setTermWidth(width);
 		setTermHeight(height);
+	}
+
+	public static void setCoreKeymaps(String k) {
+		SharedPreferences.Editor ed = pref.edit();
+		ed.putString(Preferences.KEY_COREKEYMAPS, k);
+		ed.commit();
+	}
+
+	public static String getCoreKeymaps()
+	{
+		return pref.getString(Preferences.KEY_COREKEYMAPS, "");
+	}
+
+	public static void setRibbonAlpha(int k) {
+		SharedPreferences.Editor ed = pref.edit();
+		ed.putInt(Preferences.KEY_RIBBONALPHA, k);
+		ed.commit();
+	}
+
+	public static int getRibbonAlpha()
+	{
+		return pref.getInt(Preferences.KEY_RIBBONALPHA, 2);
 	}
 
 	public static int getPortraitFontSize() {

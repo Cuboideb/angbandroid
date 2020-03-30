@@ -910,6 +910,14 @@ static size_t prt_terrain(int row, int col)
 	struct trap *trap = square_trap(cave, player->grid);
 	char buf[30];
 
+	if (square_isdownstairs(cave, player->grid)) {
+		keys_flash(">");
+	}
+
+	if (square_isupstairs(cave, player->grid)) {
+		keys_flash("<");
+	}
+
 	if (trap && !square_isinvis(cave, player->grid)) {
 		my_strcpy(buf, trap->kind->name, strlen(trap->kind->name) + 1);
 		my_strcap(buf);
@@ -2426,6 +2434,22 @@ static void ui_enter_world(game_event_type type, game_event_data *data,
 
 	/* Hack -- Decrease "icky" depth */
 	screen_save_depth--;
+
+	/* Notify the ui some more*/
+	send_control_playing_now();
+}
+
+void send_control_playing_now()
+{
+	char keymaps[2048];
+	keymap_pack(keymaps, sizeof(keymaps));
+	/* Hack -- Piggyback the keymaps */
+	Term_control_msg(TERM_CONTROL_PLAYING_NOW, keymaps);
+}
+
+void send_control_not_playing()
+{
+	Term_control_msg(TERM_CONTROL_NOT_PLAYING, "dummy");
 }
 
 static void ui_leave_world(game_event_type type, game_event_data *data,
@@ -2491,6 +2515,9 @@ static void ui_leave_world(game_event_type type, game_event_data *data,
 
 	/* If we've gone into a store, we need to know how to leave */
 	event_add_handler(EVENT_LEAVE_STORE, leave_store, NULL);
+
+	/* Signal to the ui */
+	send_control_not_playing();
 
 	/* Hack -- Increase "icky" depth */
 	screen_save_depth++;

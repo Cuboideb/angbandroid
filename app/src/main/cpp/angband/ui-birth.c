@@ -110,6 +110,8 @@ static enum birth_stage textui_birth_quickstart(void)
 	prt(prompt, Term->hgt - 1, Term->wid / 2 - strlen(prompt) / 2);
 
 	do {
+		keys_flash("YNC\x18");
+
 		/* Get a key */
 		struct keypress ke = inkey();
 		
@@ -639,13 +641,18 @@ static enum birth_stage roller_command(bool first_call)
 
 	/* Prepare a prompt (must squeeze everything in) */
 	strnfcat(prompt, sizeof (prompt), &promptlen, "['r' to reroll");
-	if (prev_roll) 
+	if (prev_roll) {
+		keys_flash("rp?\x18");
 		strnfcat(prompt, sizeof(prompt), &promptlen, ", 'p' for previous roll");
+	}
+	else {
+		keys_flash("r?\x18");
+	}
 	strnfcat(prompt, sizeof (prompt), &promptlen, " or 'Enter' to accept]");
 
 	/* Prompt for it */
 	prt(prompt, Term->hgt - 1, Term->wid / 2 - promptlen / 2);
-	
+
 	/* Prompt and get a command */
 	ch = inkey();
 
@@ -771,6 +778,8 @@ static enum birth_stage point_based_command(void)
 
 	/* Place cursor just after cost of current stat */
 	Term_gotoxy(COSTS_COL + 4, COSTS_ROW + stat);
+
+	keys_flash("r\x18");
 
 	/* Get key */
 	ch = inkey();
@@ -1004,6 +1013,9 @@ static enum birth_stage get_history_command(void)
 
 	/* Ask for some history */
 	prt("Accept character history? [y/n]", 0, 0);
+
+	keys_flash("yn\x18");
+
 	ke = inkey();
 
 	/* Quit, go back, change history, or accept */
@@ -1044,6 +1056,8 @@ static enum birth_stage get_confirm_command(void)
 
 	/* Prompt for it */
 	prt(prompt, Term->hgt - 1, Term->wid / 2 - strlen(prompt) / 2);
+
+	keys_flash("S\x18");
 
 	/* Get a key */
 	ke = inkey();

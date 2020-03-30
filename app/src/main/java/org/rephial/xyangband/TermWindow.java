@@ -66,8 +66,9 @@ public class TermWindow {
 	{
 		this.cols = width;
 		this.rows = height;
-		this.col = 0;
-		this.row = 0;
+		// Overflow
+		if (this.col >= this.cols) this.col = 0;
+		if (this.row >= this.rows) this.row = 0;
 		this.buffer = new TermPoint[this.rows][this.cols];
 		for (int r=0;r<this.rows;r++) {
 			for (int c=0;c<this.cols;c++) {
@@ -94,6 +95,23 @@ public class TermWindow {
 		} else {
 			Log.d("Angband","TermWindow.clearPoint - point out of bounds: "+col+","+row);
 		}
+	}
+
+	public TermPoint getPoint(int dy, int dx)
+	{
+		if (this.row + this.col == 0) {
+			return null;
+		}
+
+		int y = this.row + dy;
+		int x = this.col + dx;
+
+		if (y < this.begin_y || y >= this.rows ||
+				x < this.begin_x || x >= this.cols ||
+				this.buffer == null) {
+			return null;
+		}
+		return this.buffer[y][x];
 	}
 
 	protected void attrset(int a) {

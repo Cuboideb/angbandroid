@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="Show Button Ribbon"
+        android:numericShortcut="1"
+        android:id="@+id/show_ribbon"/>
+    <item android:title="Hide some keys"
+        android:numericShortcut="2"
+        android:id="@+id/hide_some"/>
+    <item android:title="Hide all keys"
+        android:numericShortcut="3"
+        android:id="@+id/hide_all"/>
+    <item android:title="Raise opacity"
+        android:numericShortcut="4"
+        android:id="@+id/raise_opacity"/>
+    <item android:title="Quick Settings"
+        android:numericShortcut="5"
+        android:id="@+id/show_pref"/>
+</menu>

@@ -191,3 +191,40 @@ void keymap_dump(ang_file *fff)
 		file_putf(fff, "\n");
 	}
 }
+
+void keymap_pack(char buffer[], int n)
+{
+	int mode;
+	struct keymap *k;
+	const char *sep1 = "##";
+	const char *sep2 = "###";
+	int count = 0;
+
+	/* Init */
+	my_strcpy(buffer, "keymaps:", n);
+
+	if (OPT(player, rogue_like_commands))
+		mode = KEYMAP_MODE_ROGUE;
+	else
+		mode = KEYMAP_MODE_ORIG;
+
+	for (k = keymaps[mode]; k; k = k->next) {
+		char key[50];
+		char action[1024];
+
+		if (!k->user) continue;
+
+		/* Simple encode */
+		strnfmt(key, sizeof(key), "%u", k->key.code);
+
+		/* Encode the action */
+		keypress_to_text(action, sizeof(action), k->actions, false);
+
+		if (count++ > 0) {
+			my_strcat(buffer, sep2, n);
+		}
+		my_strcat(buffer, action, n);
+		my_strcat(buffer, sep1, n);
+		my_strcat(buffer, key, n);
+	}
+}

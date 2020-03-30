@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -11,6 +12,14 @@ import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.Keyboard.Key;
 import android.inputmethodservice.KeyboardView;
 import android.util.AttributeSet;
+import android.view.Display;
+import android.view.Gravity;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class AngbandKeyboardView extends KeyboardView
+	implements PopupMenu.OnMenuItemClickListener
 {
 	private GameActivity mContext;
 	private Paint mPainter;
@@ -225,23 +235,6 @@ public class AngbandKeyboardView extends KeyboardView
 
 		String label = popupKey.label.toString();
 
-		// Hide almost all keys
-		if (label.equals("...")) {
-			boolean shouldActivate = !this.getHideAllKeys();
-			this.setOpaqueKeyboard(false);
-			this.setHideSomeKeys(false);
-			this.setHideAllKeys(shouldActivate);
-			return true;
-		}
-		// Show opaque keyboard
-		if (label.equals("Ctrl^")) {
-			boolean shouldActivate = !this.getOpaqueKeyboard();
-			this.setHideSomeKeys(false);
-			this.setHideAllKeys(false);
-			this.setOpaqueKeyboard(shouldActivate);
-			return true;
-		}
-
 		// Non repeatable (exclude Return)
 		if (!popupKey.repeatable && !label.equals("⏎")) {
 			HashMap<String, Integer> map = new HashMap<>();
@@ -276,7 +269,8 @@ public class AngbandKeyboardView extends KeyboardView
 		if (alpha_reduction < 0.0f) alpha_reduction = 0.0f;
 		if (alpha_reduction > 1.0f) alpha_reduction = 1.0f;
 
-		boolean overlap = Preferences.getKeyboardOverlap();
+		//boolean overlap = Preferences.getKeyboardOverlap();
+		boolean overlap = true; // Force true
 		int alpha_pref = overlap ? (int)(255 * (Preferences.getKeyboardOpacity() / 100f)) : 255;
 
 		Rect padding = new Rect(4, 4, 4, 4);
@@ -401,4 +395,65 @@ public class AngbandKeyboardView extends KeyboardView
 		}
 	}
 
+	public void showMenu()
+	{
+		final ViewGroup root = (ViewGroup) mContext.getWindow().
+				getDecorView().findViewById(android.R.id.content);
+
+		Point size = mContext.getMySize();
+
+		// Hack -- Add a view to position the popup
+		final View view = new View(mContext);
+		view.setLayoutParams(new ViewGroup.LayoutParams(1, 1));
+		view.setBackgroundColor(Color.TRANSPARENT);
+
+		root.addView(view);
+
+		view.setX(0);
+		view.setY(size.y - 10);
+
+		PopupMenu popup = new PopupMenu(mContext, view);
+		popup.inflate(R.menu.keyboardmenu);
+		popup.setOnMenuItemClickListener(this);
+		popup.setOnDismissListener(new PopupMenu.OnDismissListener() {
+			@Override
+			public void onDismiss(PopupMenu menu) {
+				root.removeView(view);
+			}
+		});
+		popup.show();
+	}
+
+	@Override
+	public boolean onMenuItemClick(MenuItem item) {
+		switch(item.getItemId()) {
+			case (R.id.show_ribbon):
+				mContext.toggleKeyboard();
+				return true;
+			case (R.id.hide_some):
+				this.toggleHideSomeKeys();
+				this.invalidate();
+				return true;
+			case (R.id.hide_all):
+				boolean shouldActivate = !this.getHideAllKeys();
+				this.setOpaqueKeyboard(false);
+				this.setHideSomeKeys(false);
+				this.setHideAllKeys(shouldActivate);
+				this.invalidate();
+				return true;
+			case (R.id.raise_opacity):
+				boolean shouldActivateOpaque = !this.getOpaqueKeyboard();
+				this.setHideSomeKeys(false);
+				this.setHideAllKeys(false);
+				this.setOpaqueKeyboard(shouldActivateOpaque);
+				this.invalidate();
+				return true;
+			case (R.id.show_pref):
+				mContext.handler.sendEmptyMessage(AngbandDialog.Action.
+						OpenContextMenu.ordinal());
+				return true;
+		}
+
+		return false;
+	}
 }

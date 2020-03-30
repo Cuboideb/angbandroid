@@ -342,6 +342,23 @@ void strescape(char *s, const char c) {
 	*out = 0;
 }
 
+void strdeldup(char *str)
+{
+	int i, j, k;
+
+	for (i = 0, j = 0; str[i] != 0; i++) {
+		for (k = 0; k < j; k++) {
+			if (str[i] == str[k]) {
+				break;
+			}
+		}
+		if (k >= j) {
+			str[j++] = str[i];
+		}
+	}
+	str[j] = 0;
+}
+
 /**
  * returns true if string only contains spaces
  */

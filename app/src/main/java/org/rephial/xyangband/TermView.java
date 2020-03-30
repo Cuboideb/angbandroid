@@ -37,13 +37,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 
-import org.rephial.xyangband.AngbandDialog;
-import org.rephial.xyangband.GameActivity;
-import org.rephial.xyangband.GameThread;
-import org.rephial.xyangband.Plugins;
-import org.rephial.xyangband.Preferences;
-import org.rephial.xyangband.StateManager;
-
 import java.util.ArrayList;
 
 public class TermView extends View implements OnGestureListener {
@@ -181,6 +174,14 @@ public class TermView extends View implements OnGestureListener {
         };
 	}
 
+	Point mouseToGrid(int y, int x)
+	{
+		Point p = new Point();
+		p.x = (char_width > 0) ? (x / char_width): 0;
+		p.y = (char_height > 0) ? (y / char_height): 0;
+		return p;
+	}
+
 	public void stopTimer()
     {
         lastDirection = 0;
@@ -193,7 +194,7 @@ public class TermView extends View implements OnGestureListener {
 	    this.zones.clear();
 
 		int totalw = getWidth();
-		int totalh = getHeight() - game_context.getKeyboardOverlapHeight();
+		int totalh = getHeight() - game_context.getKeyboardHeight();
 		int w = (int)(totalw * 0.25f);
 		int h = (int)(totalh * 0.25f);
 
@@ -211,9 +212,13 @@ public class TermView extends View implements OnGestureListener {
 				if (x < padx) x = padx;
 				if (x + w >= totalw - padx) x = totalw - w - padx;
 
+				x += this.getScrollX();
+
 				int y = (int)(totalh * pct[py-1]) - h / 2;
 				if (y < pady) y = pady;
 				if (y + h >= totalh - pady) y = totalh - h - pady;
+
+				y += this.getScrollY();
 
                 RectF r = new RectF(x, y, x + w - 1, y + h - 1);
 
@@ -228,10 +233,11 @@ public class TermView extends View implements OnGestureListener {
 
 	protected void drawDirZonesRight(Canvas p_canvas)
 	{
-        this.zones.clear();
+	    this.zones.clear();
 
 		int totalw = getWidth();
-		int totalh = getHeight() - game_context.getKeyboardOverlapHeight();
+		int totalh = getHeight() - game_context.getKeyboardHeight();
+
 		int w = (int)(totalw * 0.10f);
 		// Get the height of the activity window
 		Point winSize = new Point();
@@ -247,21 +253,16 @@ public class TermView extends View implements OnGestureListener {
 		//if (h > w) h = w;
 		//else if (w > h) w = h;
 
+		w = Math.min(w, h);
+		h = w = ((100 + Preferences.getTouchMultiplier()) * w) / 100;
+
 		for (int py = 1; py <= 3; py++) {
 			for (int px = 1; px <= 3; px++) {
 
-				int x = totalw - (w + padx) * (3 - px + 1);
-                int y = totalh - (h + pady) * (3 - py + 1);
-
-                // More space between rows if we have keyboard
-				/*
-                if (Preferences.isKeyboardVisible()) {
-                    float pct[] = {0.0f, 0.5f, 1.0f};
-                    y = (int) (totalh * pct[py - 1]) - h / 2;
-                    if (y < pady) y = pady;
-                    if (y + h >= totalh - pady) y = totalh - h - pady;
-                }
-                */
+				int x = this.getScrollX() +
+						totalw - w * (3 - px + 1);
+                int y = this.getScrollY() +
+						totalh - h * (3 - py + 1);
 
                 RectF r = new RectF(x, y, x + w - 1, y + h - 1);
 
@@ -276,8 +277,12 @@ public class TermView extends View implements OnGestureListener {
                 }
                 dirZoneFill.setAlpha(alpha);
 
-				p_canvas.drawRoundRect(r, 10, 10, dirZoneFill);
-				p_canvas.drawRoundRect(r, 10, 10, dirZoneStroke);
+                RectF rdraw = new RectF(r);
+                rdraw.bottom -= pady;
+                rdraw.right -= padx;
+
+				p_canvas.drawRoundRect(rdraw, 10, 10, dirZoneFill);
+				p_canvas.drawRoundRect(rdraw, 10, 10, dirZoneStroke);
 			}
 		}
 
@@ -333,6 +338,10 @@ public class TermView extends View implements OnGestureListener {
 		if (maxWidth == 0) maxWidth = getMeasuredWidth();
 		if (maxHeight == 0) maxHeight = getMeasuredHeight();
 
+		if (!Preferences.getKeyboardOverlap()) {
+            maxHeight -= game_context.getKeyboardHeight();
+        }
+
 		setFontFace();
 
 		// HACK -- keep 480x320 fullscreen as-is
@@ -355,6 +364,10 @@ public class TermView extends View implements OnGestureListener {
 	public void autoSizeFontByWidth(int maxWidth, int maxHeight) {
 		if (maxWidth == 0) maxWidth = getMeasuredWidth();
 		if (maxHeight == 0) maxHeight = getMeasuredHeight();
+
+        if (!Preferences.getKeyboardOverlap()) {
+            maxHeight -= game_context.getKeyboardHeight();
+        }
 
 		setFontFace();
 
@@ -387,6 +400,10 @@ public class TermView extends View implements OnGestureListener {
 
 		if (maxWidth == 0) maxWidth = getMeasuredWidth();
 		if (maxHeight == 0) maxHeight = getMeasuredHeight();
+
+        if (!Preferences.getKeyboardOverlap()) {
+            maxHeight -= game_context.getKeyboardHeight();
+        }
 
 		while ((maxHeight > 0) && ((this.rows+1) * this.char_height < maxHeight)) {
 			++this.rows;
@@ -526,7 +543,9 @@ public class TermView extends View implements OnGestureListener {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent me) {
-        int tempDirection = this.getDirFromZone(me.getY(), me.getX());
+		float x = me.getX() + this.getScrollX();
+		float y = me.getY() + this.getScrollY();
+        int tempDirection = this.getDirFromZone(y, x);
         if (tempDirection != lastDirection) {
             this.stopTimer();
             lastDirection = tempDirection;
@@ -578,20 +597,31 @@ public class TermView extends View implements OnGestureListener {
 		return true;
 	}
 
+	public boolean betweenDirectionals(float y, float x)
+	{
+		return Preferences.getEnableTouch() &&
+				Preferences.getTouchRight() &&
+				(this.zones.size() > 0) &&
+				(x >= this.zones.get(0).left) &&
+				(y >= this.zones.get(0).top);
+	}
+
 	public void onLongPress(MotionEvent e) {
+		// Running ?
 	    if (lastDirection > 0) {
 	        return;
         }
 
-	    float y = e.getY();
-	    float x = e.getX();
+	    float y = e.getY() + this.getScrollY();
+	    float x = e.getX() + this.getScrollX();
 
-	    // In the zone of directionals
-	    if (Preferences.getEnableTouch() && Preferences.getTouchRight() &&
-                (this.zones.size() > 0) && (x >= this.zones.get(0).left) &&
-                (y >= this.zones.get(0).top)) {
-	        return;
-        }
+		// In the zone of directionals. To avoid pressing between
+		// buttons
+		/*
+		if (this.betweenDirectionals(y, x)) {
+			return;
+		}
+		*/
 
 	    // Directional button, do nothing
 	    if (this.getDirFromZone(y, x) > 0) {
@@ -621,39 +651,43 @@ public class TermView extends View implements OnGestureListener {
         return key;
     }
 
+    public void sendMousePress(int y, int x, int button) {
+        Point p = mouseToGrid(y, x);
+        //Log.d("Angband", "y x " + p.y + " " + p.x);
+        state.addMousePress(p.y, p.x, button);
+    }
+
 	public boolean onSingleTapUp(MotionEvent event) {
+		// Running ?
 	    if (lastDirection > 0) {
 	        return true;
         }
 
-		if (!Preferences.getEnableTouch()) return false;
+		int x = (int)event.getX() + this.getScrollX();
+		int y = (int)event.getY() + this.getScrollY();
+		int key = 0;
 
-		int x = (int) event.getX();
-		int y = (int) event.getY();
+		if (Preferences.getEnableTouch() &&
+				!this.zones.isEmpty()) {
 
-		int r = 0, c = 0;
-
-		int w = getWidth();
-		int h = (getHeight() - game_context.getKeyboardOverlapHeight());
-		int key;
-
-		if (this.zones.isEmpty()) {
-			// Use the whole screen
-            c = (x * 3) / w;
-            r = (y * 3) / h;
-            key = (2 - r) * 3 + c + '1';
-        }
-		else {
 			key = this.getDirFromZone(y, x);
-        }
 
-        if (key == 0) {
-            return false;
-        }
+			if (key != 0) {
+				state.addDirectionKey(key);
+				return true;
+			}
+		}
 
-		state.addDirectionKey(key);
+		// Narrow zone between directionals
+		/*
+		if (this.betweenDirectionals(y, x)) {
+			// Do nothing
+			return true;
+		}
+		*/
 
-		return true;
+        sendMousePress(y, x, 1);
+        return true;
 	}
 
 	@Override

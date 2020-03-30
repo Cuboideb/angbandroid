@@ -50,6 +50,38 @@ static bool inkey_xtra;
 u32b inkey_scan;		/* See the "inkey()" function */
 bool inkey_flag;		/* See the "inkey()" function */
 
+static char control_keys[256] = "";
+static bool control_keys_flash = true;
+
+void keys_flash(const char *keys)
+{
+	control_keys_flash = true;
+	my_strcat(control_keys, keys, sizeof(control_keys));
+	strdeldup(control_keys);
+}
+
+void keys_linger(const char *keys)
+{
+	keys_flash(keys);
+	control_keys_flash = false;
+}
+
+void keys_clear(bool force)
+{
+	if (control_keys_flash || force) {
+		control_keys[0] = 0;
+		control_keys_flash = true;
+		send_control_keys("[[:clear:]]");
+	}
+}
+
+void keys_flush()
+{
+	if (control_keys[0] != 0) {
+		send_control_keys(control_keys);
+	}
+}
+
 /**
  * Flush all pending input.
  *
@@ -197,6 +229,8 @@ ui_event inkey_ex(void)
 			continue;
 		}
 
+		keys_clear(false);
+
 		/* Accept result */
 		return (ke);
 	}
@@ -249,9 +283,15 @@ ui_event inkey_ex(void)
 			done = true;
 		}
 
+		// Show pushed control keys, if any
+		if (!inkey_scan) {
+			keys_flush();
+		}
 
 		/* Get a key (see above) */
 		ke = inkey_aux(inkey_scan);
+
+		keys_clear(false);
 
 		if (inkey_scan && ke.type == EVT_NONE)
 			/* The keypress timed out. We need to stop here. */
@@ -796,8 +836,12 @@ bool get_character_name(char *buf, size_t buflen)
 	/* Save the player name */
 	my_strcpy(buf, player->full_name, buflen);
 
+	keys_linger("*");
+
 	/* Ask the user for a string */
 	res = askfor_aux(buf, buflen, get_name_keypress);
+
+	keys_clear(true);
 
 	/* Clear prompt */
 	prt("", 0, 0);
@@ -865,6 +909,8 @@ int textui_get_quantity(const char *prompt, int max)
 		/* Build the default */
 		strnfmt(buf, sizeof(buf), "%d", amt);
 
+		keys_linger("0123456789*");
+
 		/* Ask for a quantity */
 		if (!get_string(prompt, buf, 7)) return (0);
 
@@ -904,6 +950,8 @@ bool textui_get_check(const char *prompt)
 
 	/* Hack -- Build a "useful" prompt */
 	strnfmt(buf, 78, "%.70s[y/n] ", prompt);
+
+	keys_flash("yn");
 
 	/* Prompt for it */
 	prt(buf, 0, 0);
@@ -948,6 +996,8 @@ char get_char(const char *prompt, const char *options, size_t len, char fallback
 
 	/* Prompt for it */
 	prt(buf, 0, 0);
+
+	keys_flash(options);
 
 	/* Get an acceptable answer */
 	key = inkey();
@@ -1248,10 +1298,14 @@ bool textui_get_aim_dir(int *dp)
 	/* Ask until satisfied */
 	while (!dir) {
 		/* Choose a prompt */
-		if (!target_okay())
+		if (!target_okay()) {
 			p = "Direction ('*' or <click> to target, \"'\" for closest, Escape to cancel)? ";
-		else
+		}
+		else {
 			p = "Direction ('5' for target, '*' or <click> to re-target, Escape to cancel)? ";
+		}
+
+        keys_flash("*'5");
 
 		/* Get a command (or Cancel) */
 		if (!get_com_ex(p, &ke)) break;
@@ -1411,8 +1465,6 @@ ui_event textui_get_command(int *count)
 	ui_event ke = EVENT_EMPTY;
 
 	const struct keypress *act = NULL;
-
-
 
 	/* Get command */
 	while (1) {

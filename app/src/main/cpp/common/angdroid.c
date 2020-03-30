@@ -20,6 +20,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
+#include <ui-keymap.h>
 #include "curses.h"
 
 #include "angband.h"
@@ -43,6 +44,28 @@ static int initial_height = 24;
 typedef struct {
 	term t;
 } term_data;
+
+static int set_bit(int n) {
+	return (1 << (n));
+}
+
+static int make_mask(int n) {
+	int i, mask = 0;
+	for (i = 0; i < n; i++) {
+		mask |= set_bit(i);
+	}
+	return mask;
+}
+
+#define MOUSE_TAG set_bit(30)
+
+typedef struct {
+	int y;
+	int x;
+	int button;
+} mouse_data_t;
+
+static mouse_data_t mouse_data;
 
 /*
  * Number of "term_data" structures to support XXX XXX XXX
@@ -117,6 +140,34 @@ void try_save(void) {
 	}
 }
 
+static int get_input_from_ui(int wait)
+{
+	int key = angdroid_getch(wait);
+
+	// Detect mouse press, be careful with negative numbers
+	if ((key > 0) && ((key & MOUSE_TAG) != 0)) {
+
+		// Get data, 3 bits for button and 10 bits for each coordinate
+		mouse_data.button = ((key >> 20) & make_mask(3));
+		mouse_data.y = (key & make_mask(10));
+		mouse_data.x = ((key >> 10) & make_mask(10));
+
+		// Get rid of anything except the mouse bit
+		key &= MOUSE_TAG;
+	}
+
+	return key;
+}
+
+void send_key_to_term(int key) {
+	if (key == MOUSE_TAG) {
+		Term_mousepress(mouse_data.x, mouse_data.y, mouse_data.button);
+	}
+	else {
+		Term_keypress(key, 0);
+	}
+}
+
 /*
  * Do a "special thing" to the current "term"
  *
@@ -161,17 +212,17 @@ static errr Term_xtra_android(int n, int v)
 			 * This action is required.
 			 */
 
-			int key = angdroid_getch(v);
+			int key = get_input_from_ui(v);
 
 			if (key == -1) {
 				try_save();
 			} else if (v == 0) {
 				while (key != 0) {
-					Term_keypress(key, 0);
-					key = angdroid_getch(v);
+					send_key_to_term(key);
+					key = get_input_from_ui(v);
 				}
 			} else {
-				Term_keypress(key, 0);
+				send_key_to_term(key);
 			}
 
 			return 0;
@@ -484,8 +535,29 @@ void init_android_stuff(void)
 	savefile_set_name(android_savefile, false, false);
 }
 
+static int translate_to_rogue(int key)
+{
+	size_t i, j;
+
+	/* Go through all generic commands */
+	for (j = 0; cmds_all[j].name != NULL; j++)
+	{
+		struct cmd_info *commands = cmds_all[j].list;
+		/* Look into every group */
+		for (i = 0; i < cmds_all[j].len; i++) {
+		    // Original keymap
+			if ((unsigned char)commands[i].key[0] == key) {
+			    // Rogue keymap
+				return (unsigned char)commands[i].key[1];
+			}
+		}
+	}
+	return 0;
+}
+
 int queryInt(const char* argv0) {
 	int result = -1;
+	const char *ROGUE_KEY = "rogue_key_";
 
 	if (strcmp(argv0, "pv") == 0) {
 		result = 1;
@@ -493,7 +565,17 @@ int queryInt(const char* argv0) {
 		result = player->grid.x;
 	} else if (strcmp(argv0, "rl") == 0) {
 		result = 0;
-		if (player && OPT(player, rogue_like_commands)) result=1;
+		if (player && OPT(player, rogue_like_commands)) result = 1;
+	}
+	// Starts with this pattern?
+	else if (strncmp(argv0, ROGUE_KEY, strlen(ROGUE_KEY)) == 0) {
+		// Find the respective key in roguelike mode
+		int n = strlen(ROGUE_KEY);
+		// Get the "n" character (encoded key)
+		unsigned char key = argv0[n];
+		if (key == 0) return 0;
+		key = translate_to_rogue(key);
+		return key;
 	} else {
 		result = -1; //unknown command
 	}

@@ -751,19 +751,50 @@ static void keys_to_ui(struct menu *menu)
 		used[j] = '\0';
 		my_strcat(buf, used, sizeof(buf));
 	}
-	if (menu->selections) {
-		int i, j;
-		char sel[256];
-		int n = menu->filter_list ? menu->filter_count : menu->count;
-		/*plog_fmt("count: %d", menu->count);*/
-		for (i = 0, j = 0; i < n; i++) {
-			if (is_valid_row(menu, i)) {
-				sel[j++] = menu->selections[i];
+
+	int pos, current;
+	char temp[256];
+	int n = menu->filter_list ? menu->filter_count : menu->count;
+
+	//plog_fmt("count: %d", menu->count);
+
+	for (pos = 0, current = 0; pos < n; pos++) {
+
+		int oid = pos;
+		menu_row_validity_t row_valid = MN_ROW_VALID;
+		char sel = 0;
+
+		if (menu->filter_list) {
+			oid = menu->filter_list[oid];
+		}
+
+		if (menu->row_funcs->valid_row) {
+			row_valid = menu->row_funcs->valid_row(menu, oid);
+		}
+
+		if (row_valid == MN_ROW_HIDDEN) {
+			continue;
+		}
+
+		if (!(menu->flags & MN_NO_TAGS)) {
+			if (menu->flags & MN_REL_TAGS) {
+				sel = menu->skin->get_tag(menu, pos);
+			}
+			else if (menu->selections && !(menu->flags & MN_PVT_TAGS)) {
+				sel = menu->selections[pos];
+			}
+			else if (menu->row_funcs->get_tag) {
+				sel = menu->row_funcs->get_tag(menu, oid);
 			}
 		}
-		sel[j] = '\0';
-		my_strcat(buf, sel, sizeof(buf));
+
+		if (sel != 0) {
+			temp[current++] = sel;
+		}
 	}
+	temp[current] = '\0';
+	my_strcat(buf, temp, sizeof(buf));
+
 	if (menu->cmd_keys) {
 		my_strcat(buf, menu->cmd_keys, sizeof(buf));
 	}
@@ -771,10 +802,12 @@ static void keys_to_ui(struct menu *menu)
 		my_strcat(buf, menu->switch_keys, sizeof(buf));
 	}
 
+	strdeldup(buf);
+
 	//plog_fmt("Keys %s\n", buf);
 
 	if (strlen(buf) > 0) {
-		Term_control_msg(TERM_CONTROL_LIST_KEYS, buf);
+		keys_flash(buf);
 	}
 }
 

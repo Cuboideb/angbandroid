@@ -165,6 +165,8 @@ struct keypress {
 	byte mods;
 };
 
+typedef struct keypress keypress_t;
+
 /**
  * Null keypress constant, for safe initializtion.
  */
