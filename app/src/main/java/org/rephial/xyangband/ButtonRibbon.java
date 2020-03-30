@@ -328,7 +328,7 @@ public class ButtonRibbon implements OnClickListener,
             atLeft.getChildAt(1).setVisibility(View.GONE);
             atLeft.getChildAt(2).setVisibility(View.GONE);
 
-            String txt = ".iUmhfvngdRb,l[]C+~LM=?";
+            String txt = ".iUmhfvngdR+b,l[]C~LM=?";
             for (char c: txt.toCharArray()) {
                 String label = Character.toString(c);
                 String action = "CMD_" + c;
