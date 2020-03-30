@@ -145,7 +145,7 @@ final public class Preferences {
 	}
 
 	public static int getTouchMultiplier() {
-		return pref.getInt(Preferences.KEY_TOUCHMULTIPLIER, 0);
+		return pref.getInt(Preferences.KEY_TOUCHMULTIPLIER, 40);
 	}
 
 	public static void setMiddleOpacity(int value)
@@ -278,7 +278,7 @@ final public class Preferences {
 	}
 
 	public static boolean getTouchRight() {
-		return pref.getBoolean(Preferences.KEY_TOUCHRIGHT, false);
+		return pref.getBoolean(Preferences.KEY_TOUCHRIGHT, true);
 	}
 
 	public static boolean isKeyboardVisible()

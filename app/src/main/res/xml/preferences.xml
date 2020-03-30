@@ -199,7 +199,7 @@
 	   android:summary="@string/preferences_enabletouch_summary" />
 	<CheckBoxPreference
 		  android:key="angband.touchright"
-		  android:defaultValue="false"
+		  android:defaultValue="true"
 		  android:dependency="angband.enabletouch"
 		  android:title="@string/preferences_touchright_title"
 		  android:summary="@string/preferences_touchright_summary" />
@@ -208,7 +208,7 @@
 		  android:title="Touch directional size multiplier"
 		  seekBar:min="0"
 		  seekBar:max="100"
-		  seekBar:defaultVal="0" />
+		  seekBar:defaultVal="40" />
 	<ListPreference
 	   android:title="Center screen tap action"
 	   android:summary="Select functionality for center screen tap"
