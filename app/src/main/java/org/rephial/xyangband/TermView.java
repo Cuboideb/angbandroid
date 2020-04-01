@@ -597,13 +597,20 @@ public class TermView extends View implements OnGestureListener {
 		return true;
 	}
 
-	public boolean betweenDirectionals(float y, float x)
+	public boolean inZoneOfDirectionals(float y, float x)
 	{
-		return Preferences.getEnableTouch() &&
-				Preferences.getTouchRight() &&
-				(this.zones.size() > 0) &&
-				(x >= this.zones.get(0).left) &&
-				(y >= this.zones.get(0).top);
+		if (Preferences.getEnableTouch() &&
+			Preferences.getTouchRight() &&
+			(this.zones.size() > 0)) {
+			RectF rect = this.zones.get(0);
+            float side = rect.bottom - rect.top + 1;
+			float pad = side * 0.5f;
+			if (x >= rect.left - pad &&
+				y >= rect.top - pad) {
+				return true;
+			}
+        }
+		return false;
 	}
 
 	public void onLongPress(MotionEvent e) {
@@ -615,13 +622,10 @@ public class TermView extends View implements OnGestureListener {
 	    float y = e.getY() + this.getScrollY();
 	    float x = e.getX() + this.getScrollX();
 
-		// In the zone of directionals. To avoid pressing between
-		// buttons
-		/*
-		if (this.betweenDirectionals(y, x)) {
+		// Too close to directionals
+		if (this.inZoneOfDirectionals(y, x)) {
 			return;
 		}
-		*/
 
 	    // Directional button, do nothing
 	    if (this.getDirFromZone(y, x) > 0) {
@@ -678,13 +682,11 @@ public class TermView extends View implements OnGestureListener {
 			}
 		}
 
-		// Narrow zone between directionals
-		/*
-		if (this.betweenDirectionals(y, x)) {
+		// Too close to directionals
+		if (this.inZoneOfDirectionals(y, x)) {
 			// Do nothing
 			return true;
 		}
-		*/
 
         sendMousePress(y, x, 1);
         return true;
