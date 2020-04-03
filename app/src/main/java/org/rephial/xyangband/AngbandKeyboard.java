@@ -127,7 +127,8 @@ public class AngbandKeyboard implements OnKeyboardActionListener
 			}
 
 			case -7000: {
-				virtualKeyboardView.showMenu();
+				//virtualKeyboardView.showMenu();
+				virtualKeyboardView.toggleHideSomeKeys();
 				break;
 			}
 

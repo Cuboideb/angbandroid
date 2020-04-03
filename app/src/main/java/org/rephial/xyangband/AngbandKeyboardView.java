@@ -220,6 +220,22 @@ public class AngbandKeyboardView extends KeyboardView
 		this.setHideSomeKeys(on);
 	}
 
+	public void requestHideAllKeys()
+	{
+		boolean shouldActivate = !this.getHideAllKeys();
+		this.setOpaqueKeyboard(false);
+		this.setHideSomeKeys(false);
+		this.setHideAllKeys(shouldActivate);
+	}
+
+	public void requestOpaqueKeyboard()
+	{
+		boolean shouldActivate = !this.getOpaqueKeyboard();
+		this.setHideSomeKeys(false);
+		this.setHideAllKeys(false);
+		this.setOpaqueKeyboard(shouldActivate);
+	}
+
 	@Override
 	public void onSizeChanged(int w, int h, int oldw, int oldh) {
 		this.canvas_width = w;
@@ -234,6 +250,22 @@ public class AngbandKeyboardView extends KeyboardView
 		}
 
 		String label = popupKey.label.toString();
+
+		// Hide almost all keys
+		if (label.equals("...")) {
+			this.requestHideAllKeys();
+			return true;
+		}
+		// Show opaque keyboard
+		if (label.equals("Ctrl^")) {
+			this.requestOpaqueKeyboard();
+			return true;
+		}
+		// Hide keyboard
+		if (label.equals("Sym")) {
+			mContext.toggleKeyboard();
+			return true;
+		}
 
 		// Non repeatable (exclude Return)
 		if (!popupKey.repeatable && !label.equals("⏎")) {
@@ -435,17 +467,11 @@ public class AngbandKeyboardView extends KeyboardView
 				this.invalidate();
 				return true;
 			case (R.id.hide_all):
-				boolean shouldActivate = !this.getHideAllKeys();
-				this.setOpaqueKeyboard(false);
-				this.setHideSomeKeys(false);
-				this.setHideAllKeys(shouldActivate);
+				this.requestHideAllKeys();
 				this.invalidate();
 				return true;
 			case (R.id.raise_opacity):
-				boolean shouldActivateOpaque = !this.getOpaqueKeyboard();
-				this.setHideSomeKeys(false);
-				this.setHideAllKeys(false);
-				this.setOpaqueKeyboard(shouldActivateOpaque);
+				this.requestOpaqueKeyboard();
 				this.invalidate();
 				return true;
 			case (R.id.show_pref):
