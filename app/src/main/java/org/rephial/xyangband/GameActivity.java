@@ -88,6 +88,7 @@ public class GameActivity extends Activity {
 		} catch (Exception e) {}
 
 	    Preferences.init (
+	    	this,
 			getFilesDir(),
 			getResources(),
 			getSharedPreferences(Preferences.NAME, MODE_PRIVATE),

@@ -68,9 +68,15 @@ final public class Preferences {
 
 	private static KeyMapper keymapper;
 
+	public static Context context;
+
 	Preferences() {}
 
-	public static void init(File filesDir, Resources res, SharedPreferences sharedPrefs, String pversion) {
+	public static void init(Context p_context, File filesDir,
+			Resources res, SharedPreferences sharedPrefs, String pversion) {
+
+		context = p_context;
+
 		activityFilesPath = filesDir.getAbsolutePath();
 		pref = sharedPrefs;
 		resources = res;
@@ -305,6 +311,7 @@ final public class Preferences {
 		else
 			return gamePluginNames[0];
 	}
+
 	public static String getPluginDescription(int pluginId) {
 		if (pluginId > -1 && pluginId < gamePluginDescriptions.length)
 			return gamePluginDescriptions[pluginId];
@@ -312,21 +319,21 @@ final public class Preferences {
 			return gamePluginDescriptions[0];
 	}
 
+	public static String getAngbandBaseDirectory() {
+		//return Environment.getExternalStorageDirectory()
+		//		+ "/"
+		//		+ "Android/data/org.rephial.xyangband/files/lib";
+		return context.getExternalFilesDir(null) + "/lib";
+	}
+
 	public static String getAngbandFilesDirectory(int pluginId) {
-		return
-			Environment.getExternalStorageDirectory()
-			+ "/"
-			+ "Android/data/org.rephial.xyangband/files/lib"
+		return getAngbandBaseDirectory()
 			+ Plugins.getFilesDir(Plugins.Plugin.convert(pluginId));
 	}
 
 	public static String getAngbandFilesDirectory() {
 		String dir = Plugins.getFilesDir(getActivePlugin());
-		return
-			Environment.getExternalStorageDirectory()
-			+ "/"
-			+ "Android/data/org.rephial.xyangband/files/lib"
-			+ dir;
+		return getAngbandBaseDirectory() + dir;
 	}
 
 	public static String getActivityFilesDirectory() {
