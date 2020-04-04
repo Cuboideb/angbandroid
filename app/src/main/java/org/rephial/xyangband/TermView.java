@@ -53,6 +53,8 @@ public class TermView extends View implements OnGestureListener {
 	Display fullDisplay;
 	Display windowDisplay;
 
+	public boolean drawRight = true;
+
 	private int color1 = Color.parseColor("#4a4855");
 	private int color2 = Color.parseColor("#807c93");
 	private int alpha = 70;
@@ -174,6 +176,12 @@ public class TermView extends View implements OnGestureListener {
         };
 	}
 
+	public void toggleDrawRight()
+	{
+		this.drawRight = !this.drawRight;
+		this.invalidate();
+	}
+
 	Point mouseToGrid(int y, int x)
 	{
 		Point p = new Point();
@@ -259,8 +267,14 @@ public class TermView extends View implements OnGestureListener {
 		for (int py = 1; py <= 3; py++) {
 			for (int px = 1; px <= 3; px++) {
 
-				int x = this.getScrollX() +
-						totalw - w * (3 - px + 1);
+				int x = this.getScrollX();
+				if (drawRight) {
+					x += totalw - w * (3 - px + 1);
+				}
+				else {
+					x += (px - 1) * w;
+				}
+
                 int y = this.getScrollY() +
 						totalh - h * (3 - py + 1);
 
@@ -279,7 +293,12 @@ public class TermView extends View implements OnGestureListener {
 
                 RectF rdraw = new RectF(r);
                 rdraw.bottom -= pady;
-                rdraw.right -= padx;
+                if (drawRight) {
+					rdraw.right -= padx;
+				}
+                else {
+                	rdraw.left += padx;
+				}
 
 				p_canvas.drawRoundRect(rdraw, 10, 10, dirZoneFill);
 				p_canvas.drawRoundRect(rdraw, 10, 10, dirZoneStroke);
@@ -602,12 +621,24 @@ public class TermView extends View implements OnGestureListener {
 		if (Preferences.getEnableTouch() &&
 			Preferences.getTouchRight() &&
 			(this.zones.size() > 0)) {
-			RectF rect = this.zones.get(0);
-            float side = rect.bottom - rect.top + 1;
-			float pad = side * 0.5f;
-			if (x >= rect.left - pad &&
-				y >= rect.top - pad) {
-				return true;
+
+			if (drawRight) {
+				RectF rect = this.zones.get(0);
+				float side = rect.bottom - rect.top + 1;
+				float pad = side * 0.5f;
+				if (x >= rect.left - pad &&
+						y >= rect.top - pad) {
+					return true;
+				}
+			}
+			else {
+				RectF rect = this.zones.get(2);
+				float side = rect.bottom - rect.top + 1;
+				float pad = side * 0.5f;
+				if (x <= rect.right + pad &&
+						y >= rect.top - pad) {
+					return true;
+				}
 			}
         }
 		return false;
