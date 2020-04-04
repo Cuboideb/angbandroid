@@ -65,6 +65,9 @@ public class GameActivity extends Activity {
 	protected final int CONTEXTMENU_HELP_ITEM = 5;
 	protected final int CONTEXTMENU_QUIT_ITEM = 6;
 	protected final int CONTEXTMENU_TOGGLE_TOUCHDIR = 7;
+	protected final int CONTEXTMENU_RIBBON_STYLE = 8;
+	protected final int CONTEXTMENU_RAISE_RIBBON = 9;
+	protected final int CONTEXTMENU_LOWER_RIBBON = 10;
 
 	public static final int TERM_CONTROL_LIST_KEYS = 1;
 	public static final int TERM_CONTROL_NOT_PLAYING = 2;
@@ -359,8 +362,18 @@ public class GameActivity extends Activity {
 		menu.setHeaderTitle("Quick Settings");
 		menu.add(0, CONTEXTMENU_FITWIDTH_ITEM, 0, "Fit Width");
 		menu.add(0, CONTEXTMENU_FITHEIGHT_ITEM, 0, "Fit Height");
-		menu.add(0, CONTEXTMENU_TOGGLE_TOUCHDIR, 0, "Toggle Touch Side");
-		menu.add(0, CONTEXTMENU_VKEY_ITEM, 0, "Toggle Keyboard");
+		if (Preferences.getEnableTouch() && Preferences.getTouchRight()) {
+			menu.add(0, CONTEXTMENU_TOGGLE_TOUCHDIR, 0, "Swap Touch Side");
+		}
+		if (topRibbon != null) {
+			menu.add(0, CONTEXTMENU_VKEY_ITEM, 0, "Show Full Keyboard");
+			menu.add(0, CONTEXTMENU_RIBBON_STYLE, 0, "Change Ribbon Style");
+			menu.add(0, CONTEXTMENU_LOWER_RIBBON, 0, "Lower Ribbon Opacity");
+			menu.add(0, CONTEXTMENU_RAISE_RIBBON, 0, "Raise Ribbon Opacity");
+		}
+		else {
+			menu.add(0, CONTEXTMENU_VKEY_ITEM, 0, "Show Button Ribbon");
+		}
 		menu.add(0, CONTEXTMENU_PREFERENCES_ITEM, 0, "Preferences");
 		menu.add(0, CONTEXTMENU_PROFILES_ITEM, 0, "Profiles");
 		menu.add(0, CONTEXTMENU_HELP_ITEM, 0, "Help");
@@ -386,6 +399,15 @@ public class GameActivity extends Activity {
 			return true;
 		case CONTEXTMENU_TOGGLE_TOUCHDIR:
 			toggleDrawRight();
+			return true;
+		case CONTEXTMENU_RIBBON_STYLE:
+			if (bottomRibbon != null) bottomRibbon.toggleCommandMode();
+			return true;
+		case CONTEXTMENU_LOWER_RIBBON:
+			if (bottomRibbon != null) bottomRibbon.changeOpacity(-1);
+			return true;
+		case CONTEXTMENU_RAISE_RIBBON:
+			if (bottomRibbon != null) bottomRibbon.changeOpacity(+1);
 			return true;
 		case CONTEXTMENU_PREFERENCES_ITEM:
 			intent = new Intent(this, PreferencesActivity.class);

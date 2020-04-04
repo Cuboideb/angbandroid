@@ -148,6 +148,8 @@ public class TermView extends View implements OnGestureListener {
 		this.cols = Preferences.getTermWidth();
 		this.rows = Preferences.getTermHeight();
 
+		this.drawRight = Preferences.getDrawTouchRight();
+
         timerHandler = new Handler();
         timerRunnable = new Runnable() {
             @Override
@@ -179,6 +181,7 @@ public class TermView extends View implements OnGestureListener {
 	public void toggleDrawRight()
 	{
 		this.drawRight = !this.drawRight;
+		Preferences.setDrawTouchRight(this.drawRight);
 		this.invalidate();
 	}
 

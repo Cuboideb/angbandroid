@@ -556,24 +556,33 @@ public class ButtonRibbon implements OnClickListener,
         }
     }
 
+    public void toggleCommandMode()
+    {
+        setCommandMode(!commandMode);
+    }
+
+    public void changeOpacity(int step)
+    {
+        alphaLevel = alphaLevel + step;
+        if (alphaLevel < 1) alphaLevel = 2;
+        if (alphaLevel > 3) alphaLevel = 2;
+        updateAlpha();
+    }
+
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         switch(item.getItemId()) {
             case (R.id.toggle_ribbon):
-                setCommandMode(!commandMode);
+                toggleCommandMode();
                 return true;
             case (R.id.show_keyboard):
                 context.toggleKeyboard();
                 return true;
             case (R.id.lower_opacity):
-                alphaLevel = alphaLevel - 1;
-                if (alphaLevel < 1) alphaLevel = 2;
-                updateAlpha();
+                changeOpacity(-1);
                 return true;
             case (R.id.raise_opacity):
-                alphaLevel = alphaLevel + 1;
-                if (alphaLevel > 3) alphaLevel = 2;
-                updateAlpha();
+                changeOpacity(+1);
                 return true;
             case (R.id.show_pref):
                 context.handler.sendEmptyMessage(AngbandDialog.Action.
@@ -604,7 +613,9 @@ public class ButtonRibbon implements OnClickListener,
         }
 
         if (action.equals("Kbd")) {
-            showMenu();
+            //showMenu();
+            context.handler.sendEmptyMessage(AngbandDialog.Action.
+                    OpenContextMenu.ordinal());
         }
         else if (action.equals("Esc")) {
             state.addKey(state.getKeyEsc());

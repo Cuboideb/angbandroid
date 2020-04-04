@@ -28,6 +28,7 @@ final public class Preferences {
 	static final String KEY_ENABLETOUCH = "angband.enabletouch";
 
 	static final String KEY_TOUCHRIGHT = "angband.touchright";
+	static final String KEY_DRAWTOUCHRIGHT = "angband.drawtouchright";
 	static final String KEY_TOUCHMULTIPLIER = "angband.touchmultiplier";
 
 	static final String KEY_CENTERTAP = "angband.centerscreentap";
@@ -285,6 +286,16 @@ final public class Preferences {
 
 	public static boolean getTouchRight() {
 		return pref.getBoolean(Preferences.KEY_TOUCHRIGHT, true);
+	}
+
+	public static boolean getDrawTouchRight() {
+		return pref.getBoolean(Preferences.KEY_DRAWTOUCHRIGHT, true);
+	}
+
+	public static void setDrawTouchRight(boolean value) {
+		SharedPreferences.Editor ed = pref.edit();
+		ed.putBoolean(Preferences.KEY_DRAWTOUCHRIGHT, value);
+		ed.commit();
 	}
 
 	public static boolean isKeyboardVisible()
