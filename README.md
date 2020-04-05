@@ -42,6 +42,8 @@ To reduce the number of buttons in command mode, the Alter command can also open
 
 If you feel that some action should be in the ribbon anyway, every keymap defined inside the core Angband is displayed in the button ribbon. This is also handy for spells and repetitive keystrokes.
 
+Besides the touch directionals, every touch in the term view is sent to the core as a mouse press, allowing movement and menu selection.
+
 Enjoy! 
 
 Angband homepage: http://rephial.org  
