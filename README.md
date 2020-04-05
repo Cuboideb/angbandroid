@@ -14,6 +14,22 @@ The game has two input methods: the soft keyboard and the button ribbon.
 
 It has three modes (alphanumeric, symbols and control-keys) and several opacity settings to make playing a bit easier on small devices.
 
+Some keyboard shorcuts:
+
+    Long-Press over game view -> Show Quick Settings
+    Long-Press "m" -> Show Quick Settings
+    "..." -> Hide some keys (pressing a hidden key displays the keyboard again)
+    Long-Press "..." -> Hide all keys excluding this one
+    Long-Press "Ctrl^" -> Make the keyboard almost opaque
+    Long-Press "Sym" -> Show the button ribbon
+    Long-Press "p" -> Ctrl+P (recall messages)
+    Long-Press "o" -> Ctrl+F (recall last message)
+    Long-Press "f" -> Ctrl+F (recall level feeling)
+    Long-Press "u" -> U (use item)
+    Long-Press "q" -> Escape
+    Long-Press "~" -> Escape
+    Long-Press over other keys (most of them) -> shorcut for Hide some keys
+
 ### The button ribbon
 
 Accessed when the soft keyboard is hidden, the button ribbon has two modes (command and full).

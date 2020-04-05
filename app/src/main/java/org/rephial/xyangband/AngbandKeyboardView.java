@@ -267,6 +267,13 @@ public class AngbandKeyboardView extends KeyboardView
 			return true;
 		}
 
+		// Show Quick Settings
+		if (label.equals("m")) {
+			mContext.handler.sendEmptyMessage(AngbandDialog.Action.
+					OpenContextMenu.ordinal());
+			return true;
+		}
+
 		// Non repeatable (exclude Return)
 		if (!popupKey.repeatable && !label.equals("⏎")) {
 			HashMap<String, Integer> map = new HashMap<>();
