@@ -78,7 +78,7 @@ public class AngbandDialog {
 
 	public int fatalAlert(String msg) {
 		new AlertDialog.Builder(activity) 
-			.setTitle("Angband") 
+			.setTitle("Angband")
 			.setMessage(msg) 
 			.setNegativeButton("OK", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {

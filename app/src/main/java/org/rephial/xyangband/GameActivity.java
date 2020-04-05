@@ -19,7 +19,9 @@
 package org.rephial.xyangband;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
@@ -426,6 +428,30 @@ public class GameActivity extends Activity {
 			return true;
 		}
 		return false;
+	}
+
+	public void questionAlert(String msg,
+							  DialogInterface.OnClickListener okHandler) {
+		new AlertDialog.Builder(this)
+				//.setTitle("Angband")
+				.setMessage(msg)
+				.setCancelable(true)
+				.setNegativeButton("No", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				})
+				.setPositiveButton("Yes", okHandler)
+				.show();
+	}
+
+	public void infoAlert(String msg) {
+		new AlertDialog.Builder(this)
+				//.setTitle("Angband")
+				.setMessage(msg)
+				.setCancelable(true)
+				.show();
 	}
 
 	public void toggleKeyboard() {

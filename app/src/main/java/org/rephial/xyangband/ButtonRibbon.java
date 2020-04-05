@@ -1,5 +1,6 @@
 package org.rephial.xyangband;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.SpannableString;
@@ -112,7 +113,7 @@ public class ButtonRibbon implements OnClickListener,
         return Character.toString(c);
     }
 
-    public class Command {
+    public class Command implements Button.OnLongClickListener {
         public String label;
         public String action;
         public char charValue;
@@ -230,16 +231,21 @@ public class ButtonRibbon implements OnClickListener,
                 if (Preferences.getIconsEnabled() &&
                         ButtonRibbon.fontCmd != null) {
                     btn.setTypeface(ButtonRibbon.fontCmd);
-                    setIconTooltip();
+                    //setIconTooltip();
+                    btn.setOnLongClickListener(this);
                     txt = Character.toString(fixIcon());
+                    btn.setText(txt);
+                    // Done!
+                    return;
                 }
                 else {
                     txt = printableChar(getCommand(true));
+                    // Keep going
                 }
-                btn.setText(txt);
             }
+
             // Set bold
-            else if (txt.length() == 1) {
+            if (txt.length() == 1) {
                 SpannableString spanString = new SpannableString(txt);
                 spanString.setSpan(new StyleSpan(Typeface.BOLD),
                         0, spanString.length(), 0);
@@ -264,6 +270,21 @@ public class ButtonRibbon implements OnClickListener,
             } catch (Exception ex) {
                 return 0;
             }
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            char cmd = getCommand(true);
+            String txt = printableChar(cmd);
+            context.questionAlert("Execute command: " + txt,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            btn.performClick();
+                        }
+                    });
+            return false;
         }
     }
 
