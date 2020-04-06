@@ -25,6 +25,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
+import android.content.res.Configuration;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
@@ -356,6 +357,12 @@ public class GameActivity extends Activity {
 
 	public void openContextMenu() {
 		super.openContextMenu(term);
+	}
+
+	public boolean landscapeNow()
+	{
+		return getResources().getConfiguration().orientation
+				== Configuration.ORIENTATION_LANDSCAPE;
 	}
 
 	@Override

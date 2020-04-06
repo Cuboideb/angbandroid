@@ -1,11 +1,14 @@
 package org.rephial.xyangband;
 
+import android.app.ActionBar;
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -13,6 +16,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.PopupWindow;
+import android.widget.ScrollView;
+import android.widget.TableLayout;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.TableRow;
+import android.widget.TextView;
 
 import androidx.core.graphics.ColorUtils;
 
@@ -324,6 +333,7 @@ public class ButtonRibbon implements OnClickListener,
         }
         else {
             makeCommand("▤", "Kbd", CmdLocation.Fixed);
+            makeCommand("✦", "do_cmd_list", CmdLocation.Fixed);
             makeCommand("⇧", "Sft", CmdLocation.Fixed);
             makeCommand("^", "Ctrl", CmdLocation.Fixed);
         }
@@ -346,8 +356,8 @@ public class ButtonRibbon implements OnClickListener,
 
         if (set) {
             // Hide shift and ctrl
-            atLeft.getChildAt(1).setVisibility(View.GONE);
             atLeft.getChildAt(2).setVisibility(View.GONE);
+            atLeft.getChildAt(3).setVisibility(View.GONE);
 
             String txt = ".iUmhfvngdR+wb,l[]C~LM=?";
             for (char c: txt.toCharArray()) {
@@ -358,8 +368,8 @@ public class ButtonRibbon implements OnClickListener,
         }
         else {
             // Show shift and ctrl
-            atLeft.getChildAt(1).setVisibility(View.VISIBLE);
             atLeft.getChildAt(2).setVisibility(View.VISIBLE);
+            atLeft.getChildAt(3).setVisibility(View.VISIBLE);
 
             setKeys("abcdefghijklmnopqrstuvwxyz " +
                     "012456789.,*'~!#$%&<>|" +
@@ -614,21 +624,81 @@ public class ButtonRibbon implements OnClickListener,
         return false;
     }
 
-    public void showCommandList() {
+    public void showCommandList(View parentView) {
         String result = state.nativew.queryString("cmd_list");
 
         if (result == null) return;
 
+        final PopupWindow win = new PopupWindow(context);
+        win.setFocusable(true);
+        win.setWidth(LayoutParams.WRAP_CONTENT);
+        win.setHeight(LayoutParams.WRAP_CONTENT);
+
+        ScrollView scroll = new ScrollView(context);
+        scroll.setLayoutParams(new LayoutParams(
+                LayoutParams.WRAP_CONTENT,
+                LayoutParams.MATCH_PARENT
+        ));
+
+        win.setContentView(scroll);
+
+        TableLayout table = new TableLayout(context);
+        table.setShrinkAllColumns(true);
+        table.setLayoutParams(new LayoutParams(
+                LayoutParams.WRAP_CONTENT,
+                LayoutParams.WRAP_CONTENT
+        ));
+
+        scroll.addView(table);
+
         String[] list = result.split(",");
+
+        TableRow trow = null;
+
+        int maxRowItems = 4;
+        if (context.landscapeNow()) {
+            maxRowItems = 6;
+        }
+
         for (String item: list) {
-            int key = Integer.parseInt(item);
+            final int key = Integer.parseInt(item);
 
             String trigger = printableChar((char)key);
             String desc = state.nativew.queryString("cmd_desc_" + item);
 
             if (desc == null) desc = "";
-            Log.d("Angband", trigger + " | " + desc);
+
+            //Log.d("Angband", trigger + " | " + desc);
+
+            if (trow == null || trow.getChildCount() == maxRowItems) {
+                trow = new TableRow(context);
+                trow.setLayoutParams(new LayoutParams(
+                        LayoutParams.WRAP_CONTENT,
+                        LayoutParams.WRAP_CONTENT
+                ));
+                table.addView(trow);
+            }
+
+            Button btn = new Button(context);
+            btn.setText(trigger);
+            btn.setOnClickListener(new Button.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    state.addKey(key);
+                    win.dismiss();
+                }
+            });
+            trow.addView(btn);
+
+            TextView txt = new TextView(context);
+            txt.setText(desc);
+            trow.addView(txt);
         }
+
+        if (table.getChildCount() == 0) return;
+
+        win.showAsDropDown(parentView);
+        win.update(0, 0, win.getWidth(), win.getHeight());
     }
 
     @Override
@@ -652,9 +722,11 @@ public class ButtonRibbon implements OnClickListener,
 
         if (action.equals("Kbd")) {
             //showMenu();
-            //context.handler.sendEmptyMessage(AngbandDialog.Action.
-            //        OpenContextMenu.ordinal());
-            showCommandList();
+            context.handler.sendEmptyMessage(AngbandDialog.Action.
+                    OpenContextMenu.ordinal());
+        }
+        else if (action.equals("do_cmd_list")) {
+            showCommandList(v);
         }
         else if (action.equals("Esc")) {
             state.addKey(state.getKeyEsc());
