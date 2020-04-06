@@ -102,6 +102,7 @@ void angdroid_warn(const char*);
 void angdroid_process_argv(int, const char*);
 void angdroid_main(void);
 int queryInt(const char* argv0);
+char *queryString(const char* argv0);
 int queryResize(int width, int height);
 
 /* game may implement these */

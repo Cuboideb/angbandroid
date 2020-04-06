@@ -555,6 +555,13 @@ static int translate_to_rogue(int key)
 	return 0;
 }
 
+char* queryString(const char* argv0)
+{
+	char *buf = strdup("testing!");
+
+	return buf;
+}
+
 int queryInt(const char* argv0) {
 	int result = -1;
 	const char *ROGUE_KEY = "rogue_key_";

@@ -17,7 +17,7 @@ public class NativeWrapper {
 	// Call native methods from library
 	native void gameStart(String pluginPath, int argc, String[] argv);
 	native int gameQueryInt(int argc, String[] argv);
-	native String gameQueryString(int argc, String[] argv);
+	native byte[] gameQueryString(int argc, String[] argv);
 	native int gameQueryResize(int width, int height);
 
 	public NativeWrapper(StateManager s) {
@@ -27,6 +27,26 @@ public class NativeWrapper {
 	public void link(TermView t) {
 		synchronized (display_lock) {
 			term = t;
+		}
+	}
+
+	public String queryString(String what)
+	{
+		String[] argv = new String[]{what};
+
+		byte[] data = gameQueryString(1, argv);
+
+		if (data == null) {
+			return null;
+		}
+
+		try {
+			String str = new String(data, "UTF-8");
+			return str;
+		}
+		catch (java.io.UnsupportedEncodingException ex) {
+			Log.d("Angband", ex.getMessage());
+			return null;
 		}
 	}
 

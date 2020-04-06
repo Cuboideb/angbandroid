@@ -20,7 +20,7 @@ void( * angdroid_gameStart ) (JNIEnv*, jobject, jint, jobjectArray) = NULL;
 jint( * angdroid_gameQueryRedraw ) (JNIEnv*, jobject, jint, jint, jint, jint) = NULL;
 jint( * angdroid_gameQueryResize ) (JNIEnv*, jobject, jint, jint) = NULL;
 jint( * angdroid_gameQueryInt ) (JNIEnv*, jobject, jint, jobjectArray) = NULL;
-jstring( * angdroid_gameQueryString ) (JNIEnv*, jobject, jint, jobjectArray) = NULL;
+jbyteArray( * angdroid_gameQueryString ) (JNIEnv*, jobject, jint, jobjectArray) = NULL;
 
 static JavaVM *jvm;
 static void* handle = NULL;
@@ -108,10 +108,38 @@ JNIEXPORT void JNICALL Java_org_rephial_xyangband_NativeWrapper_gameStart
 	gameStart(env1,obj1,pluginPath,argc,argv);
 }
 
-JNIEXPORT jstring JNICALL Java_org_rephial_xyangband_NativeWrapper_gameQueryString
+jbyteArray gameQueryString
+(JNIEnv *env1, jobject obj1, jint argc, jobjectArray argv)
+{
+	jbyteArray result = (jbyteArray)0;
+
+	// begin synchronize
+	pthread_mutex_lock (&muQuery);
+
+	if (handle) {
+		if (!angdroid_gameQueryString)
+			// find entry point
+			angdroid_gameQueryString = dlsym(handle, "angdroid_gameQueryString");
+
+		if (angdroid_gameQueryString)
+			result = angdroid_gameQueryString(env1, obj1, argc, argv);
+		else
+			LOGE("dlsym failed on angdroid_gameQueryString");
+	}
+	else {
+		LOGE("dlopen failed -- angdroid_gameQueryString");
+	}
+
+	// end synchronize
+	pthread_mutex_unlock (&muQuery);
+
+	return result;
+}
+
+JNIEXPORT jbyteArray JNICALL Java_org_rephial_xyangband_NativeWrapper_gameQueryString
   (JNIEnv *env1, jobject obj1, jint argc, jobjectArray argv)
 {
-	return (jstring)0; // null indicates error
+	return gameQueryString(env1, obj1, argc, argv);
 }
 
 jint gameQueryInt

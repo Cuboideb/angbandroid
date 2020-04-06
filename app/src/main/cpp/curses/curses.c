@@ -561,10 +561,32 @@ JNIEXPORT jint JNICALL angdroid_gameQueryInt
 	return result;
 }
 
-
-JNIEXPORT jstring JNICALL angdroid_gameQueryString
+JNIEXPORT jbyteArray JNICALL angdroid_gameQueryString
 	(JNIEnv *env1, jobject obj1, jint argc, jobjectArray argv) {
-	return (jstring)0; // null indicates error, i.e. not implemented
+	jbyteArray result = (jbyteArray)0; // null indicates error
+
+	// process argc/argv
+	jstring argv0 = NULL;
+	int i = 0;
+
+	argv0 = (*env1)->GetObjectArrayElement(env1, argv, i);
+	const char *copy_argv0 = (*env1)->GetStringUTFChars(env1, argv0, 0);
+
+	char *buf = queryString(copy_argv0);
+
+	if (buf != NULL) {
+
+		int n = strlen(buf);
+		result = (*env1)->NewByteArray(env1, n);
+		if (result == NULL) angdroid_quit("Error: Out of memory");
+		(*env1)->SetByteArrayRegion(env1, result, 0, n, (void *)buf);
+
+		free(buf);
+	}
+
+	(*env1)->ReleaseStringUTFChars(env1, argv0, copy_argv0);
+
+	return result;
 }
 
 JNIEXPORT jint JNICALL angdroid_gameQueryResize
