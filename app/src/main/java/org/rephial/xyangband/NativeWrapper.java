@@ -1,6 +1,6 @@
 package org.rephial.xyangband;
 
-import android.os.Message;
+import android.os.CountDownTimer;
 import android.util.Log;
 
 public class NativeWrapper {
@@ -12,7 +12,9 @@ public class NativeWrapper {
 	private TermView term = null;
 	private StateManager state = null;
 
-	private String display_lock = "lock";
+	private final String display_lock = "lock";
+
+	public LockWithTimer lockWithTimer = null;
 
 	// Call native methods from library
 	native void gameStart(String pluginPath, int argc, String[] argv);
@@ -22,11 +24,52 @@ public class NativeWrapper {
 
 	public NativeWrapper(StateManager s) {
 		state = s;
+		lockWithTimer = new LockWithTimer(500);
 	}
 
 	public void link(TermView t) {
 		synchronized (display_lock) {
 			term = t;
+		}
+	}
+
+	public class LockWithTimer {
+		public boolean locked = false;
+		public int millis = 0;
+
+		public LockWithTimer(int p_millis)
+		{
+			millis = p_millis;
+		}
+
+		public boolean reserveLock()
+		{
+			synchronized (this) {
+				if (locked) return false;
+				locked = true;
+			}
+			return true;
+		}
+
+		public void releaseLock()
+		{
+			synchronized (this) {
+				locked = false;
+			}
+		}
+
+		public void waitAndRelease()
+		{
+			int time = millis;
+			new CountDownTimer(time, time) {
+				@Override
+				public void onTick(long millisUntilFinished) {
+				}
+				@Override
+				public void onFinish() {
+					releaseLock();
+				}
+			}.start();
 		}
 	}
 
@@ -69,17 +112,24 @@ public class NativeWrapper {
 	}
 
 	public void increaseFontSize() {
+		if (!lockWithTimer.reserveLock()) return;
+
 		synchronized (display_lock) {
 			term.increaseFontSize();
-			resize();
+			this.resize();
 		}
+		lockWithTimer.waitAndRelease();
 	}
 
 	public void decreaseFontSize() {
+		if (!lockWithTimer.reserveLock()) return;
+
 		synchronized (display_lock) {
 			term.decreaseFontSize();
-			resize();
+			this.resize();
 		}
+
+		lockWithTimer.waitAndRelease();
 	}
 
 	public void flushinp() {

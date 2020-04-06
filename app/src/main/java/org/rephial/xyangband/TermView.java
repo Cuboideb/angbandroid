@@ -498,13 +498,11 @@ public class TermView extends View implements OnGestureListener {
 	public void increaseFontSize() {
 		setFontSize(font_text_size+1);
 		adjustTermSize(0,0);
-        this.state.nativew.resize();
 	}
 
 	public void decreaseFontSize() {
 		setFontSize(font_text_size-1);
 		adjustTermSize(0,0);
-		this.state.nativew.resize();
 	}
 
 	private boolean setFontSize(int size) {

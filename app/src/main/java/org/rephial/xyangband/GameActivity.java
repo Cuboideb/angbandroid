@@ -28,7 +28,6 @@ import android.content.pm.PackageInfo;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -83,8 +82,6 @@ public class GameActivity extends Activity {
 	protected Runnable keyRunnable = null;
 	protected String lastKeys = "";
 	protected boolean keyHandlerIsRunning = false;
-
-	private boolean resizeLocked = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -392,40 +389,24 @@ public class GameActivity extends Activity {
 		menu.add(0, CONTEXTMENU_QUIT_ITEM, 0, "Quit");
 	}
 
-	public void waitResize()
-	{
-		int time = 500;
-		new CountDownTimer(time, time) {
-			@Override
-			public void onTick(long millisUntilFinished) {
-			}
-			@Override
-			public void onFinish() {
-				resizeLocked = false;
-			}
-		}.start();
-	}
-
 	@Override
 	public boolean onContextItemSelected(MenuItem aItem) {
 		Intent intent;
 		switch (aItem.getItemId()) {
 		case CONTEXTMENU_FITWIDTH_ITEM:
-			if (!resizeLocked) {
-				resizeLocked = true;
-				term.autoSizeFontByWidth(0, 0);
-				term.adjustTermSize(0, 0);
+            if (state.nativew.lockWithTimer.reserveLock()) {
+			    term.autoSizeFontByWidth(0, 0);
+			    term.adjustTermSize(0, 0);
 				state.nativew.resize();
-				waitResize();
+                state.nativew.lockWithTimer.waitAndRelease();
 			}
 			return true;
 		case CONTEXTMENU_FITHEIGHT_ITEM:
-			if (!resizeLocked) {
-				resizeLocked = true;
+            if (state.nativew.lockWithTimer.reserveLock()) {
 				term.autoSizeFontByHeight(0, 0);
 				term.adjustTermSize(0, 0);
 				state.nativew.resize();
-				waitResize();
+                state.nativew.lockWithTimer.waitAndRelease();
 			}
 			return true;
 		case CONTEXTMENU_VKEY_ITEM:
