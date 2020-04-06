@@ -614,6 +614,23 @@ public class ButtonRibbon implements OnClickListener,
         return false;
     }
 
+    public void showCommandList() {
+        String result = state.nativew.queryString("cmd_list");
+
+        if (result == null) return;
+
+        String[] list = result.split(",");
+        for (String item: list) {
+            int key = Integer.parseInt(item);
+
+            String trigger = printableChar((char)key);
+            String desc = state.nativew.queryString("cmd_desc_" + item);
+
+            if (desc == null) desc = "";
+            Log.d("Angband", trigger + " | " + desc);
+        }
+    }
+
     @Override
     public void onClick(View v) {
         Command cmd = findCommand((Button)v);
@@ -635,8 +652,9 @@ public class ButtonRibbon implements OnClickListener,
 
         if (action.equals("Kbd")) {
             //showMenu();
-            context.handler.sendEmptyMessage(AngbandDialog.Action.
-                    OpenContextMenu.ordinal());
+            //context.handler.sendEmptyMessage(AngbandDialog.Action.
+            //        OpenContextMenu.ordinal());
+            showCommandList();
         }
         else if (action.equals("Esc")) {
             state.addKey(state.getKeyEsc());

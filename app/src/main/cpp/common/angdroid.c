@@ -555,9 +555,82 @@ static int translate_to_rogue(int key)
 	return 0;
 }
 
+static const char *get_command_desc(int key)
+{
+	size_t i, j;
+	int mode = 0;
+
+	/* Roguelike ? */
+	if (player && OPT(player, rogue_like_commands)) mode = 1;
+
+	/* Go through all generic commands */
+	for (j = 0; cmds_all[j].name != NULL; j++)
+	{
+		struct cmd_info *commands = cmds_all[j].list;
+		/* Look into every group */
+		for (i = 0; i < cmds_all[j].len; i++) {
+			// Original keymap
+			if ((unsigned char)commands[i].key[mode] == key) {
+				// Rogue keymap
+				return commands[i].desc;
+			}
+		}
+	}
+
+	return 0;
+}
+
+static char *get_command_list()
+{
+	char buf[4096] = "";
+	char temp[50];
+
+	size_t i, j;
+	int mode = 0;
+
+	/* Roguelike ? */
+	if (player && OPT(player, rogue_like_commands)) mode = 1;
+
+	/* Go through all generic commands */
+	for (j = 0; cmds_all[j].name != NULL; j++)
+	{
+		struct cmd_info *commands = cmds_all[j].list;
+		/* Look into every group */
+		for (i = 0; i < cmds_all[j].len; i++) {
+
+			int key = (unsigned char)commands[i].key[mode];
+
+			/* Add separator */
+			if (buf[0] != 0) {
+				my_strcat(buf, ",", sizeof(buf));
+			}
+
+			strnfmt(temp, sizeof(temp), "%d", key);
+			my_strcat(buf, temp, sizeof(buf));
+		}
+	}
+
+	return strdup(buf);
+}
+
 char* queryString(const char* argv0)
 {
-	char *buf = strdup("testing!");
+	const char *CMD_DESC = "cmd_desc_";
+
+	char *buf = 0;
+
+	if (strncmp(argv0, CMD_DESC, strlen(CMD_DESC)) == 0) {
+		// Find the respective key in roguelike mode
+		int n = strlen(CMD_DESC);
+		int key = atoi(argv0 + n);
+		if (key == 0) return buf;
+		const char *tmp = get_command_desc(key);
+		if (tmp == 0) return buf;
+		buf = strdup(tmp);
+	}
+	else if (strcmp(argv0, "cmd_list") == 0) {
+		buf = get_command_list();
+	}
 
 	return buf;
 }
