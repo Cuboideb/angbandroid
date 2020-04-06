@@ -206,6 +206,7 @@
 	<org.rephial.xyangband.SeekBarPreference
 		  android:key="angband.touchmultiplier"
 		  android:title="Touch directional size multiplier"
+		  android:dependency="angband.enabletouch"
 		  seekBar:min="0"
 		  seekBar:max="100"
 		  seekBar:defaultVal="40" />
@@ -213,7 +214,7 @@
 	   android:title="Center screen tap action"
 	   android:summary="Select functionality for center screen tap"
 	   android:key="angband.centerscreentap"
-	   android:defaultValue="CenterPlayer"
+	   android:defaultValue="Comma"
 	   android:dependency="angband.enabletouch"
 	   android:entries="@array/virtKeyActionDescriptions"
 	   android:entryValues="@array/virtKeyActions"/>

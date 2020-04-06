@@ -660,6 +660,19 @@ public class ButtonRibbon implements OnClickListener,
             maxRowItems = 6;
         }
 
+        //final int MY_TAG = 1;
+
+        OnClickListener clickListener =
+            new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Integer tag = (Integer)v.getTag();
+                    int key = tag.intValue();
+                    state.addKey(key);
+                    win.dismiss();
+                }
+            };
+
         for (String item: list) {
             final int key = Integer.parseInt(item);
 
@@ -681,17 +694,15 @@ public class ButtonRibbon implements OnClickListener,
 
             Button btn = new Button(context);
             btn.setText(trigger);
-            btn.setOnClickListener(new Button.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    state.addKey(key);
-                    win.dismiss();
-                }
-            });
+            btn.setTag(new Integer(key));
+            btn.setOnClickListener(clickListener);
             trow.addView(btn);
 
             TextView txt = new TextView(context);
             txt.setText(desc);
+            txt.setClickable(true);
+            txt.setTag(new Integer(key));
+            txt.setOnClickListener(clickListener);
             trow.addView(txt);
         }
 
