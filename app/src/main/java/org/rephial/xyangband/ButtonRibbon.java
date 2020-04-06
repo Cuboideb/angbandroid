@@ -423,7 +423,8 @@ public class ButtonRibbon implements OnClickListener,
     }
 
     public Button makeButton(String text, String action) {
-        Button btn = (Button)context.getLayoutInflater().inflate(R.layout.singlebutton, null);
+        Button btn = (Button)context.getLayoutInflater().inflate
+                (R.layout.singlebutton, null);
         btn.setText(text);
         btn.setOnClickListener(this);
         if (action.equals("Ret")) {
@@ -675,7 +676,7 @@ public class ButtonRibbon implements OnClickListener,
         win.setContentView(scroll);
 
         TableLayout table = new TableLayout(context);
-        table.setShrinkAllColumns(true);
+        //table.setShrinkAllColumns(true);
         table.setLayoutParams(new LayoutParams(
                 LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT
@@ -724,11 +725,14 @@ public class ButtonRibbon implements OnClickListener,
                 table.addView(trow);
             }
 
-            Button btn = new Button(context);
+            Button btn = (Button)context.getLayoutInflater().inflate
+                    (R.layout.normalbutton, null);
+            //Button btn = new Button(context);
             btn.setText(trigger);
             btn.setTag(new Integer(key));
             btn.setOnClickListener(clickListener);
             btn.setTypeface(context.monoBoldFont);
+            //btn.setTextSize(30);
             trow.addView(btn);
 
             TextView txt = new TextView(context);
