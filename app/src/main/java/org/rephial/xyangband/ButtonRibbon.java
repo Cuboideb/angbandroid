@@ -122,6 +122,27 @@ public class ButtonRibbon implements OnClickListener,
         return Character.toString(c);
     }
 
+    public static char getKeyCode(String printable)
+    {
+        if (printable.length() == 0) {
+            return 0;
+        }
+
+        int i = 0;
+        for (String name: keynames) {
+            if (name.equals(printable)) {
+                return keycodes[i];
+            }
+            i++;
+        }
+
+        if (isKtrl(printable)) {
+            return KTRL(printable.charAt(1));
+        }
+
+        return printable.charAt(0);
+    }
+
     public class Command implements Button.OnLongClickListener {
         public String label;
         public String action;
@@ -285,7 +306,11 @@ public class ButtonRibbon implements OnClickListener,
         public boolean onLongClick(View v) {
             char cmd = getCommand(true);
             String txt = printableChar(cmd);
-            context.questionAlert("Execute command: " + txt,
+            String desc = state.nativew.queryString("cmd_desc_"
+                + Integer.toString(cmd));
+            if (desc == null) desc = "";
+            String msg = "Execute command: " + txt + "\n\n" + desc;
+            context.questionAlert(msg,
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
