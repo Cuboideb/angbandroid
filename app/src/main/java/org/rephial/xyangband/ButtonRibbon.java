@@ -656,7 +656,7 @@ public class ButtonRibbon implements OnClickListener,
         TableRow trow = null;
 
         int maxRowItems = 4;
-        if (context.landscapeNow()) {
+        if (false && context.landscapeNow()) {
             maxRowItems = 6;
         }
 
