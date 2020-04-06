@@ -27,6 +27,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.res.Configuration;
 import android.graphics.Point;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -45,6 +46,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 public class GameActivity extends Activity {
+
+    public static Typeface monoFont = null;
+	public static Typeface monoBoldFont = null;
 
 	public static StateManager state = null;
 	private AngbandDialog dialog = null;
@@ -114,6 +118,14 @@ public class GameActivity extends Activity {
 
 		if (keyHandler == null) {
 			keyHandler = new Handler();
+		}
+
+		if (monoFont == null) {
+            monoFont = Typeface.createFromAsset(getAssets(),"VeraMono.ttf");
+        }
+
+		if (monoBoldFont == null) {
+			monoBoldFont = Typeface.createFromAsset(getAssets(),"VeraMono-Bold.ttf");
 		}
 
 		if (keyRunnable == null) {

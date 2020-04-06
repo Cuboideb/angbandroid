@@ -274,15 +274,22 @@ public class ButtonRibbon implements OnClickListener,
                 }
             }
 
+
+
             // Set bold
             if (txt.length() == 1) {
+                btn.setTypeface(context.monoBoldFont);
+                /*
                 SpannableString spanString = new SpannableString(txt);
                 spanString.setSpan(new StyleSpan(Typeface.BOLD),
                         0, spanString.length(), 0);
                 btn.setText(spanString);
+                */
+                btn.setText(txt);
             }
             // Normal text
             else {
+                btn.setTypeface(context.monoFont);
                 btn.setText(String.format("%.3s", txt));
             }
         }
@@ -721,6 +728,7 @@ public class ButtonRibbon implements OnClickListener,
             btn.setText(trigger);
             btn.setTag(new Integer(key));
             btn.setOnClickListener(clickListener);
+            btn.setTypeface(context.monoBoldFont);
             trow.addView(btn);
 
             TextView txt = new TextView(context);
