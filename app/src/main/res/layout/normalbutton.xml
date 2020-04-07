@@ -3,5 +3,5 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:minWidth="@dimen/_15sdp"
-    android:textSize="@dimen/_10sdp">
+    android:textSize="@dimen/_12sdp">
 </Button>
