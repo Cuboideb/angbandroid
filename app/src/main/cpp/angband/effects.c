@@ -299,11 +299,7 @@ static bool uncurse_object(struct object *obj, int strength, char *dice_string)
 				object_delete(&destroyed->known);
 				object_delete(&destroyed);
 			} else {
-				square_excise_object(cave, obj->grid, obj);
-				delist_object(cave, obj);
-				object_delete(&obj);
-				square_note_spot(cave, player->grid);
-				square_light_spot(cave, player->grid);
+				square_delete_object(cave, obj->grid, obj, true, true);
 			}
 		} else {
 			/* Non-destructive failure */
@@ -1875,6 +1871,10 @@ bool effect_handler_DETECT_GOLD(effect_handler_context_t *context)
 
 				/* Detect */
 				gold_buried = true;
+			} else if (square_hasgoldvein(player->cave, grid)) {
+				/* Something removed previously seen or
+				 * detected buried gold.  Notice the change. */
+				square_forget(cave, grid);
 			}
 		}
 	}
@@ -1890,6 +1890,35 @@ bool effect_handler_DETECT_GOLD(effect_handler_context_t *context)
 
 	context->ident = true;
 	return true;
+}
+
+/**
+ * This is a helper for effect_handler_SENSE_OBJECTS and
+ * effect_handler_DETECT_OBJECTS to remove remembered objects at locations
+ * sensed or detected as empty.
+ */
+static void forget_remembered_objects(struct chunk *c, struct chunk *knownc, struct loc grid)
+{
+	struct object *obj = square_object(knownc, grid);
+
+	while (obj) {
+		struct object *next = obj->next;
+		struct object *original = c->objects[obj->oidx];
+
+		assert(original);
+		square_excise_object(knownc, grid, obj);
+		obj->grid = loc(0, 0);
+
+		/* Delete objects which no longer exist anywhere */
+		if (obj->notice & OBJ_NOTICE_IMAGINED) {
+			delist_object(knownc, obj);
+			object_delete(&obj);
+			original->known = NULL;
+			delist_object(c, original);
+			object_delete(&original);
+		}
+		obj = next;
+	}
 }
 
 /**
@@ -1920,8 +1949,11 @@ bool effect_handler_SENSE_OBJECTS(effect_handler_context_t *context)
 			struct loc grid = loc(x, y);
 			struct object *obj = square_object(cave, grid);
 
-			/* Skip empty grids */
-			if (!obj) continue;
+			if (!obj) {
+				/* If empty, remove any remembered objects. */
+				forget_remembered_objects(cave, player->cave, grid);
+				continue;
+			}
 
 			/* Notice an object is detected */
 			objects = true;
@@ -1971,8 +2003,11 @@ bool effect_handler_DETECT_OBJECTS(effect_handler_context_t *context)
 			struct loc grid = loc(x, y);
 			struct object *obj = square_object(cave, grid);
 
-			/* Skip empty grids */
-			if (!obj) continue;
+			if (!obj) {
+				/* If empty, remove any remembered objects. */
+				forget_remembered_objects(cave, player->cave, grid);
+				continue;
+			}
 
 			/* Notice an object is detected */
 			if (!ignore_item_ok(obj)) {
@@ -4868,7 +4903,9 @@ bool effect_handler_JUMP_AND_BITE(effect_handler_context_t *context)
 	/* Look next to the monster */
 	for (d = first_d; d < first_d + 8; d++) {
 		grid = loc_sum(victim, ddgrid_ddd[d % 8]);
-		if (square_isempty(cave, grid)) break;
+		if (square_isplayertrap(cave, grid)) continue;
+		if (square_iswebbed(cave, grid)) continue;
+		if (square_isopen(cave, grid)) break;
 	}
 
 	/* Needed to be adjacent */

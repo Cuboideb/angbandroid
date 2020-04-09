@@ -283,16 +283,16 @@ static void get_move_find_range(struct monster *mon)
 		mon->best_range += 3;
 	}
 
-	if (mon->race->freq_spell > 24) {
 		/* Breathers like point blank range */
+	if (mon->race->freq_innate > 24) {
 		if (monster_breathes(mon) && (mon->hp > mon->maxhp / 2)) {
-			mon->best_range = MAX(6, mon->best_range);
-		} else {
+			mon->best_range = MAX(1, mon->best_range);
+		}
+	} else if (mon->race->freq_spell > 24) {
 			/* Other spell casters will sit back and cast */
 			mon->best_range += 3;
 		}
 	}
-}
 
 /**
  * Choose the best direction for a bodyguard.
@@ -1319,11 +1319,7 @@ void monster_turn_grab_objects(struct chunk *c, struct monster *mon,
 				msgt(MSG_DESTROY, "%s crushes %s.", m_name, o_name);
 
 			/* Delete the object */
-			square_excise_object(c, new, obj);
-			delist_object(c, obj);
-			object_delete(&obj);
-			square_note_spot(c, new);
-			square_light_spot(c, new);
+			square_delete_object(c, new, obj, true, true);
 		}
 
 		/* Next object */
