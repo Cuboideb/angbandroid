@@ -356,7 +356,7 @@ public class ButtonRibbon implements OnClickListener,
             makeCommand("⎋", "Esc", CmdLocation.Fixed);
             makeCommand("⏎", "Ret", CmdLocation.Fixed);
             makeCommand("⌫", "BackSpace", CmdLocation.Fixed);
-            makeCommand("⎇", "show_keys", CmdLocation.Fixed);
+            makeCommand("⎘", "show_keys", CmdLocation.Fixed);
 
             atLeft.getChildAt(3).setVisibility(View.GONE);
 
@@ -365,9 +365,9 @@ public class ButtonRibbon implements OnClickListener,
         else {
             makeCommand("▤", "Kbd", CmdLocation.Fixed);
             makeCommand("✦", "do_cmd_list", CmdLocation.Fixed);
+            makeCommand("⎘", "show_keys", CmdLocation.Fixed);
             makeCommand("⇧", "Sft", CmdLocation.Fixed);
             makeCommand("^", "Ctrl", CmdLocation.Fixed);
-            makeCommand("⎇", "show_keys", CmdLocation.Fixed);
         }
 
         setCommandMode(true);
@@ -388,8 +388,8 @@ public class ButtonRibbon implements OnClickListener,
 
         if (set) {
             // Hide shift and ctrl
-            atLeft.getChildAt(2).setVisibility(View.GONE);
             atLeft.getChildAt(3).setVisibility(View.GONE);
+            atLeft.getChildAt(4).setVisibility(View.GONE);
 
             String txt = ".iUmhfvngdR+wb,l[]C~LM=?";
             for (char c: txt.toCharArray()) {
@@ -400,8 +400,8 @@ public class ButtonRibbon implements OnClickListener,
         }
         else {
             // Show shift and ctrl
-            atLeft.getChildAt(2).setVisibility(View.VISIBLE);
             atLeft.getChildAt(3).setVisibility(View.VISIBLE);
+            atLeft.getChildAt(4).setVisibility(View.VISIBLE);
 
             setKeys("abcdefghijklmnopqrstuvwxyz " +
                     "012456789.,*'~!#$%&<>|" +
