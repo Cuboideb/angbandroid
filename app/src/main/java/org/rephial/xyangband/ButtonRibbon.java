@@ -358,8 +358,6 @@ public class ButtonRibbon implements OnClickListener,
             makeCommand("⌫", "BackSpace", CmdLocation.Fixed);
             makeCommand("⎘", "show_keys", CmdLocation.Fixed);
 
-            atLeft.getChildAt(3).setVisibility(View.GONE);
-
             rebuildKeymaps();
         }
         else {
@@ -368,9 +366,9 @@ public class ButtonRibbon implements OnClickListener,
             makeCommand("⎘", "show_keys", CmdLocation.Fixed);
             makeCommand("⇧", "Sft", CmdLocation.Fixed);
             makeCommand("^", "Ctrl", CmdLocation.Fixed);
-        }
 
-        setCommandMode(true);
+            restoreCommandMode();
+        }
     }
 
     public void addSibling(ButtonRibbon ribbon)
@@ -378,9 +376,19 @@ public class ButtonRibbon implements OnClickListener,
         siblings.add(ribbon);
     }
 
+    public void restoreCommandMode()
+    {
+        setCommandMode(Preferences.getCommandMode());
+    }
+
     public void setCommandMode(boolean set)
     {
-        if (fastMode || set == commandMode) {
+        if (fastMode) {
+            return;
+        }
+
+        // Already created and equal, do nothing
+        if (atCenter.getChildCount() > 0 && set == commandMode) {
             return;
         }
 
@@ -412,6 +420,8 @@ public class ButtonRibbon implements OnClickListener,
                         CmdLocation.Dynamic);
             }
         }
+
+        Preferences.setCommandMode(set);
 
         atLeft.requestLayout();
         atLeft.invalidate();
@@ -539,8 +549,6 @@ public class ButtonRibbon implements OnClickListener,
 
         if (fastMode && loc == CmdLocation.Dynamic) {
             if (keys.length() > 0) {
-                atLeft.getChildAt(3).setVisibility(View.VISIBLE);
-
                 removeCommands(atRight);
 
                 String pattern = "[^fkeys$]";
@@ -551,8 +559,6 @@ public class ButtonRibbon implements OnClickListener,
                 }
             }
             else {
-                atLeft.getChildAt(3).setVisibility(View.GONE);
-
                 if (atRight.getChildCount() == 0) {
                     rebuildKeymaps();
                 }

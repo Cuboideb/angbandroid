@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.os.Environment;
 
 import java.io.File;
 import java.lang.reflect.Array;
@@ -46,6 +45,7 @@ final public class Preferences {
 
 	static final String KEY_COREKEYMAPS = "angband.corekeymaps";
 	static final String KEY_RIBBONALPHA = "angband.ribbonalpha";
+	static final String KEY_COMMANDMODE = "angband.commandmode";
 
 	static final String KEY_GAMEPLUGIN = "angband.gameplugin";
 	static final String KEY_GAMEPROFILE = "angband.gameprofile";
@@ -261,6 +261,17 @@ final public class Preferences {
 	public static int getRibbonAlpha()
 	{
 		return pref.getInt(Preferences.KEY_RIBBONALPHA, 2);
+	}
+
+	public static void setCommandMode(boolean k) {
+		SharedPreferences.Editor ed = pref.edit();
+		ed.putBoolean(Preferences.KEY_COMMANDMODE, k);
+		ed.commit();
+	}
+
+	public static boolean getCommandMode()
+	{
+		return pref.getBoolean(Preferences.KEY_COMMANDMODE, true);
 	}
 
 	public static int getPortraitFontSize() {
