@@ -325,6 +325,7 @@ public class GameActivity extends Activity {
 	}
 
 	protected void rebuildViews() {
+
 		synchronized (state.progress_lock) {
 			//Log.d("Angband","rebuildViews");
 			//dialog.dismissProgress();

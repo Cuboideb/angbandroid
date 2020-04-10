@@ -672,7 +672,10 @@ public class ButtonRibbon implements OnClickListener,
 
     public void showCommandList(View parentView) {
 
-        if (context.coreCommands.isEmpty()) return;
+        // Hack
+        if (context.coreCommands.isEmpty()) {
+            context.rebuildCommandList();
+        }
 
         final PopupWindow win = new PopupWindow(context);
         win.setFocusable(true);
@@ -747,6 +750,10 @@ public class ButtonRibbon implements OnClickListener,
             txt.setTag(new Integer(key));
             txt.setOnClickListener(clickListener);
             trow.addView(txt);
+        }
+
+        if (trow != null && trow.getChildCount() == 0) {
+            table.removeView(trow);
         }
 
         if (table.getChildCount() == 0) return;
