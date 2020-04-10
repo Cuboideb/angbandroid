@@ -45,6 +45,8 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import java.util.LinkedHashMap;
+
 public class GameActivity extends Activity {
 
     public static Typeface monoFont = null;
@@ -86,6 +88,8 @@ public class GameActivity extends Activity {
 	protected Runnable keyRunnable = null;
 	protected String lastKeys = "";
 	protected boolean keyHandlerIsRunning = false;
+
+    LinkedHashMap<Integer,String> coreCommands = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -139,6 +143,10 @@ public class GameActivity extends Activity {
 				}
 			};
 		}
+
+		if (coreCommands == null) {
+		    coreCommands = new LinkedHashMap<>();
+        }
 	}
 
 	@Override
@@ -213,6 +221,29 @@ public class GameActivity extends Activity {
 		super.finish();
 	}
 
+    public void rebuildCommandList()
+    {
+        coreCommands.clear();
+
+        if (!state.gameThread.gameRunning()) return;
+
+        String result = state.nativew.queryString("cmd_list");
+
+        if (result == null) return;
+
+        String[] list = result.split(",");
+
+        for (String item: list) {
+            final int key = Integer.parseInt(item);
+
+            String desc = state.nativew.queryString("cmd_desc_" + item);
+
+            if (desc == null) desc = "";
+
+            coreCommands.put(new Integer(key), desc);
+        }
+    }
+
 	public void controlMsg(int what, String msg)
 	{
 		if (what == TERM_CONTROL_LIST_KEYS) {
@@ -231,6 +262,8 @@ public class GameActivity extends Activity {
 				coreKeymaps = msg.substring("keymaps:".length());
 				Preferences.setCoreKeymaps(coreKeymaps);
 			}
+
+			rebuildCommandList();
 
 			rebuildViews();
 		}

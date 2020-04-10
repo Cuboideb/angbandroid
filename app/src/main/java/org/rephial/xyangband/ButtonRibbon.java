@@ -23,6 +23,8 @@ import androidx.core.graphics.ColorUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class ButtonRibbon implements OnClickListener,
         PopupMenu.OnMenuItemClickListener {
@@ -421,8 +423,6 @@ public class ButtonRibbon implements OnClickListener,
             }
         }
 
-        Preferences.setCommandMode(set);
-
         atLeft.requestLayout();
         atLeft.invalidate();
         atCenter.invalidate();
@@ -635,6 +635,7 @@ public class ButtonRibbon implements OnClickListener,
     public void toggleCommandMode()
     {
         setCommandMode(!commandMode);
+        Preferences.setCommandMode(commandMode);
     }
 
     public void changeOpacity(int step)
@@ -670,9 +671,8 @@ public class ButtonRibbon implements OnClickListener,
     }
 
     public void showCommandList(View parentView) {
-        String result = state.nativew.queryString("cmd_list");
 
-        if (result == null) return;
+        if (context.coreCommands.isEmpty()) return;
 
         final PopupWindow win = new PopupWindow(context);
         win.setFocusable(true);
@@ -696,16 +696,14 @@ public class ButtonRibbon implements OnClickListener,
 
         scroll.addView(table);
 
-        String[] list = result.split(",");
-
         TableRow trow = null;
 
         int maxRowItems = 4;
-        if (false && context.landscapeNow()) {
+        /*
+        if (context.landscapeNow()) {
             maxRowItems = 6;
         }
-
-        //final int MY_TAG = 1;
+        */
 
         OnClickListener clickListener =
             new OnClickListener() {
@@ -718,13 +716,10 @@ public class ButtonRibbon implements OnClickListener,
                 }
             };
 
-        for (String item: list) {
-            final int key = Integer.parseInt(item);
-
+        for (Integer item: context.coreCommands.keySet()) {
+            int key = item.intValue();
             String trigger = printableChar((char)key);
-            String desc = state.nativew.queryString("cmd_desc_" + item);
-
-            if (desc == null) desc = "";
+            String desc = context.coreCommands.get(item);
 
             //Log.d("Angband", trigger + " | " + desc);
 
@@ -797,7 +792,7 @@ public class ButtonRibbon implements OnClickListener,
 
         int maxRowItems = 3;
         if (context.landscapeNow()) {
-            maxRowItems = 4;
+            maxRowItems = 5;
         }
 
         OnClickListener clickListener =
