@@ -90,6 +90,13 @@ const s16b ddy_ddd[9] =
 const struct loc ddgrid_ddd[9] =
 {{0, 1}, {0, -1}, {1, 0}, {-1, 0}, {1, 1}, {-1, 1}, {1, -1}, {-1, -1}, {0, 0}};
 
+/* Can mult these by 45 deg or 1.5 o'clock e.g. [6] -> 270 deg or 9 o'clock */
+const s16b clockwise_ddd[9] =
+{ 8, 9, 6, 3, 2, 1, 4, 7, 5 };
+
+const struct loc clockwise_grid[9] =
+{{0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, 0}};
+
 /**
  * Hack -- Precompute a bunch of calls to distance().
  *
@@ -378,13 +385,20 @@ struct chunk *cave_new(int height, int width) {
  * Free a chunk
  */
 void cave_free(struct chunk *c) {
-	int y, x;
+	int y, x, i;
 
 	while (c->join) {
 		struct connector *current = c->join;
 		mem_free(current->info);
 		c->join = current->next;
 		mem_free(current);
+	}
+
+	/* Look for orphaned objects and delete them. */
+	for (i = 1; i < c->obj_max; i++) {
+		if (c->objects[i] && loc_is_zero(c->objects[i]->grid)) {
+			object_delete(&c->objects[i]);
+		}
 	}
 
 	for (y = 0; y < c->height; y++) {

@@ -700,8 +700,7 @@ void process_world(struct chunk *c)
 	if (player->chp < player->mhp)
 		player_regen_hp(player);
 
-	/* Regenerate mana if needed */
-	if (player->csp < player->msp)
+	/* Regenerate or lose mana */
 		player_regen_mana(player);
 
 	/* Timeout various things */

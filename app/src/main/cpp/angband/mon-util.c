@@ -664,16 +664,34 @@ void become_aware(struct monster *mon)
 			obj->mimicking_m_idx = 0;
 			mon->mimicked_obj = NULL;
 
-			square_excise_object(cave, obj->grid, obj);
-
-			/* Give the object to the monster if appropriate */
+			/*
+			 * Give a copy of the object to the monster if
+			 * appropriate.
+			 */
 			if (rf_has(mon->race->flags, RF_MIMIC_INV)) {
-				monster_carry(cave, mon, obj);
-			} else {
-				/* Otherwise delete the mimicked object */
-				delist_object(cave, obj);
-				object_delete(&obj);
+				struct object* given = object_new();
+
+				object_copy(given, obj);
+				given->oidx = 0;
+				if (obj->known) {
+					given->known = object_new();
+					object_copy(given->known, obj->known);
+					given->known->oidx = 0;
+					given->known->grid = loc(0, 0);
+				}
+				if (! monster_carry(cave, mon, given)) {
+					if (given->known) {
+						object_delete(&given->known);
+					}
+					object_delete(&given);
+				}
 			}
+
+			/*
+			 * Delete the mimicked object; noting and lighting
+			 * done below outside of the if block.
+			 */
+			square_delete_object(cave, obj->grid, obj, false, false);
 		}
 
 		/* Update monster and item lists */
@@ -1287,6 +1305,10 @@ bool monster_carry(struct chunk *c, struct monster *mon, struct object *obj)
 
 	/* Add the object to the monster's inventory */
 	list_object(c, obj);
+	if (obj->known) {
+		obj->known->oidx = obj->oidx;
+		player->cave->objects[obj->oidx] = obj->known;
+	}
 	pile_insert(&mon->held_obj, obj);
 
 	/* Result */
@@ -1382,8 +1404,8 @@ void steal_monster_item(struct monster *mon, int midx)
 				object_delete(&obj);
 			} else {
 				object_grab(player, obj);
-				delist_object(cave, obj);
 				delist_object(player->cave, obj->known);
+				delist_object(cave, obj);
 				/* Drop immediately if ignored to prevent pack overflow */
 				if (ignore_item_ok(obj)) {
 					char o_name[80];
