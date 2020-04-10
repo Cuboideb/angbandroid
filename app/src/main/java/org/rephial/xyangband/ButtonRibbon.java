@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.opengl.Visibility;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.util.Log;
@@ -360,6 +361,9 @@ public class ButtonRibbon implements OnClickListener,
             makeCommand("⎋", "Esc", CmdLocation.Fixed);
             makeCommand("⏎", "Ret", CmdLocation.Fixed);
             makeCommand("⌫", "BackSpace", CmdLocation.Fixed);
+            makeCommand("⇮", "fast_keys", CmdLocation.Fixed);
+
+            atLeft.getChildAt(3).setVisibility(View.GONE);
 
             rebuildKeymaps();
         }
@@ -539,6 +543,8 @@ public class ButtonRibbon implements OnClickListener,
 
         if (fastMode && loc == CmdLocation.Dynamic) {
             if (keys.length() > 0) {
+                atLeft.getChildAt(3).setVisibility(View.VISIBLE);
+
                 removeCommands(atRight);
 
                 String pattern = "[^fkeys$]";
@@ -548,8 +554,12 @@ public class ButtonRibbon implements OnClickListener,
                     keys = keys.replace(pattern, "");
                 }
             }
-            else if (atRight.getChildCount() == 0) {
-                rebuildKeymaps();
+            else {
+                atLeft.getChildAt(3).setVisibility(View.GONE);
+
+                if (atRight.getChildCount() == 0) {
+                    rebuildKeymaps();
+                }
             }
         }
 
@@ -732,7 +742,6 @@ public class ButtonRibbon implements OnClickListener,
             btn.setTag(new Integer(key));
             btn.setOnClickListener(clickListener);
             btn.setTypeface(context.monoBoldFont);
-            //btn.setTextSize(30);
             trow.addView(btn);
 
             TextView txt = new TextView(context);
@@ -745,8 +754,93 @@ public class ButtonRibbon implements OnClickListener,
 
         if (table.getChildCount() == 0) return;
 
-        win.showAsDropDown(parentView);
-        win.update(0, 0, win.getWidth(), win.getHeight());
+        //win.showAsDropDown(parentView);
+        //win.update(0, 0, win.getWidth(), win.getHeight());
+        win.showAtLocation(parentView,
+                Gravity.LEFT | Gravity.TOP,
+                0,0);
+    }
+
+    public void showFastKeysList(View parentView) {
+        if (!fastMode || atCenter.getChildCount() == 0) {
+            return;
+        }
+
+        final PopupWindow win = new PopupWindow(context);
+        win.setFocusable(true);
+        win.setWidth(LayoutParams.WRAP_CONTENT);
+        win.setHeight(LayoutParams.WRAP_CONTENT);
+
+        ScrollView scroll = new ScrollView(context);
+        scroll.setLayoutParams(new LayoutParams(
+                LayoutParams.WRAP_CONTENT,
+                LayoutParams.MATCH_PARENT
+        ));
+
+        win.setContentView(scroll);
+
+        TableLayout table = new TableLayout(context);
+        //table.setShrinkAllColumns(false);
+        //table.setStretchAllColumns(true);
+        table.setLayoutParams(new LayoutParams(
+                LayoutParams.WRAP_CONTENT,
+                LayoutParams.WRAP_CONTENT
+        ));
+
+        scroll.addView(table);
+
+        TableRow trow = null;
+
+        int maxRowItems = 3;
+        if (context.landscapeNow()) {
+            maxRowItems = 4;
+        }
+
+        OnClickListener clickListener =
+            new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Integer tag = (Integer)v.getTag();
+                    int key = tag.intValue();
+                    state.addKey(key);
+                    win.dismiss();
+                }
+            };
+
+        for (Command cmd: this.commands) {
+            // Not a fast key
+            if (cmd.location != CmdLocation.Dynamic) {
+                continue;
+            }
+
+            if (trow == null || trow.getChildCount() == maxRowItems) {
+                trow = new TableRow(context);
+                trow.setLayoutParams(new LayoutParams(
+                        LayoutParams.WRAP_CONTENT,
+                        LayoutParams.WRAP_CONTENT
+                ));
+                table.addView(trow);
+            }
+
+            Button btn = (Button)context.getLayoutInflater().inflate
+                    (R.layout.normalbutton, null);
+            //Button btn = new Button(context);
+            btn.setText(cmd.label);
+            btn.setTag(new Integer(cmd.charValue));
+            btn.setOnClickListener(clickListener);
+            btn.setTypeface(context.monoBoldFont);
+            trow.addView(btn);
+        }
+
+        if (trow != null && trow.getChildCount() == 0) {
+            table.removeView(trow);
+        }
+
+        if (table.getChildCount() == 0) return;
+
+        win.showAtLocation(parentView,
+                Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL,
+                0, 0);
     }
 
     @Override
@@ -790,6 +884,9 @@ public class ButtonRibbon implements OnClickListener,
         }
         else if (action.equals("BackSpace")) {
             state.addKey(KC_BACKSPACE);
+        }
+        else if (action.equals("fast_keys")) {
+            showFastKeysList(v);
         }
         else if (action.equals("tab")) {
             state.addKey(KC_TAB);
