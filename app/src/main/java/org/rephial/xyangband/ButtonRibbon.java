@@ -1,13 +1,8 @@
 package org.rephial.xyangband;
 
-import android.app.ActionBar;
 import android.content.DialogInterface;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.opengl.Visibility;
-import android.text.SpannableString;
-import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -361,7 +356,7 @@ public class ButtonRibbon implements OnClickListener,
             makeCommand("⎋", "Esc", CmdLocation.Fixed);
             makeCommand("⏎", "Ret", CmdLocation.Fixed);
             makeCommand("⌫", "BackSpace", CmdLocation.Fixed);
-            makeCommand("⇮", "fast_keys", CmdLocation.Fixed);
+            makeCommand("⎇", "show_keys", CmdLocation.Fixed);
 
             atLeft.getChildAt(3).setVisibility(View.GONE);
 
@@ -372,6 +367,7 @@ public class ButtonRibbon implements OnClickListener,
             makeCommand("✦", "do_cmd_list", CmdLocation.Fixed);
             makeCommand("⇧", "Sft", CmdLocation.Fixed);
             makeCommand("^", "Ctrl", CmdLocation.Fixed);
+            makeCommand("⎇", "show_keys", CmdLocation.Fixed);
         }
 
         setCommandMode(true);
@@ -761,9 +757,13 @@ public class ButtonRibbon implements OnClickListener,
                 0,0);
     }
 
-    public void showFastKeysList(View parentView) {
-        if (!fastMode || atCenter.getChildCount() == 0) {
-            return;
+    public void showDynamicKeys(View parentView) {
+        CmdLocation loc = CmdLocation.Dynamic;
+        if (atCenter.getChildCount() == 0) {
+            if (atRight.getChildCount() == 0) {
+                return;
+            }
+            loc = CmdLocation.Keymaps;
         }
 
         final PopupWindow win = new PopupWindow(context);
@@ -780,8 +780,6 @@ public class ButtonRibbon implements OnClickListener,
         win.setContentView(scroll);
 
         TableLayout table = new TableLayout(context);
-        //table.setShrinkAllColumns(false);
-        //table.setStretchAllColumns(true);
         table.setLayoutParams(new LayoutParams(
                 LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT
@@ -801,15 +799,20 @@ public class ButtonRibbon implements OnClickListener,
                 @Override
                 public void onClick(View v) {
                     Integer tag = (Integer)v.getTag();
-                    int key = tag.intValue();
-                    state.addKey(key);
+                    int savedIdx = tag.intValue();
+                    // Indirection
+                    Command cmd = commands.get(savedIdx);
+                    if (cmd != null) cmd.btn.performClick();
                     win.dismiss();
                 }
             };
 
+        int idx = -1;
+
         for (Command cmd: this.commands) {
-            // Not a fast key
-            if (cmd.location != CmdLocation.Dynamic) {
+            ++idx;
+
+            if (cmd.location != loc) {
                 continue;
             }
 
@@ -825,10 +828,11 @@ public class ButtonRibbon implements OnClickListener,
             Button btn = (Button)context.getLayoutInflater().inflate
                     (R.layout.normalbutton, null);
             //Button btn = new Button(context);
-            btn.setText(cmd.label);
-            btn.setTag(new Integer(cmd.charValue));
+            btn.setText(cmd.btn.getText());
+            btn.setTag(new Integer(idx));
             btn.setOnClickListener(clickListener);
-            btn.setTypeface(context.monoBoldFont);
+            //btn.setTypeface(context.monoBoldFont);
+            btn.setTypeface(cmd.btn.getTypeface());
             trow.addView(btn);
         }
 
@@ -885,8 +889,8 @@ public class ButtonRibbon implements OnClickListener,
         else if (action.equals("BackSpace")) {
             state.addKey(KC_BACKSPACE);
         }
-        else if (action.equals("fast_keys")) {
-            showFastKeysList(v);
+        else if (action.equals("show_keys")) {
+            showDynamicKeys(v);
         }
         else if (action.equals("tab")) {
             state.addKey(KC_TAB);
