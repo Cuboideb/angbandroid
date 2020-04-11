@@ -23,8 +23,6 @@ import androidx.core.graphics.ColorUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 
 public class ButtonRibbon implements OnClickListener,
         PopupMenu.OnMenuItemClickListener {
@@ -82,6 +80,9 @@ public class ButtonRibbon implements OnClickListener,
             ""
     };
 
+    public static int popupBackAlpha = 255;
+    public static int popupButtonColor = Color.BLACK;
+
     public enum CmdLocation {
         Fixed,
         Dynamic,
@@ -113,8 +114,10 @@ public class ButtonRibbon implements OnClickListener,
             return "^" + UN_KTRL(c);
         }
 
-        if (c == KC_TAB) {
-            return "tab";
+        for (int i = 0; keycodes[i] != 0; i++) {
+            if (keycodes[i] == c) {
+                return keynames[i];
+            }
         }
 
         return Character.toString(c);
@@ -434,7 +437,7 @@ public class ButtonRibbon implements OnClickListener,
 
     public Button makeButton(String text, String action) {
         Button btn = (Button)context.getLayoutInflater().inflate
-                (R.layout.singlebutton, null);
+                (R.layout.aribbonbutton, null);
         btn.setText(text);
         btn.setOnClickListener(this);
         if (action.equals("Ret")) {
@@ -736,12 +739,14 @@ public class ButtonRibbon implements OnClickListener,
             }
 
             Button btn = (Button)context.getLayoutInflater().inflate
-                    (R.layout.normalbutton, null);
+                    (R.layout.popupbutton, null);
             //Button btn = new Button(context);
             btn.setText(trigger);
             btn.setTag(new Integer(key));
             btn.setOnClickListener(clickListener);
             btn.setTypeface(context.monoBoldFont);
+            btn.getBackground().setAlpha(popupBackAlpha);
+            btn.setTextColor(popupButtonColor);
             trow.addView(btn);
 
             TextView txt = new TextView(context);
@@ -834,12 +839,13 @@ public class ButtonRibbon implements OnClickListener,
             }
 
             Button btn = (Button)context.getLayoutInflater().inflate
-                    (R.layout.normalbutton, null);
+                    (R.layout.keypopupbutton, null);
             //Button btn = new Button(context);
             btn.setText(cmd.btn.getText());
             btn.setTag(new Integer(idx));
             btn.setOnClickListener(clickListener);
-            //btn.setTypeface(context.monoBoldFont);
+            btn.getBackground().setAlpha(popupBackAlpha);
+            btn.setTextColor(popupButtonColor);
             btn.setTypeface(cmd.btn.getTypeface());
             trow.addView(btn);
         }
