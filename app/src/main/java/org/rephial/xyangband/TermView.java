@@ -619,6 +619,8 @@ public class TermView extends View implements OnGestureListener {
 
 	public boolean inZoneOfDirectionals(float y, float x)
 	{
+		float padPct = 0.2f;
+
 		if (Preferences.getEnableTouch() &&
 			Preferences.getTouchRight() &&
 			(this.zones.size() > 0)) {
@@ -626,7 +628,7 @@ public class TermView extends View implements OnGestureListener {
 			if (drawRight) {
 				RectF rect = this.zones.get(0);
 				float side = rect.bottom - rect.top + 1;
-				float pad = side * 0.5f;
+				float pad = side * padPct;
 				if (x >= rect.left - pad &&
 						y >= rect.top - pad) {
 					return true;
@@ -635,7 +637,7 @@ public class TermView extends View implements OnGestureListener {
 			else {
 				RectF rect = this.zones.get(2);
 				float side = rect.bottom - rect.top + 1;
-				float pad = side * 0.5f;
+				float pad = side * padPct;
 				if (x <= rect.right + pad &&
 						y >= rect.top - pad) {
 					return true;
