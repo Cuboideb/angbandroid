@@ -418,7 +418,7 @@ public class ButtonRibbon implements OnClickListener,
 
             setKeys("abcdefghijklmnopqrstuvwxyz " +
                     "012456789.,*'~!#$%&<>|" +
-                    "/\\=[]{}@+-_:;\"", CmdLocation.Dynamic);
+                    "/\\=[]{}@+-_:;\"?", CmdLocation.Dynamic);
             // Other keys
             for (int i = 0; keynames[i].length() > 0; i++) {
                 makeCommand(keynames[i], Character.toString(keycodes[i]),

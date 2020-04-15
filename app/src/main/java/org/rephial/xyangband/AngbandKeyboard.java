@@ -149,17 +149,28 @@ public class AngbandKeyboard implements OnKeyboardActionListener
 		}
 
 		if (c != 0) {
-			// Common direction keys
-			if ("12346789".indexOf(c) > -1) {
-				state.addDirectionKey(c);
-			}
-			// Roguelike directions keys
-			else if ("bjnhlyku".indexOf(c) > -1 && state.isRoguelikeKeyboard()) {
-				state.addDirectionKey(c);
-			}
-			else {
-				state.addKey(c);
-			}
+		    // If player is running, translate keys
+		    if (state.getRunningMode()) {
+
+		        String numbers = "12346789";
+		        String letters = "bjnhlyku";
+
+		        // Roguelike, only letters
+		        if (state.isRoguelikeKeyboard()) {
+
+		            if (letters.indexOf(c) > -1) {
+                        state.addDirectionKey(c);
+                        return;
+                    }
+                }
+		        // Classic, only numbers
+		        else if (numbers.indexOf(c) > -1) {
+                    state.addDirectionKey(c);
+                    return;
+                }
+            }
+
+		    state.addKey(c);
 		}
 	}
 

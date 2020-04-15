@@ -79,8 +79,6 @@ public class KeyBuffer {
 		boolean rogueLike = state.isRoguelikeKeyboard();
 		boolean runningMode = state.getRunningMode();
 
-		//state.context.setFastKeys("");
-
 		// Translate numbers when running
 		if (rogueLike && runningMode) {
 			switch(key) {
@@ -98,6 +96,7 @@ public class KeyBuffer {
 		}
 		else {
 			// Translate to better keys
+			/*
 			switch(key) {
 				case '2':
 					key = ButtonRibbon.KC_ARROW_DOWN; break;
@@ -110,6 +109,7 @@ public class KeyBuffer {
 				default:
 					break;
 			}
+			*/
 		}
 
 		if (key == '5') { // center tap
