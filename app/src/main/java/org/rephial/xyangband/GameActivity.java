@@ -582,8 +582,7 @@ public class GameActivity extends Activity {
     public int getKeyboardHeight() {
 		int h = 0;
 
-        if (Preferences.isKeyboardVisible() &&
-			virtualKeyboardView != null) {
+        if (Preferences.isKeyboardVisible()) {
 			h += virtualKeyboardView.getHeight();
 		}
 
