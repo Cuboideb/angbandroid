@@ -316,7 +316,8 @@ public class TermView extends View implements OnGestureListener {
 	protected void onDraw(Canvas canvas) {
 	    this.zones.clear();
 
-		if (bitmap != null) {
+		if (bitmap != null && state.stdscr != null) {
+
 			canvas.drawBitmap(bitmap, 0, 0, null);
 
 			int x = state.stdscr.col * (char_width);
@@ -332,14 +333,14 @@ public class TermView extends View implements OnGestureListener {
 			if (state.stdscr.cursor_visible && savedTime == 0) {
 				canvas.drawRect(cl, ct, cr, cb, cursor);
 			}
-		}
 
-		if (Preferences.getEnableTouch()) {
-			if (Preferences.getTouchRight()) {
-				this.drawDirZonesRight(canvas);
-			}
-			else {
-				this.drawDirZonesFull(canvas);
+			if (Preferences.getEnableTouch()) {
+				if (Preferences.getTouchRight()) {
+					this.drawDirZonesRight(canvas);
+				}
+				else {
+					this.drawDirZonesFull(canvas);
+				}
 			}
 		}
 	}
