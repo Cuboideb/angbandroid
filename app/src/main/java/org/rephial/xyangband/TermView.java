@@ -314,7 +314,7 @@ public class TermView extends View implements OnGestureListener {
 	}
 
 	protected void onDraw(Canvas canvas) {
-	    this.zones.clear();
+		if (this.zones != null) this.zones.clear();
 
 		if (bitmap != null && state.stdscr != null) {
 
