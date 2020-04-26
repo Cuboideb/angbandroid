@@ -96,7 +96,6 @@ public class KeyBuffer {
 		}
 		else {
 			// Translate to better keys
-			/*
 			switch(key) {
 				case '2':
 					key = ButtonRibbon.KC_ARROW_DOWN; break;
@@ -109,7 +108,6 @@ public class KeyBuffer {
 				default:
 					break;
 			}
-			*/
 		}
 
 		if (key == '5') { // center tap
