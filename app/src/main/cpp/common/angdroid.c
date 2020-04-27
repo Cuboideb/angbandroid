@@ -399,8 +399,8 @@ static void term_data_link(int i)
 	/* Initialize the term */
 	term_init(t, initial_width, initial_height, 256);
 
-	tile_height = 3;
-	tile_width = 3;
+	tile_height = 2;
+	tile_width = 2;
 
 	t->complex_input = true;
 

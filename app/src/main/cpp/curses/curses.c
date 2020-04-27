@@ -166,6 +166,10 @@ int waddnwstr(WINDOW* w, int n, const wchar_t *ws) {
 	wbuf[n]=0;
 
 	size_t len = wcstombs((char*)NULL, wbuf, (size_t)32000);
+	// Cant convert
+	if (len == (size_t)-1) {
+		return 0;
+	}
 	char* s = malloc(len+1);
 
 	wcstombs(s, wbuf, len+1);

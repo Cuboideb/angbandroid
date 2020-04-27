@@ -556,6 +556,7 @@ void Term_big_queue_char(term *t, int x, int y, int a, wchar_t c, int a1,
 	int vmax = (y + tile_height < t->hgt - 1) ?
 	    tile_height : t->hgt - 1 - y;
         int hor, vert;
+        wchar_t pad = term_get_pad();
 
 	/* Avoid warning */
 	(void)c;
@@ -568,7 +569,7 @@ void Term_big_queue_char(term *t, int x, int y, int a, wchar_t c, int a1,
 			        if (a & 0x80)
 				        Term_queue_char(t, x + hor, y, 255, -1, 0, 0);
 					else
-				        Term_queue_char(t, x + hor, y, COLOUR_WHITE, ' ', a1, c1);
+				        Term_queue_char(t, x + hor, y, COLOUR_WHITE, pad, a1, c1);
 				}
 
 				/* Now vertical */
@@ -578,7 +579,7 @@ void Term_big_queue_char(term *t, int x, int y, int a, wchar_t c, int a1,
 						if (a & 0x80)
 							Term_queue_char(t, x + hor, y + vert, 255, -1, 0, 0);
 						else
-							Term_queue_char(t, x + hor, y + vert, COLOUR_WHITE, ' ', a1, c1);
+							Term_queue_char(t, x + hor, y + vert, COLOUR_WHITE, pad, a1, c1);
 					}
 				}
 	} else {
@@ -588,7 +589,7 @@ void Term_big_queue_char(term *t, int x, int y, int a, wchar_t c, int a1,
 				if (a & 0x80)
 					Term_queue_char(t, x, y + vert, 255, -1, 0, 0);
 				else
-					Term_queue_char(t, x, y + vert, COLOUR_WHITE, ' ', a1, c1);
+					Term_queue_char(t, x, y + vert, COLOUR_WHITE, pad, a1, c1);
 		}
 	}
 }
@@ -2553,4 +2554,20 @@ errr Term_control_msg_ws(int what, int n, const wchar_t *ws)
 	errr status = Term_control_msg(what, s);
 	mem_free(s);
 	return (status);
+}
+
+wchar_t term_normalize(wchar_t ch)
+{
+	if ((tile_width > 1) || (tile_height > 1)) {
+		return (ch | 0x1D00);
+	}
+	return ch;
+}
+
+wchar_t term_get_pad(void)
+{
+	if ((tile_width > 1) || (tile_height > 1)) {
+		return 0x2A1A;
+	}
+	return ' ';
 }

@@ -560,6 +560,10 @@ static void prt_map_aux(void)
 				/* Determine what is there */
 				map_info(loc(x, y), &g);
 				grid_data_as_text(&g, &a, &c, &ta, &tc);
+
+				// Hack!
+				c = term_normalize(c);
+
 				Term_queue_char(t, vx, vy, a, c, ta, tc);
 
 				if ((tile_width > 1) || (tile_height > 1))
@@ -604,6 +608,9 @@ void prt_map(void)
 			/* Determine what is there */
 			map_info(loc(x, y), &g);
 			grid_data_as_text(&g, &a, &c, &ta, &tc);
+
+			// Hack!
+			c = term_normalize(c);
 
 			/* Hack -- Queue it */
 			Term_queue_char(Term, vx, vy, a, c, ta, tc);
@@ -699,6 +706,9 @@ void display_map(int *cy, int *cx)
 				/* Hack - make every grid on the map lit */
 				g.lighting = LIGHTING_LIT;
 				grid_data_as_text(&g, &a, &c, &ta, &tc);
+
+				// Hack!
+				c = term_normalize(c);
 
 				Term_queue_char(Term, col + 1, row + 1, a, c, ta, tc);
 

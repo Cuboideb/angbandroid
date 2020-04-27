@@ -79,6 +79,17 @@ public class TermView extends View implements OnGestureListener {
 	private int char_width = 0;
 	private int font_text_size = 0;
 
+	public int ROW_MAP = 1;
+	public int COL_MAP = 13;
+    public int tile_wid = 2;
+    public int tile_hgt = 2;
+
+	public float tile_multiplier = 2f;
+    public int tile_wid_pix = 0;
+    public int tile_hgt_pix = 0;
+    public int tile_font_size = 0;
+    public Paint tile_fore;
+
 	private Vibrator vibrator;
 	private boolean vibrate;
 	private Handler handler = null;
@@ -118,6 +129,11 @@ public class TermView extends View implements OnGestureListener {
 		fore.setTextAlign(Paint.Align.LEFT);
 		if ( isHighRes() ) fore.setAntiAlias(true);
 		setForeColor(Color.WHITE);
+
+		tile_fore = new Paint();
+		tile_fore.setTextAlign(Paint.Align.LEFT);
+		if ( isHighRes() ) tile_fore.setAntiAlias(true);
+		tile_fore.setColor(Color.WHITE);
 
 		back = new Paint();
 		setBackColor(Color.BLACK);
@@ -531,6 +547,13 @@ public class TermView extends View implements OnGestureListener {
 		char_height = (int)Math.ceil(fore.getFontSpacing());
 		char_width = (int)fore.measureText("X", 0, 1);
 		//Log.d("Angband","setSizeFont "+fore.measureText("X", 0, 1));
+
+		tile_font_size = (int)(font_text_size * tile_multiplier);
+		tile_fore.setTypeface(fore.getTypeface());
+		tile_fore.setTextSize(tile_font_size);
+		tile_hgt_pix = (int)Math.ceil(tile_fore.getFontSpacing());
+		tile_wid_pix = (int)tile_fore.measureText("X", 0, 1);
+
 		return true;
 	}
 
@@ -767,26 +790,53 @@ public class TermView extends View implements OnGestureListener {
 			return;
 		}
 
+		Paint fore_temp = fore;
+		int tw = char_width;
+		int th = char_height;
+
+		if ((tile_wid > 1) || (tile_hgt > 1)) {
+            // Pad character
+            if (ch == 0x2A1A) {
+                return;
+            }
+
+            // Big tile
+            if (ch >= 0x1D00 && ch <= 0x1DFF) {
+
+                ch = (char) (ch & 0xFF);
+
+                c = (c - COL_MAP) / tile_wid;
+                r = (r - ROW_MAP) / tile_hgt;
+
+                fore_temp = tile_fore;
+                tw = tile_wid_pix;
+                th = tile_hgt_pix;
+
+                x = c * tw + COL_MAP * char_width;
+                y = r * th + ROW_MAP * char_height;
+            }
+        }
+
 		setBackColor(bcolor);
 
 		canvas.drawRect(
 						x, 
 						y, 
-						x + char_width + (extendedErase ? 1 : 0), 
-						y + char_height + (extendedErase ? 1 : 0), 
+						x + tw + (extendedErase ? 1 : 0),
+						y + th + (extendedErase ? 1 : 0),
 						back
 						);					
 
 		if (ch != ' ') {
 			String str = ch + "";
 
-			setForeColor(fcolor);
+			fore_temp.setColor(fcolor);
 
 			canvas.drawText (
 							 str,
 							 x, 
-							 y + char_height - fore.descent(), 
-							 fore
+							 y + th - fore_temp.descent(),
+							 fore_temp
 							 );
 		}
 	}
