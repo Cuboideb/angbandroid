@@ -336,13 +336,35 @@ public class TermView extends View implements OnGestureListener {
 
 			canvas.drawBitmap(bitmap, 0, 0, null);
 
-			int x = state.stdscr.col * (char_width);
-			int y = (state.stdscr.row + 1) * char_height;
+			int tw = char_width;
+			int th = char_height;
+
+			int col = state.stdscr.col;
+			int row = state.stdscr.row;
+
+			int x = col * tw;
+			int y = (row + 1) * th;
+
+			if ((tile_wid > 1) || (tile_hgt > 1)) {
+
+				if (row >= ROW_MAP && row < rows - 1 &&
+					col >= COL_MAP) {
+
+					tw = tile_wid_pix;
+					th = tile_hgt_pix;
+
+					col = (col - COL_MAP) / tile_wid;
+					row = (row - ROW_MAP) / tile_hgt;
+
+					x = col * tw + COL_MAP * char_width;
+					y = (row+1) * th + ROW_MAP * char_height;
+				}
+			}
 
 			// due to font "scrunch", cursor is sometimes a bit too big
 			int cl = Math.max(x,0);
-			int cr = Math.min(x+char_width,canvas_width-1);
-			int ct = Math.max(y-char_height,0);
+			int cr = Math.min(x+tw,canvas_width-1);
+			int ct = Math.max(y-th,0);
 			int cb = Math.min(y,canvas_height-1);
 
 			// Dont draw the cursor if we are using the timer
