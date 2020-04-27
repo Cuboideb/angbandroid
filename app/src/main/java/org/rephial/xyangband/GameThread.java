@@ -205,16 +205,18 @@ public class GameThread implements Runnable {
 
 		String width = "" + Preferences.getTermWidth();
 		String height = "" + Preferences.getTermHeight();
+		String tileMultiplier = "" + Preferences.getTileMultiplier();
 
 		/* game is not running, so start it up */
 		nativew.gameStart(
 				  pluginPath,
-				  4,
+				  5,
 				  new String[]{
 					  Preferences.getAngbandFilesDirectory(),
 					  Preferences.getActiveProfile().getSaveFile(),
 					  width,
-					  height
+					  height,
+					  tileMultiplier
 				  }
 		);
 	}

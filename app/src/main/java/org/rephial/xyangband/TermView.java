@@ -81,10 +81,10 @@ public class TermView extends View implements OnGestureListener {
 
 	public int ROW_MAP = 1;
 	public int COL_MAP = 13;
-    public int tile_wid = 2;
-    public int tile_hgt = 2;
+    public int tile_wid = 1;
+    public int tile_hgt = 1;
 
-	public float tile_multiplier = 2f;
+	public float tile_multiplier = 1f;
     public int tile_wid_pix = 0;
     public int tile_hgt_pix = 0;
     public int tile_font_size = 0;
@@ -102,16 +102,16 @@ public class TermView extends View implements OnGestureListener {
 
 	public TermView(Context context) {
 		super(context);
+        handler = ((GameActivity)context).getHandler();
+        state = ((GameActivity)context).getStateManager();
 		initTermView(context);
-		handler = ((GameActivity)context).getHandler();
-		state = ((GameActivity)context).getStateManager();
 	}
 
 	public TermView(Context context, AttributeSet attrs) {
 		super(context, attrs);
+        handler = ((GameActivity)context).getHandler();
+        state = ((GameActivity)context).getStateManager();
 		initTermView(context);
-		handler = ((GameActivity)context).getHandler();
-		state = ((GameActivity)context).getStateManager();
 	}
 
 	protected void initTermView(Context context) {
@@ -166,6 +166,8 @@ public class TermView extends View implements OnGestureListener {
 
 		this.drawRight = Preferences.getDrawTouchRight();
 
+        this.setTileMultiplier(Preferences.getTileMultiplier());
+
         timerHandler = new Handler();
         timerRunnable = new Runnable() {
             @Override
@@ -193,6 +195,20 @@ public class TermView extends View implements OnGestureListener {
             }
         };
 	}
+
+	public void setTileMultiplier(int multiplier)
+    {
+        tile_multiplier = multiplier;
+        tile_wid = multiplier;
+        tile_hgt = multiplier;
+
+        if (state.nativew != null) {
+            String str = "tile_mult_" + multiplier;
+            state.nativew.gameQueryInt(1, new String[]{str});
+            // Center on player
+            state.addKey(ButtonRibbon.KTRL('R'));
+        }
+    }
 
 	public void toggleDrawRight()
 	{
@@ -347,8 +363,14 @@ public class TermView extends View implements OnGestureListener {
 
 			if ((tile_wid > 1) || (tile_hgt > 1)) {
 
-				if (row >= ROW_MAP && row < rows - 1 &&
-					col >= COL_MAP) {
+			    char ch = state.stdscr.buffer[row][col].ch;
+
+                // Big tile ?
+			    boolean bigtile = false;
+			    if (ch >= 0x1D00 && ch <= 0x1DFF) bigtile = true;
+
+				if (row >= ROW_MAP && row < (rows - 1) &&
+					col >= COL_MAP && bigtile) {
 
 					tw = tile_wid_pix;
 					th = tile_hgt_pix;
@@ -841,25 +863,19 @@ public class TermView extends View implements OnGestureListener {
 
 		setBackColor(bcolor);
 
-		canvas.drawRect(
-						x, 
-						y, 
+		canvas.drawRect(x, y,
 						x + tw + (extendedErase ? 1 : 0),
 						y + th + (extendedErase ? 1 : 0),
-						back
-						);					
+						back);
 
 		if (ch != ' ') {
 			String str = ch + "";
 
 			fore_temp.setColor(fcolor);
 
-			canvas.drawText (
-							 str,
-							 x, 
+			canvas.drawText (str, x,
 							 y + th - fore_temp.descent(),
-							 fore_temp
-							 );
+							 fore_temp);
 		}
 	}
 

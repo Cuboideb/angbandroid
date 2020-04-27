@@ -21,6 +21,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ui-keymap.h>
+#include "ui-output.h"
 #include "curses.h"
 
 #include "angband.h"
@@ -37,6 +38,7 @@ static char android_savefile[50];
 static int turn_save = 0;
 static int initial_width = 80;
 static int initial_height = 24;
+static int initial_tile_multiplier = 1;
 
 /*
  * Android's terms are boring
@@ -399,8 +401,8 @@ static void term_data_link(int i)
 	/* Initialize the term */
 	term_init(t, initial_width, initial_height, 256);
 
-	tile_height = 2;
-	tile_width = 2;
+	tile_width = initial_tile_multiplier;
+	tile_height = initial_tile_multiplier;
 
 	t->complex_input = true;
 
@@ -638,6 +640,12 @@ char* queryString(const char* argv0)
 	return buf;
 }
 
+static void set_tile_multiplier(int multiplier)
+{
+	tile_width = multiplier;
+	tile_height = multiplier;
+}
+
 int queryInt(const char* argv0) {
 	int result = -1;
 	const char *ROGUE_KEY = "rogue_key_";
@@ -649,6 +657,12 @@ int queryInt(const char* argv0) {
 	} else if (strcmp(argv0, "rl") == 0) {
 		result = 0;
 		if (player && OPT(player, rogue_like_commands)) result = 1;
+	} else if (strcmp(argv0, "tile_mult_1") == 0) {
+		set_tile_multiplier(1);
+		result = 1;
+	} else if (strcmp(argv0, "tile_mult_2") == 0) {
+		set_tile_multiplier(2);
+		result = 1;
 	}
 	// Starts with this pattern?
 	else if (strncmp(argv0, ROGUE_KEY, strlen(ROGUE_KEY)) == 0) {
@@ -683,18 +697,24 @@ void angdroid_process_argv(int i, const char* argv)
 		case 1: //savefile
 			my_strcpy(android_savefile, argv, sizeof(android_savefile));
 			break;
-	    case 2: // width
-	        aux = atoi(argv);
-	        if (aux > initial_width) {
-	            initial_width = aux;
-	        }
-            break;
-        case 3: // height
-            aux = atoi(argv);
-            if (aux > initial_height) {
-                initial_height = aux;
-            }
-            break;
+	    	case 2: // width
+			aux = atoi(argv);
+			if (aux > initial_width) {
+				initial_width = aux;
+			}
+            		break;
+        	case 3: // height
+            		aux = atoi(argv);
+            		if (aux > initial_height) {
+                		initial_height = aux;
+            		}
+            		break;
+		case 4:
+			aux = atoi(argv);
+			if (aux >= 1 || aux <= 2) {
+				initial_tile_multiplier = aux;
+			}
+			break;
 		default:
 			break;
 	}

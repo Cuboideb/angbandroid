@@ -51,6 +51,8 @@ final public class Preferences {
 	static final String KEY_GAMEPROFILE = "angband.gameprofile";
 	static final String KEY_SKIPWELCOME = "angband.skipwelcome";
 
+	static final String KEY_BIGTILES = "angband.bigtiles";
+
 	static final String KEY_PROFILES = "angband.profiles";
 	static final String KEY_ACTIVEPROFILE = "angband.activeprofile";
 
@@ -166,6 +168,14 @@ final public class Preferences {
 		SharedPreferences.Editor ed = pref.edit();
 		ed.putInt(Preferences.KEY_MIDDLEOPACITY, value);
 		ed.commit();
+	}
+
+	public static int getTileMultiplier()
+	{
+		if (pref.getBoolean(Preferences.KEY_BIGTILES, true)) {
+			return 2;
+		}
+		return 1;
 	}
 
 	public static int getKeyboardOpacity() {
