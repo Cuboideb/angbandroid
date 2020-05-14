@@ -481,7 +481,7 @@ static int beam_chance(void)
 /**
  * Cast the specified spell
  */
-bool spell_cast(int spell_index, int dir)
+bool spell_cast(int spell_index, int dir, struct command *cmd)
 {
 	int chance;
 	bool *ident = mem_zalloc(sizeof(*ident));
@@ -500,7 +500,7 @@ bool spell_cast(int spell_index, int dir)
 	} else {
 		/* Cast the spell */
 		if (!effect_do(spell->effect, source_player(), NULL, ident, true, dir,
-					   beam, 0)) {
+					   beam, 0, cmd)) {
 			mem_free(ident);
 			return false;
 		}
@@ -605,16 +605,9 @@ static void spell_effect_append_value_info(const struct effect *effect,
 			if (rv.m_bonus) special = "random";
 			break;
 		case EF_SPHERE:
-			/* Halve damage */
-			rv.base /= 2;
-			rv.sides /= 2;
-
 			/* Append radius */
 			if (effect->radius) {
 				int rad = effect->radius;
-				if (effect->other) {
-					rad += player->lev / effect->other;
-				}
 				special = format(", rad %d", rad);
 			} else {
 				special = ", rad 2";

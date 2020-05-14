@@ -121,6 +121,10 @@ add_library( # Sets the name of the library.
             ui-curse.c
             ui-death.c
             ui-display.c
+            ui-entry.c
+            ui-entry-combiner.c
+            ui-entry-renderers.c
+            ui-equip-cmp.c
             ui-event.c
             ui-game.c
             ui-help.c

@@ -44,6 +44,8 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import java.util.LinkedHashMap;
 
@@ -72,15 +74,16 @@ public class GameActivity extends Activity {
 	protected final int CONTEXTMENU_PREFERENCES_ITEM = 3;
 	protected final int CONTEXTMENU_PROFILES_ITEM = 4;
 	protected final int CONTEXTMENU_HELP_ITEM = 5;
-	protected final int CONTEXTMENU_QUIT_ITEM = 6;
-	protected final int CONTEXTMENU_TOGGLE_TOUCHDIR = 7;
+	protected final int CONTEXTMENU_QUIT_ITEM = 6;	
 	protected final int CONTEXTMENU_RIBBON_STYLE = 8;
 	protected final int CONTEXTMENU_RAISE_RIBBON = 9;
 	protected final int CONTEXTMENU_LOWER_RIBBON = 10;
+	protected final int CONTEXTMENU_KEYMAPS = 11;
 
 	public static final int TERM_CONTROL_LIST_KEYS = 1;
 	public static final int TERM_CONTROL_NOT_PLAYING = 2;
 	public static final int TERM_CONTROL_PLAYING_NOW = 3;
+	public static final int TERM_VISUAL_STATE = 4;
 
 	protected Handler handler = null;
 
@@ -267,6 +270,19 @@ public class GameActivity extends Activity {
 
 			rebuildViews();
 		}
+		if (what == TERM_VISUAL_STATE && term != null) {
+
+			Pattern pattern = Pattern.compile("visual:(\\d+):(\\d+)" +
+				":(\\d+)");
+			Matcher matcher = pattern.matcher(msg);
+			if (matcher.matches()) {
+				int rows = Integer.parseInt(matcher.group(1));
+				int cols = Integer.parseInt(matcher.group(2));
+				int graf = Integer.parseInt(matcher.group(3));
+
+				term.configureVisuals(rows, cols, graf);
+			}
+		}
 	}
 
 	public void setFastKeysAux(String keys)
@@ -319,9 +335,18 @@ public class GameActivity extends Activity {
         return aux;
     }
 
-    public void toggleDrawRight()
+	public void rebuildButtonRibbon()
 	{
-		term.toggleDrawRight();
+		if (ribbonZone != null) {
+			ribbonZone.removeAllViews();
+
+			topRibbon = new ButtonRibbon(this, state, true);
+			ribbonZone.addView(topRibbon.rootView);
+
+			bottomRibbon = new ButtonRibbon(this, state, false);
+			ribbonZone.addView(bottomRibbon.rootView);
+			bottomRibbon.addSibling(topRibbon);
+		}
 	}
 
 	protected void rebuildViews() {
@@ -341,6 +366,15 @@ public class GameActivity extends Activity {
 			case 2: // landscape
 				setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 				break;
+			}
+
+			String oldVisuals = "";
+
+			if (term != null) {
+				
+				term.unloadTiles();
+
+				oldVisuals = term.serializeVisualState();
 			}
 
 			if (screenLayout != null) screenLayout.removeAllViews();
@@ -384,12 +418,7 @@ public class GameActivity extends Activity {
 						LayoutParams.WRAP_CONTENT));
 				ribbonZone.setOrientation(LinearLayout.VERTICAL);
 
-				topRibbon = new ButtonRibbon(this, state, true);
-				ribbonZone.addView(topRibbon.rootView);
-
-				bottomRibbon = new ButtonRibbon(this, state, false);
-				ribbonZone.addView(bottomRibbon.rootView);
-				bottomRibbon.addSibling(topRibbon);
+				rebuildButtonRibbon();
 
 				screenLayout.addView(ribbonZone, rLParams);
 			}
@@ -397,6 +426,7 @@ public class GameActivity extends Activity {
 			setContentView(screenLayout);
 			dialog.restoreDialog();
 
+			term.sendVisuals(oldVisuals);
 			term.invalidate();
 		}
 	}
@@ -416,13 +446,11 @@ public class GameActivity extends Activity {
 									ContextMenuInfo menuInfo) {
 		menu.setHeaderTitle("Quick Settings");
 		menu.add(0, CONTEXTMENU_FITWIDTH_ITEM, 0, "Fit Width");
-		menu.add(0, CONTEXTMENU_FITHEIGHT_ITEM, 0, "Fit Height");
-		if (Preferences.getEnableTouch() && Preferences.getTouchRight()) {
-			menu.add(0, CONTEXTMENU_TOGGLE_TOUCHDIR, 0, "Swap Touch Side");
-		}
+		menu.add(0, CONTEXTMENU_FITHEIGHT_ITEM, 0, "Fit Height");		
 		if (topRibbon != null) {
 			menu.add(0, CONTEXTMENU_VKEY_ITEM, 0, "Show Full Keyboard");
 			menu.add(0, CONTEXTMENU_RIBBON_STYLE, 0, "Change Ribbon Style");
+			menu.add(0, CONTEXTMENU_KEYMAPS, 0, "Manage Keymaps");
 			menu.add(0, CONTEXTMENU_LOWER_RIBBON, 0, "Lower Ribbon Opacity");
 			menu.add(0, CONTEXTMENU_RAISE_RIBBON, 0, "Raise Ribbon Opacity");
 		}
@@ -455,12 +483,13 @@ public class GameActivity extends Activity {
                 state.nativew.lockWithTimer.waitAndRelease();
 			}
 			return true;
+	    case CONTEXTMENU_KEYMAPS:
+	    	KeymapEditor editor = new KeymapEditor(this, screenLayout);
+	    	editor.show();
+	    	return true;
 		case CONTEXTMENU_VKEY_ITEM:
 			toggleKeyboard();
-			return true;
-		case CONTEXTMENU_TOGGLE_TOUCHDIR:
-			toggleDrawRight();
-			return true;
+			return true;		
 		case CONTEXTMENU_RIBBON_STYLE:
 			if (bottomRibbon != null) bottomRibbon.toggleCommandMode();
 			return true;

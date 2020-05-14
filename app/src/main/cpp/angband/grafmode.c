@@ -24,6 +24,7 @@
 graphics_mode *graphics_modes;
 graphics_mode *current_graphics_mode = NULL;
 int graphics_mode_high_id;
+bool pseudo_ascii = false;
 
 static enum parser_error parse_graf_name(struct parser *p) {
 	graphics_mode *list = parser_priv(p);

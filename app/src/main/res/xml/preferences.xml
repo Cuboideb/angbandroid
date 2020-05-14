@@ -39,12 +39,24 @@
 	   android:entries="@array/orientationDescriptions"
 	   android:entryValues="@array/orientations" />
   </PreferenceCategory>
-  <PreferenceCategory android:title="@string/control_category">
+  <PreferenceCategory android:title="@string/control_category">	  
+	  <ListPreference
+		   android:title="Graphics"
+		   android:summary="Select the tileset"
+		   android:key="angband.graphics"
+		   android:defaultValue="5"		   
+		   android:entries="@array/graphicsModesDesc"
+		   android:entryValues="@array/graphicsModesKeys"/>
 	  <CheckBoxPreference
 		  android:key="angband.bigtiles"
 		  android:defaultValue="true"
 		  android:title="Duplicate Tile Size"
-		  android:summary="Make the dungeon grids bigger" />
+		  android:summary="Make the dungeon grids bigger" />	
+      <CheckBoxPreference
+		  android:key="angband.pseudoascii"
+		  android:defaultValue="false"
+		  android:title="Pseudo Ascii"
+		  android:summary="Use ascii for monsters and tiles for everything else" />  
 	  <CheckBoxPreference
 		  android:key="angband.allowKeyboardOverlap"
 		  android:defaultValue="true"

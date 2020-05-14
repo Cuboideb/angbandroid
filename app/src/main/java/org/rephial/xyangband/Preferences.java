@@ -26,9 +26,10 @@ final public class Preferences {
 	static final String KEY_MIDDLEOPACITY = "angband.middleOpacity";
 	static final String KEY_ENABLETOUCH = "angband.enabletouch";
 
-	static final String KEY_TOUCHRIGHT = "angband.touchright";
-	static final String KEY_DRAWTOUCHRIGHT = "angband.drawtouchright";
+	static final String KEY_TOUCHRIGHT = "angband.touchright";	
 	static final String KEY_TOUCHMULTIPLIER = "angband.touchmultiplier";
+
+	static final String KEY_USERKEYMAPS = "angband.userkeymaps";
 
 	static final String KEY_CENTERTAP = "angband.centerscreentap";
 	static final String KEY_PORTRAITKB = "angband.portraitkb";
@@ -52,6 +53,8 @@ final public class Preferences {
 	static final String KEY_SKIPWELCOME = "angband.skipwelcome";
 
 	static final String KEY_BIGTILES = "angband.bigtiles";
+	static final String KEY_GRAPHICS = "angband.graphics";
+	static final String KEY_PSEUDOASCII = "angband.pseudoascii";
 
 	static final String KEY_PROFILES = "angband.profiles";
 	static final String KEY_ACTIVEPROFILE = "angband.activeprofile";
@@ -170,12 +173,42 @@ final public class Preferences {
 		ed.commit();
 	}
 
-	public static int getTileMultiplier()
+	public static int getTileWidth()
+	{
+		if (pref.getBoolean(Preferences.KEY_BIGTILES, true)) {
+			return 3;
+		}
+		return 1;
+	}
+	public static int getTileHeight()
 	{
 		if (pref.getBoolean(Preferences.KEY_BIGTILES, true)) {
 			return 2;
 		}
 		return 1;
+	}
+	public static int getGraphicsMode()
+	{		
+		String val = pref.getString(Preferences.KEY_GRAPHICS, "5");
+		int num = Integer.parseInt(val);
+		//return Math.min(num, 4);
+		return num;
+	}
+	public static boolean getPseudoAscii()
+	{		
+		return pref.getBoolean(Preferences.KEY_PSEUDOASCII, false);
+	}
+
+	public static String getUserKeymaps()
+	{
+		return pref.getString(Preferences.KEY_USERKEYMAPS, "");
+	}
+
+	public static void setUserKeymaps(String value)
+	{
+		SharedPreferences.Editor ed = pref.edit();
+		ed.putString(Preferences.KEY_USERKEYMAPS, value);
+		ed.commit();
 	}
 
 	public static int getKeyboardOpacity() {
@@ -281,7 +314,7 @@ final public class Preferences {
 
 	public static boolean getCommandMode()
 	{
-		return pref.getBoolean(Preferences.KEY_COMMANDMODE, true);
+		return pref.getBoolean(Preferences.KEY_COMMANDMODE, false);
 	}
 
 	public static int getPortraitFontSize() {
@@ -307,16 +340,6 @@ final public class Preferences {
 
 	public static boolean getTouchRight() {
 		return pref.getBoolean(Preferences.KEY_TOUCHRIGHT, true);
-	}
-
-	public static boolean getDrawTouchRight() {
-		return pref.getBoolean(Preferences.KEY_DRAWTOUCHRIGHT, true);
-	}
-
-	public static void setDrawTouchRight(boolean value) {
-		SharedPreferences.Editor ed = pref.edit();
-		ed.putBoolean(Preferences.KEY_DRAWTOUCHRIGHT, value);
-		ed.commit();
 	}
 
 	public static boolean isKeyboardVisible()

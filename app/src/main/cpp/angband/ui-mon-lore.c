@@ -17,6 +17,7 @@
  */
 
 #include "angband.h"
+#include "grafmode.h"
 #include "init.h"
 #include "mon-lore.h"
 #include "ui-mon-lore.h"
@@ -67,7 +68,7 @@ void lore_title(textblock *tb, const struct monster_race *race)
 	textblock_append(tb, "')");
 
 	if (((optional_attr != standard_attr) || (optional_char != standard_char))
-		&& (tile_width == 1) && (tile_height == 1)) {
+		&& (tile_width == 1) && (tile_height == 1) && !USE_PSEUDO_ASCII) {
 		/* Append the "optional" attr/char info */
 		textblock_append(tb, " ('");
 		textblock_append_pict(tb, optional_attr, optional_char);

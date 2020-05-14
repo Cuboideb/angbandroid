@@ -415,7 +415,7 @@ void monster_list_show_interactive(int height, int width)
 		monster_list_format_textblock(list, NULL, 1000, 1000, &max_height,
 									  &max_width);
 		safe_height = MIN(height - 3, (int) max_height + 3);
-		safe_width = MIN(width - 13, (int) max_width);
+		safe_width = MIN(width - 40, (int) max_width);
 		r.col = -safe_width;
 		r.row = 1;
 		r.width = safe_width;

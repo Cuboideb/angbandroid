@@ -424,9 +424,9 @@ void player_adjust_hp_precise(struct player *p, s32b hp_gain)
 	/* Check for overflow */
 	/*     {new_chp = LONG_MIN;} DAVIDTODO*/
 	if ((new_chp < 0) && (old_chp > 0) && (hp_gain > 0)) {
-		new_chp = 2147483647;
+		new_chp = INT32_MAX;
 	} else if ((new_chp > 0) && (old_chp < 0) && (hp_gain < 0)) {
-		new_chp = -2147483648;
+		new_chp = INT32_MIN;
 	}
 
 	/* Break it back down*/
@@ -468,10 +468,10 @@ s32b player_adjust_mana_precise(struct player *p, s32b sp_gain)
 
 	/* new_csp = LONG_MAX LONG_MIN;} DAVIDTODO produces warning*/
 	if ((new_csp_long < 0) && (old_csp_long > 0) && (sp_gain > 0)) {
-		new_csp_long = 2147483647;
+		new_csp_long = INT32_MAX;
 		sp_gain = 0;
 	} else if ((new_csp_long > 0) && (old_csp_long < 0) && (sp_gain < 0)) {
-		new_csp_long = -2147483648;
+		new_csp_long = INT32_MIN;
 		sp_gain = 0;
 	}
 
@@ -589,9 +589,10 @@ void player_update_light(struct player *p)
 }
 
 /**
- * Find the player's best digging tool
+ * Find the player's best digging tool.  If forbid_stack is true, ignores
+ * stacks of more than one item.
  */
-struct object *player_best_digger(struct player *p)
+struct object *player_best_digger(struct player *p, bool forbid_stack)
 {
 	struct object *obj, *best = NULL;
 	int best_score = 0;
@@ -599,7 +600,7 @@ struct object *player_best_digger(struct player *p)
 	for (obj = p->gear; obj; obj = obj->next) {
 		int score = 0;
 		if (!tval_is_melee_weapon(obj)) continue;
-		if (obj->number != 1) continue;
+		if (obj->number < 1 || (forbid_stack && obj->number > 1)) continue;
 		if (tval_is_digger(obj)) {
 			if (of_has(obj->flags, OF_DIG_1))
 				score = 1;

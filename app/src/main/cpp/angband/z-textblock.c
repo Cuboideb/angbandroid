@@ -98,7 +98,7 @@ static void textblock_vappend_c(textblock *tb, byte attr, const char *fmt,
 		va_list args;
 		size_t len;
 
-		VA_COPY(args, vp);
+		va_copy(args, vp);
 		len = vstrnfmt(temp_space, temp_len, fmt, args);
 		va_end(args);
 		if (len < temp_len - 1) {
@@ -161,6 +161,22 @@ void textblock_append_utf8(textblock *tb, const char *utf8_string)
 	memset(tb->attrs + tb->strlen, COLOUR_WHITE, new_length);
 	tb->strlen += new_length;
 }
+
+/**
+ * Append one textblock to another.
+ *
+ * \param tb is the textblock we are appending to.
+ * \param tba is the textblock to append.
+ */
+void textblock_append_textblock(textblock *tb, const textblock *tba)
+{
+	textblock_resize_if_needed(tb, tba->strlen);
+	(void) memcpy(tb->text + tb->strlen, tba->text,
+		tba->strlen * sizeof(*tb->text));
+	(void) memcpy(tb->attrs + tb->strlen, tba->attrs, tba->strlen);
+	tb->strlen += tba->strlen;
+}
+
 
 /**
  * Add text to a text block, formatted.

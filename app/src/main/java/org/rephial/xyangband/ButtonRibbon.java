@@ -21,6 +21,8 @@ import android.widget.TextView;
 
 import androidx.core.graphics.ColorUtils;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -82,6 +84,8 @@ public class ButtonRibbon implements OnClickListener,
 
     public static int popupBackAlpha = 255;
     public static int popupButtonColor = Color.BLACK;
+
+    public String userKeymaps = "";
 
     public enum CmdLocation {
         Fixed,
@@ -300,6 +304,11 @@ public class ButtonRibbon implements OnClickListener,
             return action.startsWith("KEYMAP_");
         }
 
+        public boolean isUserCommand()
+        {
+            return action.startsWith("USER_");
+        }
+
         public int getTrigger()
         {
             try {
@@ -356,12 +365,16 @@ public class ButtonRibbon implements OnClickListener,
             }
         }
 
+        String userActions[] = KeymapEditor.getUserKeymaps();
+
         // Fixed keys
         if (fastMode) {
             makeCommand("⎋", "Esc", CmdLocation.Fixed);
             makeCommand("⏎", "Ret", CmdLocation.Fixed);
             makeCommand("⌫", "BackSpace", CmdLocation.Fixed);
             makeCommand("⎘", "show_keys", CmdLocation.Fixed);
+
+            userKeymaps = userActions[0];
 
             rebuildKeymaps();
         }
@@ -371,6 +384,8 @@ public class ButtonRibbon implements OnClickListener,
             makeCommand("⎘", "show_keys", CmdLocation.Fixed);
             makeCommand("⇧", "Sft", CmdLocation.Fixed);
             makeCommand("^", "Ctrl", CmdLocation.Fixed);
+
+            userKeymaps = userActions[1];
 
             restoreCommandMode();
         }
@@ -398,6 +413,8 @@ public class ButtonRibbon implements OnClickListener,
         }
 
         removeCommands(atCenter);
+
+        rebuildUserKeymaps(CmdLocation.Dynamic);
 
         if (set) {
             // Hide shift and ctrl
@@ -514,26 +531,48 @@ public class ButtonRibbon implements OnClickListener,
         }
     }
 
+    public void rebuildUserKeymaps(CmdLocation loc)
+    {
+        String keymaps[] = userKeymaps.split("###");
+        //Arrays.sort(keymaps);
+        for (String str: keymaps) {
+
+            if (str.length() == 0) continue;
+
+            String label = str.replace("\\s", "")
+                    .replace("\\S", "")
+                    .replace("\\e", "")
+                    .replace("\\E", "")
+                    .replace("\\n", "")
+                    .replace("\\N", "");
+
+            if (label.length() > 3) label = str.substring(0, 3);
+            String action = "USER_" + str;
+            makeCommand(label, action, loc);
+        }
+    }
+
     public void rebuildKeymaps()
     {
         removeCommands(atRight);
         atRight.invalidate();
 
-        String coreKeymaps = Preferences.getCoreKeymaps();
-        if (coreKeymaps.length() == 0) {
-            return;
-        }
+        rebuildUserKeymaps(CmdLocation.Keymaps);
 
-        String keymaps[] = coreKeymaps.split("###");
-        Arrays.sort(keymaps);
-        for (String str: keymaps) {
-            String parts[] = str.split("##");
-            if (parts.length != 2) {
-                continue;
+        String coreKeymaps = Preferences.getCoreKeymaps();
+        if (coreKeymaps.length() > 0) {
+
+            String keymaps[] = coreKeymaps.split("###");
+            Arrays.sort(keymaps);
+            for (String str: keymaps) {
+                String parts[] = str.split("##");
+                if (parts.length != 2) {
+                    continue;
+                }
+                String label = parts[0];
+                String action = "KEYMAP_" + parts[1];
+                makeCommand(label, action, CmdLocation.Keymaps);
             }
-            String label = parts[0];
-            String action = "KEYMAP_" + parts[1];
-            makeCommand(label, action, CmdLocation.Keymaps);
         }
     }
 
@@ -861,6 +900,67 @@ public class ButtonRibbon implements OnClickListener,
                 0, 0);
     }
 
+    public List<Integer> parseCodeKeys(String txt)
+    {
+        int i = 0;
+        int n = txt.length();
+        int ch0;
+        char next;
+        ArrayList<Integer> lst = new ArrayList<>();
+
+        while (i < n) {
+            ch0 = txt.charAt(i);
+            next = 0;
+
+            // We have another char
+            if ((i+1) < n) next = txt.charAt(i+1);
+                            
+            if (ch0 == '^' && Character.isAlphabetic(next)) {
+                ch0 = KTRL(next);
+                i += 1;
+            }
+            else if (ch0 == '\\' &&
+                Character.toLowerCase(next) == 'n') {
+                ch0 = state.getKeyEnter();
+                i += 1;
+            }
+            else if (ch0 == '\\' &&
+                Character.toLowerCase(next) == 't') {
+                ch0 = state.getKeyTab();
+                i += 1;
+            }
+            else if (ch0 == '\\' &&
+                Character.toLowerCase(next) == 's') {
+                ch0 = ' ';
+                i += 1;
+            }
+            else if (ch0 == '\\' &&
+                Character.toLowerCase(next) == 'e') {
+                ch0 = state.getKeyEsc();
+                i += 1;
+            }
+            else if (ch0 == '\\') {
+                // ignore, and next char too
+                ch0 = 0;
+                i += 1;
+            }            
+
+            if (ch0 > 0) lst.add(ch0);
+            i += 1;
+        }
+        return lst;
+    }
+
+    public void procUserCommand(Command cmd)
+    {
+        String action = cmd.action.replace("USER_", "");
+        Iterator<Integer> iter = parseCodeKeys(action).iterator();
+        while (iter.hasNext()) {
+            Integer num = iter.next();
+            state.addKey(num.intValue());
+        }
+    }
+
     @Override
     public void onClick(View v) {
         Command cmd = findCommand((Button)v);
@@ -871,6 +971,11 @@ public class ButtonRibbon implements OnClickListener,
 
         if (cmd.isKeymap()) {
             state.addKey(cmd.getTrigger());
+            return;
+        }
+
+        if (cmd.isUserCommand()) {
+            procUserCommand(cmd);
             return;
         }
 

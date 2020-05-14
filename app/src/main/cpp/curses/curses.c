@@ -60,6 +60,7 @@ static jmethodID NativeWrapper_score_start;
 static jmethodID NativeWrapper_score_detail;
 static jmethodID NativeWrapper_score_submit;
 static jmethodID NativeWrapper_control_msg;
+static jmethodID NativeWrapper_addtile;
 
 void (*angdroid_quit_hook)(void) = NULL;
 
@@ -159,6 +160,48 @@ int control_msg(int what, const char *s)
 	(*env)->DeleteLocalRef(env, array);
 	return 0;
 }
+
+int addtile(int x, int y, int a, int c, int ta, int tc)
+{
+	JAVA_CALL(NativeWrapper_addtile, x, y, a, c, ta, tc);
+	return 0;
+}
+
+/*
+int addntiles(int x, int y, int n,
+	const int *ap, const wchar_t *cp,
+	const int *tap, const wchar_t *tcp)
+{
+	int i, j;
+
+	LOGD("addntiles");
+
+	char *buf = malloc(sizeof(char)*n);
+	jbyteArray jarr[4];
+
+	for (j = 0; j < 4; j++) {
+		for (i = 0; i < n; i++) {
+			if (j == 0) buf[i] = (char)ap[i];
+			if (j == 1) buf[i] = (char)cp[i];
+			if (j == 3) buf[i] = (char)tap[i];
+			if (j == 3) buf[i] = (char)tcp[i];
+		}
+		jarr[j] = (*env)->NewByteArray(env, n);
+		if (jarr[j] == NULL) angdroid_quit("Error: Out of memory");
+		(*env)->SetByteArrayRegion(env, jarr+j, 0, n, (void*)buf);
+	}
+	free(buf);
+
+	JAVA_CALL(NativeWrapper_addntiles, x, y, n, jarr[0],
+		  jarr[1], jarr[2], jarr[3]);
+
+	for (j = 0; j < 4; j++) {
+		(*env)->DeleteLocalRef(env, jarr[j]);
+	}
+
+	return 0;
+}
+*/
 
 int waddnwstr(WINDOW* w, int n, const wchar_t *ws) {	
 	wchar_t* wbuf = malloc(sizeof(wchar_t)*(n+1));
@@ -500,6 +543,8 @@ JNIEXPORT void JNICALL angdroid_gameStart
 	NativeWrapper_warn = JAVA_METHOD("warn", "(Ljava/lang/String;)V");
 	NativeWrapper_waddnstr = JAVA_METHOD("waddnstr", "(II[B)V");
 	NativeWrapper_control_msg = JAVA_METHOD("control_msg", "(II[B)V");
+	/*NativeWrapper_addntiles = JAVA_METHOD("addntiles", "(III[B[B[B[B)V");*/
+	NativeWrapper_addtile = JAVA_METHOD("addtile", "(IIIIII)V");
 	NativeWrapper_wattrset = JAVA_METHOD("wattrset", "(II)V");
 	NativeWrapper_wattrget = JAVA_METHOD("wattrget", "(III)I");
 	NativeWrapper_wbgattrset = JAVA_METHOD("wbgattrset", "(II)V");

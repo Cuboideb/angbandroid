@@ -33,6 +33,13 @@ public class NativeWrapper {
 		}
 	}
 
+	public void unlink()
+    {
+        synchronized (display_lock) {
+            term = null;
+        }
+    }
+
 	public class LockWithTimer {
 		public boolean locked = false;
 		public int millis = 0;
@@ -95,6 +102,9 @@ public class NativeWrapper {
 
 	int getch(final int v) {
 		state.gameThread.setFullyInitialized();
+
+		//Log.d("Angband", "Getch");
+
 		int key = state.getKey(v);
 
 		return key;
@@ -107,11 +117,14 @@ public class NativeWrapper {
 
 	public boolean onGameStart() {
 		synchronized (display_lock) {
+		    if (term == null) return false;
 			return term.onGameStart();
 		}
 	}
 
 	public void increaseFontSize() {
+        if (term == null) return;
+
 		if (!lockWithTimer.reserveLock()) return;
 
 		synchronized (display_lock) {
@@ -122,6 +135,8 @@ public class NativeWrapper {
 	}
 
 	public void decreaseFontSize() {
+        if (term == null) return;
+
 		if (!lockWithTimer.reserveLock()) return;
 
 		synchronized (display_lock) {
@@ -153,15 +168,29 @@ public class NativeWrapper {
 	}
 
 	public void resize() {
-		//Log.d("Angband", "Native resize");
+		Log.d("Angband", "Native resize");
+        if (term == null) return;
+
 		synchronized (display_lock) {
-			term.onGameStart(); // recalculate TermView canvas dimension
+			term.onGameStart(); // recalculate TermView canvas dimension			
 			frosh(null);
 		}
 	}
 
+	public void updateNow()
+	{
+		if (term == null) return;
+		
+		synchronized (display_lock) {			
+			frosh(null);
+		}	
+	}
+
 	public void wrefresh(int w) {
 		//Log.d("Angband", "Native wrefresh");
+		
+		if (term == null) return;
+
 		synchronized (display_lock) {
 			TermWindow t = state.getWin(w);
 			if (t != null) frosh(t);
@@ -169,26 +198,32 @@ public class NativeWrapper {
 	}
 
 	private void frosh(TermWindow w) {
-		/*
+		
 		if (w != null) {
-			Log.d("Angband", "Native frosh with w <> null");
+			//Log.d("Angband", "Native frosh with w <> null");
 		}
 		else {
-			Log.d("Angband", "Native frosh NULL");
+			//Log.d("Angband", "Native frosh NULL");
 		}
-		*/
 
 		synchronized(display_lock) {
 			/* for forcing a redraw due to an Android event, w should be null */
 
 			TermWindow v = state.virtscr;
+
 			if (w != null) v.overwrite(w);
+
+			if (term == null) {
+        	    v.quiet();
+	            return;
+        	}
 
 			/* mark ugly points, i.e. those clobbered by anti-alias overflow */
 			for(int c = 0; c<v.cols; c++) {
 				for(int r = 0; r<v.rows; r++) {
 					TermWindow.TermPoint p = v.buffer[r][c];
 					if (p.isDirty || w == null) {
+
 						if (r<v.rows-1) {
 							TermWindow.TermPoint u = v.buffer[r+1][c];
 							u.isUgly = !u.isDirty;
@@ -200,16 +235,29 @@ public class NativeWrapper {
 						if (c<v.cols-1 && r<v.rows-1) {
 							TermWindow.TermPoint u = v.buffer[r+1][c+1];
 							u.isUgly = !u.isDirty;
-						}
+						}						
+					}
+
+					if (p.isDirty && (p.ch == TermView.BIG_PAD) &&
+						term.bigTileActive()) {
+
+						v.markBigTile(r, c, term.tile_wid, term.tile_hgt);
 					}
 				}
 			}
 
+			term.preloadTiles(v);
+		
 			for(int r = 0; r<v.rows; r++) {
 				for(int c = 0; c<v.cols; c++) {
 					TermWindow.TermPoint p = v.buffer[r][c];
 					if (p.isDirty || p.isUgly || w == null) {
-						drawPoint(r, c, p, p.isDirty || w == null);
+						if (p.isGraphicTile()) {
+							drawTile(r, c, p);
+						}			
+						else {
+							drawPoint(r, c, p, p.isDirty || w == null);
+						}						
 					}
 				}
 			}
@@ -221,19 +269,35 @@ public class NativeWrapper {
 		}
 	}
 
-	private void drawPoint(int r, int c, TermWindow.TermPoint p, boolean extendErase)
+	private void drawTile(int r, int c, TermWindow.TermPoint p)
 	{
+		if (p.bgColor < 0) return;
+
+		term.drawTile(r, c, p.fgColor, p.ch, p.bgColor, p.bgChar);		
+
+		p.isDirty = false;
+		p.isUgly = false;
+	}
+
+	private void drawPoint(int r, int c, TermWindow.TermPoint p,
+		boolean extendErase)
+	{	
+		if (p.bgColor < 0) return;	
+
+		int fgColorIdx = p.fgColor;
+		int bgColorIdx = p.bgColor;		
+
 		/*
 		 * This is a bit hacky.  Angband doesn't actually use colour pairs -
 		 * it just sets the foreground colour.  So when we get a background
 		 * colour, we get the 'colour pair' for the background colour and use
 		 * its foreground.  XXX
 		 */
-		TermWindow.ColorPair fgCol = TermWindow.pairs.get(p.fgColor);
-		TermWindow.ColorPair bgCol = TermWindow.pairs.get(p.bgColor);
+		TermWindow.ColorPair fgCol = TermWindow.pairs.get(fgColorIdx);
+		TermWindow.ColorPair bgCol = TermWindow.pairs.get(bgColorIdx);
 
 		if (fgCol != null && bgCol != null) {
-			term.drawPoint(r, c, p.ch, fgCol.fColor, bgCol.fColor, extendErase);
+			term.drawPoint(r, c, p, fgCol.fColor, bgCol.fColor, extendErase);
 
 			p.isDirty = false;
 			p.isUgly = false;
@@ -261,6 +325,18 @@ public class NativeWrapper {
 		synchronized (display_lock) {
 			TermWindow t = state.getWin(w);
 			if (t != null) t.addnstr(n, cp);
+		}
+	}
+
+	public void addtile(final int x, final int y,
+		final int a, final int c, final int ta, final int tc)
+	{
+		synchronized (display_lock) {			
+			TermWindow t = state.getWin(0);
+			if (t != null) {				
+				t.addTile(x, y, a, c, ta, tc);
+				//t.addTilePad(x, y, term.tile_wid, term.tile_hgt);
+			}
 		}
 	}
 
@@ -327,7 +403,7 @@ public class NativeWrapper {
 	public void wclear(final int w) {
 		//Log.d("Angband", "Native wclear");
 		synchronized (display_lock) {
-			TermWindow t = state.getWin(w);
+			TermWindow t = state.getWin(w);			
 			if (t != null) t.clear();
 		}
 	}
@@ -432,7 +508,7 @@ public class NativeWrapper {
 		    wclen++;
 		}
 	    } catch(java.io.UnsupportedEncodingException e) {
-		Log.d("Angband","wctomb: " + e);
+			Log.d("Angband","wctomb: " + e);
 	    }
 	    return wclen;
     }
@@ -456,7 +532,7 @@ public class NativeWrapper {
 		}
 		return i;
 	    } catch(java.io.UnsupportedEncodingException e) {
-		Log.d("Angband","mbstowcs: " + e);
+			Log.d("Angband","mbstowcs: " + e);
 	    }
 	    return -1;
     }
@@ -480,7 +556,7 @@ public class NativeWrapper {
 		}
 		return i;
 	    } catch(java.io.UnsupportedEncodingException e) {
-		Log.d("Angband","wcstombs: " + e);
+			Log.d("Angband","wcstombs: " + e);
 	    }
 	    return -1;
     }

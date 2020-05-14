@@ -89,7 +89,8 @@ int intrflush(WINDOW *, int);
 int beep(void);
 int keypad(WINDOW *, int); 
 int init_color(int, int);
-int init_pair(int, int, int); 
+int init_pair(int, int, int);
+int addtile(int, int, int, int, int, int);
 
 int angdroid_getch(int v);
 int flushinp(void);

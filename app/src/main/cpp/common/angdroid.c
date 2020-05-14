@@ -23,6 +23,7 @@
 #include <ui-keymap.h>
 #include "ui-output.h"
 #include "curses.h"
+#include "grafmode.h"
 
 #include "angband.h"
 #include "init.h" // init_file_paths()
@@ -31,6 +32,8 @@
 #include "ui-init.h"
 #include "ui-display.h"
 #include "ui-input.h"
+#include "ui-prefs.h"
+#include "ui-command.h"
 #include "ui-game.h" // save_game()
 
 static char android_files_path[1024];
@@ -38,7 +41,11 @@ static char android_savefile[50];
 static int turn_save = 0;
 static int initial_width = 80;
 static int initial_height = 24;
-static int initial_tile_multiplier = 1;
+
+static int initial_tile_wid = 1;
+static int initial_tile_hgt = 1;
+static int initial_graphics = 0;
+static int initial_pseudo_ascii = 0;
 
 /*
  * Android's terms are boring
@@ -60,6 +67,8 @@ static int make_mask(int n) {
 }
 
 #define MOUSE_TAG set_bit(30)
+
+#define SPECIAL_CMD (-200)
 
 typedef struct {
 	int y;
@@ -170,6 +179,56 @@ void send_key_to_term(int key) {
 	}
 }
 
+int process_special_command(int key)
+{
+	char buf[2048] = "";
+	char *pbuf = buf;		
+	int graf, pseudo, trows, tcols;
+
+	key = 0;
+
+	while (true) {
+		key = angdroid_getch(0);
+		if (key == 0 || key == SPECIAL_CMD) break;		
+		*pbuf++ = key;
+	}
+	pbuf = 0;
+
+	if (sscanf(buf, "graphics:%d:%d:%d:%d",
+		&graf, &trows, &tcols, &pseudo) == 4) {
+
+		if (player == NULL || !player->upkeep->playing) return 0;
+
+		use_graphics = graf;
+		current_graphics_mode = get_graphics_mode(use_graphics);
+		pseudo_ascii = pseudo;
+		tile_width = tcols;
+		tile_height = trows;
+		reset_visuals(true);
+		return KTRL('R');
+		//return 0;
+	}
+
+	if (sscanf(buf, "resize:%d:%d", &tcols, &trows) == 2) {
+
+		if (player == NULL || !player->upkeep->playing) return 0;
+
+		Term_resize(tcols, trows);		
+		//return KTRL('R');
+		return 0;
+	}
+
+	if (strcmp(buf, "redraw") == 0) {
+
+		if (player == NULL || !player->upkeep->playing) return 0;
+		
+		Term_redraw();
+		return 0;
+	}
+
+	return 0;
+}
+
 /*
  * Do a "special thing" to the current "term"
  *
@@ -189,6 +248,7 @@ static errr Term_xtra_android(int n, int v)
 {
 	term_data *td = (term_data*)(Term->data);
 	jint ret;
+	char buf[2048] = "";
 
 	switch (n)
 	{
@@ -218,7 +278,14 @@ static errr Term_xtra_android(int n, int v)
 
 			if (key == -1) {
 				try_save();
-			} else if (v == 0) {
+			}
+			else if (key == SPECIAL_CMD) {
+				key = process_special_command(key);
+				if (key != 0) {
+					send_key_to_term(key);
+				}
+			}
+			else if (v == 0) {
 				while (key != 0) {
 					send_key_to_term(key);
 					key = get_input_from_ui(v);
@@ -260,9 +327,16 @@ static errr Term_xtra_android(int n, int v)
 			return 0;
 		}
 
-		case TERM_XTRA_FROSH:
-		case TERM_XTRA_BORED:
 		case TERM_XTRA_REACT:
+		{
+			strnfmt(buf, sizeof(buf), "visual:%d:%d:%d",
+				tile_height, tile_width, use_graphics);
+			Term_control_msg(TERM_VISUAL_STATE, buf);
+			return 0;
+		}
+
+		case TERM_XTRA_FROSH:
+		case TERM_XTRA_BORED:		
 		case TERM_XTRA_ALIVE:
 		case TERM_XTRA_LEVEL:
 		{
@@ -314,7 +388,7 @@ static errr Term_wipe_android(int x, int y, int n)
 {
 	term_data *td = (term_data*)(Term->data);
 
-	LOGD("Term_wipe_and");
+	/*LOGD("Term_wipe_and");*/
 
 	/* XXX XXX XXX */
 
@@ -362,10 +436,19 @@ static errr Term_text_android(int x, int y, int n, int a, const wchar_t *cp)
 /*
  * Draw some attr/char pairs on the screen
  */
-static errr Term_pict_android(int x, int y, int n, const int *ap, const wchar_t *cp,
-						  const int *tap, const wchar_t *tcp)
+static errr Term_pict_android(int x, int y, int n,
+	const int *ap, const wchar_t *cp,
+	const int *tap, const wchar_t *tcp)
 {
-	return 0;
+	int resu;
+	int i;
+
+	for (i = 0; i < n; i++) {	
+		resu = addtile(x, y, (byte)ap[i], (byte)cp[i],
+			(byte)tap[i], (byte)tcp[i]);
+		if (resu) break;
+	}
+	return resu;
 }
 
 static errr Term_control_msg_android(int what, const char *msg)
@@ -401,8 +484,9 @@ static void term_data_link(int i)
 	/* Initialize the term */
 	term_init(t, initial_width, initial_height, 256);
 
-	tile_width = initial_tile_multiplier;
-	tile_height = initial_tile_multiplier;
+	tile_width = initial_tile_wid;
+	tile_height = initial_tile_hgt;	
+	pseudo_ascii = initial_pseudo_ascii;
 
 	t->complex_input = true;
 
@@ -416,6 +500,8 @@ static void term_data_link(int i)
 	/* See the "Term_text_android()" function above. */
 	t->always_text = true;
 
+	t->higher_pict = true;
+
 	/* Ignore the "TERM_XTRA_BORED" action XXX XXX XXX */
 	/* This may make things slightly more efficient. */
 	 t->never_bored = true;
@@ -425,8 +511,8 @@ static void term_data_link(int i)
 	t->never_frosh = true;
 
 	/* Erase with "white space" XXX XXX XXX */
-	/* t->attr_blank = TERM_WHITE; */
-	/* t->char_blank = ' '; */
+	t->attr_blank = COLOUR_WHITE;
+	t->char_blank = ' ';
 
 	/* Prepare the init/nuke hooks */
 	t->init_hook = Term_init_android;
@@ -618,6 +704,42 @@ static char *get_command_list()
 	return strdup(buf);
 }
 
+static char *get_tilesets(void)
+{
+	char buf[2048] = "";
+	char str[1024] = "";
+	char sep[2] = {0,0};
+	char *dirname;
+	int i;
+	graphics_mode *mode;
+
+	for (i = 1; true; i++)  {
+
+		mode = get_graphics_mode(i);
+
+		if (mode == NULL) break;
+
+		dirname = strrchr(mode->path, PATH_SEP[0]);
+		if (dirname == NULL) {
+			dirname = mode->path;
+		}
+		else {
+			++dirname;
+		}
+
+		strnfmt(str, sizeof(str), "%s%d:%s:%s:%s:%d:%d:%d:%d:%d",
+			sep, i, mode->menuname, dirname, mode->file,
+			mode->cell_height, mode->cell_width,
+			mode->alphablend, mode->overdrawRow, mode->overdrawMax);
+
+		sep[0] = '#';
+
+		my_strcat(buf, str, sizeof(buf));
+	}
+
+	return strdup(buf);	
+}
+
 char* queryString(const char* argv0)
 {
 	const char *CMD_DESC = "cmd_desc_";
@@ -636,14 +758,11 @@ char* queryString(const char* argv0)
 	else if (strcmp(argv0, "cmd_list") == 0) {
 		buf = get_command_list();
 	}
+	else if (strcmp(argv0, "get_tilesets") == 0) {
+		buf = get_tilesets();
+	}
 
 	return buf;
-}
-
-static void set_tile_multiplier(int multiplier)
-{
-	tile_width = multiplier;
-	tile_height = multiplier;
 }
 
 int queryInt(const char* argv0) {
@@ -654,18 +773,14 @@ int queryInt(const char* argv0) {
 		result = 1;
 	} else if (strcmp(argv0, "px") == 0) {
 		result = player->grid.x;
+	} else if (strcmp(argv0, "playing") == 0) {
+		result = 0;		
+		if (player && player->upkeep->playing) result = 1;
 	} else if (strcmp(argv0, "rl") == 0) {
 		result = 0;
-		if (player && OPT(player, rogue_like_commands)) result = 1;
-	} else if (strcmp(argv0, "tile_mult_1") == 0) {
-		set_tile_multiplier(1);
-		result = 1;
-	} else if (strcmp(argv0, "tile_mult_2") == 0) {
-		set_tile_multiplier(2);
-		result = 1;
-	}
+		if (player && OPT(player, rogue_like_commands)) result = 1;	
 	// Starts with this pattern?
-	else if (strncmp(argv0, ROGUE_KEY, strlen(ROGUE_KEY)) == 0) {
+	} else if (strncmp(argv0, ROGUE_KEY, strlen(ROGUE_KEY)) == 0) {
 		// Find the respective key in roguelike mode
 		int n = strlen(ROGUE_KEY);
 		// Get the "n" character (encoded key)
@@ -697,23 +812,21 @@ void angdroid_process_argv(int i, const char* argv)
 		case 1: //savefile
 			my_strcpy(android_savefile, argv, sizeof(android_savefile));
 			break;
-	    	case 2: // width
+	    case 2: // width
 			aux = atoi(argv);
 			if (aux > initial_width) {
 				initial_width = aux;
 			}
-            		break;
-        	case 3: // height
-            		aux = atoi(argv);
-            		if (aux > initial_height) {
-                		initial_height = aux;
-            		}
-            		break;
+        	break;
+        case 3: // height
+    		aux = atoi(argv);
+    		if (aux > initial_height) {
+        		initial_height = aux;
+    		}
+    		break;
 		case 4:
-			aux = atoi(argv);
-			if (aux >= 1 || aux <= 2) {
-				initial_tile_multiplier = aux;
-			}
+			sscanf(argv, "%d:%d:%d:%d", &initial_graphics, &initial_tile_hgt,
+				&initial_tile_wid, &initial_pseudo_ascii);
 			break;
 		default:
 			break;
@@ -735,6 +848,11 @@ void angdroid_main()
 
 	/* Initialize some stuff */
 	init_android_stuff();
+
+	init_graphics_modes();
+
+	use_graphics = initial_graphics;
+	current_graphics_mode = get_graphics_mode(use_graphics);	
 
 	cmd_get_hook = textui_get_cmd;
 

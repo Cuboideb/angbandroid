@@ -102,4 +102,22 @@
 		<item>ZoomOut</item>
         <item>CenterPlayer</item>
 	</string-array>
+
+    <string-array name="graphicsModesDesc">
+        <item>None</item>
+        <item>Original Tiles</item>
+        <item>Adam Bolt\'s tiles</item>
+        <item>David Gervai\'s tiles</item>
+        <item>Nomad\'s tiles</item>
+        <item>Shockbolt\'s tiles</item>
+    </string-array>
+
+    <string-array name="graphicsModesKeys">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
 </resources>

@@ -298,6 +298,7 @@ struct term
 #define TERM_CONTROL_LIST_KEYS 1
 #define TERM_CONTROL_NOT_PLAYING 2
 #define TERM_CONTROL_PLAYING_NOW 3
+#define TERM_VISUAL_STATE 4
 
 /**
  * Bit flags for the "window_flag" variable.
@@ -348,7 +349,6 @@ extern u32b window_flag[ANGBAND_TERM_MAX];
  * Hack -- The main "screen"
  */
 #define term_screen	(angband_term[0])
-
 
 
 /**
@@ -405,7 +405,6 @@ extern errr term_init(term *t, int w, int h, int k);
 
 extern int big_pad(int col, int row, byte a, wchar_t c);
 
-extern wchar_t term_normalize(wchar_t ch);
 extern wchar_t term_get_pad(void);
 
 #endif /* INCLUDED_Z_TERM_H */

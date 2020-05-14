@@ -101,7 +101,7 @@ static int path_dist(struct loc grid)
 }
 
 /**
- * Get the path distance info for a grid
+ * Set the path distance info for a grid
  */
 static void set_path_dist(struct loc grid, int dist)
 {
@@ -205,7 +205,8 @@ bool find_path(struct loc grid)
 {
 	struct loc new = grid;
 
-	/* Attempt to find a path */
+	/* Attempt to find a path if necessary */
+	if (loc_eq(new, player->grid)) return false;
 	if (!set_up_path_distances(grid)) return false;
 
 	/* Now travel along the path, backwards */

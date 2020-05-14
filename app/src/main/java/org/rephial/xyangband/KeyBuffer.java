@@ -14,6 +14,7 @@ public class KeyBuffer {
 	/* keyboard state */
 	private Queue<Integer> keybuffer = new LinkedList<Integer>();
 	private Queue<Integer> keymacro = new LinkedList<Integer>();
+	private Queue<Integer> keyspecial = new LinkedList<Integer>();
 	private boolean wait = false;
 	private int quit_key_seq = 0;
 	private boolean signal_game_exit = false;
@@ -149,6 +150,10 @@ public class KeyBuffer {
 				key = check;
 				// we have a key, so we're done.
 			}
+			else if (keyspecial.peek() != null) {
+				key = keyspecial.poll();
+				return key;
+			}
 			else if (keybuffer.peek() != null) {
 				//peek before wait -- fix issue #3 keybuffer loss
 				key = keybuffer.poll();
@@ -189,6 +194,20 @@ public class KeyBuffer {
 			keybuffer.offer(-1);
 			wakeUp();
 		}
+	}
+
+	public void addSpecialCommand(String command)
+	{
+		int mark = -200;
+		synchronized (keybuffer) {
+			//keybuffer.clear();
+			keyspecial.offer(mark);
+			for (char c: command.toCharArray()) {
+				keyspecial.offer((int)c);
+			}
+			keyspecial.offer(mark);
+			//wakeUp();
+		}	
 	}
 
 	public void wakeUp() {

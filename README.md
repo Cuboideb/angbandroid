@@ -6,7 +6,9 @@ This work is based on the excellent port of **Angband** found [here](https://git
 
 The transparent keyboard was borrowed from [here](https://github.com/Shaosil/Android-Sil) (with modifications).
 
-Recommended game experience: Landscape Orientation and center_player option on.
+To customize your game experience, please go to settings and preferences by long-pressing the screen. The port has many options and you have to play a bit with them to find your optimal setup.
+
+Recommended game experience: Landscape Orientation, duplicate tiles on, center_player option on (this one inside Angband).
 
 The game has two input methods: the soft keyboard and the button ribbon.
 
@@ -40,9 +42,21 @@ It's important to remember that directions can be used to cycle between equipmen
 
 To reduce the number of buttons in command mode, the Alter command can also open chests and close doors.
 
-If you feel that some action should be in the ribbon anyway, every keymap defined inside the core Angband is displayed in the button ribbon. This is also handy for spells and repetitive keystrokes.
+### Custom keymaps
+
+While using the button ribbon, the settings menu gets the item "Manage keymaps". It can be used to quickly define common keymaps shortcuts as you like.
+
+### The touch directionals
+
+The game view can be configured to display 9 squares for moving the character in the dungeon. The action of the center square can be set to do different things.
+
+The touch d. can be displayed to the right, all together. In that case the center square has another use. A long-press allowes you to drag and drop the whole set to another zone of the screen.
 
 Besides the touch directionals, every touch in the term view is sent to the core as a mouse press, allowing movement and menu selection.
+
+### Graphics modes
+
+This port support the usual graphic tilesets of Angband (go to Preferences). You can also set pseudo-ascii mode. In that mode monsters and player are shown as ascii letters and everything else with graphic tiles.
 
 Enjoy! 
 

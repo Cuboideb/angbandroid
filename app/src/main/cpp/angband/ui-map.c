@@ -50,6 +50,12 @@ static void hallucinatory_monster(int *a, wchar_t *c)
 		/* Retrieve attr/char */
 		*a = monster_x_attr[race->ridx];
 		*c = monster_x_char[race->ridx];
+
+        if (USE_PSEUDO_ASCII) {
+            *a = race->d_attr;
+            *c = race->d_char;
+        }
+
 		return;
 	}
 }
@@ -240,6 +246,12 @@ void grid_data_as_text(struct grid_data *g, int *ap, wchar_t *cp, int *tap,
 			da = monster_x_attr[mon->race->ridx];
 			dc = monster_x_char[mon->race->ridx];
 
+			// Revert for monsters
+			if (USE_PSEUDO_ASCII) {
+				da = mon->race->d_attr;
+				dc = mon->race->d_char;
+			}
+
 			/* Special handling of attrs and/or chars */
 			if (da & 0x80) {
 				/* Special attr/char codes */
@@ -261,8 +273,8 @@ void grid_data_as_text(struct grid_data *g, int *ap, wchar_t *cp, int *tap,
 				/* Normal monster (not "clear" in any way) */
 				a = da;
 				/* Desired attr & char. da is not used, should a be set to it?*/
-				/*da = monster_x_attr[mon->race->ridx];*/
-				dc = monster_x_char[mon->race->ridx];
+				/*da = monster_x_attr[mon->race->ridx];*/				
+				/*dc = monster_x_char[mon->race->ridx];*/				
 				c = dc;
 			} else if (a & 0x80) {
 				/* Hack -- Bizarre grid under monster */
@@ -284,6 +296,15 @@ void grid_data_as_text(struct grid_data *g, int *ap, wchar_t *cp, int *tap,
 
 		/* Get the "player" attr */
 		a = monster_x_attr[race->ridx];
+		/* Get the "player" char */
+		c = monster_x_char[race->ridx];
+
+		// Revert
+		if (USE_PSEUDO_ASCII) {
+			a = race->d_attr;
+			c = race->d_char;
+		}
+
 		if ((OPT(player, hp_changes_color)) && !(a & 0x80)) {
 			switch(player->chp * 10 / player->mhp)
 			{
@@ -325,9 +346,16 @@ void grid_data_as_text(struct grid_data *g, int *ap, wchar_t *cp, int *tap,
 			}
 			}
 		}
+	}
 
-		/* Get the "player" char */
-		c = monster_x_char[race->ridx];
+	// Set higher bit
+	if (USE_PSEUDO_ASCII) {
+		a |= 0x80;
+	}
+
+	// Hack - Big text for android
+	if (!(a & 0x80) && ((tile_width > 1) || (tile_height > 1))) {
+		c |= 0x1D00;
 	}
 
 	/* Result */
@@ -559,10 +587,7 @@ static void prt_map_aux(void)
 
 				/* Determine what is there */
 				map_info(loc(x, y), &g);
-				grid_data_as_text(&g, &a, &c, &ta, &tc);
-
-				// Hack!
-				c = term_normalize(c);
+				grid_data_as_text(&g, &a, &c, &ta, &tc);				
 
 				Term_queue_char(t, vx, vy, a, c, ta, tc);
 
@@ -608,9 +633,6 @@ void prt_map(void)
 			/* Determine what is there */
 			map_info(loc(x, y), &g);
 			grid_data_as_text(&g, &a, &c, &ta, &tc);
-
-			// Hack!
-			c = term_normalize(c);
 
 			/* Hack -- Queue it */
 			Term_queue_char(Term, vx, vy, a, c, ta, tc);
@@ -705,10 +727,7 @@ void display_map(int *cy, int *cx)
 			if (mp[row][col] < tp) {
 				/* Hack - make every grid on the map lit */
 				g.lighting = LIGHTING_LIT;
-				grid_data_as_text(&g, &a, &c, &ta, &tc);
-
-				// Hack!
-				c = term_normalize(c);
+				grid_data_as_text(&g, &a, &c, &ta, &tc);				
 
 				Term_queue_char(Term, col + 1, row + 1, a, c, ta, tc);
 
@@ -783,6 +802,9 @@ void do_cmd_view_map(void)
 	tile_width = 1;
 	tile_height = 1;
 
+	/* React to changes */
+	Term_xtra(TERM_XTRA_REACT, 0);
+
 	/* Display the map */
 	display_map(&cy, &cx);
 
@@ -798,6 +820,9 @@ void do_cmd_view_map(void)
 	/* Restore the tile multipliers */
 	tile_width = w;
 	tile_height = h;
+
+	/* React to changes */
+	Term_xtra(TERM_XTRA_REACT, 0);
 
 	/* Load screen */
 	screen_load();

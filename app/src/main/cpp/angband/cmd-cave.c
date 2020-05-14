@@ -508,29 +508,33 @@ static bool do_cmd_tunnel_aux(struct loc grid)
 	int weapon_slot = slot_by_name(player, "weapon");
 	struct object *current_weapon = slot_object(player, weapon_slot);
 	struct object *best_digger = NULL;
+	struct player_state local_state;
+	struct player_state *used_state = &player->state;
+	int oldn = 1;
 
 	/* Verify legality */
 	if (!do_cmd_tunnel_test(grid)) return (false);
 
 	/* Find what we're digging with and our chance of success */
-	best_digger = player_best_digger(player);
+	best_digger = player_best_digger(player, false);
 	if (best_digger && best_digger != current_weapon) {
+		/* Use only one without the overhead of gear_obj_for_use(). */
+		oldn = best_digger->number;
+		best_digger->number = 1;
 		player->body.slots[weapon_slot].obj = best_digger;
-		player->upkeep->update |= (PU_BONUS);
-		player->upkeep->only_partial = true;
-		update_stuff(player);
+		memcpy(&local_state, &player->state, sizeof(local_state));
+		calc_bonuses(player, &local_state, false, true);
+		used_state = &local_state;
 	}
-	calc_digging_chances(&player->state, digging_chances);
+	calc_digging_chances(used_state, digging_chances);
 
 	/* Do we succeed? */
 	okay = (digging_chances[square_digging(cave, grid) - 1] > randint0(1600));
 
 	/* Swap back */
 	if (best_digger && best_digger != current_weapon) {
+		best_digger->number = oldn;
 		player->body.slots[weapon_slot].obj = current_weapon;
-		player->upkeep->update |= (PU_BONUS);
-		update_stuff(player);
-		player->upkeep->only_partial = false;
 	}
 
 	/* Success */
@@ -1251,6 +1255,15 @@ void do_cmd_run(struct command *cmd)
 	if (cmd_get_direction(cmd, "direction", &dir, false) != CMD_OK)
 		return;
 
+	/* If we're in a web, deal with that */
+	if (square_iswebbed(cave, player->grid)) {
+		/* Clear the web, finish turn */
+		msg("You clear the web.");
+		square_destroy_trap(cave, player->grid);
+		player->upkeep->energy_use = z_info->move_energy;
+		return;
+	}
+
 	if (player_confuse_dir(player, &dir, true))
 		return;
 
@@ -1583,7 +1596,7 @@ void do_cmd_mon_command(struct command *cmd)
 			if (!obj) break;
 			obj->held_m_idx = 0;
 			pile_excise(&mon->held_obj, obj);
-			drop_near(cave, &obj, 0, mon->grid, true);
+			drop_near(cave, &obj, 0, mon->grid, true, false);
 			object_desc(o_name, sizeof(o_name), obj, ODESC_PREFIX | ODESC_FULL);
 			if (!ignore_item_ok(obj)) {
 				msg("%s drops %s.", m_name, o_name);

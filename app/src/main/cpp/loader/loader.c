@@ -127,7 +127,7 @@ jbyteArray gameQueryString
 			LOGE("dlsym failed on angdroid_gameQueryString");
 	}
 	else {
-		LOGE("dlopen failed -- angdroid_gameQueryString");
+		LOGE("dlopen failed -- angdroid_gameQueryString (2)");
 	}
 
 	// end synchronize

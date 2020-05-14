@@ -83,8 +83,8 @@ public class GameThread implements Runnable {
 				stop();
 			}
 			else {
-				//Log.d("Angband","startBand.redrawing");
-				state.nativew.resize();
+				Log.d("Angband","startBand.redrawing");
+				state.nativew.resize();				
 			}
 		}
 		else {
@@ -99,7 +99,7 @@ public class GameThread implements Runnable {
 
 			game_thread_running = true;
 
-			//Log.d("Angband","startBand().starting loader thread");
+			Log.d("Angband","startBand().starting loader thread");
 
 			thread = new Thread(this);
 			thread.start();
@@ -205,7 +205,11 @@ public class GameThread implements Runnable {
 
 		String width = "" + Preferences.getTermWidth();
 		String height = "" + Preferences.getTermHeight();
-		String tileMultiplier = "" + Preferences.getTileMultiplier();
+
+		String visuals = "" + Preferences.getGraphicsMode()
+			+ ":" + Preferences.getTileHeight()
+			+ ":" + Preferences.getTileWidth()
+			+ ":" + (Preferences.getPseudoAscii() ? 1: 0);
 
 		/* game is not running, so start it up */
 		nativew.gameStart(
@@ -216,7 +220,7 @@ public class GameThread implements Runnable {
 					  Preferences.getActiveProfile().getSaveFile(),
 					  width,
 					  height,
-					  tileMultiplier
+					  visuals
 				  }
 		);
 	}

@@ -4,6 +4,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.graphics.Bitmap;
+import android.util.LruCache;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +23,8 @@ public class StateManager {
 	public String fatalMessage = "";
 	public String warnMessage = "";
 	public Plugins.Plugin currentPlugin;
+
+	public Bitmap savedDungeon = null;
 
 	/* progress dialog state */
 	public static String progress_lock = "lock";
@@ -42,6 +46,9 @@ public class StateManager {
 	/* running mode */
 	private boolean runningMode = false;
 
+	public LruCache<String, Bitmap> tileCache = null;
+    public static int CACHE_MAX = 5;
+
 	StateManager(GameActivity p_context) {
 		endWin();
 
@@ -51,12 +58,43 @@ public class StateManager {
 		gameThread = new GameThread(this, nativew);
 
 		keyBuffer = new KeyBuffer(this);
+
+		createBitmapCache();
+	}
+
+	public void createBitmapCache()
+    {
+        int cacheSize = CACHE_MAX * 1024 * 1024;
+        tileCache = new LruCache<String, Bitmap>(cacheSize) {
+            @Override
+            protected int sizeOf(String key, Bitmap value) {
+                return value.getByteCount();
+            }
+            @Override
+            protected void entryRemoved(boolean evicted, String key,
+                                        Bitmap oldValue,
+                                        Bitmap newValue) {
+                oldValue.recycle();
+            }
+        };
+    }
+
+	public void addSpecialCommand(String cmd)
+	{
+		if (keyBuffer != null) keyBuffer.addSpecialCommand(cmd);
 	}
 
 	public boolean isRoguelikeKeyboard()
 	{
+		if (!gameThread.gameRunning()) return false;
 		boolean rogueLike = (nativew.gameQueryInt(1,new String[]{"rl"})==1);
 		return rogueLike;
+	}
+
+	public boolean characterPlaying()
+	{
+		if (!gameThread.gameRunning()) return false;
+		return (nativew.gameQueryInt(1,new String[]{"playing"})==1);		
 	}
 
 	public void link(TermView t, Handler h) {
@@ -86,6 +124,21 @@ public class StateManager {
 		termwins.put(h,new TermWindow(nlines,ncols,begin_y,begin_x));
 		termWinNext++;
 		return h;
+	}
+
+	public void saveTheDungeon(Bitmap bm)
+	{
+		if (savedDungeon != null) savedDungeon.recycle();
+		savedDungeon = bm;
+	}
+
+	public Bitmap restoreTheDungeon(int w, int h)
+	{
+		if (savedDungeon != null &&
+			(savedDungeon.getWidth() != w || savedDungeon.getHeight() != h)) {
+			return null;
+		}
+		return savedDungeon;
 	}
 
 	public String getFatalError() {

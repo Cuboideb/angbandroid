@@ -537,7 +537,7 @@ static void chest_death(struct loc grid, struct object *chest)
 
 		treasure->origin = ORIGIN_CHEST;
 		treasure->origin_depth = chest->origin_depth;
-		drop_near(cave, &treasure, 0, grid, true);
+		drop_near(cave, &treasure, 0, grid, true, false);
 		number--;
 	}
 
@@ -567,7 +567,7 @@ static void chest_trap(struct object *obj)
 			}
 			if (trap->effect) {
 				effect_do(trap->effect, source_chest_trap(trap), obj, &ident,
-						  false, 0, 0, 0);
+						  false, 0, 0, 0, NULL);
 	}
 			if (trap->destroy) {
 				obj->pval = 0;

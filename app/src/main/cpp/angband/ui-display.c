@@ -1109,9 +1109,6 @@ static void update_maps(game_event_type type, game_event_data *data, void *user)
 		map_info(data->point, &g);
 		grid_data_as_text(&g, &a, &c, &ta, &tc);
 
-		// Hack!
-		c = term_normalize(c);
-
 		Term_queue_char(t, vx, vy, a, c, ta, tc);
 #ifdef MAP_DEBUG
 		/* Plot 'spot' updates in light green to make them visible */

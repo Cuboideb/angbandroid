@@ -291,9 +291,6 @@ char angband_term_name[ANGBAND_TERM_MAX][16] =
 
 u32b window_flag[ANGBAND_TERM_MAX];
 
-
-
-
 /**
  * The current "term"
  */
@@ -563,33 +560,42 @@ void Term_big_queue_char(term *t, int x, int y, int a, wchar_t c, int a1,
 
 	/* No tall skinny tiles */
 	if (tile_width > 1) {
-	        /* Horizontal first; skip already marked upper left corner */
-	        for (hor = 1; hor < tile_width; hor++) {
-		        /* Queue dummy character */
-			        if (a & 0x80)
-				        Term_queue_char(t, x + hor, y, 255, -1, 0, 0);
-					else
-				        Term_queue_char(t, x + hor, y, COLOUR_WHITE, pad, a1, c1);
-				}
+        /* Horizontal first; skip already marked upper left corner */
+        for (hor = 1; hor < tile_width; hor++) {
+        	/* Queue dummy character */
+        	/*
+	        if (a & 0x80)
+		    	Term_queue_char(t, x + hor, y, 255, -1, 0, 0);			    	
+			else
+		        Term_queue_char(t, x + hor, y, COLOUR_WHITE, pad, a1, c1);
+			*/
+		    Term_queue_char(t, x + hor, y, COLOUR_WHITE, pad, 0, 0);
+		}
 
-				/* Now vertical */
+		/* Now vertical */
 		for (vert = 1; vert < vmax; vert++) {
 			for (hor = 0; hor < tile_width; hor++) {
-						/* Queue dummy character */
-						if (a & 0x80)
-							Term_queue_char(t, x + hor, y + vert, 255, -1, 0, 0);
-						else
-							Term_queue_char(t, x + hor, y + vert, COLOUR_WHITE, pad, a1, c1);
-					}
-				}
+				/* Queue dummy character */
+				/*
+				if (a & 0x80)
+					Term_queue_char(t, x + hor, y + vert, 255, -1, 0, 0);
+				else
+					Term_queue_char(t, x + hor, y + vert, COLOUR_WHITE, pad, a1, c1);
+				*/
+				Term_queue_char(t, x + hor, y + vert, COLOUR_WHITE, pad, 0, 0);
+			}
+		}
 	} else {
 		/* Only vertical */
 		for (vert = 1; vert < vmax; vert++) {
-				/* Queue dummy character */
-				if (a & 0x80)
-					Term_queue_char(t, x, y + vert, 255, -1, 0, 0);
-				else
-					Term_queue_char(t, x, y + vert, COLOUR_WHITE, pad, a1, c1);
+			/* Queue dummy character */
+			/*
+			if (a & 0x80)
+				Term_queue_char(t, x, y + vert, 255, -1, 0, 0);				
+			else
+				Term_queue_char(t, x, y + vert, COLOUR_WHITE, pad, a1, c1);
+			*/
+			Term_queue_char(t, x, y + vert, COLOUR_WHITE, pad, 0, 0);
 		}
 	}
 }
@@ -1545,6 +1551,8 @@ void Term_big_putch(int x, int y, int a, wchar_t c)
 {
 	int hor, vert;
 
+	wchar_t pad = term_get_pad();
+
 	/* Avoid warning */
 	(void)c;
 
@@ -1554,33 +1562,41 @@ void Term_big_putch(int x, int y, int a, wchar_t c)
 		for (hor = 0; hor <= tile_width; hor++) {
 			/* Queue dummy character */
 			if (hor != 0) {
+				/*
 				if (a & 0x80)
 					Term_putch(x + hor, y, 255, -1);
 				else
 					Term_putch(x + hor, y, COLOUR_WHITE, ' ');
+				*/
+				Term_putch(x + hor, y, COLOUR_WHITE, pad);
 			}
 
 			/* Now vertical */
 			for (vert = 1; vert <= tile_height; vert++) {
 				/* Queue dummy character */
+				/*
 				if (a & 0x80)
 					Term_putch(x + hor, y + vert, 255, -1);
 				else
 					Term_putch(x + hor, y + vert, COLOUR_WHITE, ' ');
+				*/
+				Term_putch(x + hor, y + vert, COLOUR_WHITE, pad);
 			}
 		}
 	} else {
 		/* Only vertical */
 		for (vert = 1; vert <= tile_height; vert++) {
 			/* Queue dummy character */
+			/*
 			if (a & 0x80)
 				Term_putch(x, y + vert, 255, -1);
 			else
 				Term_putch(x, y + vert, COLOUR_WHITE, ' ');
+			*/
+			Term_putch(x, y + vert, COLOUR_WHITE, pad);
 		}
 	}
 }
-
 
 /**
  * Move to a location and, using an attr, add a string
@@ -2556,18 +2572,7 @@ errr Term_control_msg_ws(int what, int n, const wchar_t *ws)
 	return (status);
 }
 
-wchar_t term_normalize(wchar_t ch)
-{
-	if ((tile_width > 1) || (tile_height > 1)) {
-		return (ch | 0x1D00);
-	}
-	return ch;
-}
-
 wchar_t term_get_pad(void)
 {
-	if ((tile_width > 1) || (tile_height > 1)) {
-		return 0x2A1A;
-	}
-	return ' ';
+	return 0x1E00;
 }
