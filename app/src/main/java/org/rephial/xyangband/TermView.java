@@ -1454,6 +1454,7 @@ public class TermView extends View implements OnGestureListener {
         if (gm.havePages()) {
             String path = gm.getFullPath(tile.page);
             atlas = BitmapFactory.decodeFile(path);
+            if (atlas == null) return null;
             atlas.prepareToDraw();
 
             //Log.d("Angband", "Loading page: " + path);
@@ -1464,6 +1465,7 @@ public class TermView extends View implements OnGestureListener {
             atlas = null;
         }
         else {        
+            if (atlas == null) return null;
             result = tile.loadBitmap(atlas);
         }        
 
@@ -1496,6 +1498,8 @@ public class TermView extends View implements OnGestureListener {
         }
         
         Bitmap bm = getTile(tile);
+
+        if (bm == null) return;
 
         canvas.drawBitmap(bm, dst.left, dst.top, null);
 	}
