@@ -25,59 +25,27 @@
 #include "ui-term.h"
 
 /**
- * Display the scores in a given range.
+ * Display a page of scores
  */
-static void display_scores_aux(const high_score scores[], int from, int to,
-							   int highlight)
+static void display_score_page(const struct high_score scores[], int start,
+							   int count, int highlight)
 {
-	struct keypress ch;
-
-	int j, k, n, place;
-	int count;
-
-	/* Assume we will show the first 10 */
-	if (from < 0) from = 0;
-	if (to < 0) to = 10;
-	if (to > MAX_HISCORES) to = MAX_HISCORES;
-
-	/* Hack -- Count the high scores */
-	for (count = 0; count < MAX_HISCORES; count++)
-		if (!scores[count].what[0])
-			break;
-
-	/* Forget about the last entries */
-	if (count > to) count = to;
-
-	/* Show 5 per page, until "done" */
-	for (k = from, j = from, place = k + 1; k < count; k += 5) {
-		char out_val[160];
-		char tmp_val[160];
-
-		/* Clear screen */
-		Term_clear();
-
-		/* Title */
-		if (k > 0)
-			put_str(format("%s Hall of Fame (from position %d)", VERSION_NAME,
-						   place), 0, 21);
-		else
-			put_str(format("%s Hall of Fame", VERSION_NAME), 0, 30);
-
+	int n;
 
 		/* Dump 5 entries */
-		for (n = 0; j < count && n < 5; place++, j++, n++) {
-			const high_score *score = &scores[j];
-
+	for (n = 0; start < count && n < 5; start++, n++) {
+		const struct high_score *score = &scores[start];
 			byte attr;
 
 			int clev, mlev, cdun, mdun;
 			const char *user, *gold, *when, *aged;
 			struct player_class *c;
 			struct player_race *r;
-
+		char out_val[160];
+		char tmp_val[160];
 
 			/* Hack -- indicate death in yellow */
-			attr = (j == highlight) ? COLOUR_L_GREEN : COLOUR_WHITE;
+		attr = (start == highlight) ? COLOUR_L_GREEN : COLOUR_WHITE;
 
 			c = player_id2class(atoi(score->p_c));
 			r = player_id2race(atoi(score->p_r));
@@ -101,7 +69,7 @@ static void display_scores_aux(const high_score scores[], int from, int to,
 			/* Dump some info */
 			strnfmt(out_val, sizeof(out_val),
 					"%3d.%9s  %s the %s %s, level %d",
-					place, score->pts, score->who,
+				start + 1, score->pts, score->who,
 					r ? r->name : "<none>", c ? c->name : "<none>",
 					clev);
 
@@ -142,15 +110,70 @@ static void display_scores_aux(const high_score scores[], int from, int to,
 					user, when, gold, aged);
 			c_put_str(attr, out_val, n*4 + 4, 15);
 		}
+}
 
+/**
+ * Display the scores in a given range.
+ */
+static void display_scores_aux(const struct high_score scores[], int from,
+							   int to, int highlight, bool allow_scrolling)
+{
+	struct keypress ch;
+	int k, count;
+	bool done = false;
+
+	/* Assume we will show the first 10 */
+	if (from < 0) from = 0;
+	if (to < 0) to = allow_scrolling ? 5 : 10;
+	if (to > MAX_HISCORES) to = MAX_HISCORES;
+
+	/* Hack -- Count the high scores */
+	for (count = 0; count < MAX_HISCORES; count++)
+		if (!scores[count].what[0])
+			break;
+
+	/* Forget about the last entries */
+	if ((count > to) && !allow_scrolling) count = to;
+
+	/* Show 5 per page, until "done" */
+	while (!done) {
+		for (k = from; k < count; k += 5) {
+			/* Clear screen */
+			Term_clear();
+
+			/* Title */
+			if (k > 0) {
+				put_str(format("%s Hall of Fame (from position %d)",
+							   VERSION_NAME, k + 1), 0, 21);
+			} else {
+				put_str(format("%s Hall of Fame", VERSION_NAME), 0, 30);
+			}
+
+			display_score_page(scores, k, count, highlight);
 
 		/* Wait for response */
-		prt("[Press ESC to exit, any other key to continue.]", 23, 17);
+			prt("[Press ESC to exit, up/down to scroll, any other key to continue.]", 23, 17);
 		ch = inkey();
+			if ((ch.code == ARROW_UP) && allow_scrolling) {
+				if (k == 0) {
+					k = count - 10;
+					while (k % 5) k++;
+				} else if (k < 5) {
+					k = -5;
+				} else {
+					k = k - 10;
+				}
+			}
 		prt("", 23, 0);
 
-		/* Hack -- notice Escape */
-		if (ch.code == ESCAPE) break;
+			/* Notice Escape */
+			if (ch.code == ESCAPE) {
+				done = true;
+				break;
+			}
+		}
+		if (!allow_scrolling) done = true;
+		from = 0;
 	}
 
 	return;
@@ -159,12 +182,11 @@ static void display_scores_aux(const high_score scores[], int from, int to,
 /**
  * Predict the players location, and display it.
  */
-void predict_score(void)
+void predict_score(bool allow_scrolling)
 {
 	int j;
-	high_score the_score;
-
-	high_score scores[MAX_HISCORES];
+	struct high_score the_score;
+	struct high_score scores[MAX_HISCORES];
 
 
 	/* Read scores, place current score */
@@ -178,10 +200,9 @@ void predict_score(void)
 
 	/* Top fifteen scores if on the top ten, otherwise ten surrounding */
 	if (j < 10) {
-		display_scores_aux(scores, 0, 15, j);
+		display_scores_aux(scores, 0, 15, j, allow_scrolling);
 	} else {
-		display_scores_aux(scores, 0, 5, -1);
-		display_scores_aux(scores, j - 2, j + 7, j);
+		display_scores_aux(scores, j - 2, j + 7, j, allow_scrolling);
 	}
 }
 
@@ -195,11 +216,13 @@ void show_scores(void)
 
 	/* Display the scores */
 	if (character_generated) {
-		predict_score();
+		predict_score(true);
 	} else {
-		high_score scores[MAX_HISCORES];
+		/* Currently unused, but leaving in in case we re-implement looking
+		 * at the scores without loading a character */
+		struct high_score scores[MAX_HISCORES];
 		highscore_read(scores, N_ELEMENTS(scores));
-		display_scores_aux(scores, 0, MAX_HISCORES, -1);
+		display_scores_aux(scores, 0, MAX_HISCORES, -1, true);
 	}
 
 	screen_load();

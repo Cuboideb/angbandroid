@@ -356,7 +356,7 @@ void check_for_player_interrupt(game_event_type type, game_event_data *data,
 		if (e.type != EVT_NONE) {
 			/* Flush and disturb */
 			event_signal(EVENT_INPUT_FLUSH);
-			disturb(player, 0);
+			disturb(player);
 			msg("Cancelled.");
 		}
 	}
@@ -498,7 +498,7 @@ void save_game(void)
 	char path[1024];
 
 	/* Disturb the player */
-	disturb(player, 1);
+	disturb(player);
 
 	/* Clear messages */
 	event_signal(EVENT_MESSAGE_FLUSH);
@@ -606,7 +606,7 @@ void close_game(void)
 			prt("Press Return (or Escape).", 0, 40);
 			ch = inkey();
 			if (ch.code != ESCAPE)
-				predict_score();
+				predict_score(false);
 		}
 	}
 

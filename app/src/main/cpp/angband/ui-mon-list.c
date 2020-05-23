@@ -432,15 +432,15 @@ void monster_list_show_interactive(int height, int width)
 									  NULL);
 		region_erase_bordered(&r);
 
-		keys_flash("e");
+		keys_flash("x");
 
 		char buf[300];
 
 		if (sort_exp) {
-			my_strcpy(buf, "Press 'e' to turn OFF 'sort by exp'", sizeof(buf));
+			my_strcpy(buf, "Press 'x' to turn OFF 'sort by exp'", sizeof(buf));
 		}
 		else {
-			my_strcpy(buf, "Press 'e' to turn ON 'sort by exp'", sizeof(buf));
+			my_strcpy(buf, "Press 'x' to turn ON 'sort by exp'", sizeof(buf));
 		}
 
 		ch = textui_textblock_show(tb, r, buf);
@@ -451,7 +451,7 @@ void monster_list_show_interactive(int height, int width)
 		textblock_free(tb);
 		monster_list_free(list);
 	}
-	while (ch.code == 'e');
+	while (ch.code == 'x');
 }
 
 /**

@@ -579,7 +579,7 @@ static void use_aux(struct command *cmd, struct object *obj, enum use use,
 			char name[80];
 		/* Single use items are automatically learned */
 		if (!was_aware) {
-				object_learn_on_use(player, work_obj);
+				object_learn_on_use(player, obj);
 			}
 			/* Get a description */
 			if (used && none_left) {
@@ -860,7 +860,7 @@ void do_cmd_use(struct command *cmd)
 			"Use which item? ",
 			"You have no items to use.",
 			obj_is_useable,
-			USE_EQUIP | USE_INVEN | USE_QUIVER | USE_FLOOR | SHOW_FAIL) != CMD_OK)
+			USE_EQUIP | USE_INVEN | USE_QUIVER | USE_FLOOR | SHOW_FAIL | QUIVER_TAGS | SHOW_FAIL) != CMD_OK)
 		return;
 
 	if (tval_is_ammo(obj))				do_cmd_fire(cmd);

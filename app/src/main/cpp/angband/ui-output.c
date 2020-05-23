@@ -193,7 +193,7 @@ keypress_t textui_textblock_show(textblock *tb, region orig_area, const char *he
 			ch = inkey();
 			if (ch.code == ARROW_UP)
 				start_line--;
-			else if (ch.code == ESCAPE || ch.code == 'q' || ch.code == 'e')
+			else if (ch.code == ESCAPE || ch.code == 'q' || ch.code == 'x')
 				break;
 			else if (ch.code == ']' || ch.code == '[')
 				/* Special case to deal with monster and object lists -
