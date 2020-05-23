@@ -1421,6 +1421,7 @@ public class TermView extends View implements OnGestureListener {
                 if (map == null) {
                     String mapPath = gm.getFullPath(curPage);
                     map = BitmapFactory.decodeFile(mapPath);
+                    if (map == null) return;
                     map.prepareToDraw();
                     //Log.d("Angband", "Loading page: " + mapPath);
                 }
