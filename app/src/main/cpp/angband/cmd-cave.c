@@ -717,7 +717,7 @@ static bool do_cmd_lock_door(struct loc grid)
 static bool do_cmd_disarm_aux(struct loc grid)
 {
 	int skill, power, chance;
-    struct trap *trap = square(cave, grid).trap;
+    	struct trap *trap = square(cave, grid).trap;
 	bool more = false;
 
 	/* Verify legality */
@@ -869,7 +869,8 @@ void do_cmd_alter_aux(int dir)
 {
 	struct loc grid;
 	bool more = false;
-    struct object *obj_chest;
+	struct object *o_chest_closed;
+	struct object *o_chest_trapped;
 
 	/* Get location */
 	grid = loc_sum(player->grid, ddgrid[dir]);
@@ -883,8 +884,10 @@ void do_cmd_alter_aux(int dir)
 		grid = loc_sum(player->grid, ddgrid[dir]);
 	}
 
-    /* Check for chest */
-    obj_chest = chest_check(grid, CHEST_OPENABLE);
+	/* Check for closed chest */
+	o_chest_closed = chest_check(grid, CHEST_OPENABLE);
+	/* Check for trapped chest */
+	o_chest_trapped = chest_check(grid, CHEST_TRAPPED);
 
 	/* Action depends on what's there */
 	if (square(cave, grid).mon > 0) {
@@ -897,14 +900,17 @@ void do_cmd_alter_aux(int dir)
 		/* Open closed doors */
 		more = do_cmd_open_aux(grid);
 	} else if (square_isdisarmabletrap(cave, grid)) {
-        /* Disarm traps */
-        more = do_cmd_disarm_aux(grid);
-    } else if (obj_chest) {
-        /* Open chest */
-        more = do_cmd_open_chest(grid, obj_chest);
-    } else if (square_isopendoor(cave, grid)) {
-	    /* Close door */
-        more = do_cmd_close_aux(grid);
+        	/* Disarm traps */
+        	more = do_cmd_disarm_aux(grid);
+        } else if (o_chest_trapped) {
+        	/* Trapped chest */
+        	more = do_cmd_disarm_chest(o_chest_trapped);
+    	} else if (o_chest_closed) {
+        	/* Open chest */
+        	more = do_cmd_open_chest(grid, o_chest_closed);
+    	} else if (square_isopendoor(cave, grid)) {
+	    	/* Close door */
+        	more = do_cmd_close_aux(grid);
 	} else {
 		/* Oops */
 		msg("You spin around.");
