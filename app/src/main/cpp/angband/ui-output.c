@@ -153,13 +153,15 @@ void textui_textblock_place(textblock *tb, region orig_area, const char *header)
 /**
  * Show a textblock interactively
  */
-keypress_t textui_textblock_show(textblock *tb, region orig_area, const char *header)
+struct keypress textui_textblock_show(textblock *tb, region orig_area, const char *header)
 {
 	/* xxx on resize this should be recalculated */
 	region area = region_calculate(orig_area);
 
 	size_t *line_starts = NULL, *line_lengths = NULL;
 	size_t n_lines;
+
+	struct keypress ch = KEYPRESS_NULL;
 
 	n_lines = textblock_calculate_lines(tb,
 			&line_starts, &line_lengths, area.width);
@@ -174,8 +176,6 @@ keypress_t textui_textblock_show(textblock *tb, region orig_area, const char *he
 		c_prt(COLOUR_L_BLUE, header, area.row, area.col);
 		area.row++;
 	}
-
-	keypress_t ch = KEYPRESS_NULL;
 
 	if (n_lines > (size_t) area.page_rows) {
 		int start_line = 0;
@@ -224,7 +224,7 @@ keypress_t textui_textblock_show(textblock *tb, region orig_area, const char *he
 
 	screen_load();
 
-	return ch;
+	return (ch);
 }
 
 

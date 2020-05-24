@@ -389,7 +389,7 @@ void monster_list_show_interactive(int height, int width)
 	int safe_height, safe_width;
 	region r;
 	int sort_exp = 0;
-	keypress_t ch;
+	struct keypress ch;
 
 	if (height < 1 || width < 1)
 		return;
