@@ -434,7 +434,7 @@ public class ButtonRibbon implements OnClickListener,
             atLeft.getChildAt(4).setVisibility(View.VISIBLE);
 
             setKeys("abcdefghijklmnopqrstuvwxyz " +
-                    "012456789.,*'~!#$%&<>|" +
+                    "0123456789.,*'~!#$%&<>|" +
                     "/\\=[]{}@+-_:;\"?", CmdLocation.Dynamic);
             // Other keys
             for (int i = 0; keynames[i].length() > 0; i++) {
