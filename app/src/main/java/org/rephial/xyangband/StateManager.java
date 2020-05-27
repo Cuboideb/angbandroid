@@ -47,7 +47,9 @@ public class StateManager {
 	private boolean runningMode = false;
 
 	public LruCache<String, Bitmap> tileCache = null;
-    public static int CACHE_MAX = 5;
+    	public static int CACHE_MAX = 5;
+
+    	public LruCache<String, String> lastKeys = null;
 
 	StateManager(GameActivity p_context) {
 		endWin();
@@ -60,24 +62,26 @@ public class StateManager {
 		keyBuffer = new KeyBuffer(this);
 
 		createBitmapCache();
+
+		lastKeys = new LruCache<String, String>(5);
 	}
 
 	public void createBitmapCache()
-    {
-        int cacheSize = CACHE_MAX * 1024 * 1024;
-        tileCache = new LruCache<String, Bitmap>(cacheSize) {
-            @Override
-            protected int sizeOf(String key, Bitmap value) {
-                return value.getByteCount();
-            }
-            @Override
-            protected void entryRemoved(boolean evicted, String key,
-                                        Bitmap oldValue,
-                                        Bitmap newValue) {
-                oldValue.recycle();
-            }
-        };
-    }
+    	{
+	        int cacheSize = CACHE_MAX * 1024 * 1024;
+	        tileCache = new LruCache<String, Bitmap>(cacheSize) {
+	            @Override
+	            protected int sizeOf(String key, Bitmap value) {
+	                return value.getByteCount();
+	            }
+	            @Override
+	            protected void entryRemoved(boolean evicted, String key,
+	                                        Bitmap oldValue,
+	                                        Bitmap newValue) {
+	                oldValue.recycle();
+	            }
+	        };
+	    }
 
 	public void addSpecialCommand(String cmd)
 	{

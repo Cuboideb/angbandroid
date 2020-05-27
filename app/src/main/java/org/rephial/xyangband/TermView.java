@@ -687,6 +687,21 @@ public class TermView extends View implements OnGestureListener {
         dirZoneFill.setAlpha(alpha);
 	}
 
+    public void drawLastKeys(Canvas p_canvas)
+    {
+        int x = 50;
+        int y = 50;
+
+        setForeColor(Color.GREEN);
+
+        for (String str: state.lastKeys.snapshot().keySet()) {
+
+            p_canvas.drawText(str, x, y, fore);                
+
+            x += 50;
+        }
+    }
+
 	protected void onDraw(Canvas p_canvas) {
 		if (this.zones != null) this.zones.clear();
 
@@ -737,6 +752,8 @@ public class TermView extends View implements OnGestureListener {
 					this.drawDirZonesFull(p_canvas);
 				}
 			}
+
+            drawLastKeys(p_canvas);
 		}
 	}
 
