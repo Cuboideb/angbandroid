@@ -1018,12 +1018,8 @@ public class ButtonRibbon implements OnClickListener,
             int key = KTRL(action.charAt(1));
             state.addKey(key);
         }
-        else if (action.length() == 1) {            
-            char ch = action.charAt(0);
-            state.addKey(ch);
-
-            String str = printableChar(ch);
-            state.lastKeys.put(str, str);
+        else if (action.length() == 1) {
+            state.addKey(action.charAt(0));
         }
     }
 }
