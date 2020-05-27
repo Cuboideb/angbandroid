@@ -109,7 +109,8 @@
         <item>Adam Bolt\'s tiles</item>
         <item>David Gervai\'s tiles</item>
         <item>Nomad\'s tiles</item>
-        <item>Shockbolt\'s tiles</item>
+        <item>Shockbolt\'s tiles Dark</item>
+        <item>Shockbolt\'s tiles Light</item>
     </string-array>
 
     <string-array name="graphicsModesKeys">
@@ -119,5 +120,6 @@
         <item>3</item>
         <item>4</item>
         <item>5</item>
+        <item>6</item>
     </string-array>
 </resources>

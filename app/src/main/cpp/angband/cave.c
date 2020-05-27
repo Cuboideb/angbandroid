@@ -491,12 +491,15 @@ void delist_object(struct chunk *c, struct object *obj)
 }
 
 /**
- * Check that a pair of object lists are consistent and relate to locations of
+ * Check consistency of an object list or a pair of object lists
+ *
+ * If one list, check the listed objects relate to locations of
  * objects correctly
  */
 void object_lists_check_integrity(struct chunk *c, struct chunk *c_k)
 {
 	int i;
+	if (c_k) {
 	assert(c->obj_max == c_k->obj_max);
 	for (i = 0; i < c->obj_max; i++) {
 		struct object *obj = c->objects[i];
@@ -515,6 +518,16 @@ void object_lists_check_integrity(struct chunk *c, struct chunk *c_k)
 				assert (pile_contains(square_object(c_k, known_obj->grid),
 									  known_obj));
 			assert (known_obj->oidx == i);
+			}
+		}
+	} else {
+		for (i = 0; i < c->obj_max; i++) {
+			struct object *obj = c->objects[i];
+			if (obj) {
+				assert(obj->oidx == i);
+				if (!loc_is_zero(obj->grid))
+					assert(pile_contains(square_object(c, obj->grid), obj));
+			}
 		}
 	}
 }

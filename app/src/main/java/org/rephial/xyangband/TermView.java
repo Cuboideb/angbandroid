@@ -426,7 +426,7 @@ public class TermView extends View implements OnGestureListener {
             gm.overdrawRow = Integer.parseInt(parts[7]);
             gm.overdrawMax = Integer.parseInt(parts[8]);
             // Shockbolt is paged
-            gm.pageSize = (gm.idx != 5) ? 0: 16;
+            gm.pageSize = (gm.idx != 5 && gm.idx != 6) ? 0: 16;
 
             grafmodes.add(gm);
             
