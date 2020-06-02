@@ -779,6 +779,8 @@ int queryInt(const char* argv0) {
 	} else if (strcmp(argv0, "rl") == 0) {
 		result = 0;
 		if (player && OPT(player, rogue_like_commands)) result = 1;	
+	} else if (strcmp(argv0, "life_pct") == 0 && player) {
+		result = player->chp * 10 / MAX(player->mhp, 1);	
 	// Starts with this pattern?
 	} else if (strncmp(argv0, ROGUE_KEY, strlen(ROGUE_KEY)) == 0) {
 		// Find the respective key in roguelike mode

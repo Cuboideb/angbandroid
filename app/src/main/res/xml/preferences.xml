@@ -44,7 +44,7 @@
 		   android:title="Graphics"
 		   android:summary="Select the tileset"
 		   android:key="angband.graphics"
-		   android:defaultValue="5"		   
+		   android:defaultValue="6"		   
 		   android:entries="@array/graphicsModesDesc"
 		   android:entryValues="@array/graphicsModesKeys"/>
 	  <CheckBoxPreference

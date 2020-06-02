@@ -293,57 +293,71 @@ void grid_data_as_text(struct grid_data *g, int *ap, wchar_t *cp, int *tap,
 		}
 	} else if (g->is_player) {
 		struct monster_race *race = &r_info[0];
+		int life_pct = player->chp * 10 / MAX(player->mhp, 1);
+		bool force_pseudo = false;
 
 		/* Get the "player" attr */
 		a = monster_x_attr[race->ridx];
 		/* Get the "player" char */
 		c = monster_x_char[race->ridx];
 
-		// Revert
-		if (USE_PSEUDO_ASCII) {
-			a = race->d_attr;
-			c = race->d_char;
-		}
+		if (use_graphics) {
+		
+			if (USE_PSEUDO_ASCII) {
+				a = race->d_attr;
+		 		c = race->d_char;
+		 	}
+
+		 	if (OPT(player, hp_changes_color) && (life_pct < 5)) {
+		 		force_pseudo = true;
+		 		a = race->d_attr;
+		 		c = race->d_char;	
+		 	}
+		}		
 
 		if ((OPT(player, hp_changes_color)) && !(a & 0x80)) {
-			switch(player->chp * 10 / player->mhp)
+			switch(life_pct)
 			{
-			case 10:
-			case  9: 
-			{
-				a = COLOUR_WHITE; 
-				break;
+				case 10:
+				case  9: 
+				{
+					a = COLOUR_WHITE; 
+					break;
+				}
+				case  8:
+				case  7:
+				{
+					a = COLOUR_YELLOW;
+					break;
+				}
+				case  6:
+				case  5:
+				{
+					a = COLOUR_ORANGE;					
+					break;
+				}
+				case  4:
+				case  3:
+				{
+					a = COLOUR_L_RED;					
+					break;
+				}
+				case  2:
+				case  1:
+				case  0:
+				{
+					a = COLOUR_RED;					
+					break;
+				}
+				default:
+				{
+					a = COLOUR_WHITE;
+					break;
+				}
 			}
-			case  8:
-			case  7:
-			{
-				a = COLOUR_YELLOW;
-				break;
-			}
-			case  6:
-			case  5:
-			{
-				a = COLOUR_ORANGE;
-				break;
-			}
-			case  4:
-			case  3:
-			{
-				a = COLOUR_L_RED;
-				break;
-			}
-			case  2:
-			case  1:
-			case  0:
-			{
-				a = COLOUR_RED;
-				break;
-			}
-			default:
-			{
-				a = COLOUR_WHITE;
-				break;
-			}
+
+			if (force_pseudo) {
+				a |= 0x80;
 			}
 		}
 	}

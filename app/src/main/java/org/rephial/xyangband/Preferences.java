@@ -189,7 +189,7 @@ final public class Preferences {
 	}
 	public static int getGraphicsMode()
 	{		
-		String val = pref.getString(Preferences.KEY_GRAPHICS, "5");
+		String val = pref.getString(Preferences.KEY_GRAPHICS, "6");
 		int num = Integer.parseInt(val);
 		//return Math.min(num, 4);
 		return num;

@@ -552,23 +552,20 @@ void process_world(struct chunk *c)
 	if (!(turn % ((10L * z_info->day_length) / 4)))
 		play_ambient_sound();
 
-	/*** Handle stores and sunshine ***/
-
+	/* Handle stores and sunshine */
 	if (!player->depth) {
 		/* Daybreak/Nighfall in town */
 		if (!(turn % ((10L * z_info->day_length) / 2))) {
-			bool dawn;
-
 			/* Check for dawn */
-			dawn = (!(turn % (10L * z_info->day_length)));
+			bool dawn = (!(turn % (10L * z_info->day_length)));
 
+			if (dawn) {
 			/* Day breaks */
-			if (dawn)
 				msg("The sun has risen.");
-
+			} else {
 			/* Night falls */
-			else
 				msg("The sun has fallen.");
+			}
 
 			/* Illuminate */
 			cave_illuminate(c, dawn);
