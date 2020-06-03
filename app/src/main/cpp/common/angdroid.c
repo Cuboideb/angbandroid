@@ -444,8 +444,7 @@ static errr Term_pict_android(int x, int y, int n,
 	int i;
 
 	for (i = 0; i < n; i++) {	
-		resu = addtile(x, y, (byte)ap[i], (byte)cp[i],
-			(byte)tap[i], (byte)tcp[i]);
+		resu = addtile(x, y, ap[i], (byte)cp[i], tap[i], (byte)tcp[i]);
 		if (resu) break;
 	}
 	return resu;

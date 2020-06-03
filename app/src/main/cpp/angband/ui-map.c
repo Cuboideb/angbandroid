@@ -293,8 +293,7 @@ void grid_data_as_text(struct grid_data *g, int *ap, wchar_t *cp, int *tap,
 		}
 	} else if (g->is_player) {
 		struct monster_race *race = &r_info[0];
-		int life_pct = player->chp * 10 / MAX(player->mhp, 1);
-		bool force_pseudo = false;
+		int life_pct = player->chp * 10 / MAX(player->mhp, 1);		
 
 		/* Get the "player" attr */
 		a = monster_x_attr[race->ridx];
@@ -307,14 +306,13 @@ void grid_data_as_text(struct grid_data *g, int *ap, wchar_t *cp, int *tap,
 				a = race->d_attr;
 		 		c = race->d_char;
 		 	}
+		 	// Pack interesting colors for Android
+		 	else if (OPT(player, hp_changes_color) &&
+		 		(life_pct >= 0) && (life_pct <= 10)) {
 
-		 	/*
-		 	if (OPT(player, hp_changes_color) && (life_pct < 5)) {
-		 		force_pseudo = true;
-		 		a = race->d_attr;
-		 		c = race->d_char;	
-		 	}
-		 	*/
+		 		int mask = 0x20 | life_pct;
+		 		a |= (mask << 8);
+		 	}		 	
 		}		
 
 		if ((OPT(player, hp_changes_color)) && !(a & 0x80)) {
@@ -356,10 +354,6 @@ void grid_data_as_text(struct grid_data *g, int *ap, wchar_t *cp, int *tap,
 					a = COLOUR_WHITE;
 					break;
 				}
-			}
-
-			if (force_pseudo) {
-				a |= 0x80;
 			}
 		}
 	}

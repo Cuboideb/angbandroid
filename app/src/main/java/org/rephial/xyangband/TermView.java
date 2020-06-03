@@ -55,7 +55,7 @@ public class TermView extends View implements OnGestureListener {
 	Paint back;
 	Paint cursor;
 	Paint dirZoneFill;
-	Paint dirZoneStroke;
+	Paint dirZoneStroke;    
 	Display fullDisplay;
 	Display windowDisplay;
 
@@ -1475,6 +1475,26 @@ public class TermView extends View implements OnGestureListener {
         return result;        
     }
 
+    public void drawLifeColor(int a, Rect dst)
+    {
+        // Mask is 0x02000
+        int pct = (a >> 8) & 0x0F;
+        int color;
+        
+        if (pct <= 2) color = Color.RED;
+        else if (pct <= 4) color = 0x0FF4040; // Light red
+        else if (pct <= 6) color = 0x0FF8000; // Orange
+        else if (pct <= 8) color = Color.YELLOW;
+        else return; // White, do nothing
+
+        back.setColor(color);
+        back.setAlpha(90);
+
+        canvas.drawRect(dst, back);
+
+        back.setColor(Color.BLACK);
+    }
+
 	public void drawTileAux(int row, int col, int a, int c,
         boolean fill)
 	{
@@ -1495,6 +1515,9 @@ public class TermView extends View implements OnGestureListener {
         Rect dst = tile.locateDest();
 
         if (fill) {
+
+            setBackColor(Color.BLACK);
+
             canvas.drawRect(dst, back);
         }
         
@@ -1503,6 +1526,9 @@ public class TermView extends View implements OnGestureListener {
         if (bm == null) return;
 
         canvas.drawBitmap(bm, dst.left, dst.top, null);
+
+        // Special mark for life color
+        if ((a & 0x02000) != 0) drawLifeColor(a, dst);        
 	}
 
     public void drawTile(int row, int col, int a, char c,
