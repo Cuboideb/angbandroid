@@ -308,11 +308,13 @@ void grid_data_as_text(struct grid_data *g, int *ap, wchar_t *cp, int *tap,
 		 		c = race->d_char;
 		 	}
 
+		 	/*
 		 	if (OPT(player, hp_changes_color) && (life_pct < 5)) {
 		 		force_pseudo = true;
 		 		a = race->d_attr;
 		 		c = race->d_char;	
 		 	}
+		 	*/
 		}		
 
 		if ((OPT(player, hp_changes_color)) && !(a & 0x80)) {

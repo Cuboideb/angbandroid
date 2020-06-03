@@ -471,6 +471,7 @@ flags:RAND_50 | OPEN_DOOR | BASH_DOOR | TAKE_ITEM
 desc:He doesn't take to strangers kindly.
 
 name:red-hatted elf
+plural:red-hatted elves
 base:humanoid
 color:r
 speed:110
@@ -2067,6 +2068,7 @@ desc: pervades the air.
 ### Dungeon level 7 ###
 
 name:crow of Durthang
+plural:crows of Durthang
 base:bird
 color:D
 speed:120
@@ -13693,7 +13695,7 @@ spells:BLINK | TELE_TO
 spells:BR_CHAO
 desc:Writhing coil upon coil, this mighty spawn of chaos constantly
 desc: disintegrates and reforms before your dazzled eyes.  It seeks to
-desc: obiterate you utterly; beware!
+desc: obliterate you utterly; beware!
 
 name:Adunaphel the Quiet
 base:wraith
