@@ -156,7 +156,7 @@ public class TermView extends View implements OnGestureListener {
 
             isLargeTile = false;
 
-            if (gm.isLargeTile(srcPoint.y) && dstPoint.y > 2) {
+            if (gm.isLargeTile(srcPoint.y, srcPoint.x) && dstPoint.y > 2) {
 
                 isLargeTile = true;
 
@@ -228,9 +228,9 @@ public class TermView extends View implements OnGestureListener {
         int alphaBlend;
         int overdrawRow;
         int overdrawMax;
-        int pageSize;
+        int pageSize;        
 
-        public GraphicsMode() {    
+        public GraphicsMode() {            
         }
 
         public boolean canDraw() {
@@ -240,10 +240,16 @@ public class TermView extends View implements OnGestureListener {
             return (tw > 0 && th > 0);
         }
 
-        public boolean isLargeTile(int row) {
-            return overdrawRow != 0
-                && row >= overdrawRow
-                && row <= overdrawMax;
+        public boolean isLargeTile(int row, int col) {
+
+            if (overdrawRow == 0 || overdrawMax == 0) return false;
+
+            if (row >= overdrawRow && row <= overdrawMax) return true;
+
+            // Some large tiles are placed outside the overdraw rows
+            if (row == 27 && col >= 122) return true;
+            
+            return false;            
         }
 
         public boolean havePages() {
