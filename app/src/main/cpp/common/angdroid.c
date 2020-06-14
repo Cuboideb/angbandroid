@@ -378,7 +378,7 @@ static errr Term_curs_android(int x, int y)
 {
 	move(y, x);
 
-	Term_control_msg_android(TERM_BIG_CURSOR, "no");
+	Term_control_msg_android(TERM_SHOW_CURSOR, "small");
 
 	return 0;
 }
@@ -387,7 +387,7 @@ static errr Term_bigcurs_android(int x, int y)
 {
 	move(y, x);
 
-	Term_control_msg_android(TERM_BIG_CURSOR, "yes");
+	Term_control_msg_android(TERM_SHOW_CURSOR, "big");
 
 	return 0;
 }

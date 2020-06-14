@@ -84,7 +84,7 @@ public class GameActivity extends Activity {
 	public static final int TERM_CONTROL_NOT_PLAYING = 2;
 	public static final int TERM_CONTROL_PLAYING_NOW = 3;
 	public static final int TERM_VISUAL_STATE = 4;
-	public static final int TERM_BIG_CURSOR = 5;
+	public static final int TERM_SHOW_CURSOR = 5;
 
 	protected Handler handler = null;
 
@@ -93,7 +93,7 @@ public class GameActivity extends Activity {
 	protected String lastKeys = "";
 	protected boolean keyHandlerIsRunning = false;
 
-    LinkedHashMap<Integer,String> coreCommands = null;
+    	LinkedHashMap<Integer,String> coreCommands = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -284,9 +284,10 @@ public class GameActivity extends Activity {
 				term.configureVisuals(rows, cols, graf);
 			}
 		}
-		if (what == TERM_BIG_CURSOR) {
+		if (what == TERM_SHOW_CURSOR) {
 			//Log.d("Angband", "Big cursor: " + msg);
-			state.bigCursor = msg.equals("yes");
+			state.setBigCursor(msg.equals("big"));
+			state.setCursorVisible(true);
 		}
 	}
 

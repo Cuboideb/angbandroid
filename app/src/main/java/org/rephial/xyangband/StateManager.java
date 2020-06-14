@@ -46,8 +46,6 @@ public class StateManager {
 	/* running mode */
 	private boolean runningMode = false;
 
-	public boolean bigCursor = false;
-
 	public LruCache<String, Bitmap> tileCache = null;
     	public static int CACHE_MAX = 5;
 
@@ -65,21 +63,21 @@ public class StateManager {
 	}
 
 	public void createBitmapCache()
-    {
-        int cacheSize = CACHE_MAX * 1024 * 1024;
-        tileCache = new LruCache<String, Bitmap>(cacheSize) {
-            @Override
-            protected int sizeOf(String key, Bitmap value) {
-                return value.getByteCount();
-            }
-            @Override
-            protected void entryRemoved(boolean evicted, String key,
-                                        Bitmap oldValue,
-                                        Bitmap newValue) {
-                oldValue.recycle();
-            }
-        };
-    }
+	{
+		int cacheSize = CACHE_MAX * 1024 * 1024;
+		tileCache = new LruCache<String, Bitmap>(cacheSize) {
+		    @Override
+		    protected int sizeOf(String key, Bitmap value) {
+		        return value.getByteCount();
+		    }
+		    @Override
+		    protected void entryRemoved(boolean evicted, String key,
+		                                Bitmap oldValue,
+		                                Bitmap newValue) {
+		        oldValue.recycle();
+		    }
+		};
+	}
 
 	public void addSpecialCommand(String cmd)
 	{
@@ -126,6 +124,18 @@ public class StateManager {
 		termwins.put(h,new TermWindow(nlines,ncols,begin_y,begin_x));
 		termWinNext++;
 		return h;
+	}
+
+	public void setCursorVisible(boolean visible) {
+		if (stdscr != null) {
+			stdscr.cursor_visible = visible;
+		}
+	}
+
+	public void setBigCursor(boolean big) {
+		if (stdscr != null) {
+			stdscr.big_cursor = big;
+		}
 	}
 
 	public void saveTheDungeon(Bitmap bm)

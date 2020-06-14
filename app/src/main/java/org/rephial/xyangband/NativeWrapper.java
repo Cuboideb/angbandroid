@@ -324,7 +324,10 @@ public class NativeWrapper {
 	public void waddnstr(final int w, final int n, final byte[] cp) {
 		synchronized (display_lock) {
 			TermWindow t = state.getWin(w);
-			if (t != null) t.addnstr(n, cp);
+			if (t != null) {
+				t.cursor_visible = false;
+				t.addnstr(n, cp);
+			}
 		}
 	}
 
@@ -333,7 +336,8 @@ public class NativeWrapper {
 	{
 		synchronized (display_lock) {			
 			TermWindow t = state.getWin(0);
-			if (t != null) {				
+			if (t != null) {
+				t.cursor_visible = false;
 				t.addTile(x, y, a, c, ta, tc);
 				//t.addTilePad(x, y, term.tile_wid, term.tile_hgt);
 			}

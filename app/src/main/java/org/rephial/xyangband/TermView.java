@@ -725,7 +725,7 @@ public class TermView extends View implements OnGestureListener {
                 }
                 */
 
-                if (state.bigCursor) {
+                if (state.stdscr.big_cursor) {
                     tw = tile_wid_pix;
                     th = tile_hgt_pix;
                 }
@@ -738,7 +738,7 @@ public class TermView extends View implements OnGestureListener {
 			int cb = Math.min(y+th,canvas_height);
 
 			// Dont draw the cursor if we are using the timer
-			if (/*state.stdscr.cursor_visible &&*/ savedTime == 0) {
+			if (state.stdscr.cursor_visible && savedTime == 0) {            
 				p_canvas.drawRect(cl, ct, cr, cb, cursor);
 			}
 

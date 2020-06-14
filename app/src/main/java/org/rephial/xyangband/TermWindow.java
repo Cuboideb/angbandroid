@@ -48,7 +48,8 @@ public class TermWindow {
 	public TermPoint[][] buffer = null; 
 
 	public boolean allDirty = false;
-	public boolean cursor_visible;
+	public boolean cursor_visible = false;
+	public boolean big_cursor = false;
 	public int col = 0;
 	public int row = 0;
 	public int cur_color = 0;
