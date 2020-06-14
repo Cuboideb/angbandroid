@@ -299,6 +299,7 @@ struct term
 #define TERM_CONTROL_NOT_PLAYING 2
 #define TERM_CONTROL_PLAYING_NOW 3
 #define TERM_VISUAL_STATE 4
+#define TERM_BIG_CURSOR 5
 
 /**
  * Bit flags for the "window_flag" variable.

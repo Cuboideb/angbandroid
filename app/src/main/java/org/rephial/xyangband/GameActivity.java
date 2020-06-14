@@ -62,8 +62,8 @@ public class GameActivity extends Activity {
 	AngbandKeyboard virtualKeyboard = null;
 	AngbandKeyboardView virtualKeyboardView = null;
 
-    private LinearLayout ribbonZone = null;
-    private ButtonRibbon bottomRibbon = null;
+    	private LinearLayout ribbonZone = null;
+    	private ButtonRibbon bottomRibbon = null;
 	private ButtonRibbon topRibbon = null;
 
 	public String coreKeymaps = "";
@@ -84,6 +84,7 @@ public class GameActivity extends Activity {
 	public static final int TERM_CONTROL_NOT_PLAYING = 2;
 	public static final int TERM_CONTROL_PLAYING_NOW = 3;
 	public static final int TERM_VISUAL_STATE = 4;
+	public static final int TERM_BIG_CURSOR = 5;
 
 	protected Handler handler = null;
 
@@ -128,8 +129,8 @@ public class GameActivity extends Activity {
 		}
 
 		if (monoFont == null) {
-            monoFont = Typeface.createFromAsset(getAssets(),"VeraMono.ttf");
-        }
+	           	monoFont = Typeface.createFromAsset(getAssets(),"VeraMono.ttf");
+	        }
 
 		if (monoBoldFont == null) {
 			monoBoldFont = Typeface.createFromAsset(getAssets(),"VeraMono-Bold.ttf");
@@ -282,6 +283,10 @@ public class GameActivity extends Activity {
 
 				term.configureVisuals(rows, cols, graf);
 			}
+		}
+		if (what == TERM_BIG_CURSOR) {
+			//Log.d("Angband", "Big cursor: " + msg);
+			state.bigCursor = msg.equals("yes");
 		}
 	}
 

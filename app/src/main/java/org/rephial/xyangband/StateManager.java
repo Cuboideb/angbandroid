@@ -46,8 +46,10 @@ public class StateManager {
 	/* running mode */
 	private boolean runningMode = false;
 
+	public boolean bigCursor = false;
+
 	public LruCache<String, Bitmap> tileCache = null;
-    public static int CACHE_MAX = 5;
+    	public static int CACHE_MAX = 5;
 
 	StateManager(GameActivity p_context) {
 		endWin();

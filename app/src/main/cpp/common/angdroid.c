@@ -359,6 +359,10 @@ static errr Term_xtra_android(int n, int v)
 	return 1;
 }
 
+static errr Term_control_msg_android(int what, const char *msg)
+{
+	return (errr)control_msg(what, msg);
+}
 
 /*
  * Display the cursor
@@ -373,9 +377,20 @@ static errr Term_xtra_android(int n, int v)
 static errr Term_curs_android(int x, int y)
 {
 	move(y, x);
+
+	Term_control_msg_android(TERM_BIG_CURSOR, "no");
+
 	return 0;
 }
 
+static errr Term_bigcurs_android(int x, int y)
+{
+	move(y, x);
+
+	Term_control_msg_android(TERM_BIG_CURSOR, "yes");
+
+	return 0;
+}
 
 /*
  * Erase some characters
@@ -450,11 +465,6 @@ static errr Term_pict_android(int x, int y, int n,
 	return resu;
 }
 
-static errr Term_control_msg_android(int what, const char *msg)
-{
-	return (errr)control_msg(what, msg);
-}
-
 /*** Internal Functions ***/
 
 
@@ -520,6 +530,7 @@ static void term_data_link(int i)
 	/* Prepare the template hooks */
 	t->xtra_hook = Term_xtra_android;
 	t->curs_hook = Term_curs_android;
+	t->bigcurs_hook = Term_bigcurs_android;
 	t->wipe_hook = Term_wipe_android;
 	t->text_hook = Term_text_android;
 	t->pict_hook = Term_pict_android;
