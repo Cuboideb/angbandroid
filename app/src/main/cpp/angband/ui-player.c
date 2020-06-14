@@ -1246,6 +1246,8 @@ void do_cmd_change_name(void)
 
 	/* Load screen */
 	screen_load();
+
+	send_control_playing_now();
 }
 
 

@@ -493,7 +493,7 @@ static void term_data_link(int i)
 	/* A "soft" cursor must be explicitly "drawn" by the program */
 	/* while a "hard" cursor has some "physical" existance and is */
 	/* moved whenever text is drawn on the screen.  See "z-term.c". */
-	t->soft_cursor = false;
+	t->soft_cursor = true;
 
 	/* Use "Term_text()" even for "black" text XXX XXX XXX */
 	/* See the "Term_text_android()" function above. */
