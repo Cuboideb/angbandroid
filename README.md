@@ -42,9 +42,13 @@ It's important to remember that directions can be used to cycle between equipmen
 
 To reduce the number of buttons in command mode, the Alter command can also open chests and close doors.
 
+![alt text](https://github.com/Cuboideb/angbandroid/blob/master/app/src/main/assets/ribbon_help.jpg?raw=true)
+
 ### Custom keymaps
 
 While using the button ribbon, the settings menu gets the item "Manage keymaps". It can be used to quickly define common keymaps shortcuts as you like.
+
+![alt text](https://github.com/Cuboideb/angbandroid/blob/master/app/src/main/assets/keymap_editor.jpg?raw=true)
 
 ### The touch directionals
 
