@@ -64,6 +64,6 @@ This port support the usual graphic tilesets of Angband (go to Preferences). You
 
 Enjoy! 
 
-Angband homepage: http://rephial.org  
-Forum and resources: http://angband.oook.cz
-Online manual: https://angband.readthedocs.io/en/latest/index.html
+Angband homepage [here]http://rephial.org  
+Forum and resources [here]http://angband.oook.cz
+Online manual [here]https://angband.readthedocs.io/en/latest/index.html
