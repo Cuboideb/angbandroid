@@ -66,3 +66,4 @@ Enjoy!
 
 Angband homepage: http://rephial.org  
 Forum and resources: http://angband.oook.cz
+Online manual: https://angband.readthedocs.io/en/latest/index.html
