@@ -176,6 +176,12 @@ final public class Preferences {
 	public static int getTileWidth()
 	{
 		if (pref.getBoolean(Preferences.KEY_BIGTILES, true)) {
+
+			// In text-mode, set a smaller tile
+			if (Preferences.getGraphicsMode() == 0) {
+				return 2;
+			}
+
 			return 3;
 		}
 		return 1;
