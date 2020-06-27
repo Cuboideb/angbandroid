@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -455,12 +456,34 @@ public class ButtonRibbon implements OnClickListener,
     public Button makeButton(String text, String action) {
         Button btn = (Button)context.getLayoutInflater().inflate
                 (R.layout.aribbonbutton, null);
+
         btn.setText(text);
-        btn.setOnClickListener(this);
-        if (action.equals("Ret")) {
-            int w = btn.getMinWidth();
-            btn.setWidth((int)(w * 1.5f));
+        btn.setOnClickListener(this);  
+
+        int mult = Preferences.getRibbonButtonMult();
+
+        int w = btn.getMinWidth();
+
+        if (mult < 45 || mult > 55) {
+
+            float pct = 0.5f + (mult / 100f);
+            pct = Math.min(pct, 1.5f);
+            pct = Math.max(pct, 0.5f);
+
+            w = (int)(w * pct);
+            // Hack, set both to get it working
+            btn.setMinimumWidth(w);
+            btn.setMinWidth(w);
+
+            float fw = btn.getTextSize();        
+            btn.setTextSize(TypedValue.COMPLEX_UNIT_PX, fw * pct);
         }
+
+        if (action.equals("Ret")) {            
+            w = (int)(w * 1.5f);
+            btn.setWidth(w);
+        }
+
         return btn;
     }
 

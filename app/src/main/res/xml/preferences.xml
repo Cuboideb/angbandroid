@@ -52,7 +52,7 @@
 		  android:defaultValue="true"
 		  android:title="Duplicate Tile Size"
 		  android:summary="Make the dungeon grids bigger" />	
-      <CheckBoxPreference
+          <CheckBoxPreference
 		  android:key="angband.pseudoascii"
 		  android:defaultValue="false"
 		  android:title="Pseudo Ascii"
@@ -227,6 +227,12 @@
 		  seekBar:min="0"
 		  seekBar:max="100"
 		  seekBar:defaultVal="40" />
+	<org.rephial.xyangband.SeekBarPreference
+		  android:key="angband.ribbonbuttonmult"
+		  android:title="Ribbon button size multiplier"
+		  seekBar:min="0"
+		  seekBar:max="100"
+		  seekBar:defaultVal="50" />
 	<ListPreference
 	   android:title="Center screen tap action"
 	   android:summary="Select functionality for center screen tap"

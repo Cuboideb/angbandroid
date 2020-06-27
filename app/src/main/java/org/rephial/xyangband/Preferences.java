@@ -29,6 +29,8 @@ final public class Preferences {
 	static final String KEY_TOUCHRIGHT = "angband.touchright";	
 	static final String KEY_TOUCHMULTIPLIER = "angband.touchmultiplier";
 
+	static final String KEY_RIBBONBUTTONMULT = "angband.ribbonbuttonmult";
+
 	static final String KEY_USERKEYMAPS = "angband.userkeymaps";
 
 	static final String KEY_CENTERTAP = "angband.centerscreentap";
@@ -158,6 +160,10 @@ final public class Preferences {
 
 	public static int getTouchMultiplier() {
 		return pref.getInt(Preferences.KEY_TOUCHMULTIPLIER, 40);
+	}
+
+	public static int getRibbonButtonMult() {
+		return pref.getInt(Preferences.KEY_RIBBONBUTTONMULT, 50);
 	}
 
 	public static void setMiddleOpacity(int value)
