@@ -2,6 +2,7 @@ package org.rephial.xyangband;
 
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.Typeface;
 import android.util.Log;
 import android.util.TypedValue;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
@@ -19,6 +21,7 @@ import android.widget.TableLayout;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.os.Handler;
 
 import androidx.core.graphics.ColorUtils;
 
@@ -47,6 +50,10 @@ public class ButtonRibbon implements OnClickListener,
     boolean commandMode = false;
     int alphaLevel = 2;
     ArrayList<ButtonRibbon> siblings = null;
+
+    PopupWindow autoListWin = null;
+    TableLayout autoListTable = null;    
+    boolean autoListSolid = false;
 
     public static char KC_TAB = 0x9D;
     public static char KC_BACKSPACE = 0x9F;
@@ -453,13 +460,8 @@ public class ButtonRibbon implements OnClickListener,
         controlDown = false;
     }
 
-    public Button makeButton(String text, String action) {
-        Button btn = (Button)context.getLayoutInflater().inflate
-                (R.layout.aribbonbutton, null);
-
-        btn.setText(text);
-        btn.setOnClickListener(this);  
-
+    public void resizeButton(Button btn)
+    {
         int mult = Preferences.getRibbonButtonMult();
 
         int w = btn.getMinWidth();
@@ -478,8 +480,19 @@ public class ButtonRibbon implements OnClickListener,
             float fw = btn.getTextSize();        
             btn.setTextSize(TypedValue.COMPLEX_UNIT_PX, fw * pct);
         }
+    }
+
+    public Button makeButton(String text, String action) {
+        Button btn = (Button)context.getLayoutInflater().inflate
+                (R.layout.aribbonbutton, null);
+
+        btn.setText(text);
+        btn.setOnClickListener(this);  
+
+        resizeButton(btn);
 
         if (action.equals("Ret")) {            
+            int w = btn.getMinWidth();
             w = (int)(w * 1.5f);
             btn.setWidth(w);
         }
@@ -548,9 +561,24 @@ public class ButtonRibbon implements OnClickListener,
         }
     }
 
+    public void removeAutoList()
+    {
+        Log.d("Angband", "Remove Auto List");
+
+        if (autoListWin != null) {            
+            autoListWin.dismiss();
+        }
+
+        autoListWin = null;
+        autoListTable = null;
+        autoListSolid = false;
+    }
+
     public void clearFastKeys() {
         if (fastMode) {
             removeCommands(atCenter);
+
+            removeAutoList();       
         }
     }
 
@@ -610,10 +638,19 @@ public class ButtonRibbon implements OnClickListener,
     }
 
     public void setKeys(String keys, CmdLocation loc) {
+
+        boolean showList = false;
+
         clearFastKeys();
 
         if (fastMode && loc == CmdLocation.Dynamic) {
+
             if (keys.length() > 0) {
+
+                if (keys.length() > 6) {
+                    showList = true;
+                }
+
                 removeCommands(atRight);
 
                 String pattern = "[^fkeys$]";
@@ -627,12 +664,24 @@ public class ButtonRibbon implements OnClickListener,
                 if (atRight.getChildCount() == 0) {
                     rebuildKeymaps();
                 }
-            }
+            }            
         }
 
         for (char c: keys.toCharArray()) {
             String label = Character.toString(c);
             makeCommand(label, "", loc);
+        }
+
+        if (Preferences.getEnableTouch() && !Preferences.getTouchRight()) {
+            showList = false;
+        }
+
+        if (!Preferences.getShowAutoList()) {
+            showList = false;
+        }
+
+        if (showList) {
+            showAutoList(rootView);
         }
     }
 
@@ -666,14 +715,15 @@ public class ButtonRibbon implements OnClickListener,
         }
 
         if (alphaLevel == 1) {
-            alphaBg = 10;
             alphaFg = 30;
+            alphaBg = 10;            
         }
         if (alphaLevel == 3) {
-            alphaBg = 200;
+            color = 0x000044;
             alphaFg = 255;
-            color = Color.parseColor("#000044");
+            alphaBg = 200;
         }
+
         color = ColorUtils.setAlphaComponent(color, alphaFg);
         cmd.btn.setTextColor(color);
         cmd.btn.getBackground().setAlpha(alphaBg);
@@ -841,8 +891,8 @@ public class ButtonRibbon implements OnClickListener,
             loc = CmdLocation.Keymaps;
         }
 
-        final PopupWindow win = new PopupWindow(context);
-        win.setFocusable(true);
+        final PopupWindow win = new PopupWindow(context);        
+        win.setFocusable(true);  
         win.setWidth(LayoutParams.WRAP_CONTENT);
         win.setHeight(LayoutParams.WRAP_CONTENT);
 
@@ -866,7 +916,7 @@ public class ButtonRibbon implements OnClickListener,
 
         int maxRowItems = 3;
         if (context.landscapeNow()) {
-            maxRowItems = 5;
+            maxRowItems = 6;            
         }
 
         OnClickListener clickListener =
@@ -877,12 +927,14 @@ public class ButtonRibbon implements OnClickListener,
                     int savedIdx = tag.intValue();
                     // Indirection
                     Command cmd = commands.get(savedIdx);
-                    if (cmd != null) cmd.btn.performClick();
-                    win.dismiss();
+                    if (cmd != null) cmd.btn.performClick();                    
+                    win.dismiss();                    
                 }
             };
 
         int idx = -1;
+        int alphaFg = 220;
+        int alphaBg = 50;
 
         for (Command cmd: this.commands) {
             ++idx;
@@ -901,13 +953,13 @@ public class ButtonRibbon implements OnClickListener,
             }
 
             Button btn = (Button)context.getLayoutInflater().inflate
-                    (R.layout.keypopupbutton, null);
+                (R.layout.keypopupbutton, null);
+            btn.getBackground().setAlpha(popupBackAlpha);
+            btn.setTextColor(popupButtonColor);            
             //Button btn = new Button(context);
             btn.setText(cmd.btn.getText());
             btn.setTag(new Integer(idx));
-            btn.setOnClickListener(clickListener);
-            btn.getBackground().setAlpha(popupBackAlpha);
-            btn.setTextColor(popupButtonColor);
+            btn.setOnClickListener(clickListener);            
             btn.setTypeface(cmd.btn.getTypeface());
             trow.addView(btn);
         }
@@ -918,9 +970,221 @@ public class ButtonRibbon implements OnClickListener,
 
         if (table.getChildCount() == 0) return;
 
-        win.showAtLocation(parentView,
-                Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL,
-                0, 0);
+        int gravity = Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL;
+        int y = 0;
+        win.showAtLocation(parentView, gravity, 0, y);
+    }
+
+    public void toggleAutoListOpacity()
+    {
+        if (autoListWin == null || autoListTable == null) return; 
+
+        autoListSolid = !autoListSolid;
+
+        Log.d("Angband", "Auto List Opacity");
+
+        int i, j;
+
+        for (i = 0; i < autoListTable.getChildCount(); i++) {
+
+            TableRow row = (TableRow)autoListTable.getChildAt(i);
+
+            for (j = 0; j < row.getChildCount(); j++) {
+
+                Button btn = (Button)row.getChildAt(j);
+
+                int color = Color.WHITE;
+                int alphaFg = 30;
+                int alphaBg = 10;
+
+                if (autoListSolid) {
+                    alphaFg = 255;
+                    alphaBg = 255;                    
+                    color = 0x000044;
+                }
+                
+                color = ColorUtils.setAlphaComponent(color, alphaFg);
+                btn.setTextColor(color);                
+                btn.getBackground().setAlpha(alphaBg);
+            }
+        }
+    }
+
+    public void showAutoList(View parentView) {
+
+        removeAutoList();
+
+        CmdLocation loc = CmdLocation.Dynamic; 
+
+        int maxRowItems = 3;        
+        if (context.landscapeNow()) {
+            maxRowItems = 10;
+        }
+
+        Point winSize = context.getWinSize();
+
+        int kbdH = context.getKeyboardHeight();
+        int maxH = winSize.y - kbdH;
+        int rowH = kbdH / 2;
+        int winH = 0;
+
+        ArrayList<Command> the_list = new ArrayList<>();
+        int i = 0;
+        int j = 0;
+        int[] sourceIdx = new int[200];
+        for (Command cmd: commands) {
+            if (cmd.location == loc && j < sourceIdx.length) {
+                the_list.add(cmd);
+                sourceIdx[j++] = i;
+            }
+            i++;
+        }
+
+        if (the_list.isEmpty()) return;   
+
+        // Assume that rowH is also the width of the button        
+        // Add the fixed keys at the left
+        int listW = rowH * (the_list.size() + 5);        
+        // There is plenty of space
+        if (listW < winSize.x) {
+            return;
+        }
+
+        // Dummy entry, just to have another one
+        the_list.add(the_list.get(0));
+
+        int n = the_list.size();
+
+        int lastIdx = n - 1;
+        
+        int rows = (n / maxRowItems);
+        if (rows * maxRowItems < n) ++rows;
+
+        winH = rows * rowH;
+
+        //Log.d("Angband", "RowH: " + rowH + " Max: " + maxH +
+        //    " Win: " + winH + " Rows: " + rows);
+
+        if (winH > 0 && winH < maxH) {
+            winH = LayoutParams.WRAP_CONTENT;
+        }
+        else {
+            winH = maxH;
+        }
+
+        final PopupWindow win = new PopupWindow(context);
+                
+        win.setOutsideTouchable(false);
+        win.setTouchModal(false);
+        win.getBackground().setAlpha(0);        
+
+        win.setWidth(LayoutParams.WRAP_CONTENT);
+        win.setHeight(winH);        
+
+        ScrollView scroll = new ScrollView(context);
+        scroll.setLayoutParams(new LayoutParams(
+            LayoutParams.WRAP_CONTENT,
+            LayoutParams.MATCH_PARENT
+        ));        
+
+        win.setContentView(scroll);
+
+        TableLayout table = new TableLayout(context);        
+        table.setLayoutParams(new LayoutParams(
+            LayoutParams.WRAP_CONTENT,
+            LayoutParams.MATCH_PARENT));
+        scroll.addView(table);                
+
+        TableRow trow = null;
+
+        OnClickListener clickListener =
+            new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Integer tag = (Integer)v.getTag();
+                    int savedIdx = tag.intValue();
+
+                    if (savedIdx == -1 || !autoListSolid) {
+                    //if (savedIdx == -1) {
+                        toggleAutoListOpacity();
+                        return;
+                    }
+
+                    // Indirection
+                    Command cmd = commands.get(savedIdx);
+                    if (cmd != null) cmd.btn.performClick();
+                }
+            };
+
+        int idx = -1;        
+
+        for (Command cmd: the_list) {
+            ++idx;
+
+            if (trow == null || trow.getChildCount() == maxRowItems) {
+                trow = new TableRow(context);                
+                trow.setLayoutParams(new LayoutParams(
+                    LayoutParams.WRAP_CONTENT,
+                    LayoutParams.WRAP_CONTENT));                
+                trow.setGravity(Gravity.CENTER_VERTICAL);
+                table.addView(trow);
+            }
+
+            Button btn = (Button)context.getLayoutInflater().inflate
+                (R.layout.aribbonbutton, null);
+
+            int alphaFg = 30;
+            int alphaBg = 10;
+            int color = Color.WHITE;
+            
+            //Button btn = new Button(context);
+            if (idx == lastIdx) {
+                alphaFg = 120;
+                alphaBg = 60;
+                if (fontCmd != null) {
+                    btn.setTypeface(fontCmd);
+                }                
+                btn.setText("l");
+                btn.setTag(new Integer(-1));
+            }
+            else {
+                btn.setText(cmd.btn.getText());
+                int realIdx = sourceIdx[idx];
+                btn.setTag(new Integer(realIdx));
+                btn.setTypeface(cmd.btn.getTypeface());
+            }
+            btn.setOnClickListener(clickListener);
+            btn.setGravity(Gravity.CENTER);
+
+            color = ColorUtils.setAlphaComponent(color, alphaFg);            
+            btn.setTextColor(color);            
+            btn.getBackground().setAlpha(alphaBg);
+
+            resizeButton(btn);
+
+            trow.addView(btn);
+        }
+
+        if (trow != null && trow.getChildCount() == 0) {
+            table.removeView(trow);
+        }
+
+        if (table.getChildCount() == 0) {            
+            return;
+        }
+
+        int gravity = Gravity.LEFT | Gravity.TOP;
+        int y = 0;
+
+        if (winH == LayoutParams.WRAP_CONTENT && kbdH > 0) {
+            gravity = Gravity.LEFT | Gravity.BOTTOM;
+            y = kbdH;
+        }         
+
+        autoListWin = win;
+        autoListTable = table;
+
+        win.showAtLocation(parentView, gravity, 0, y);
     }
 
     public List<Integer> parseCodeKeys(String txt)

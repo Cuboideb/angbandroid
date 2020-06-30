@@ -30,6 +30,7 @@ final public class Preferences {
 	static final String KEY_TOUCHMULTIPLIER = "angband.touchmultiplier";
 
 	static final String KEY_RIBBONBUTTONMULT = "angband.ribbonbuttonmult";
+	static final String KEY_SHOWAUTOLIST = "angband.showautolist";
 
 	static final String KEY_USERKEYMAPS = "angband.userkeymaps";
 
@@ -152,6 +153,10 @@ final public class Preferences {
 
 	public static boolean getKeyboardOverlap() {
 		return pref.getBoolean(Preferences.KEY_KEYBOARDOVERLAP, true);
+	}
+
+	public static boolean getShowAutoList() {
+		return pref.getBoolean(Preferences.KEY_SHOWAUTOLIST, false);
 	}
 
 	public static int getMiddleOpacity() {

@@ -106,8 +106,8 @@ public class GameActivity extends Activity {
 			version = pinfo.versionName;
 		} catch (Exception e) {}
 
-	    Preferences.init (
-	    	this,
+	   	Preferences.init (
+	    		this,
 			getFilesDir(),
 			getResources(),
 			getSharedPreferences(Preferences.NAME, MODE_PRIVATE),
@@ -334,16 +334,17 @@ public class GameActivity extends Activity {
 	}
 
 	public Point getWinSize()
-    {
-        Point aux = new Point();
-        WindowManager wm2 = this.getWindowManager();
-        wm2.getDefaultDisplay().getSize(aux);
-        return aux;
-    }
+	{
+		Point aux = new Point();
+		WindowManager wm2 = this.getWindowManager();
+		wm2.getDefaultDisplay().getSize(aux);
+		return aux;
+	}
 
 	public void rebuildButtonRibbon()
 	{
-		if (ribbonZone != null) {
+		if (ribbonZone != null) {			
+
 			ribbonZone.removeAllViews();
 
 			topRibbon = new ButtonRibbon(this, state, true);
@@ -383,28 +384,32 @@ public class GameActivity extends Activity {
 				oldVisuals = term.serializeVisualState();
 			}
 
+			clearKeyTimer();
+
+			setFastKeysAux("");
+
 			if (screenLayout != null) screenLayout.removeAllViews();
 			screenLayout = new RelativeLayout(this);
 
 			Boolean kb = Preferences.isKeyboardVisible();
 
 			virtualKeyboard = null;
-            virtualKeyboardView = null;
+            		virtualKeyboardView = null;
 
 			ribbonZone = null;
 			bottomRibbon = null;
 			topRibbon = null;
 
-            if (kb) {
-                virtualKeyboard = new AngbandKeyboard(this);
-                virtualKeyboardView = virtualKeyboard.virtualKeyboardView;
-                virtualKeyboardView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-            }
+			if (kb) {
+				virtualKeyboard = new AngbandKeyboard(this);
+				virtualKeyboardView = virtualKeyboard.virtualKeyboardView;
+				virtualKeyboardView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+			}
 
-            term = new TermView(this);
-            term.setFocusable(false);
-            registerForContextMenu(term);
-            state.link(term, handler);
+			term = new TermView(this);
+			term.setFocusable(false);
+			registerForContextMenu(term);
+			state.link(term, handler);
 
 			term.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 					LayoutParams.WRAP_CONTENT));
@@ -575,6 +580,8 @@ public class GameActivity extends Activity {
 
 		clearKeyTimer();
 
+		setFastKeysAux("");
+
 		term.onPause();
 	}
 
@@ -614,18 +621,18 @@ public class GameActivity extends Activity {
 		return state;
 	}
 
-    public int getKeyboardHeight() {
+    	public int getKeyboardHeight() {
 		int h = 0;
 
-        if (Preferences.isKeyboardVisible() &&
+        	if (Preferences.isKeyboardVisible() &&
 			virtualKeyboardView != null) {
 			h += virtualKeyboardView.getHeight();
 		}
 
-        if (ribbonZone != null) {
-        	h += ribbonZone.getHeight();
+        	if (ribbonZone != null) {
+        		h += ribbonZone.getHeight();
 		}
 
-        return h;
-    }
+        	return h;
+    	}
 }

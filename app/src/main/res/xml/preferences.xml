@@ -233,6 +233,11 @@
 		  seekBar:min="0"
 		  seekBar:max="100"
 		  seekBar:defaultVal="50" />
+	<CheckBoxPreference
+		  android:key="angband.showautolist"
+		  android:defaultValue="false"		  
+		  android:title="Auto display long lists"
+		  android:summary="When you are prompted for selection" />
 	<ListPreference
 	   android:title="Center screen tap action"
 	   android:summary="Select functionality for center screen tap"
