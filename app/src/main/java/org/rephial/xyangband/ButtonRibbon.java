@@ -1016,16 +1016,17 @@ public class ButtonRibbon implements OnClickListener,
 
         CmdLocation loc = CmdLocation.Dynamic; 
 
-        int maxRowItems = 3;        
-        if (context.landscapeNow()) {
-            maxRowItems = 10;
+        int minRowItems = 3;
+        float screenPct = 0.5f;
+        if (context.landscapeNow()) {            
+            screenPct = 0.65f;
         }
 
         Point winSize = context.getWinSize();
 
         int kbdH = context.getKeyboardHeight();
         int maxH = winSize.y - kbdH;
-        int rowH = kbdH / 2;
+        int btnSize = kbdH / 2;
         int winH = 0;
 
         ArrayList<Command> the_list = new ArrayList<>();
@@ -1042,13 +1043,19 @@ public class ButtonRibbon implements OnClickListener,
 
         if (the_list.isEmpty()) return;   
 
-        // Assume that rowH is also the width of the button        
         // Add the fixed keys at the left
-        int listW = rowH * (the_list.size() + 5);        
+        int listW = btnSize * (the_list.size() + 5);        
         // There is plenty of space
         if (listW < winSize.x) {
             return;
         }
+
+        // Check if we can add more columns
+        int maxRowItems = minRowItems;
+        while ((maxRowItems * btnSize) < (int)(winSize.x * screenPct)) {
+            ++maxRowItems;
+        }
+        maxRowItems = Math.max(maxRowItems-1, minRowItems);
 
         // Dummy entry, just to have another one
         the_list.add(the_list.get(0));
@@ -1056,14 +1063,11 @@ public class ButtonRibbon implements OnClickListener,
         int n = the_list.size();
 
         int lastIdx = n - 1;
-        
+
         int rows = (n / maxRowItems);
         if (rows * maxRowItems < n) ++rows;
 
-        winH = rows * rowH;
-
-        //Log.d("Angband", "RowH: " + rowH + " Max: " + maxH +
-        //    " Win: " + winH + " Rows: " + rows);
+        winH = rows * btnSize;
 
         if (winH > 0 && winH < maxH) {
             winH = LayoutParams.WRAP_CONTENT;
@@ -1183,6 +1187,8 @@ public class ButtonRibbon implements OnClickListener,
 
         autoListWin = win;
         autoListTable = table;
+
+        //toggleAutoListOpacity();
 
         win.showAtLocation(parentView, gravity, 0, y);
     }
