@@ -44,6 +44,8 @@ To reduce the number of buttons in command mode, the Alter command can also open
 
 ![alt text](https://github.com/Cuboideb/angbandroid/blob/master/app/src/main/assets/ribbon_help.jpg?raw=true)
 
+In the preferences section, you can find some useful options for the ribbon: "Ribbon button size multiplier" and "Auto display long lists".
+
 ### Custom keymaps
 
 While using the button ribbon, the settings menu gets the item "Manage keymaps". It can be used to quickly define common keymaps shortcuts as you like.
@@ -54,7 +56,7 @@ While using the button ribbon, the settings menu gets the item "Manage keymaps".
 
 The game view can be configured to display 9 squares for moving the character in the dungeon. The action of the center square can be set to do different things.
 
-The touch d. can be displayed to the right, all together. In that case the center square has another use. A long-press allowes you to drag and drop the whole set to another zone of the screen.
+The touch d. can be displayed to the right, all together. In that case the center square has another use. A long-press allows you to drag and drop the whole set to another zone of the screen.
 
 Besides the touch directionals, every touch in the term view is sent to the core as a mouse press, allowing movement and menu selection.
 
