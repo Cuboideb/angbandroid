@@ -218,6 +218,8 @@ public class TermView extends View implements OnGestureListener {
             if (sw <= 0 || src.left + sw > from.getWidth()) return null;
             if (sh <= 0 || src.top + sh > from.getHeight()) return null;
 
+            if (dstSize.width <= 0 || dstSize.height <= 0) return null;
+
             try {
                 Bitmap region = Bitmap.createBitmap(from, src.left,
                         src.top, sw, sh);
