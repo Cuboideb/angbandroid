@@ -995,7 +995,7 @@ public class ButtonRibbon implements OnClickListener,
 
                 int color = Color.WHITE;
                 int alphaFg = 30;
-                int alphaBg = 10;
+                int alphaBg = 30;
 
                 if (autoListSolid) {
                     alphaFg = 255;
@@ -1138,7 +1138,7 @@ public class ButtonRibbon implements OnClickListener,
                 (R.layout.aribbonbutton, null);
 
             int alphaFg = 30;
-            int alphaBg = 10;
+            int alphaBg = 30;
             int color = Color.WHITE;
             
             //Button btn = new Button(context);
