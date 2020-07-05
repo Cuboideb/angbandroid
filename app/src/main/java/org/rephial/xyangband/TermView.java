@@ -127,6 +127,7 @@ public class TermView extends View implements OnGestureListener {
 
     public class TileGrid
     {
+        Point _pt;
         Point srcPoint;
         TSize srcSize;
 
@@ -144,6 +145,8 @@ public class TermView extends View implements OnGestureListener {
             int pDstRow, int pDstCol)
         {
             gm = pGM;
+
+            _pt = new Point(pSrcCol, pSrcRow);
 
             srcPoint = new Point(pSrcCol & 0x7F, pSrcRow & 0x7F);
 
@@ -205,14 +208,28 @@ public class TermView extends View implements OnGestureListener {
         {
             Rect src = locateSource();
 
-            Bitmap region = Bitmap.createBitmap(from, src.left,
-                src.top, src.right - src.left,
-                src.bottom - src.top);
+            Bitmap result = null;
 
-            Bitmap result = Bitmap.createScaledBitmap(region,
-                dstSize.width, dstSize.height, true);
+            if (src.left < 0 || src.top < 0) return null;
 
-            region.recycle();
+            int sw = src.right - src.left;
+            int sh = src.bottom - src.top;
+
+            if (sw <= 0 || src.left + sw > from.getWidth()) return null;
+            if (sh <= 0 || src.top + sh > from.getHeight()) return null;
+
+            try {
+                Bitmap region = Bitmap.createBitmap(from, src.left,
+                        src.top, sw, sh);
+
+                result = Bitmap.createScaledBitmap(region,
+                        dstSize.width, dstSize.height, true);
+
+                region.recycle();
+            }
+            catch (java.lang.IllegalArgumentException ex) {
+                result = null;
+            }
 
             return result;
         }
@@ -1441,7 +1458,9 @@ public class TermView extends View implements OnGestureListener {
                
                 Bitmap result = tile.loadBitmap(map);
 
-                state.tileCache.put(key, result);
+                if (result != null) {
+                    state.tileCache.put(key, result);
+                }
 
                 iter.remove();
             }
@@ -1454,7 +1473,6 @@ public class TermView extends View implements OnGestureListener {
 
     public Bitmap getTile(TileGrid tile)
     {
-
         GraphicsMode gm = currentGraf;
 
         String key = tile.createKey();
@@ -1483,7 +1501,9 @@ public class TermView extends View implements OnGestureListener {
             result = tile.loadBitmap(atlas);
         }        
 
-        state.tileCache.put(key, result);
+        if (result != null) {
+            state.tileCache.put(key, result);
+        }
 
         return result;        
     }
