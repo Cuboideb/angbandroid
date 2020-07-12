@@ -52,6 +52,7 @@ static int initial_pseudo_ascii = 0;
  */
 typedef struct {
 	term t;
+	WINDOW *win;
 } term_data;
 
 static int set_bit(int n) {
@@ -91,7 +92,7 @@ static mouse_data_t mouse_data;
  * the things that would normally go into a "term_data" structure
  * could be made into global variables instead.
  */
-#define MAX_AND_TERM 1
+#define MAX_AND_TERM 4
 
 /*
  * An array of "term_data" structures, one for each "sub-window"
@@ -124,6 +125,12 @@ static void Term_init_android(term *t)
  */
 static void Term_nuke_android(term *t)
 {
+	/*
+	term_data *td = (term_data*)(t->data);
+	if (td->win != stdscr) {
+		delwin(td->win);
+	}
+	*/
 }
 
 void try_save(void) {
@@ -305,7 +312,8 @@ static errr Term_xtra_android(int n, int v)
 
 		case TERM_XTRA_CLEAR:
 		{
-			clear();
+			//clear();
+			wclear(td->win);
 			return 0;
 		}
 
@@ -317,7 +325,8 @@ static errr Term_xtra_android(int n, int v)
 
 		case TERM_XTRA_FRESH:
 		{
-			refresh();
+			//refresh();
+			wrefresh(td->win);
 			return 0;
 		}
 
@@ -375,8 +384,8 @@ static errr Term_control_msg_android(int what, const char *msg)
  * thing and not as a "hardware" cursor.
  */
 static errr Term_curs_android(int x, int y)
-{
-	move(y, x);
+{	
+	move(y, x);	
 
 	Term_control_msg_android(TERM_SHOW_CURSOR, "small");
 
@@ -408,14 +417,14 @@ static errr Term_wipe_android(int x, int y, int n)
 	/* XXX XXX XXX */
 
 	/* Place cursor */
-	move(y, x);
+	wmove(td->win, y, x);
 
 	if (x + n >= td->t.wid)
 		/* Clear to end of line */
-		clrtoeol();
+		wclrtoeol(td->win);
 	else
 		/* Clear some characters */
-		hline(' ', n);
+		whline(td->win, ' ', n);
 
 	/* Success */
 	return 0;
@@ -439,10 +448,10 @@ static errr Term_text_android(int x, int y, int n, int a, const wchar_t *cp)
 		case BG_DARK:	bg = COLOUR_SHADE; break;
 	}
 
-	move(y, x);
-	attrset(fg);
-	bgattrset(bg);
-	addnwstr(n, cp);
+	wmove(td->win, y, x);
+	wattrset(td->win, fg);
+	wbgattrset(td->win, bg);
+	waddnwstr(td->win, n, cp);
 
 	/* Success */
 	return 0;
@@ -458,8 +467,11 @@ static errr Term_pict_android(int x, int y, int n,
 	int resu;
 	int i;
 
+	term_data *td = (term_data*)(Term->data);
+
 	for (i = 0; i < n; i++) {	
-		resu = addtile(x, y, ap[i], (byte)cp[i], tap[i], (byte)tcp[i]);
+		resu = waddtile(td->win, x, y, ap[i], (byte)cp[i],
+			tap[i], (byte)tcp[i]);
 		if (resu) break;
 	}
 	return resu;
@@ -490,8 +502,16 @@ static void term_data_link(int i)
 	term_data *td = &data[i];
 	term *t = &td->t;
 
+	int tw = initial_width;
+	int th = initial_height;
+
+	if (i > 0) {
+		tw = 80;
+		th = 24;
+	}
+
 	/* Initialize the term */
-	term_init(t, initial_width, initial_height, 256);
+	term_init(t, tw, th, 256);
 
 	tile_width = initial_tile_wid;
 	tile_height = initial_tile_hgt;	
@@ -539,7 +559,10 @@ static void term_data_link(int i)
 	/* Remember where we came from */
 	t->data = td;
 
-	/* Activate it */
+	/* Create record for window */
+	td->win = getwin(i);
+
+	/* Activate it */			
 	Term_activate(t);
 
 	/* Global pointer */
@@ -550,7 +573,6 @@ static void hook_plog(const char* str)
 {
 	angdroid_warn(str);
 }
-
 
 /*
  * Hook to tell the user something, and then quit
@@ -576,6 +598,7 @@ errr init_android(void)
 
 	/* Create windows (backwards!) */
 	for (i = MAX_AND_TERM; i-- > 0; )
+	//for (i = 0; i < MAX_AND_TERM; i++)
 	{
 		/* Link */
 		term_data_link(i);
@@ -781,18 +804,32 @@ int queryInt(const char* argv0) {
 
 	if (strcmp(argv0, "pv") == 0) {
 		result = 1;
-	} else if (strcmp(argv0, "px") == 0) {
+	}
+	else if (strcmp(argv0, "px") == 0) {
 		result = player->grid.x;
-	} else if (strcmp(argv0, "playing") == 0) {
+	}
+	else if (strcmp(argv0, "playing") == 0) {
 		result = 0;		
 		if (player && player->upkeep->playing) result = 1;
-	} else if (strcmp(argv0, "rl") == 0) {
+	}
+	else if (strcmp(argv0, "in_the_dungeon") == 0) {
+		result = 0;		
+		if (player && player->upkeep->playing
+			// We have a main term
+			&& angband_term[0] != NULL
+			// We are looking at the dungeon 
+			&& angband_term[0]->saved == 0) result = 1;
+	}
+	else if (strcmp(argv0, "rl") == 0) {
 		result = 0;
 		if (player && OPT(player, rogue_like_commands)) result = 1;	
-	} else if (strcmp(argv0, "life_pct") == 0 && player) {
+	}
+	else if (strcmp(argv0, "life_pct") == 0 && player) {
 		result = player->chp * 10 / MAX(player->mhp, 1);	
+	
+	}
 	// Starts with this pattern?
-	} else if (strncmp(argv0, ROGUE_KEY, strlen(ROGUE_KEY)) == 0) {
+	else if (strncmp(argv0, ROGUE_KEY, strlen(ROGUE_KEY)) == 0) {
 		// Find the respective key in roguelike mode
 		int n = strlen(ROGUE_KEY);
 		// Get the "n" character (encoded key)
@@ -800,7 +837,8 @@ int queryInt(const char* argv0) {
 		if (key == 0) return 0;
 		key = translate_to_rogue(key);
 		return key;
-	} else {
+	}
+	else {
 		result = -1; //unknown command
 	}
 

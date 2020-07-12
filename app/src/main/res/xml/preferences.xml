@@ -4,64 +4,94 @@
 	xmlns:seekBar="http://schemas.android.com/apk/res-auto">
   <PreferenceCategory android:title="@string/game_category">
 	<Preference android:title="Game Profile" 
-				android:key="angband.gameprofile">
-	  <intent android:action="org.rephial.xyangband.PROFILES" />
+		android:key="angband.gameprofile">
+	  	<intent android:action="org.rephial.xyangband.PROFILES" />
 	</Preference>
-<!--	<org.rephial.xyangband.ProfileListPreference
-	   android:title="@string/preferences_gameplugin_title"
-	   android:key="angband.gameplugin"
-	   android:summary="@string/preferences_gameplugin_summary"
-	   android:entries="@array/gamePluginDescriptions"
-	   android:entryValues="@array/gamePlugins" />
--->
-	<org.rephial.xyangband.ProfileCheckBoxPreference
-	   android:title="@string/preferences_skipwelcome_title"
-	   android:key="angband.skipwelcome"
-	   android:defaultValue="false" 
-	   android:summary="@string/preferences_skipwelcome_summary" />
-  </PreferenceCategory>
-  <PreferenceCategory android:title="@string/display_category">
-	<CheckBoxPreference 
-	   android:key="angband.vibrate"
-	   android:defaultValue="false" 
-	   android:title="@string/preferences_vibrate_title"
-	   android:summary="@string/preferences_vibrate_summary" />
-	<CheckBoxPreference 
-	   android:key="angband.fullscreen"
-	   android:defaultValue="true" 
-	   android:title="@string/preferences_fullscreen_title"
-	   android:summary="@string/preferences_fullscreen_summary" />
-	<ListPreference 
-	   android:key="angband.orientation"
-	   android:defaultValue="0" 
-	   android:title="@string/preferences_orientation_title"
-	   android:summary="@string/preferences_orientation_summary" 
-	   android:entries="@array/orientationDescriptions"
-	   android:entryValues="@array/orientations" />
-  </PreferenceCategory>
-  <PreferenceCategory android:title="@string/control_category">	  
-	  <ListPreference
-		   android:title="Graphics"
-		   android:summary="Select the tileset"
-		   android:key="angband.graphics"
-		   android:defaultValue="6"		   
-		   android:entries="@array/graphicsModesDesc"
-		   android:entryValues="@array/graphicsModesKeys"/>
+		<!--
+		<org.rephial.xyangband.ProfileListPreference
+		   android:title="@string/preferences_gameplugin_title"
+		   android:key="angband.gameplugin"
+		   android:summary="@string/preferences_gameplugin_summary"
+		   android:entries="@array/gamePluginDescriptions"
+		   android:entryValues="@array/gamePlugins" />
+		-->
+		<org.rephial.xyangband.ProfileCheckBoxPreference
+		   android:title="@string/preferences_skipwelcome_title"
+		   android:key="angband.skipwelcome"
+		   android:defaultValue="false" 
+		   android:summary="@string/preferences_skipwelcome_summary" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/display_category">
+		<CheckBoxPreference 
+		   android:key="angband.vibrate"
+		   android:defaultValue="false" 
+		   android:title="@string/preferences_vibrate_title"
+		   android:summary="@string/preferences_vibrate_summary" />
+		<CheckBoxPreference 
+		   android:key="angband.fullscreen"
+		   android:defaultValue="true" 
+		   android:title="@string/preferences_fullscreen_title"
+		   android:summary="@string/preferences_fullscreen_summary" />
+		<ListPreference 
+		   android:key="angband.orientation"
+		   android:defaultValue="0" 
+		   android:title="@string/preferences_orientation_title"
+		   android:summary="@string/preferences_orientation_summary" 
+		   android:entries="@array/orientationDescriptions"
+		   android:entryValues="@array/orientations" />
+		<ListPreference
+			android:title="Graphics"
+			android:summary="Select the tileset"
+			android:key="angband.graphics"
+			android:defaultValue="6"		   
+			android:entries="@array/graphicsModesDesc"
+			android:entryValues="@array/graphicsModesKeys"/>		
+		<ListPreference
+			android:title="Tile Multiplier"
+			android:summary="Columns x Rows"
+			android:key="angband.tile_multiplier"
+			android:defaultValue="4x2"
+			android:entries="@array/tileMultValues"
+			android:entryValues="@array/tileMultValues"/>	
+	    <CheckBoxPreference
+			android:key="angband.pseudoascii"
+			android:defaultValue="false"
+			android:title="Pseudo Ascii"
+			android:summary="Use ascii for monsters and tiles for everything else" />
+		<PreferenceScreen
+	   		android:title="Sub-Windows settings"
+	   		android:summary="(Map views in graphics mode are not supported)">
+			<ListPreference
+				android:key="angband.n_subwindows"
+				android:title="Number of sub-windows"	
+				android:summary="Issue a redraw (Ctrl-R) after modifying this"	
+				android:defaultValue="0"			   
+				android:entries="@array/subWindowValues"
+				android:entryValues="@array/subWindowValues"/>
+			<org.rephial.xyangband.SeekBarPreference
+				android:key="angband.cols_subwindows"
+				android:title="Number of columns"				
+				seekBar:min="0"
+				seekBar:max="100"
+				seekBar:defaultVal="50" />
+			<org.rephial.xyangband.SeekBarPreference
+				android:key="angband.font_size_subwindows"
+				android:title="Font multiplier"				
+				seekBar:min="0"
+				seekBar:max="100"
+				seekBar:defaultVal="50" />
+			<CheckBoxPreference
+				android:key="angband.horiz_subwindows"				
+				android:defaultValue="false"
+				android:title="Layout sub-windows horizontally" />				
+	   	</PreferenceScreen>
+  	</PreferenceCategory>
+    <PreferenceCategory android:title="@string/control_category">	    
 	  <CheckBoxPreference
-		  android:key="angband.bigtiles"
-		  android:defaultValue="true"
-		  android:title="Duplicate Tile Size"
-		  android:summary="Make the dungeon grids bigger" />	
-          <CheckBoxPreference
-		  android:key="angband.pseudoascii"
-		  android:defaultValue="false"
-		  android:title="Pseudo Ascii"
-		  android:summary="Use ascii for monsters and tiles for everything else" />  
-	  <CheckBoxPreference
-		  android:key="angband.allowKeyboardOverlap"
-		  android:defaultValue="true"
-		  android:title="@string/preferences_keyboardOverlap_title"
-		  android:summary="@string/preferences_keyboardOverlap_summary" />
+			android:key="angband.allowKeyboardOverlap"
+			android:defaultValue="true"
+			android:title="@string/preferences_keyboardOverlap_title"
+			android:summary="@string/preferences_keyboardOverlap_summary" />
 	  <org.rephial.xyangband.SeekBarPreference
 		  android:key="angband.keyboardOpacity"
 		  android:title="Keyboard Opacity"
@@ -78,12 +108,23 @@
 		  android:key="angband.qwertynumpad"
 		  android:defaultValue="false"
 		  android:title="Qwerty NumPad"
-		  android:summary="Qwerty keyboard comes with NumPad" />
+		  android:summary="Qwerty keyboard comes with NumPad" />	  
+	  <org.rephial.xyangband.SeekBarPreference
+		  android:key="angband.ribbonbuttonmult"
+		  android:title="Ribbon button size multiplier"
+		  seekBar:min="0"
+		  seekBar:max="100"
+		  seekBar:defaultVal="50" />
 	  <CheckBoxPreference
+		  android:key="angband.showautolist"
+		  android:defaultValue="false"		  
+		  android:title="Auto display long lists"
+		  android:summary="When you are prompted for selection" />
+      <CheckBoxPreference
 		  android:key="angband.useicons"
 		  android:defaultValue="true"
 		  android:title="Use Icons"
-		  android:summary="Use Icons for command buttons" />
+		  android:summary="Use Icons for ribbon buttons" />
 	<PreferenceScreen
 	   android:title="Hardware Key Mapping"
 	   android:summary="Configure hardware buttons on your device to perform various functions">	  
@@ -227,17 +268,11 @@
 		  seekBar:min="0"
 		  seekBar:max="100"
 		  seekBar:defaultVal="40" />
-	<org.rephial.xyangband.SeekBarPreference
-		  android:key="angband.ribbonbuttonmult"
-		  android:title="Ribbon button size multiplier"
-		  seekBar:min="0"
-		  seekBar:max="100"
-		  seekBar:defaultVal="50" />
 	<CheckBoxPreference
-		  android:key="angband.showautolist"
-		  android:defaultValue="false"		  
-		  android:title="Auto display long lists"
-		  android:summary="When you are prompted for selection" />
+		  android:key="angband.enable_touch_drag"
+		  android:defaultValue="true"
+		  android:dependency="angband.enabletouch"
+		  android:title="Allow drag-and-drop of the touch directionals"	/>	  
 	<ListPreference
 	   android:title="Center screen tap action"
 	   android:summary="Select functionality for center screen tap"

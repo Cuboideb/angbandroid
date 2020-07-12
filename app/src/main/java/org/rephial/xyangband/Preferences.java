@@ -28,6 +28,8 @@ final public class Preferences {
 
 	static final String KEY_TOUCHRIGHT = "angband.touchright";	
 	static final String KEY_TOUCHMULTIPLIER = "angband.touchmultiplier";
+	static final String KEY_TOUCHDRAG = "angband.enable_touch_drag";
+	static final String KEY_TOUCH_DRAG_OFFSET = "angband.touch_drag_offset";
 
 	static final String KEY_RIBBONBUTTONMULT = "angband.ribbonbuttonmult";
 	static final String KEY_SHOWAUTOLIST = "angband.showautolist";
@@ -54,8 +56,7 @@ final public class Preferences {
 	static final String KEY_GAMEPLUGIN = "angband.gameplugin";
 	static final String KEY_GAMEPROFILE = "angband.gameprofile";
 	static final String KEY_SKIPWELCOME = "angband.skipwelcome";
-
-	static final String KEY_BIGTILES = "angband.bigtiles";
+	
 	static final String KEY_GRAPHICS = "angband.graphics";
 	static final String KEY_PSEUDOASCII = "angband.pseudoascii";
 
@@ -141,7 +142,7 @@ final public class Preferences {
 	public static boolean isScreenPortraitOrientation() {
 		Configuration config = resources.getConfiguration();
 		return (config.orientation == Configuration.ORIENTATION_PORTRAIT);
-	}
+	}	
 
 	public static int getOrientation() {
 		return Integer.parseInt(pref.getString(Preferences.KEY_ORIENTATION, "0"));
@@ -167,6 +168,22 @@ final public class Preferences {
 		return pref.getInt(Preferences.KEY_TOUCHMULTIPLIER, 40);
 	}
 
+	public static boolean getTouchDragEnabled() {
+		return pref.getBoolean(Preferences.KEY_TOUCHDRAG, true);
+	}
+
+	public static void setTouchDragOffset(int px, int py)
+	{
+		SharedPreferences.Editor ed = pref.edit();
+		ed.putString(Preferences.KEY_TOUCH_DRAG_OFFSET,
+			"" + px + "x" + py);
+		ed.commit();	
+	}	
+
+	public static String getTouchDragOffset() {
+		return pref.getString(Preferences.KEY_TOUCH_DRAG_OFFSET, "0x0");
+	}
+
 	public static int getRibbonButtonMult() {
 		return pref.getInt(Preferences.KEY_RIBBONBUTTONMULT, 50);
 	}
@@ -184,8 +201,14 @@ final public class Preferences {
 		ed.commit();
 	}
 
+	public static String getTileMultiplier()
+	{
+		return pref.getString("angband.tile_multiplier", "4x2");
+	}
+
 	public static int getTileWidth()
 	{
+		/*
 		if (pref.getBoolean(Preferences.KEY_BIGTILES, true)) {
 
 			// In text-mode, set a smaller tile
@@ -196,14 +219,41 @@ final public class Preferences {
 			return 3;
 		}
 		return 1;
+		*/
+		String[] parts = getTileMultiplier().split("x");
+		return parts.length == 2 ? Integer.valueOf (parts[0]) : 1;
 	}
+
 	public static int getTileHeight()
 	{
+		/*
 		if (pref.getBoolean(Preferences.KEY_BIGTILES, true)) {
 			return 2;
 		}
 		return 1;
+		*/
+		String[] parts = getTileMultiplier().split("x");
+		return parts.length == 2 ? Integer.valueOf (parts[1]) : 1;
 	}
+
+	public static float getTileFontMult()
+	{		
+		String mult = getTileMultiplier();		
+		if (mult.equals("2x2") || mult.equals("3x2") || mult.equals("4x2")) {
+			return 2;
+		}
+		if (mult.equals("3x3")) {
+			return 2.5f;			
+		}
+		if (mult.equals("6x3")) {
+			return 3;
+		}
+		if (mult.equals("4x4")) {
+			return 3.5f;
+		}
+		return 1;
+	}
+
 	public static int getGraphicsMode()
 	{		
 		String val = pref.getString(Preferences.KEY_GRAPHICS, "6");
@@ -271,6 +321,27 @@ final public class Preferences {
 		SharedPreferences.Editor ed = pref.edit();
 		ed.putBoolean(Preferences.KEY_LANDSCAPEKB, value);
 		ed.commit();
+	}
+
+	public static int getNumberSubWindows()
+	{
+		String str = pref.getString("angband.n_subwindows", "0");
+		return Integer.parseInt(str);
+	}
+
+	public static int getFontSizeSubWindows()
+	{
+		return pref.getInt("angband.font_size_subwindows", 50);
+	}
+
+	public static int getColumnsSubWindows()
+	{
+		return pref.getInt("angband.cols_subwindows", 50);
+	}
+
+	public static boolean getHorizontalSubWindows()
+	{
+		return pref.getBoolean("angband.horiz_subwindows", false);
 	}
 
 	public static int getTermWidth()

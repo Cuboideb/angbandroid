@@ -79,6 +79,7 @@ public class GameActivity extends Activity {
 	protected final int CONTEXTMENU_RAISE_RIBBON = 9;
 	protected final int CONTEXTMENU_LOWER_RIBBON = 10;
 	protected final int CONTEXTMENU_KEYMAPS = 11;
+	protected final int CONTEXTMENU_TOGGLE_SUBW = 12;
 
 	public static final int TERM_CONTROL_LIST_KEYS = 1;
 	public static final int TERM_CONTROL_NOT_PLAYING = 2;
@@ -460,6 +461,7 @@ public class GameActivity extends Activity {
 		menu.add(0, CONTEXTMENU_FITHEIGHT_ITEM, 0, "Fit Height");		
 		if (topRibbon != null) {
 			menu.add(0, CONTEXTMENU_VKEY_ITEM, 0, "Show Full Keyboard");
+			menu.add(0, CONTEXTMENU_TOGGLE_SUBW, 0, "Toggle Sub-Windows");
 			menu.add(0, CONTEXTMENU_RIBBON_STYLE, 0, "Change Ribbon Style");
 			menu.add(0, CONTEXTMENU_KEYMAPS, 0, "Manage Keymaps");
 			menu.add(0, CONTEXTMENU_LOWER_RIBBON, 0, "Lower Ribbon Opacity");
@@ -467,6 +469,7 @@ public class GameActivity extends Activity {
 		}
 		else {
 			menu.add(0, CONTEXTMENU_VKEY_ITEM, 0, "Show Button Ribbon");
+			menu.add(0, CONTEXTMENU_TOGGLE_SUBW, 0, "Toggle Sub-Windows");
 		}
 		menu.add(0, CONTEXTMENU_PREFERENCES_ITEM, 0, "Preferences");
 		menu.add(0, CONTEXTMENU_PROFILES_ITEM, 0, "Profiles");
@@ -497,6 +500,10 @@ public class GameActivity extends Activity {
 	    case CONTEXTMENU_KEYMAPS:
 	    	KeymapEditor editor = new KeymapEditor(this, screenLayout);
 	    	editor.show();
+	    	return true;
+	    case CONTEXTMENU_TOGGLE_SUBW:
+	    	state.showSubWindows = !state.showSubWindows;
+	    	if (term != null) term.invalidate();
 	    	return true;
 		case CONTEXTMENU_VKEY_ITEM:
 			toggleKeyboard();
@@ -558,6 +565,10 @@ public class GameActivity extends Activity {
 			Preferences.setPortraitKeyboard(!Preferences.getPortraitKeyboard());
 		else
 			Preferences.setLandscapeKeyboard(!Preferences.getLandscapeKeyboard());
+
+		// Reset position of the touch directionals
+		Preferences.setTouchDragOffset(0,0);
+		
 		rebuildViews();
 	}
 

@@ -60,7 +60,7 @@ static jmethodID NativeWrapper_score_start;
 static jmethodID NativeWrapper_score_detail;
 static jmethodID NativeWrapper_score_submit;
 static jmethodID NativeWrapper_control_msg;
-static jmethodID NativeWrapper_addtile;
+static jmethodID NativeWrapper_waddtile;
 
 void (*angdroid_quit_hook)(void) = NULL;
 
@@ -161,9 +161,9 @@ int control_msg(int what, const char *s)
 	return 0;
 }
 
-int addtile(int x, int y, int a, int c, int ta, int tc)
+int waddtile(WINDOW *win, int x, int y, int a, int c, int ta, int tc)
 {
-	JAVA_CALL(NativeWrapper_addtile, x, y, a, c, ta, tc);
+	JAVA_CALL(NativeWrapper_waddtile, win->w, x, y, a, c, ta, tc);
 	return 0;
 }
 
@@ -437,9 +437,20 @@ int curs_set(int v) {
 	return 0;
 }
 
+WINDOW* getwin(int k)
+{
+	//hack
+	WINDOW* ret = stdscr;
+	if (k<WIN_MAX) {
+		_win[k].w = k;
+		ret = &_win[k];
+	}
+	return ret;
+}
+
 WINDOW* newwin(int rows, int cols, 
-			   int begin_y, int begin_x) {
-	LOGC("curses.newwin %d %d %d %d",rows,cols,begin_y,begin_x);
+	int begin_y, int begin_x) {
+	LOGC("curses.newwin %d %d %d %d",rows,cols,begin_y,begin_x);	
 	int k = JAVA_CALL_INT(NativeWrapper_newwin, rows, cols, begin_y, begin_x);
 
 	//hack
@@ -544,7 +555,7 @@ JNIEXPORT void JNICALL angdroid_gameStart
 	NativeWrapper_waddnstr = JAVA_METHOD("waddnstr", "(II[B)V");
 	NativeWrapper_control_msg = JAVA_METHOD("control_msg", "(II[B)V");
 	/*NativeWrapper_addntiles = JAVA_METHOD("addntiles", "(III[B[B[B[B)V");*/
-	NativeWrapper_addtile = JAVA_METHOD("addtile", "(IIIIII)V");
+	NativeWrapper_waddtile = JAVA_METHOD("waddtile", "(IIIIIII)V");
 	NativeWrapper_wattrset = JAVA_METHOD("wattrset", "(II)V");
 	NativeWrapper_wattrget = JAVA_METHOD("wattrget", "(III)I");
 	NativeWrapper_wbgattrset = JAVA_METHOD("wbgattrset", "(II)V");

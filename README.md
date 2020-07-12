@@ -71,3 +71,17 @@ Angband homepage [http://rephial.org](http://rephial.org)
 Forum and resources [http://angband.oook.cz](http://angband.oook.cz)
 
 Online manual [https://angband.readthedocs.io/en/latest/index.html](https://angband.readthedocs.io/en/latest/index.html)
+
+### Changelog:
+
+Version 1.23 - 2020/07/21:
+- Reworked the ordering of some preferences.
+- More tile multipliers (they have their own preference option now).
+- Sub-windows (up to 3, map views are not supported).
+- Added toggle for sub-windows in the quick settings menu.
+- Option to keep touch directionals fixed in place.
+- Position of touch directionals are saved between games.
+
+Version 1.22 - 2020/07/05:
+-Ribbon buttons size multiplier.
+-Auto display long lists of choices for commands and shops.

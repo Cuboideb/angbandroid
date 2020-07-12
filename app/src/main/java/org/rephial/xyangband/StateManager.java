@@ -47,7 +47,11 @@ public class StateManager {
 	private boolean runningMode = false;
 
 	public LruCache<String, Bitmap> tileCache = null;
-    	public static int CACHE_MAX = 5;
+    public static int CACHE_MAX = 5;
+
+    public static int MAX_WINDOWS = 4;
+
+    public boolean showSubWindows = true;
 
 	StateManager(GameActivity p_context) {
 		endWin();
@@ -97,6 +101,12 @@ public class StateManager {
 		return (nativew.gameQueryInt(1,new String[]{"playing"})==1);		
 	}
 
+	public boolean inTheDungeon()
+	{
+		if (!gameThread.gameRunning()) return false;
+		return (nativew.gameQueryInt(1,new String[]{"in_the_dungeon"})==1);		
+	}
+
 	public void link(TermView t, Handler h) {
 		handler = h;
 		nativew.link(t);
@@ -106,16 +116,35 @@ public class StateManager {
 		termWinNext = -1;
 		termwins = new HashMap<Integer, TermWindow>();
 
-		// initialize virtual screen (virtscr) and curses stdscr 
+		// Initialize virtual screen (virtscr) and curses stdscr 
 		int h = newWin(0,0,0,0);
 		virtscr = getWin(h);
 		h = newWin(0,0,0,0);
 		stdscr = getWin(h);
+
+		// Create more windows
+		for (int i = 1; i < MAX_WINDOWS; i++) {
+			newWin(Preferences.rows,Preferences.cols,0,0);
+		}
 	}
+
 	public TermWindow getWin(int handle) {
 		TermWindow w = termwins.get(handle);
 		return w;
 	}
+
+	public boolean windowIsVisible(TermWindow w)
+	{
+		for (int i = -1; i <= MAX_WINDOWS; i++) {
+			TermWindow w2 = getWin(i);
+			if (w2 != null && w2 == w
+				&& i <= Preferences.getNumberSubWindows()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public void delWin(int handle) {
 		termwins.remove(handle);
 	}

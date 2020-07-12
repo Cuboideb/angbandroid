@@ -199,11 +199,23 @@ public class NativeWrapper {
 
 	private void frosh(TermWindow w) {
 		
-		if (w != null) {
-			//Log.d("Angband", "Native frosh with w <> null");
+		if (w != null) {			
+			if (w != state.virtscr && w != state.stdscr) {
+				Log.d("Angband", "Frosh win > 0");
+
+				// Just redraw
+				if (state.windowIsVisible(w)) {
+					term.postInvalidate();
+				}
+
+				return;
+			}
+			else {
+				//Log.d("Angband", "Frosh with w in (stdscr, virtscr)");
+			}
 		}
 		else {
-			//Log.d("Angband", "Native frosh NULL");
+			//Log.d("Angband", "Frosh with NULL");
 		}
 
 		synchronized(display_lock) {
@@ -214,9 +226,9 @@ public class NativeWrapper {
 			if (w != null) v.overwrite(w);
 
 			if (term == null) {
-        	    v.quiet();
-	            return;
-        	}
+        	    		v.quiet();
+	            		return;
+        		}
 
 			/* mark ugly points, i.e. those clobbered by anti-alias overflow */
 			for(int c = 0; c<v.cols; c++) {
@@ -261,7 +273,7 @@ public class NativeWrapper {
 					}
 				}
 			}
-
+			
 			term.postInvalidate();
 		
 			if (w == null)
@@ -324,19 +336,19 @@ public class NativeWrapper {
 	public void waddnstr(final int w, final int n, final byte[] cp) {
 		synchronized (display_lock) {
 			TermWindow t = state.getWin(w);
-			if (t != null) {
+			if (t != null && state.windowIsVisible(t)) {
 				t.cursor_visible = false;
 				t.addnstr(n, cp);
 			}
 		}
 	}
 
-	public void addtile(final int x, final int y,
+	public void waddtile(final int w, final int x, final int y,
 		final int a, final int c, final int ta, final int tc)
 	{
-		synchronized (display_lock) {			
-			TermWindow t = state.getWin(0);
-			if (t != null) {
+		synchronized (display_lock) {
+			TermWindow t = state.getWin(w);
+			if (t != null && state.windowIsVisible(t)) {
 				t.cursor_visible = false;
 				t.addTile(x, y, a, c, ta, tc);
 				//t.addTilePad(x, y, term.tile_wid, term.tile_hgt);
