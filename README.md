@@ -74,7 +74,7 @@ Online manual [https://angband.readthedocs.io/en/latest/index.html](https://angb
 
 ### Changelog:
 
-Version 1.23 - 2020/07/21:
+Version 1.23 - 2020/07/12:
 - Reworked the ordering of some preferences.
 - More tile multipliers (they have their own preference option now).
 - Sub-windows (up to 3, map views are not supported).
