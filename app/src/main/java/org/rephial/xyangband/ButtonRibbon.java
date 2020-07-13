@@ -1306,13 +1306,16 @@ public class ButtonRibbon implements OnClickListener,
         }
         else if (action.equals("tab")) {
             state.addKey(KC_TAB);
+            setShift(false);
         }
         else if (isKtrl(action)) {
             int key = KTRL(action.charAt(1));
             state.addKey(key);
+            setShift(false);
         }
         else if (action.length() == 1) {
             state.addKey(action.charAt(0));
+            setShift(false);
         }
     }
 }
