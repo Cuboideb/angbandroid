@@ -325,7 +325,7 @@ final public class Preferences {
 
 	public static int getNumberSubWindows()
 	{
-		String str = pref.getString("angband.n_subwindows", "0");
+		String str = pref.getString("angband.n_subwindows", "1");
 		return Integer.parseInt(str);
 	}
 

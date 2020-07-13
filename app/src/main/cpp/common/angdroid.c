@@ -818,7 +818,8 @@ int queryInt(const char* argv0) {
 			// We have a main term
 			&& angband_term[0] != NULL
 			// We are looking at the dungeon 
-			&& angband_term[0]->saved == 0) result = 1;
+			&& angband_term[0]->saved == 0
+			&& !player->is_dead) result = 1;
 	}
 	else if (strcmp(argv0, "rl") == 0) {
 		result = 0;

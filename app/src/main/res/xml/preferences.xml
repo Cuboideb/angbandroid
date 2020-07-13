@@ -65,7 +65,7 @@
 				android:key="angband.n_subwindows"
 				android:title="Number of sub-windows"	
 				android:summary="Issue a redraw (Ctrl-R) after modifying this"	
-				android:defaultValue="0"			   
+				android:defaultValue="1"			   
 				android:entries="@array/subWindowValues"
 				android:entryValues="@array/subWindowValues"/>
 			<org.rephial.xyangband.SeekBarPreference

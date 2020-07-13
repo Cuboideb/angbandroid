@@ -262,7 +262,7 @@ public class GameActivity extends Activity {
 
 			//Log.d("Angband", "Refresh: " + msg);
 
-			// Save keymaps for later
+			// Save keymaps for later			
 			if (msg.startsWith("keymaps:")) {
 				coreKeymaps = msg.substring("keymaps:".length());
 				Preferences.setCoreKeymaps(coreKeymaps);
@@ -270,7 +270,18 @@ public class GameActivity extends Activity {
 
 			rebuildCommandList();
 
-			rebuildViews();
+			if (bottomRibbon != null) {
+				bottomRibbon.restoreCommandMode();
+			}
+
+			if (term != null) {		
+
+				term.reloadGraphics();
+				
+				state.nativew.updateNow();				
+			}
+
+			//rebuildViews();
 		}
 		if (what == TERM_VISUAL_STATE && term != null) {
 
@@ -360,7 +371,7 @@ public class GameActivity extends Activity {
 	protected void rebuildViews() {
 
 		synchronized (state.progress_lock) {
-			//Log.d("Angband","rebuildViews");
+			Log.d("Angband","Rebuild Views");
 			//dialog.dismissProgress();
 
 			int orient = Preferences.getOrientation();
@@ -395,7 +406,7 @@ public class GameActivity extends Activity {
 			Boolean kb = Preferences.isKeyboardVisible();
 
 			virtualKeyboard = null;
-            		virtualKeyboardView = null;
+            virtualKeyboardView = null;
 
 			ribbonZone = null;
 			bottomRibbon = null;

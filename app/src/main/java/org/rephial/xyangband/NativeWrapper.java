@@ -201,7 +201,7 @@ public class NativeWrapper {
 		
 		if (w != null) {			
 			if (w != state.virtscr && w != state.stdscr) {
-				Log.d("Angband", "Frosh win > 0");
+				//Log.d("Angband", "Frosh win > 0");
 
 				// Just redraw
 				if (state.windowIsVisible(w)) {
@@ -215,7 +215,7 @@ public class NativeWrapper {
 			}
 		}
 		else {
-			//Log.d("Angband", "Frosh with NULL");
+			Log.d("Angband", "Frosh with NULL");
 		}
 
 		synchronized(display_lock) {

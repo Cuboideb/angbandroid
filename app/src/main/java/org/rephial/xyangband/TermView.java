@@ -389,17 +389,22 @@ public class TermView extends View implements OnGestureListener {
 
         grafmodes = new ArrayList<>();
 
-        if (state.gameThread.gameRunning()) {
+        reloadGraphics();
+       
+        //Log.d("Angband", "Init TERM");
+
+        //state.addKey(' ');
+	}
+
+    public void reloadGraphics()
+    {
+        if (state.gameThread.gameRunning() && grafmodes.size() == 0) {
 
             loadGraphics();            
         }
 
         setGraphicsMode(Preferences.getGraphicsMode());
-
-        //Log.d("Angband", "Init TERM");
-
-        //state.addKey(' ');
-	}
+    }
 
     public void createTimers()
     {
@@ -440,7 +445,6 @@ public class TermView extends View implements OnGestureListener {
 
     public void loadGraphics()
     {
-
         String buf = state.nativew.queryString("get_tilesets");
 
         if (buf == null) return;
