@@ -455,12 +455,11 @@ public class TermView extends View implements OnGestureListener {
     }
    
     public void setGraphicsMode(int gidx)
-    {   
-        useGraphics = gidx;
-
-        currentGraf = null;        
-
-        if (state.grafmodes.isEmpty()) return;
+    {
+        if (state.grafmodes.isEmpty()) {
+            useGraphics = gidx;
+            return;
+        }
 
         GraphicsMode gm = findGraphicsMode(gidx);
         Bitmap image = null;
@@ -477,8 +476,9 @@ public class TermView extends View implements OnGestureListener {
                 image = BitmapFactory.decodeFile(path);
                 image.prepareToDraw();
             }            
-        }        
-        
+        }
+
+        useGraphics = gidx;
         currentGraf = gm;        
         atlas = image;
         currentAtlas = path;
