@@ -94,8 +94,6 @@ public class GameActivity extends Activity {
 	protected String lastKeys = "";
 	protected boolean keyHandlerIsRunning = false;
 
-    LinkedHashMap<Integer,String> coreCommands = null;
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -130,8 +128,8 @@ public class GameActivity extends Activity {
 		}
 
 		if (monoFont == null) {
-	           	monoFont = Typeface.createFromAsset(getAssets(),"VeraMono.ttf");
-	        }
+           	monoFont = Typeface.createFromAsset(getAssets(),"VeraMono.ttf");
+        }
 
 		if (monoBoldFont == null) {
 			monoBoldFont = Typeface.createFromAsset(getAssets(),"VeraMono-Bold.ttf");
@@ -148,10 +146,6 @@ public class GameActivity extends Activity {
 				}
 			};
 		}
-
-		if (coreCommands == null) {
-		    coreCommands = new LinkedHashMap<>();
-        }
 	}
 
 	@Override
@@ -226,29 +220,6 @@ public class GameActivity extends Activity {
 		super.finish();
 	}
 
-    public void rebuildCommandList()
-    {
-        coreCommands.clear();
-
-        if (!state.gameThread.gameRunning()) return;
-
-        String result = state.nativew.queryString("cmd_list");
-
-        if (result == null) return;
-
-        String[] list = result.split(",");
-
-        for (String item: list) {
-            final int key = Integer.parseInt(item);
-
-            String desc = state.nativew.queryString("cmd_desc_" + item);
-
-            if (desc == null) desc = "";
-
-            coreCommands.put(new Integer(key), desc);
-        }
-    }
-
 	public void controlMsg(int what, String msg)
 	{
 		if (what == TERM_CONTROL_LIST_KEYS) {
@@ -268,7 +239,11 @@ public class GameActivity extends Activity {
 				Preferences.setCoreKeymaps(coreKeymaps);
 			}
 
-			rebuildCommandList();
+			/*
+			if (topRibbon != null) {
+				topRibbon.rebuildKeymaps();
+			}
+			*/
 
 			if (bottomRibbon != null) {
 				bottomRibbon.restoreCommandMode();

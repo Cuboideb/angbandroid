@@ -56,6 +56,19 @@ public class StateManager {
 
     public ArrayList<GraphicsMode> grafmodes = null;
 
+    public class CoreCommand
+    {
+    	int[] keys = new int[2];
+    	String desc;
+
+    	public int getKey()
+    	{
+    		return isRoguelikeKeyboard() ? keys[1]: keys[0];
+    	}
+    }
+
+    public ArrayList<CoreCommand> coreCommands = null;
+
 	StateManager(GameActivity p_context) {
 
 		Log.d("Angband", "Creating State");
@@ -70,6 +83,8 @@ public class StateManager {
 		keyBuffer = new KeyBuffer(this);
 
 		grafmodes = new ArrayList<>();
+
+		coreCommands = new ArrayList<>();		
 
 		createBitmapCache();
 	}
@@ -94,6 +109,8 @@ public class StateManager {
 	public void inGameHook()
 	{
 		loadGraphics();
+
+		buildCommandList();
 	}
 
 	public void loadGraphics()
@@ -132,6 +149,52 @@ public class StateManager {
         }
 
         Log.d("Angband","Loaded tiles: " + grafmodes.size());
+    }
+
+    public void buildCommandList()
+    {
+    	if (coreCommands.size() > 0) return;
+
+        String result = nativew.queryString("cmd_list");
+
+        if (result == null) return;
+
+        String[] list = result.split(",");
+
+        for (String item: list) {
+
+        	String[] parts = item.split(":");
+
+        	if (parts.length != 2) continue;
+
+            String desc = nativew.queryString("cmd_desc_" + parts[0]);
+
+            if (desc == null) desc = "";
+
+            CoreCommand cmd = new CoreCommand();
+            cmd.keys[0] = Integer.valueOf(parts[0]); // Original
+            cmd.keys[1] = Integer.valueOf(parts[1]); // Roguelike
+            cmd.desc = desc;
+
+            coreCommands.add(cmd);
+        }
+    }
+
+    public CoreCommand findCommand(int key)
+    {
+    	int mode = 0;
+    	if (isRoguelikeKeyboard()) mode = 1;    	
+    	return findCommand(key, mode);
+    }
+
+    public CoreCommand findCommand(int key, int mode)
+    {    	
+    	for (CoreCommand cmd: coreCommands) {
+    		if (cmd.keys[mode] == key) {
+    			return cmd;
+    		}
+    	}
+    	return null;
     }
 
 	public void addSpecialCommand(String cmd)

@@ -677,7 +677,7 @@ static const char *get_command_desc(int key)
 	int mode = 0;
 
 	/* Roguelike ? */
-	if (player && OPT(player, rogue_like_commands)) mode = 1;
+	//if (player && OPT(player, rogue_like_commands)) mode = 1;
 
 	/* Go through all generic commands */
 	for (j = 0; cmds_all[j].name != NULL; j++)
@@ -705,7 +705,7 @@ static char *get_command_list()
 	int mode = 0;
 
 	/* Roguelike ? */
-	if (player && OPT(player, rogue_like_commands)) mode = 1;
+	//if (player && OPT(player, rogue_like_commands)) mode = 1;
 
 	/* Go through all generic commands */
 	for (j = 0; cmds_all[j].name != NULL; j++)
@@ -714,14 +714,15 @@ static char *get_command_list()
 		/* Look into every group */
 		for (i = 0; i < cmds_all[j].len; i++) {
 
-			int key = (unsigned char)commands[i].key[mode];
+			int key0 = (unsigned char)commands[i].key[0];
+			int key1 = (unsigned char)commands[i].key[1];
 
 			/* Add separator */
 			if (buf[0] != 0) {
 				my_strcat(buf, ",", sizeof(buf));
 			}
 
-			strnfmt(temp, sizeof(temp), "%d", key);
+			strnfmt(temp, sizeof(temp), "%d:%d", key0, key1);
 			my_strcat(buf, temp, sizeof(buf));
 		}
 	}

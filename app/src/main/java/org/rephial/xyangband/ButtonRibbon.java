@@ -1,5 +1,7 @@
 package org.rephial.xyangband;
 
+import org.rephial.xyangband.StateManager.CoreCommand;
+
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -235,13 +237,16 @@ public class ButtonRibbon implements OnClickListener,
         {
             if (isCommand()) {
                 char cmd = action.charAt(4);
-                if (translate && state.isRoguelikeKeyboard()) {
-                    // Query the core about the rogue key
-                    String q = "rogue_key_" + cmd;
-                    cmd = (char)state.nativew.gameQueryInt(1, new String[]{q});
-                    //String aux = printableChar(cmd);
-                    //Log.d("Angband", "Rogue: " + aux);
+
+                if (translate) {
+                    // Original keyset
+                    CoreCommand core = state.findCommand(cmd, 0);
+                    if (core != null) {
+                        // Convert, or not
+                        cmd = (char)core.getKey();
+                    }
                 }
+
                 return cmd;
             }
             return 0;
@@ -329,10 +334,18 @@ public class ButtonRibbon implements OnClickListener,
 
         @Override
         public boolean onLongClick(View v) {
-            char cmd = getCommand(true);
+
+            char cmd = getCommand(false);
+            String desc = "";
+
+            CoreCommand core = state.findCommand(cmd, 0);
+            if (core != null) {
+                cmd = (char)core.getKey();
+                desc = core.desc;
+            }
+
             String txt = printableChar(cmd);
-            String desc = state.nativew.queryString("cmd_desc_"
-                + Integer.toString(cmd));
+
             if (desc == null) desc = "";
             String msg = "Execute command: " + txt + "\n\n" + desc;
             context.questionAlert(msg,
@@ -788,8 +801,8 @@ public class ButtonRibbon implements OnClickListener,
     public void showCommandList(View parentView) {
 
         // Hack
-        if (context.coreCommands.isEmpty()) {
-            context.rebuildCommandList();
+        if (state.coreCommands.isEmpty()) {
+            state.buildCommandList();
         }
 
         final PopupWindow win = new PopupWindow(context);
@@ -834,10 +847,10 @@ public class ButtonRibbon implements OnClickListener,
                 }
             };
 
-        for (Integer item: context.coreCommands.keySet()) {
-            int key = item.intValue();
+        for (CoreCommand cmd: state.coreCommands) {
+            int key = cmd.getKey();
             String trigger = printableChar((char)key);
-            String desc = context.coreCommands.get(item);
+            String desc = cmd.desc;
 
             //Log.d("Angband", trigger + " | " + desc);
 
