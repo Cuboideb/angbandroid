@@ -20,7 +20,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
-#include <ui-keymap.h>
+#include "ui-keymap.h"
 #include "ui-output.h"
 #include "curses.h"
 #include "grafmode.h"
@@ -254,8 +254,7 @@ int process_special_command(int key)
 static errr Term_xtra_android(int n, int v)
 {
 	term_data *td = (term_data*)(Term->data);
-	jint ret;
-	char buf[2048] = "";
+	jint ret;	
 
 	switch (n)
 	{
@@ -337,13 +336,6 @@ static errr Term_xtra_android(int n, int v)
 		}
 
 		case TERM_XTRA_REACT:
-		{
-			strnfmt(buf, sizeof(buf), "visual:%d:%d:%d",
-				tile_height, tile_width, use_graphics);
-			Term_control_msg(TERM_VISUAL_STATE, buf);
-			return 0;
-		}
-
 		case TERM_XTRA_FROSH:
 		case TERM_XTRA_BORED:		
 		case TERM_XTRA_ALIVE:

@@ -101,7 +101,6 @@ public class TermView extends View implements OnGestureListener {
     public int useGraphics = 0;
     public boolean pseudoAscii = false;    
 
-	public float tile_multiplier = 1f;
     public int tile_wid_pix = 0;
     public int tile_hgt_pix = 0;
     public int tile_font_size = 0;
@@ -380,8 +379,7 @@ public class TermView extends View implements OnGestureListener {
 		this.rows = Preferences.getTermHeight();
 
         tile_hgt = Preferences.getTileHeight();
-        tile_wid = Preferences.getTileWidth();
-        tile_multiplier = tile_hgt;
+        tile_wid = Preferences.getTileWidth();        
         //int tempUseGraphics = Preferences.getGraphicsMode();
         pseudoAscii = Preferences.getPseudoAscii();
 
@@ -581,8 +579,7 @@ public class TermView extends View implements OnGestureListener {
 
 	public void configureVisuals(int rows, int cols, int graf)
     {
-        //Log.d("Angband", "Configure visuals! REACT");
-        tile_multiplier = rows;
+        //Log.d("Angband", "Configure visuals! REACT");        
         tile_hgt = rows;
         tile_wid = cols;
         setGraphicsMode(graf);        

@@ -22,6 +22,7 @@
 #include "z-util.h"
 #include "z-virt.h"
 #include "z-form.h"
+#include "ui-prefs.h"
 
 /**
  * This file provides a generic, efficient, terminal window package,
@@ -2575,4 +2576,14 @@ errr Term_control_msg_ws(int what, int n, const wchar_t *ws)
 wchar_t term_get_pad(void)
 {
 	return 0x1E00;
+}
+
+errr send_visual_state()
+{
+	char buf[2048] = "";
+
+	strnfmt(buf, sizeof(buf), "visual:%d:%d:%d",
+		tile_height, tile_width, use_graphics);
+
+	return Term_control_msg(TERM_VISUAL_STATE, buf);
 }

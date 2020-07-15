@@ -393,6 +393,7 @@ extern errr Term_inkey(ui_event *ch, bool wait, bool take);
 extern errr Term_control_msg_ws(int what, int n, const wchar_t *msg);
 extern errr Term_control_msg(int what, const char *msg);
 #define send_control_keys(msg) Term_control_msg(TERM_CONTROL_LIST_KEYS,msg)
+extern errr send_visual_state();
 
 extern errr Term_save(void);
 extern errr Term_load(void);

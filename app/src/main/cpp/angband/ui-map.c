@@ -813,7 +813,7 @@ void do_cmd_view_map(void)
 	tile_height = 1;
 
 	/* React to changes */
-	Term_xtra(TERM_XTRA_REACT, 0);
+	send_visual_state();
 
 	/* Display the map */
 	display_map(&cy, &cx);
@@ -832,7 +832,7 @@ void do_cmd_view_map(void)
 	tile_height = h;
 
 	/* React to changes */
-	Term_xtra(TERM_XTRA_REACT, 0);
+	send_visual_state();
 
 	/* Load screen */
 	screen_load();
