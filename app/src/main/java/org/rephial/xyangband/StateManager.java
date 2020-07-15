@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.graphics.Bitmap;
 import android.util.LruCache;
+import java.util.ArrayList;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -53,7 +54,12 @@ public class StateManager {
 
     public boolean showSubWindows = true;
 
+    public ArrayList<GraphicsMode> grafmodes = null;
+
 	StateManager(GameActivity p_context) {
+
+		Log.d("Angband", "Creating State");
+
 		endWin();
 
 		this.context = p_context;
@@ -62,6 +68,8 @@ public class StateManager {
 		gameThread = new GameThread(this, nativew);
 
 		keyBuffer = new KeyBuffer(this);
+
+		grafmodes = new ArrayList<>();
 
 		createBitmapCache();
 	}
@@ -82,6 +90,49 @@ public class StateManager {
 		    }
 		};
 	}
+
+	public void inGameHook()
+	{
+		loadGraphics();
+	}
+
+	public void loadGraphics()
+    {
+    	if (grafmodes.size() > 0) return;
+
+        String buf = nativew.queryString("get_tilesets");
+
+        if (buf == null) return;
+        
+        for (String reg: buf.split("#")) {
+
+            String parts[] = reg.split(":");
+
+            if (parts.length != 9) continue;
+
+            GraphicsMode gm = new GraphicsMode();
+
+            gm.idx = Integer.parseInt(parts[0]);
+            gm.name = parts[1];
+            gm.directory = parts[2];
+            gm.file = parts[3];
+            gm.cell_height = Integer.parseInt(parts[4]);
+            gm.cell_width = Integer.parseInt(parts[5]);
+            gm.alphaBlend = Integer.parseInt(parts[6]);
+            gm.overdrawRow = Integer.parseInt(parts[7]);
+            gm.overdrawMax = Integer.parseInt(parts[8]);
+            // Shockbolt is paged
+            gm.pageSize = (gm.idx != 5 && gm.idx != 6) ? 0: 16;
+
+            grafmodes.add(gm);
+            
+            //game_context.infoAlert(gm.fullPath);
+            
+            //if (gm.idx == useGraphics) currentGraf = gm;
+        }
+
+        Log.d("Angband","Loaded tiles: " + grafmodes.size());
+    }
 
 	public void addSpecialCommand(String cmd)
 	{

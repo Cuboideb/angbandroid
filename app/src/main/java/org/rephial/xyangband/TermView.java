@@ -236,60 +236,7 @@ public class TermView extends View implements OnGestureListener {
             return result;
         }
     }
-
-    public class GraphicsMode {
-        int idx;
-        String name;
-        String directory;
-        String file;        
-        int cell_width;
-        int cell_height;
-        int alphaBlend;
-        int overdrawRow;
-        int overdrawMax;
-        int pageSize;        
-
-        public GraphicsMode() {            
-        }
-
-        public boolean canDraw() {
-
-            int tw = (char_width * tile_wid);
-            int th = (char_height * tile_hgt);
-            return (tw > 0 && th > 0);
-        }
-
-        public boolean isLargeTile(int row, int col) {
-
-            if (overdrawRow == 0 || overdrawMax == 0) return false;
-
-            if (row >= overdrawRow && row <= overdrawMax) return true;
-
-            // Some large tiles are placed outside the overdraw rows
-            if (row == 27 && col >= 122) return true;
-            
-            return false;            
-        }
-
-        public boolean havePages() {
-
-            return pageSize > 0;
-        }
-
-        public String getFullPath(Point page)
-        {
-            String pathToPicture = Preferences.getAngbandFilesDirectory() +
-                "/tiles/" + directory + "/" + file;
-
-            if (page != null) {
-                pathToPicture = pathToPicture.replace(".png",
-                    "-" + page.x + "-" + page.y + ".png");
-            }
-
-            return pathToPicture;
-        }
-    };
-    public ArrayList<GraphicsMode> grafmodes = null;
+    
     public GraphicsMode currentGraf = null;
     public String currentAtlas = "";
 
@@ -379,13 +326,10 @@ public class TermView extends View implements OnGestureListener {
 		this.rows = Preferences.getTermHeight();
 
         tile_hgt = Preferences.getTileHeight();
-        tile_wid = Preferences.getTileWidth();        
-        //int tempUseGraphics = Preferences.getGraphicsMode();
+        tile_wid = Preferences.getTileWidth();
         pseudoAscii = Preferences.getPseudoAscii();
 
         createTimers();
-
-        grafmodes = new ArrayList<>();
 
         reloadGraphics();
        
@@ -394,14 +338,11 @@ public class TermView extends View implements OnGestureListener {
         //state.addKey(' ');
 	}
 
-    public void reloadGraphics()
-    {
-        if (state.gameThread.gameRunning() && grafmodes.size() == 0) {
+    public boolean canDraw() {
 
-            loadGraphics();            
-        }
-
-        setGraphicsMode(Preferences.getGraphicsMode());
+        int tw = (char_width * tile_wid);
+        int th = (char_height * tile_hgt);
+        return (tw > 0 && th > 0);
     }
 
     public void createTimers()
@@ -441,38 +382,9 @@ public class TermView extends View implements OnGestureListener {
         };
     }    
 
-    public void loadGraphics()
+    public void reloadGraphics()
     {
-        String buf = state.nativew.queryString("get_tilesets");
-
-        if (buf == null) return;
-        
-        for (String reg: buf.split("#")) {
-
-            String parts[] = reg.split(":");
-
-            if (parts.length != 9) continue;
-
-            GraphicsMode gm = new GraphicsMode();
-
-            gm.idx = Integer.parseInt(parts[0]);
-            gm.name = parts[1];
-            gm.directory = parts[2];
-            gm.file = parts[3];
-            gm.cell_height = Integer.parseInt(parts[4]);
-            gm.cell_width = Integer.parseInt(parts[5]);
-            gm.alphaBlend = Integer.parseInt(parts[6]);
-            gm.overdrawRow = Integer.parseInt(parts[7]);
-            gm.overdrawMax = Integer.parseInt(parts[8]);
-            // Shockbolt is paged
-            gm.pageSize = (gm.idx != 5 && gm.idx != 6) ? 0: 16;
-
-            grafmodes.add(gm);
-            
-            //game_context.infoAlert(gm.fullPath);
-            
-            //if (gm.idx == useGraphics) currentGraf = gm;
-        }
+        setGraphicsMode(Preferences.getGraphicsMode());
     }
 
     public void unloadTiles()
@@ -531,7 +443,7 @@ public class TermView extends View implements OnGestureListener {
         GraphicsMode gm = null;        
 
         if (gidx > 0) {
-            for (GraphicsMode gx: grafmodes) {
+            for (GraphicsMode gx: state.grafmodes) {
                 if (gx.idx == gidx) {
                     gm = gx;
                     break;
@@ -548,7 +460,7 @@ public class TermView extends View implements OnGestureListener {
 
         currentGraf = null;        
 
-        if (grafmodes.isEmpty()) return;
+        if (state.grafmodes.isEmpty()) return;
 
         GraphicsMode gm = findGraphicsMode(gidx);
         Bitmap image = null;
@@ -1585,7 +1497,7 @@ public class TermView extends View implements OnGestureListener {
     public void preloadTiles(TermWindow t)
     {
         GraphicsMode gm = currentGraf;
-        if (gm == null || !gm.canDraw() || !gm.havePages()) return;
+        if (gm == null || !gm.havePages() || !canDraw()) return;
         
         int i;
         HashSet<Point> pages = new HashSet<>();
@@ -1696,7 +1608,7 @@ public class TermView extends View implements OnGestureListener {
 	public void drawTileAux(int row, int col, int a, int c,
         boolean fill)
 	{
-        if (currentGraf == null || !currentGraf.canDraw()) return;
+        if (currentGraf == null || !canDraw()) return;
 
         if (!currentGraf.havePages() && atlas == null) return;
 

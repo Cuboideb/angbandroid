@@ -94,7 +94,7 @@ public class GameActivity extends Activity {
 	protected String lastKeys = "";
 	protected boolean keyHandlerIsRunning = false;
 
-    	LinkedHashMap<Integer,String> coreCommands = null;
+    LinkedHashMap<Integer,String> coreCommands = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -273,11 +273,11 @@ public class GameActivity extends Activity {
 			if (bottomRibbon != null) {
 				bottomRibbon.restoreCommandMode();
 			}
-
-			if (term != null) {		
-
-				term.reloadGraphics();
-				
+			
+			if (term != null) {
+				// We have the tileset info now. Set graphics mode again
+				term.reloadGraphics();				
+				// Redraw
 				state.nativew.updateNow();				
 			}
 
