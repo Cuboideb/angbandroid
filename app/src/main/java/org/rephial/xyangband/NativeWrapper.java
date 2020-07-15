@@ -179,11 +179,9 @@ public class NativeWrapper {
 
 	public void updateNow()
 	{
-		if (term == null) return;
-		
-		synchronized (display_lock) {			
-			frosh(null);
-		}	
+		if (term == null) return;		
+
+		frosh(null);		
 	}
 
 	public void wrefresh(int w) {
@@ -452,10 +450,12 @@ public class NativeWrapper {
 	}
 
 	public void curs_set(final int v) {
-		if (v == 1) {
-			state.stdscr.cursor_visible = true;
-		} else if (v == 0) {
-			state.stdscr.cursor_visible = false;
+		synchronized (display_lock) {
+			if (v == 1) {
+				state.stdscr.cursor_visible = true;
+			} else if (v == 0) {
+				state.stdscr.cursor_visible = false;
+			}
 		}
 	}
 
