@@ -177,6 +177,25 @@ public class NativeWrapper {
 		}
 	}
 
+	public void resizeToCore(int cols, int rows)
+	{
+		synchronized (display_lock) {
+
+			if (state.stdscr != null) {
+            	state.stdscr.resize(cols, rows);
+        	}
+        	if (state.virtscr != null) {
+            	state.virtscr.resize(cols, rows);
+        	}
+
+        	Log.d("Angband", "RESIZE TO CORE");
+
+        	String cmd = "resize:" + cols + ":" + rows;
+        	state.addSpecialCommand(cmd);
+        	state.addKey(' ');
+		}
+	}
+
 	public void updateNow()
 	{
 		if (term == null) return;		

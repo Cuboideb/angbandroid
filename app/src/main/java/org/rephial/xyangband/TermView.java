@@ -1041,26 +1041,8 @@ public class TermView extends View implements OnGestureListener {
         // Remember for later
         Preferences.setSize(this.cols, this.rows);
 
-		if (this.state.stdscr != null) {
-            this.state.stdscr.resize(this.cols, this.rows);
-        }
-        if (this.state.virtscr != null) {
-            this.state.virtscr.resize(this.cols, this.rows);
-        }
-
-        //Log.d("Angband", "RESIZE TO CORE");
-
-        String cmd = "resize:" + this.cols + ":" + this.rows;
-        state.addSpecialCommand(cmd);
-        state.addKey(' ');
-
-        /*
-        if (state.characterPlaying()) {
-
-            clearFull();
-            state.addKey(' ');
-        }
-        */
+        // Tell the core
+		state.nativew.resizeToCore(this.cols, this.rows);
 	}
 
 	public boolean isHighRes() {
