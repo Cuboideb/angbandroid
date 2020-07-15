@@ -328,7 +328,9 @@ public class NativeWrapper {
 
 		//Log.d("Angband", "Control: " + what + " - " + str);
 
-		state.controlMsg(what, str);
+		synchronized (display_lock) {
+			state.controlMsg(what, str);
+		}
 	}
 
 	public void waddnstr(final int w, final int n, final byte[] cp) {

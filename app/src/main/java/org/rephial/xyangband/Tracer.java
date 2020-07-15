@@ -7,7 +7,7 @@ class Tracer
 	String[] messages = null;
 	int next = 0;
 	int lastDumped = -1;
-	Object lock = null;
+	String lock = "lock";
 
 	public static Tracer singleton = null;
 	static {
@@ -17,8 +17,6 @@ class Tracer
 	protected Tracer()
 	{
 		messages = new String[1000];
-
-		lock = new Object();
 	}
 
 	public int getNext()
