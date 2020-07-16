@@ -198,9 +198,19 @@ public class NativeWrapper {
 
 	public void updateNow()
 	{
-		if (term == null) return;		
+		if (term != null) {
+			frosh(null);
+		}
+	}
 
-		frosh(null);		
+	public void reloadGraphics()
+	{
+		synchronized (display_lock) {
+			if (term != null) {
+				term.reloadGraphics();
+				updateNow();
+			}
+		}
 	}
 
 	public void wrefresh(int w) {

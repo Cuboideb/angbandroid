@@ -248,13 +248,8 @@ public class GameActivity extends Activity {
 			if (bottomRibbon != null) {
 				bottomRibbon.restoreCommandMode();
 			}
-			
-			if (term != null) {
-				// We have the tileset info now. Set graphics mode again
-				term.reloadGraphics();				
-				// Redraw
-				state.nativew.updateNow();				
-			}
+						
+			state.nativew.reloadGraphics();			
 
 			//rebuildViews();
 		}

@@ -1325,7 +1325,9 @@ public class TermView extends View implements OnGestureListener {
             return false;        
         }
         
+        // Try to load a stored bitmap of that size
         bitmap = state.restoreTheDungeon(canvas_width, canvas_height);        
+                
         if (bitmap != null) {
             //Log.d("Angband","Reuse Bitmap!!!");
             ; // nothing            
@@ -1333,7 +1335,7 @@ public class TermView extends View implements OnGestureListener {
         else {                        
             //Log.d("Angband","createBitmap "+canvas_width+","+canvas_height);
             bitmap = Bitmap.createBitmap(canvas_width, canvas_height, Bitmap.Config.RGB_565);
-            //bitmap = Bitmap.createBitmap(canvas_width, canvas_height, Bitmap.Config.ARGB_8888);    //    
+            //bitmap = Bitmap.createBitmap(canvas_width, canvas_height, Bitmap.Config.ARGB_8888);            
             state.saveTheDungeon(bitmap);
         }
 		
@@ -1459,7 +1461,8 @@ public class TermView extends View implements OnGestureListener {
         }
     }
 
-    public ArrayList<TileGrid> collectTileGrids(TermWindow t)
+    public ArrayList<TileGrid> collectTileGrids
+        (GraphicsMode gm, TermWindow t)
     {
         ArrayList<TileGrid> grids = new ArrayList<>();
         TileGrid g;
@@ -1471,7 +1474,7 @@ public class TermView extends View implements OnGestureListener {
                 if (!p.isGraphicTile()) continue;
                 if (p.bgColor < 0) continue;
 
-                g = new TileGrid(currentGraf, p.fgColor, p.ch, row, col);                
+                g = new TileGrid(gm, p.fgColor, p.ch, row, col);                
                 key = g.createKey();                
                 if (state.tileCache.get(key) == null) {
                     grids.add(g);
@@ -1480,7 +1483,7 @@ public class TermView extends View implements OnGestureListener {
                     //Log.d("Angband", "Cache hit (preload): " + key);
                 }
 
-                g = new TileGrid(currentGraf, p.bgColor, p.bgChar, row, col);                
+                g = new TileGrid(gm, p.bgColor, p.bgChar, row, col);                
                 key = g.createKey();
                 if (state.tileCache.get(key) == null) {
                     grids.add(g);
@@ -1501,7 +1504,7 @@ public class TermView extends View implements OnGestureListener {
         
         int i;
         HashSet<Point> pages = new HashSet<>();
-        ArrayList<TileGrid> grids = collectTileGrids(t);
+        ArrayList<TileGrid> grids = collectTileGrids(gm, t);
 
         for (TileGrid tile: grids) {            
             pages.add(tile.page);
