@@ -1446,21 +1446,6 @@ public class TermView extends View implements OnGestureListener {
         canvas.drawText(str, x + padx, y + th - pady, fore_temp);        
     }
 
-    public void markTile(TermWindow t, int r, int c, int th, int tw)
-    {
-        int x, y;
-
-        for (y = r - th; y <= r; y++) {
-            for (x = c; x < c + tw; x++) {         
-
-                if (y < t.begin_y || y >= t.rows ||
-                    x < t.begin_x || x >= t.cols) continue;
-
-                t.buffer[y][x].bgColor = -255;
-            }
-        }
-    }
-
     public ArrayList<TileGrid> collectTileGrids
         (GraphicsMode gm, TermWindow t)
     {
@@ -1621,7 +1606,10 @@ public class TermView extends View implements OnGestureListener {
 
             //game_context.infoAlert("Big tile! " + row + " " + col);
             
-            markTile(state.virtscr, row, col, tile_hgt, tile_wid);
+            state.virtscr.markTile(row-tile_hgt, col, tile_hgt, tile_wid,
+                "DOUBLE_TILE");
+            state.virtscr.markTile(row, col, tile_hgt, tile_wid,
+                "DOUBLE_TILE");
         }
 
         Rect dst = tile.locateDest();
