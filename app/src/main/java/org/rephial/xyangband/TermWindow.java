@@ -197,24 +197,17 @@ public class TermWindow {
 		return col;
 	}
 
-	public boolean inBounds(int x, int y)
+	public void markBigTile(int r, int c, int tw, int th)
 	{
-		return (x >= begin_x && x < cols
-			&& y >= begin_y && y < rows);
-	}
+		int x, y;
 
-	public void markTile(int r, int c, int tw, int th, String markMode)
-	{
-		if (tw == 0 || th == 0) return;
+		for (y = r - th + 1; y <= r ; y++) {
+			for (x = c - tw + 1; x <= c; x++) {			
 
-		int y = th * (r / th);
-		int x = tw * (c / tw);
-		if (inBounds(x, y)) {
-			if (markMode == "UGLY") {
+				if (y < begin_y || y >= rows ||
+					x < begin_x || x >= cols) continue;
+
 				buffer[y][x].isUgly = true;
-			}
-			else if (markMode == "DOUBLE_TILE") {
-				buffer[y][x].bgColor = -255;
 			}
 		}
 	}

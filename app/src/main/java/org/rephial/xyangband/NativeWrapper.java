@@ -280,7 +280,7 @@ public class NativeWrapper {
 					if (p.isDirty && (p.ch == TermView.BIG_PAD) &&
 						term.bigTileActive()) {
 
-						v.markTile(r, c, term.tile_wid, term.tile_hgt, "UGLY");
+						v.markBigTile(r, c, term.tile_wid, term.tile_hgt);
 					}
 				}
 			}
