@@ -504,13 +504,15 @@ public class TermView extends View implements OnGestureListener {
 		p.y = (char_height > 0) ? (y / char_height): 0;
 
         /*
-		if (state.virtscr != null) {
-			TermWindow.TermPoint u = state.virtscr.buffer[p.y][p.x];
+		if (state.stdscr != null) {
+			TermWindow.TermPoint u = state.stdscr.buffer[p.y][p.x];
 			game_context.infoAlert("Cell: " +
+                    y + "x" + x + " - " +
+                    p.y + "x" + p.x + " - " +
 					u.fgColor + " " + (int)u.ch + " " +
 					u.bgColor + " " + (int)u.bgChar);
-			this.postInvalidate();
-		}
+			//this.postInvalidate();
+		} 
         */
 
 		return p;
