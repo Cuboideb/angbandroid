@@ -290,6 +290,13 @@ public class NativeWrapper {
 			for(int r = 0; r<v.rows; r++) {
 				for(int c = 0; c<v.cols; c++) {
 					TermWindow.TermPoint p = v.buffer[r][c];
+
+					if (p.ch == TermView.BIG_PAD) {
+						p.isDirty = false;
+						p.isUgly = false;
+						continue;
+					}
+
 					if (p.isDirty || p.isUgly || w == null) {
 						if (p.isGraphicTile()) {
 							drawTile(r, c, p);
