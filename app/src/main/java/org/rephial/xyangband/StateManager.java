@@ -139,7 +139,7 @@ public class StateManager {
             gm.overdrawRow = Integer.parseInt(parts[7]);
             gm.overdrawMax = Integer.parseInt(parts[8]);
             // Shockbolt is paged
-            gm.pageSize = (gm.idx != 5 && gm.idx != 6) ? 0: 16;
+            gm.pageSize = (gm.idx != 5 && gm.idx != 6) ? 0: 8;
 
             grafmodes.add(gm);
             

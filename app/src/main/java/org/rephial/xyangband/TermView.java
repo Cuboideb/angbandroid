@@ -827,12 +827,15 @@ public class TermView extends View implements OnGestureListener {
         int x = (int)(winSize.x * 0.6f) + getScrollX();
         int y = 15 + getScrollY();
         //TSize size = calculateButtonSize();
+        
+        int size = (int)(Math.min(winSize.x, winSize.y) * 0.1f);
+        size = Math.min(icon.getWidth(), size);
 
-        mouseToggle = new RectF(x, y,
-                x+icon.getWidth(),
-                y+icon.getHeight());
+        //size = icon.getWidth();
 
-        p_canvas.drawBitmap(icon, x, y, null);
+        mouseToggle = new RectF(x, y, x+size, y+size);
+
+        p_canvas.drawBitmap(icon, null, mouseToggle, null);
     }
 
 	protected void onDraw(Canvas p_canvas) {
