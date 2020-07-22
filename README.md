@@ -75,7 +75,7 @@ Online manual [https://angband.readthedocs.io/en/latest/index.html](https://angb
 ### Changelog:
 
 Version 1.24 - 2020-07-22:
-- Added a mouse toggle.Turn it on to access useful commands when pressing
+- Added a mouse toggle. Turn it on to access useful commands when pressing
 over a grid. The grid occupied by the player has special actions.
 
 Version 1.23 - 2020-07-12:
