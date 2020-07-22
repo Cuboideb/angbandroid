@@ -579,14 +579,12 @@ public class ButtonRibbon implements OnClickListener,
         Log.d("Angband", "Remove Auto List");
 
         if (autoListWin != null) {
-            PopupWindow aux = autoListWin;
-
-            autoListWin = null;
-            autoListTable = null;
-            autoListSolid = false;
-
-            aux.dismiss();
+            autoListWin.dismiss();
         }
+
+        autoListWin = null;
+        autoListTable = null;
+        autoListSolid = false;
     }
 
     public void clearFastKeys() {

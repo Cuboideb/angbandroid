@@ -74,7 +74,7 @@ static int make_mask(int n) {
 typedef struct {
 	int y;
 	int x;
-	int button;
+	int button;	
 } mouse_data_t;
 
 static mouse_data_t mouse_data;
@@ -165,10 +165,22 @@ static int get_input_from_ui(int wait)
 	// Detect mouse press, be careful with negative numbers
 	if ((key > 0) && ((key & MOUSE_TAG) != 0)) {
 
-		// Get data, 3 bits for button and 10 bits for each coordinate
-		mouse_data.button = ((key >> 20) & make_mask(3));
-		mouse_data.y = (key & make_mask(10));
+		// Get data, 3 bits for mods, 2 bits for button
+		// and 10 bits for each coordinate		
+		int mods = ((key >> 22) & make_mask(3));
+		// Just two buttons
+		mouse_data.button = ((key >> 20) & make_mask(2));
 		mouse_data.x = ((key >> 10) & make_mask(10));
+		mouse_data.y = (key & make_mask(10));		
+
+		/*
+		plog_fmt("Mouse - key:%X y:%d x:%d button:%d mods:%d",
+			key, mouse_data.y, mouse_data.x,						
+			mouse_data.button, mods);
+		*/
+
+		// Encode mods in the button		
+		mouse_data.button |= (mods << 4);
 
 		// Get rid of anything except the mouse bit
 		key &= MOUSE_TAG;

@@ -378,7 +378,7 @@ public class StateManager {
         return mask;
     }
 
-	public void addMousePress(int y, int x, int button)
+	public void addMousePress(int y, int x, int button, int mods)
     {
         if (this.keyBuffer == null) {
             return;
@@ -386,16 +386,18 @@ public class StateManager {
 
         if (y < 0 || y >= 1024) return;
         if (x < 0 || x >= 1024) return;
-        if (button < 0 || button >= 8) return;
+        if (button < 0 || button >= 3) return;
 
         // Mouse bit
         int ch = set_bit(30);
+        // Encode mods.         
+        ch |= ((mods & make_mask(3)) << 22); // 3 bits [24-22]
         // Encode button
-        ch |= ((button & make_mask(3)) << 20);
-        // Encode coordinates
-        ch |= (y & make_mask(10));
-        ch |= ((x & make_mask(10)) << 10);
-
+        ch |= ((button & make_mask(2)) << 20); // 2 bits [21-20]
+        // Encode coordinates                 
+        ch |= ((x & make_mask(10)) << 10); // 10 bits [19-10]
+        ch |= (y & make_mask(10)); // 10 bits [9-0]
+        
         //Log.d("Angband", "mouse " + ch);
 
         this.keyBuffer.add(ch);

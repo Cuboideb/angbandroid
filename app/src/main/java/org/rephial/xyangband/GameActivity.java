@@ -62,8 +62,8 @@ public class GameActivity extends Activity {
 	AngbandKeyboard virtualKeyboard = null;
 	AngbandKeyboardView virtualKeyboardView = null;
 
-    	private LinearLayout ribbonZone = null;
-    	private ButtonRibbon bottomRibbon = null;
+	private LinearLayout ribbonZone = null;
+    private ButtonRibbon bottomRibbon = null;
 	private ButtonRibbon topRibbon = null;
 
 	public String coreKeymaps = "";
@@ -402,19 +402,31 @@ public class GameActivity extends Activity {
 							LayoutParams.WRAP_CONTENT);
 			rLParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 1);
 
+			int newId = View.generateViewId();
+
 			if (kb) {
 				screenLayout.addView(virtualKeyboardView, rLParams);
+				virtualKeyboardView.setId(newId);
 			}
 			else {
 				ribbonZone = new LinearLayout(this);
 				ribbonZone.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 						LayoutParams.WRAP_CONTENT));
 				ribbonZone.setOrientation(LinearLayout.VERTICAL);
+				ribbonZone.setId(newId);
 
 				rebuildButtonRibbon();
 
 				screenLayout.addView(ribbonZone, rLParams);
 			}
+
+			/*
+			RelativeLayout.LayoutParams rLParams2 =
+					new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+							LayoutParams.WRAP_CONTENT);
+			rLParams2.addRule(RelativeLayout.ABOVE, newId);
+			screenLayout.addView(mouse.mainView, rLParams2);
+			*/
 
 			setContentView(screenLayout);
 			dialog.restoreDialog();

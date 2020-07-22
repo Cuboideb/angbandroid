@@ -74,7 +74,11 @@ Online manual [https://angband.readthedocs.io/en/latest/index.html](https://angb
 
 ### Changelog:
 
-Version 1.23 - 2020/07/12:
+Version 1.24 - 2020-07-22:
+- Added a mouse toggle.Turn it on to access useful commands when pressing
+over a grid. The grid occupied by the player has special actions.
+
+Version 1.23 - 2020-07-12:
 - Reworked the ordering of some preferences.
 - More tile multipliers (they have their own preference option now).
 - Sub-windows (up to 3, map views are not supported).
@@ -82,6 +86,6 @@ Version 1.23 - 2020/07/12:
 - Option to keep touch directionals fixed in place.
 - Position of touch directionals are saved between games.
 
-Version 1.22 - 2020/07/05:
--Ribbon buttons size multiplier.
--Auto display long lists of choices for commands and shops.
+Version 1.22 - 2020-07-05:
+- Ribbon buttons size multiplier.
+- Auto display long lists of choices for commands and shops.

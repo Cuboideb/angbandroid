@@ -37,9 +37,14 @@ import android.util.Size;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -105,6 +110,11 @@ public class TermView extends View implements OnGestureListener {
     public int tile_hgt_pix = 0;
     public int tile_font_size = 0;
     public Paint tile_fore;
+
+    public boolean mouseSpecial = false;
+    public RectF mouseToggle = null;
+    public Bitmap iconMouse1 = null;
+    public Bitmap iconMouse2 = null;
 
     public static class Assert {
         public static void that(boolean condition, String message) {
@@ -328,6 +338,11 @@ public class TermView extends View implements OnGestureListener {
         tile_hgt = Preferences.getTileHeight();
         tile_wid = Preferences.getTileWidth();
         pseudoAscii = Preferences.getPseudoAscii();
+
+        iconMouse1 = BitmapFactory.decodeResource(game_context.getResources(),
+                R.drawable.mouse1);
+        iconMouse2 = BitmapFactory.decodeResource(game_context.getResources(),
+                R.drawable.mouse2);
 
         createTimers();
 
@@ -786,6 +801,40 @@ public class TermView extends View implements OnGestureListener {
         }
     }
 
+    public TSize calculateButtonSize()
+    {
+        Point winSize = new Point();
+        windowDisplay.getSize(winSize);
+
+        int w = (int)(getWidth() * 0.07f);
+        // Get the height of the activity window
+        int h = (int)(winSize.y * 0.07f);
+
+        w = Math.min(w, h);
+        h = w = ((100 + Preferences.getTouchMultiplier()) * w) / 100;
+        return new TSize(w, h);
+    }
+
+    public void drawMouseToggle(Canvas p_canvas)
+    {
+        Bitmap icon = mouseSpecial ? iconMouse2: iconMouse1;
+
+        if (icon == null) return;
+
+        Point winSize = new Point();
+        windowDisplay.getSize(winSize);
+
+        int x = (int)(winSize.x * 0.6f) + getScrollX();
+        int y = 15 + getScrollY();
+        //TSize size = calculateButtonSize();
+
+        mouseToggle = new RectF(x, y,
+                x+icon.getWidth(),
+                y+icon.getHeight());
+
+        p_canvas.drawBitmap(icon, x, y, null);
+    }
+
 	protected void onDraw(Canvas p_canvas) {
 		if (this.zones != null) this.zones.clear();
 
@@ -845,6 +894,8 @@ public class TermView extends View implements OnGestureListener {
 					this.drawDirZonesFull(p_canvas);
 				}
 			}
+
+			drawMouseToggle(p_canvas);
 		}
 	}
 
@@ -1273,10 +1324,66 @@ public class TermView extends View implements OnGestureListener {
         return key;
     }
 
-    public void sendMousePress(int y, int x, int button) {
+    public void popupMouseOptions(final int y, final int x,
+                                  int realY, int realX)
+    {
+        final PopupWindow win = new PopupWindow(game_context);
+        win.setFocusable(true);
+        win.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+        win.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        LinearLayout mainView = (LinearLayout)game_context
+                .getLayoutInflater().inflate(R.layout.mouse_input, null);
+        win.setContentView(mainView);
+
+        LinearLayout row1 = mainView.findViewById(R.id.row1);
+        LinearLayout row2 = mainView.findViewById(R.id.row2);
+
+        OnClickListener listener = new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                win.dismiss();
+                int button = 1;
+                int mods = 0;
+                String label = ((Button)v).getText().toString();
+                if (label.contains("2")) button = 2;
+                if (label.contains("Ctrl")) mods = 1;
+                if (label.contains("Shift")) mods = 2;
+                if (label.contains("Alt")) mods = 4;
+                state.addMousePress(y, x, button, mods);
+            }
+        };
+
+        String[] labels = new String[]
+                {"1","Shitf-1","Ctrl-1","Alt-1",
+                "2","Shift-2","Ctrl-2","Alt-2"};
+        int cut = 4;
+        for (int i = 0; i < labels.length; i++) {
+            Button btn = (Button)game_context.getLayoutInflater().inflate
+                    (R.layout.popupbutton, null);
+            btn.setText(labels[i]);
+            btn.setOnClickListener(listener);
+            if (i < cut) {
+                row1.addView(btn);
+            }
+            else {
+                row2.addView(btn);
+            }
+        }
+
+        int gravity = Gravity.LEFT | Gravity.TOP;
+        win.showAtLocation(this, gravity, realX, realY);
+    }
+
+    public void sendMousePress(int y, int x) {
         Point p = mouseToGrid(y, x);
         //Log.d("Angband", "y x " + p.y + " " + p.x);
-        state.addMousePress(p.y, p.x, button);
+        if (mouseSpecial) {
+            popupMouseOptions(p.y, p.x, y, x);
+        }
+        else {
+            state.addMousePress(p.y, p.x, 1, 0);
+        }
     }
 
 	public boolean onSingleTapUp(MotionEvent event) {
@@ -1287,6 +1394,13 @@ public class TermView extends View implements OnGestureListener {
 
 		int x = (int)event.getX() + this.getScrollX();
 		int y = (int)event.getY() + this.getScrollY();
+
+		if (mouseToggle != null && mouseToggle.contains(x,y)) {
+		    mouseSpecial = !mouseSpecial;
+		    invalidate();
+		    return true;
+        }
+
 		int key = 0;
 
 		if (Preferences.getEnableTouch() &&
@@ -1306,7 +1420,7 @@ public class TermView extends View implements OnGestureListener {
 			return true;
 		}
 
-        sendMousePress(y, x, 1);
+        sendMousePress(y, x);
         return true;
 	}
 
@@ -1387,7 +1501,9 @@ public class TermView extends View implements OnGestureListener {
 
 		setBackColor(bcolor);
 
-		//extendedErase = false;
+        if (useGraphics != 0) {
+	       extendedErase = false;
+        }
 
 		canvas.drawRect(x, y,
 			x + tw + (extendedErase ? 1 : 0),
