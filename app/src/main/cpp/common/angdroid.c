@@ -77,6 +77,8 @@ typedef struct {
 	int button;	
 } mouse_data_t;
 
+#define PLAYER_PLAYING (player && player->upkeep && player->upkeep->playing)
+
 static mouse_data_t mouse_data;
 
 /*
@@ -216,7 +218,7 @@ int process_special_command(int key)
 	if (sscanf(buf, "graphics:%d:%d:%d:%d",
 		&graf, &trows, &tcols, &pseudo) == 4) {
 
-		if (player == NULL || !player->upkeep->playing) return 0;
+		if (!PLAYER_PLAYING) return 0;
 
 		use_graphics = graf;
 		current_graphics_mode = get_graphics_mode(use_graphics);
@@ -230,7 +232,7 @@ int process_special_command(int key)
 
 	if (sscanf(buf, "resize:%d:%d", &tcols, &trows) == 2) {
 
-		if (player == NULL || !player->upkeep->playing) return 0;
+		if (!PLAYER_PLAYING) return 0;
 
 		Term_resize(tcols, trows);		
 		//return KTRL('R');
@@ -239,7 +241,7 @@ int process_special_command(int key)
 
 	if (strcmp(buf, "redraw") == 0) {
 
-		if (player == NULL || !player->upkeep->playing) return 0;
+		if (!PLAYER_PLAYING) return 0;
 		
 		Term_redraw();
 		return 0;
@@ -815,11 +817,11 @@ int queryInt(const char* argv0) {
 	}
 	else if (strcmp(argv0, "playing") == 0) {
 		result = 0;		
-		if (player && player->upkeep->playing) result = 1;
+		if (PLAYER_PLAYING) result = 1;
 	}
 	else if (strcmp(argv0, "in_the_dungeon") == 0) {
 		result = 0;		
-		if (player && player->upkeep->playing
+		if (PLAYER_PLAYING
 			// We have a main term
 			&& angband_term[0] != NULL
 			// We are looking at the dungeon 

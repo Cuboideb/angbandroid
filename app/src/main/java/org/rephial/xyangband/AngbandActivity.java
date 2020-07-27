@@ -76,8 +76,11 @@ public class AngbandActivity extends Activity
 					break;
 				case 1:
 					//Log.d("Angband", "handler dismiss progress");
+					/*
 					if (progressDialog != null) progressDialog.dismiss();
 					progressDialog = null;
+					*/
+					dismissDialog();
 					break;
 				case 2:
 					//Log.d("Angband", "handler fatal error");
@@ -95,6 +98,20 @@ public class AngbandActivity extends Activity
 		};
 
 		checkInstall();
+	}
+
+	public void dismissDialog()
+	{
+		if (progressDialog != null && progressDialog.isShowing()) {
+			progressDialog.dismiss();
+		}
+		progressDialog = null;
+	}
+
+	@Override
+	public void onDestroy() {
+		dismissDialog();
+		super.onDestroy();
 	}
 
 	@Override
