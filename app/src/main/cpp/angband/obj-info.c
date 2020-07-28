@@ -1882,6 +1882,9 @@ static bool describe_effect(textblock *tb, const struct object *obj,
 							projections[effect->subtype].player_desc,
 							effect->other, dice_string);
 				}
+				if (boost && (effect->index != EF_BREATH))
+					my_strcat(desc, format(", which your device skill increases by %d per cent", boost),
+							  sizeof(desc));
 				break;
 			}
 
