@@ -726,7 +726,18 @@ public class TermView extends View implements OnGestureListener {
 
                 if (r != lastRow) {
                     lastRow = r;                        
-                    ++currentRow;                        
+                    ++currentRow;  
+
+                    // Draw a shadow in text-mode
+                    if (useGraphics == 0) {
+                        int x2 = startX;
+                        int y2 = startY + currentRow * th;
+                        Rect rect = new Rect(x2, y2,
+                            x2 + columns * tw, y2 + th);
+                        fore_subw.setColor(Color.BLACK);
+                        fore_subw.setAlpha(200);
+                        p_canvas.drawRect(rect, fore_subw);
+                    }
                 }
 
                 int x = startX + c * tw;
@@ -741,6 +752,7 @@ public class TermView extends View implements OnGestureListener {
                 }
 
                 fore_subw.setColor(color);
+                fore_subw.setAlpha(255);
 
                 int w2 = (int)fore_subw.measureText(str, 0, 1);
                 int pad = Math.max((tw - w2) / 2, 0);
