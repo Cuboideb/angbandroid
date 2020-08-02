@@ -109,6 +109,7 @@ add_library( # Sets the name of the library.
             randname.c
             save.c
             savefile.c
+            save-charoutput.c
             score.c            
             sound-core.c
             source.c
