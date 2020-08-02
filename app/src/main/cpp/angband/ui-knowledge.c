@@ -2736,7 +2736,7 @@ void textui_browse_knowledge(void)
 	else
 		knowledge_actions[4].flags = MN_ACT_GRAYED;
 
-	send_control_not_playing();
+	Term_control_not_playing();
 
 	screen_save();
 	menu_layout(&knowledge_menu, &knowledge_region);
@@ -2746,7 +2746,7 @@ void textui_browse_knowledge(void)
 
 	screen_load();
 
-	send_control_playing_now();
+	Term_control_playing_now();
 }
 
 

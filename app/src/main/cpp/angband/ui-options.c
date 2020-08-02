@@ -1854,12 +1854,12 @@ void do_cmd_options(void)
 	screen_save();
 	clear_from(0);
 
-	send_control_not_playing();
+	Term_control_not_playing();
 
 	menu_layout(option_menu, &SCREEN_REGION);
 	menu_select(option_menu, 0, false);
 
-    send_control_playing_now();
+    Term_control_playing_now();
 
 	screen_load();
 }

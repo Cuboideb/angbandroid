@@ -250,12 +250,14 @@ public class NativeWrapper {
 
 			TermWindow v = state.virtscr;
 
-			if (w != null) v.overwrite(w);
+			if (w != null) {
+				v.overwrite(w);
+			}
 
 			if (term == null) {
-        	    		v.quiet();
-	            		return;
-        		}
+    	    	v.quiet();
+            	return;
+    		}
 
 			/* mark ugly points, i.e. those clobbered by anti-alias overflow */
 			for(int c = 0; c<v.cols; c++) {
@@ -276,12 +278,10 @@ public class NativeWrapper {
 							u.isUgly = !u.isDirty;
 						}						
 					}
-
-					if (p.isDirty && (p.ch == TermView.BIG_PAD) &&
-						term.bigTileActive()) {
-
-						v.markBigTile(r, c, term.tile_wid, term.tile_hgt);
-					}
+										
+					if (p.isDirty && p.isBigPad()) {
+						v.touchBigTile(r, c, term.tile_wid, term.tile_hgt);
+					}					
 				}
 			}
 
@@ -291,7 +291,7 @@ public class NativeWrapper {
 				for(int c = 0; c<v.cols; c++) {
 					TermWindow.TermPoint p = v.buffer[r][c];
 
-					if (p.ch == TermView.BIG_PAD) {
+					if (p.isBigPad()) {
 						p.isDirty = false;
 						p.isUgly = false;
 						continue;

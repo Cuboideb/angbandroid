@@ -362,11 +362,11 @@ void grid_data_as_text(struct grid_data *g, int *ap, wchar_t *cp, int *tap,
 	if (USE_PSEUDO_ASCII) {
 		a |= 0x80;
 	}
-
-	// Hack - Big text for android
+			
+	// Hack - Big text (for android)
 	if (!(a & 0x80) && ((tile_width > 1) || (tile_height > 1))) {
-		c |= 0x1D00;
-	}
+		c |= Term->big_text_mask;
+	}		
 
 	/* Result */
 	(*ap) = a;
@@ -813,7 +813,7 @@ void do_cmd_view_map(void)
 	tile_height = 1;
 
 	/* React to changes */
-	send_visual_state();
+	Term_control_visuals();
 
 	/* Display the map */
 	display_map(&cy, &cx);
@@ -832,7 +832,7 @@ void do_cmd_view_map(void)
 	tile_height = h;
 
 	/* React to changes */
-	send_visual_state();
+	Term_control_visuals();
 
 	/* Load screen */
 	screen_load();

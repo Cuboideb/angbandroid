@@ -374,7 +374,7 @@ static errr Term_xtra_android(int n, int v)
 	return 1;
 }
 
-static errr Term_control_msg_android(int what, const char *msg)
+static errr Term_control_android(int what, const char *msg)
 {
 	return (errr)control_msg(what, msg);
 }
@@ -393,7 +393,7 @@ static errr Term_curs_android(int x, int y)
 {	
 	move(y, x);	
 
-	Term_control_msg_android(TERM_SHOW_CURSOR, "small");
+	Term_control_android(TERM_CONTROL_SHOW_CURSOR, "small");
 
 	return 0;
 }
@@ -402,7 +402,7 @@ static errr Term_bigcurs_android(int x, int y)
 {
 	move(y, x);
 
-	Term_control_msg_android(TERM_SHOW_CURSOR, "big");
+	Term_control_android(TERM_CONTROL_SHOW_CURSOR, "big");
 
 	return 0;
 }
@@ -435,7 +435,6 @@ static errr Term_wipe_android(int x, int y, int n)
 	/* Success */
 	return 0;
 }
-
 
 /*
  * Draw some text on the screen
@@ -549,6 +548,10 @@ static void term_data_link(int i)
 	t->attr_blank = COLOUR_WHITE;
 	t->char_blank = ' ';
 
+	t->attr_pad = COLOUR_WHITE;
+	t->char_pad = 0x1E00;
+	t->big_text_mask = 0x1D00;
+
 	/* Prepare the init/nuke hooks */
 	t->init_hook = Term_init_android;
 	t->nuke_hook = Term_nuke_android;
@@ -560,7 +563,7 @@ static void term_data_link(int i)
 	t->wipe_hook = Term_wipe_android;
 	t->text_hook = Term_text_android;
 	t->pict_hook = Term_pict_android;
-	t->control_msg_hook = Term_control_msg_android;
+	t->control_hook = Term_control_android;
 
 	/* Remember where we came from */
 	t->data = td;
@@ -820,21 +823,18 @@ int queryInt(const char* argv0) {
 		if (PLAYER_PLAYING) result = 1;
 	}
 	else if (strcmp(argv0, "in_the_dungeon") == 0) {
-		result = 0;		
+		result = 0;
 		if (PLAYER_PLAYING
-			// We have a main term
-			&& angband_term[0] != NULL
-			// We are looking at the dungeon 
-			&& angband_term[0]->saved == 0
+			&& character_dungeon
+			&& screen_save_depth == 0
 			&& !player->is_dead) result = 1;
 	}
 	else if (strcmp(argv0, "rl") == 0) {
 		result = 0;
-		if (player && OPT(player, rogue_like_commands)) result = 1;	
+		if (player && OPT(player, rogue_like_commands)) result = 1;
 	}
 	else if (strcmp(argv0, "life_pct") == 0 && player) {
-		result = player->chp * 10 / MAX(player->mhp, 1);	
-	
+		result = player->chp * 10 / MAX(player->mhp, 1);
 	}
 	// Starts with this pattern?
 	else if (strncmp(argv0, ROGUE_KEY, strlen(ROGUE_KEY)) == 0) {

@@ -44,6 +44,11 @@ public class TermWindow {
 		public boolean isBigText() {
 			return ch >= 0x1D00 && ch <= 0x1DFF;			
 		}
+
+		public boolean isBigPad()
+		{
+			return ch == TermView.BIG_PAD;
+		}
 	}
 	public TermPoint[][] buffer = null; 
 
@@ -197,19 +202,32 @@ public class TermWindow {
 		return col;
 	}
 
-	public void markBigTile(int r, int c, int tw, int th)
+	public void touchBigTile(int r, int c, int tw, int th)
 	{
 		int x, y;
-
+		
 		for (y = r - th + 1; y <= r ; y++) {
 			for (x = c - tw + 1; x <= c; x++) {			
 
 				if (y < begin_y || y >= rows ||
 					x < begin_x || x >= cols) continue;
 
-				buffer[y][x].isUgly = true;
+				TermPoint p = buffer[y][x];
+				if (p.isGraphicTile() || p.isBigText()) {
+					p.isUgly = !p.isDirty;
+				}
 			}
 		}
+		
+		/*	
+		if (c >= TermView.COL_MAP && r >= TermView.ROW_MAP
+			&& c < cols && r < rows-1) {
+			x = (int)((c - TermView.COL_MAP) / tw) + TermView.COL_MAP;
+			y = (int)((r - TermView.ROW_MAP) / th) + TermView.ROW_MAP;
+			TermPoint p = buffer[y][x];
+			p.isUgly = !p.isDirty;
+		}
+		*/
 	}
 
 	public void quiet()
@@ -321,7 +339,7 @@ public class TermWindow {
 
 				if ((y2 >= rows) || (x2 >= cols)) continue;
 
-				move(y2, x2);
+				//move(y2, x2);
 
 				if (y2 > y || x2 > x) {
 					TermPoint p = buffer[y2][x2];

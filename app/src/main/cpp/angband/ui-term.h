@@ -185,6 +185,10 @@ struct term
 	int attr_blank;
 	wchar_t char_blank;
 
+	int attr_pad;
+	wchar_t char_pad;
+	int big_text_mask;
+
 	bool complex_input;
 
 	ui_event *key_queue;
@@ -233,7 +237,7 @@ struct term
 
 	void (*view_map_hook)(term *t);
 
-	errr (*control_msg_hook)(int what, const char *msg);
+	errr (*control_hook)(int what, const char *msg);
 };
 
 /**
@@ -298,8 +302,8 @@ struct term
 #define TERM_CONTROL_LIST_KEYS 1
 #define TERM_CONTROL_NOT_PLAYING 2
 #define TERM_CONTROL_PLAYING_NOW 3
-#define TERM_VISUAL_STATE 4
-#define TERM_SHOW_CURSOR 5
+#define TERM_CONTROL_VISUAL_STATE 4
+#define TERM_CONTROL_SHOW_CURSOR 5
 
 /**
  * Bit flags for the "window_flag" variable.
@@ -390,10 +394,12 @@ extern errr Term_key_push(int k);
 extern errr Term_event_push(const ui_event *ke);
 extern errr Term_inkey(ui_event *ch, bool wait, bool take);
 
-extern errr Term_control_msg_ws(int what, int n, const wchar_t *msg);
-extern errr Term_control_msg(int what, const char *msg);
-#define send_control_keys(msg) Term_control_msg(TERM_CONTROL_LIST_KEYS,msg)
-extern errr send_visual_state();
+extern errr Term_control_ws(int what, int n, const wchar_t *msg);
+extern errr Term_control(int what, const char *msg);
+#define Term_control_keys(msg) Term_control(TERM_CONTROL_LIST_KEYS,msg)
+extern errr Term_control_visuals();
+extern errr Term_control_playing_now();
+extern errr Term_control_not_playing();
 
 extern errr Term_save(void);
 extern errr Term_load(void);
@@ -406,7 +412,5 @@ extern errr term_nuke(term *t);
 extern errr term_init(term *t, int w, int h, int k);
 
 extern int big_pad(int col, int row, byte a, wchar_t c);
-
-extern wchar_t term_get_pad(void);
 
 #endif /* INCLUDED_Z_TERM_H */

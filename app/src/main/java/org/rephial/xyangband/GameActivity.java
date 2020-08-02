@@ -84,8 +84,8 @@ public class GameActivity extends Activity {
 	public static final int TERM_CONTROL_LIST_KEYS = 1;
 	public static final int TERM_CONTROL_NOT_PLAYING = 2;
 	public static final int TERM_CONTROL_PLAYING_NOW = 3;
-	public static final int TERM_VISUAL_STATE = 4;
-	public static final int TERM_SHOW_CURSOR = 5;
+	public static final int TERM_CONTROL_VISUAL_STATE = 4;
+	public static final int TERM_CONTROL_SHOW_CURSOR = 5;
 
 	protected Handler handler = null;
 
@@ -239,21 +239,13 @@ public class GameActivity extends Activity {
 				Preferences.setCoreKeymaps(coreKeymaps);
 			}
 
-			/*
-			if (topRibbon != null) {
-				topRibbon.rebuildKeymaps();
-			}
-			*/
-
 			if (bottomRibbon != null) {
 				bottomRibbon.restoreCommandMode();
 			}
 						
-			state.nativew.reloadGraphics();			
-
-			//rebuildViews();
+			state.nativew.reloadGraphics();
 		}
-		if (what == TERM_VISUAL_STATE && term != null) {
+		if (what == TERM_CONTROL_VISUAL_STATE && term != null) {
 
 			Pattern pattern = Pattern.compile("visual:(\\d+):(\\d+)" +
 				":(\\d+)");
@@ -266,7 +258,7 @@ public class GameActivity extends Activity {
 				term.configureVisuals(rows, cols, graf);
 			}
 		}
-		if (what == TERM_SHOW_CURSOR) {
+		if (what == TERM_CONTROL_SHOW_CURSOR) {
 			//Log.d("Angband", "Big cursor: " + msg);
 			state.setBigCursor(msg.equals("big"));
 			state.setCursorVisible(true);

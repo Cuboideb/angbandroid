@@ -450,7 +450,7 @@ static errr Term_curs_hack(int x, int y)
 	return (-1);
 }
 
-static errr Term_control_msg_hack(int what, const char *msg)
+static errr Term_control_hack(int what, const char *msg)
 {
 	return -1;
 }
@@ -553,8 +553,7 @@ void Term_big_queue_char(term *t, int x, int y, int a, wchar_t c, int a1,
 	/* Leave space on bottom for status */
 	int vmax = (y + tile_height < t->hgt - 1) ?
 	    tile_height : t->hgt - 1 - y;
-        int hor, vert;
-        wchar_t pad = term_get_pad();
+        int hor, vert;        
 
 	/* Avoid warning */
 	(void)c;
@@ -564,39 +563,38 @@ void Term_big_queue_char(term *t, int x, int y, int a, wchar_t c, int a1,
         /* Horizontal first; skip already marked upper left corner */
         for (hor = 1; hor < tile_width; hor++) {
         	/* Queue dummy character */
-        	/*
-	        if (a & 0x80)
+        	
+        	if (t->char_pad) 
+        		Term_queue_char(t, x + hor, y, t->attr_pad, t->char_pad, 0, 0);
+	        else if (a & 0x80)
 		    	Term_queue_char(t, x + hor, y, 255, -1, 0, 0);			    	
 			else
-		        Term_queue_char(t, x + hor, y, COLOUR_WHITE, pad, a1, c1);
-			*/
-		    Term_queue_char(t, x + hor, y, COLOUR_WHITE, pad, 0, 0);
+		        Term_queue_char(t, x + hor, y, COLOUR_WHITE, ' ', a1, c1);			
 		}
 
 		/* Now vertical */
 		for (vert = 1; vert < vmax; vert++) {
 			for (hor = 0; hor < tile_width; hor++) {
 				/* Queue dummy character */
-				/*
-				if (a & 0x80)
+				if (t->char_pad) 
+        			Term_queue_char(t, x + hor, y + vert, t->attr_pad, t->char_pad, 0, 0);
+	        	else if (a & 0x80)
 					Term_queue_char(t, x + hor, y + vert, 255, -1, 0, 0);
 				else
-					Term_queue_char(t, x + hor, y + vert, COLOUR_WHITE, pad, a1, c1);
-				*/
-				Term_queue_char(t, x + hor, y + vert, COLOUR_WHITE, pad, 0, 0);
+					Term_queue_char(t, x + hor, y + vert, COLOUR_WHITE, ' ', a1, c1);				
 			}
 		}
 	} else {
 		/* Only vertical */
 		for (vert = 1; vert < vmax; vert++) {
 			/* Queue dummy character */
-			/*
-			if (a & 0x80)
+			
+			if (t->char_pad)
+				Term_queue_char(t, x, y + vert, t->attr_pad, t->char_pad, 0, 0);
+			else if (a & 0x80)
 				Term_queue_char(t, x, y + vert, 255, -1, 0, 0);				
 			else
-				Term_queue_char(t, x, y + vert, COLOUR_WHITE, pad, a1, c1);
-			*/
-			Term_queue_char(t, x, y + vert, COLOUR_WHITE, pad, 0, 0);
+				Term_queue_char(t, x, y + vert, COLOUR_WHITE, ' ', a1, c1);
 		}
 	}
 }
@@ -1180,7 +1178,7 @@ errr Term_fresh(void)
 	if (!Term->wipe_hook) Term->wipe_hook = Term_wipe_hack;
 	if (!Term->text_hook) Term->text_hook = Term_text_hack;
 	if (!Term->pict_hook) Term->pict_hook = Term_pict_hack;
-	if (!Term->control_msg_hook) Term->control_msg_hook = Term_control_msg_hack;
+	if (!Term->control_hook) Term->control_hook = Term_control_hack;
 
 
 	/* Handle "total erase" */
@@ -1552,8 +1550,6 @@ void Term_big_putch(int x, int y, int a, wchar_t c)
 {
 	int hor, vert;
 
-	wchar_t pad = term_get_pad();
-
 	/* Avoid warning */
 	(void)c;
 
@@ -1563,38 +1559,35 @@ void Term_big_putch(int x, int y, int a, wchar_t c)
 		for (hor = 0; hor <= tile_width; hor++) {
 			/* Queue dummy character */
 			if (hor != 0) {
-				/*
-				if (a & 0x80)
+				if (Term->char_pad)
+					Term_putch(x + hor, y, Term->attr_pad, Term->char_pad);
+				else if (a & 0x80)
 					Term_putch(x + hor, y, 255, -1);
 				else
 					Term_putch(x + hor, y, COLOUR_WHITE, ' ');
-				*/
-				Term_putch(x + hor, y, COLOUR_WHITE, pad);
 			}
 
 			/* Now vertical */
 			for (vert = 1; vert <= tile_height; vert++) {
 				/* Queue dummy character */
-				/*
-				if (a & 0x80)
+				if (Term->char_pad)
+					Term_putch(x + hor, y + vert, Term->attr_pad, Term->char_pad);
+				else if (a & 0x80)
 					Term_putch(x + hor, y + vert, 255, -1);
 				else
 					Term_putch(x + hor, y + vert, COLOUR_WHITE, ' ');
-				*/
-				Term_putch(x + hor, y + vert, COLOUR_WHITE, pad);
 			}
 		}
 	} else {
 		/* Only vertical */
 		for (vert = 1; vert <= tile_height; vert++) {
 			/* Queue dummy character */
-			/*
-			if (a & 0x80)
+			if (Term->char_pad)
+				Term_putch(x, y + vert, Term->attr_pad, Term->char_pad);
+			else if (a & 0x80)
 				Term_putch(x, y + vert, 255, -1);
 			else
 				Term_putch(x, y + vert, COLOUR_WHITE, ' ');
-			*/
-			Term_putch(x, y + vert, COLOUR_WHITE, pad);
 		}
 	}
 }
@@ -2518,6 +2511,11 @@ errr term_init(term *t, int w, int h, int k)
 	t->attr_blank = 0;
 	t->char_blank = L' ';
 
+	/* Default pad */
+	t->attr_pad = 0;
+	t->char_pad = 0;
+	t->big_text_mask = 0;
+
 	/* No saves yet */
 	t->saved = 0;
 
@@ -2538,20 +2536,20 @@ int big_pad(int col, int row, byte a, wchar_t c)
 	return tile_width;
 }
 
-errr Term_control_msg(int what, const char *msg)
+errr Term_control(int what, const char *msg)
 {
 	if (strlen(msg) == 0) {
 		return (-1);
 	}
 
 	/* Verify the hook */
-	if (!Term->control_msg_hook) return (-1);
+	if (!Term->control_hook) return (-1);
 
 	/* Call the hook */
-	return ((*Term->control_msg_hook)(what, msg));
+	return ((*Term->control_hook)(what, msg));
 }
 
-errr Term_control_msg_ws(int what, int n, const wchar_t *ws)
+errr Term_control_ws(int what, int n, const wchar_t *ws)
 {
 	if (n == 0) {
 		return (-1);
@@ -2568,22 +2566,30 @@ errr Term_control_msg_ws(int what, int n, const wchar_t *ws)
 	wcstombs(s, wbuf, len+1);
 	mem_free(wbuf);
 
-	errr status = Term_control_msg(what, s);
+	errr status = Term_control(what, s);
 	mem_free(s);
 	return (status);
 }
 
-wchar_t term_get_pad(void)
-{
-	return 0x1E00;
-}
-
-errr send_visual_state()
+errr Term_control_visuals()
 {
 	char buf[2048] = "";
 
 	strnfmt(buf, sizeof(buf), "visual:%d:%d:%d",
 		tile_height, tile_width, use_graphics);
 
-	return Term_control_msg(TERM_VISUAL_STATE, buf);
+	return Term_control(TERM_CONTROL_VISUAL_STATE, buf);
+}
+
+errr Term_control_playing_now()
+{
+	char keymaps[2048];
+	keymap_pack(keymaps, sizeof(keymaps));
+	/* Hack -- Piggyback the keymaps */
+	return Term_control(TERM_CONTROL_PLAYING_NOW, keymaps);
+}
+
+errr Term_control_not_playing()
+{
+	return Term_control(TERM_CONTROL_NOT_PLAYING, "dummy");
 }

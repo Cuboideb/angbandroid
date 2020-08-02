@@ -71,14 +71,14 @@ void keys_clear(bool force)
 	if (control_keys_flash || force) {
 		control_keys[0] = 0;
 		control_keys_flash = true;
-		send_control_keys("[[:clear:]]");
+		Term_control_keys("[[:clear:]]");
 	}
 }
 
 void keys_flush()
 {
 	if (control_keys[0] != 0) {
-		send_control_keys(control_keys);
+		Term_control_keys(control_keys);
 	}
 }
 
