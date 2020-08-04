@@ -206,8 +206,7 @@ public class NativeWrapper {
 	public void reloadGraphics()
 	{
 		synchronized (display_lock) {
-			if (term != null) {
-				term.reloadGraphics();
+			if (term != null && term.reloadGraphics()) {				
 				updateNow();
 			}
 		}
@@ -286,7 +285,7 @@ public class NativeWrapper {
 			}
 
 			term.preloadTiles(v);
-		
+
 			for(int r = 0; r<v.rows; r++) {
 				for(int c = 0; c<v.cols; c++) {
 					TermWindow.TermPoint p = v.buffer[r][c];
@@ -307,7 +306,7 @@ public class NativeWrapper {
 					}
 				}
 			}
-			
+
 			term.postInvalidate();
 		
 			if (w == null)
@@ -366,6 +365,11 @@ public class NativeWrapper {
 
 		synchronized (display_lock) {
 			state.controlMsg(what, str);
+
+			// Hack -- Force setup of graphics mode variables
+			if (what == GameActivity.TERM_CONTROL_CONTEXT) {
+				reloadGraphics();
+			}
 		}
 	}
 

@@ -79,6 +79,9 @@ typedef struct {
 
 #define PLAYER_PLAYING (player && player->upkeep && player->upkeep->playing)
 
+#define IN_THE_DUNGEON (PLAYER_PLAYING && character_dungeon \
+&& screen_save_depth == 0 && !player->is_dead)
+
 static mouse_data_t mouse_data;
 
 /*
@@ -204,7 +207,7 @@ int process_special_command(int key)
 {
 	char buf[2048] = "";
 	char *pbuf = buf;		
-	int graf, pseudo, trows, tcols;
+	int graf, pseudo, trows, tcols;	
 
 	key = 0;
 
@@ -376,7 +379,21 @@ static errr Term_xtra_android(int n, int v)
 
 static errr Term_control_android(int what, const char *msg)
 {
-	return (errr)control_msg(what, msg);
+	const char *pbuf = msg;
+	char buf[2048] = "";
+
+	if (what == TERM_CONTROL_VISUAL_STATE) {
+		strnfmt(buf, sizeof(buf), "visual:%d:%d:%d",
+			tile_height, tile_width, use_graphics);
+		pbuf = buf;
+	}
+
+	if (what == TERM_CONTROL_CONTEXT && IN_THE_DUNGEON) {
+		strnfmt(buf, sizeof(buf), "in_dungeon:1");
+		pbuf = buf;
+	}
+
+	return (errr)control_msg(what, pbuf);
 }
 
 /*
@@ -824,10 +841,7 @@ int queryInt(const char* argv0) {
 	}
 	else if (strcmp(argv0, "in_the_dungeon") == 0) {
 		result = 0;
-		if (PLAYER_PLAYING
-			&& character_dungeon
-			&& screen_save_depth == 0
-			&& !player->is_dead) result = 1;
+		if (IN_THE_DUNGEON) result = 1;
 	}
 	else if (strcmp(argv0, "rl") == 0) {
 		result = 0;

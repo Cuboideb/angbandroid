@@ -703,7 +703,7 @@ static const char *recall_prompt(int oid)
 {
 	(void)oid;
 
-	keys_flash("r");
+	soft_kbd_flash("r");
 
 	return ", 'r' to recall";
 }
@@ -901,7 +901,7 @@ static void display_knowledge(const char *title, int *obj_list, int o_count,
 
 		/* Print prompt */
 		{
-			keys_clear(true);
+			soft_kbd_clear(true);
 
 			const char *pedit = (!o_funcs.xattr) ? "" :
 					(!(attr_idx|char_idx) ?
@@ -911,20 +911,20 @@ static void display_knowledge(const char *title, int *obj_list, int o_count,
 			const char *pvs = "";
 
 			if (strlen(pedit) > 0) {
-				keys_flash("c");
+				soft_kbd_flash("c");
 				if (strstr(pedit, "paste") != NULL) {
-					keys_flash("p");
+					soft_kbd_flash("p");
 				}
 			}
 
 			if (tile_picker) pvs = ", ENTER to accept";
 			else if (glyph_picker) {
 				pvs = ", 'i' to insert, ENTER to accept";
-				keys_flash("i");
+				soft_kbd_flash("i");
 			}
 			else if (o_funcs.xattr) {
 				pvs = ", 'v' for visuals";
-				keys_flash("v");
+				soft_kbd_flash("v");
 			}
 
 			prt(format("<dir>%s%s%s, ESC", pvs, pedit, xtra), hgt - 1, 0);
@@ -979,7 +979,7 @@ static void display_knowledge(const char *title, int *obj_list, int o_count,
 
 		ke = inkey_ex();
 
-		keys_clear(true);
+		soft_kbd_clear(true);
 
 		if (!tile_picker && !glyph_picker) {
 			ui_event ke0 = EVENT_EMPTY;
@@ -1989,8 +1989,8 @@ static const char *o_xtra_prompt(int oid)
 	else
 		sel = kind->note_unaware ? with_insc : no_insc;
 
-	keys_flash("sr{");
-	if (sel == with_insc) keys_flash("}");
+	soft_kbd_flash("sr{");
+	if (sel == with_insc) soft_kbd_flash("}");
 
 	return sel;
 }
@@ -2162,11 +2162,11 @@ static const char *rune_xtra_prompt(int oid)
 	const char *no_insc = ", 'r'ecall, '{'";
 	const char *with_insc = ", 'r'ecall, '{', '}'";
 
-	keys_flash("r{");
+	soft_kbd_flash("r{");
 
 	/* Appropriate prompt */
 	if (rune_note(oid)) {
-		keys_flash("}");
+		soft_kbd_flash("}");
 		return with_insc;
 	}
 
@@ -2354,7 +2354,7 @@ static const char *feat_prompt(int oid)
 {
 	(void)oid;
 
-	keys_flash("lL");
+	soft_kbd_flash("lL");
 
 	switch (f_uik_lighting) {
 			case LIGHTING_LIT:  return ", 'l/L' for lighting (lit)";
@@ -2543,7 +2543,7 @@ static const char *trap_prompt(int oid)
 {
 	(void)oid;
 
-	keys_flash("l");
+	soft_kbd_flash("l");
 
 	return ", 'l' to cycle lighting";
 }
@@ -2736,8 +2736,6 @@ void textui_browse_knowledge(void)
 	else
 		knowledge_actions[4].flags = MN_ACT_GRAYED;
 
-	Term_control_not_playing();
-
 	screen_save();
 	menu_layout(&knowledge_menu, &knowledge_region);
 
@@ -2745,8 +2743,6 @@ void textui_browse_knowledge(void)
 	menu_select(&knowledge_menu, 0, false);
 
 	screen_load();
-
-	Term_control_playing_now();
 }
 
 

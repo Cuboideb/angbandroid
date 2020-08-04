@@ -48,6 +48,7 @@ import android.widget.PopupWindow;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
 
 public class TermView extends View implements OnGestureListener {
@@ -137,7 +138,7 @@ public class TermView extends View implements OnGestureListener {
 
     public class TileGrid
     {
-        Point _pt;
+        //Point _pt;
         Point srcPoint;
         TSize srcSize;
 
@@ -151,12 +152,14 @@ public class TermView extends View implements OnGestureListener {
 
         boolean isLargeTile = false;
 
+        String key = "";
+
         public TileGrid(GraphicsMode pGM, int pSrcRow, int pSrcCol,
             int pDstRow, int pDstCol)
         {
             gm = pGM;
 
-            _pt = new Point(pSrcCol, pSrcRow);
+            //_pt = new Point(pSrcCol, pSrcRow);
 
             srcPoint = new Point(pSrcCol & 0x7F, pSrcRow & 0x7F);
 
@@ -210,8 +213,11 @@ public class TermView extends View implements OnGestureListener {
 
         public String createKey()
         {
-            return "" + gm.idx + "-" + srcPoint.x + "@" + srcPoint.y + 
-                "-" + dstSize.width + "x" + dstSize.height;
+            if (key == "") {
+                key = "" + gm.idx + "-" + srcPoint.x + "@" + srcPoint.y + 
+                    "-" + dstSize.width + "x" + dstSize.height;
+            }
+            return key;
         }
 
         public Bitmap loadBitmap(Bitmap from)
@@ -259,6 +265,8 @@ public class TermView extends View implements OnGestureListener {
 	private GestureDetector gesture;
 
 	private ArrayList<RectF> zones = new ArrayList<>();
+
+    public HashMap<String,Number> alphaTiles = new HashMap<>();
 
 	public TermView(Context context) {
 		super(context);
@@ -397,9 +405,16 @@ public class TermView extends View implements OnGestureListener {
         };
     }    
 
-    public void reloadGraphics()
-    {
-        setGraphicsMode(Preferences.getGraphicsMode());
+    public boolean reloadGraphics()
+    {       
+        boolean refresh = false;
+        int gidx = Preferences.getGraphicsMode();
+        if (gidx > 0 && gidx == useGraphics && currentGraf == null
+            && !state.grafmodes.isEmpty()) {
+            refresh = true;
+        }
+        setGraphicsMode(gidx);        
+        return refresh;
     }
 
     public void unloadTiles()
@@ -432,7 +447,6 @@ public class TermView extends View implements OnGestureListener {
 
     public void sendVisuals(String oldVisuals)
     {
-
         if (!state.gameThread.gameRunning()) return;
         
         String newVisuals = serializeVisualState();
@@ -1741,6 +1755,33 @@ public class TermView extends View implements OnGestureListener {
         back.setColor(Color.BLACK);
     }
 
+    public boolean bitmapHasAlpha(Bitmap bm)
+    {
+        int[] pixels = new int[bm.getWidth() * bm.getHeight()];
+        bm.getPixels(pixels, 0, bm.getWidth(),
+            0, 0, bm.getWidth(), bm.getHeight());
+        for (int i = 0; i < pixels.length; i++) {
+            int alpha = Color.alpha(pixels[i]);
+            if (alpha < 255) return true;
+        }
+        return false;
+    }
+
+    public boolean tileHasAlpha(TileGrid tile)
+    {
+        Bitmap bm = getTile(tile);
+        if (bm == null) return true;
+        String key = tile.createKey();
+        if (!alphaTiles.containsKey(key)) {
+            if (alphaTiles.size() > 100) alphaTiles.clear();
+            int value = 0;
+            if (bitmapHasAlpha(bm)) value = 1;
+            //Log.d("Angband", "Putting value " + value);
+            alphaTiles.put(key, value);
+        }
+        return alphaTiles.get(key).intValue() == 1;
+    }
+
 	public void drawTileAux(int row, int col, int a, int c,
         boolean fill)
 	{
@@ -1759,13 +1800,12 @@ public class TermView extends View implements OnGestureListener {
 
         Rect dst = tile.locateDest();
 
-        if (fill) {
-
+        // Optimization: just clear grids with alpha
+        if (fill && tileHasAlpha(tile)) {            
             setBackColor(Color.BLACK);
-
             canvas.drawRect(dst, back);
         }
-        
+
         Bitmap bm = getTile(tile);
 
         if (bm == null) return;

@@ -66,11 +66,11 @@ extern u16b lazymove_delay;
 extern bool msg_flag;
 extern bool arg_force_name;
 
-// For control keys
-void keys_flash(const char *keys);
-void keys_linger(const char *keys);
-void keys_clear(bool force);
-void keys_flush();
+// For control keys in android
+void soft_kbd_flash(const char *keys);
+void soft_kbd_linger(const char *keys);
+void soft_kbd_clear(bool force);
+void soft_kbd_flush();
 
 void flush(game_event_type unused, game_event_data *data, void *user);
 ui_event inkey_ex(void);

@@ -37,6 +37,7 @@
 #include "source.h"
 #include "target.h"
 #include "trap.h"
+#include "ui-term.h"
 #include "z-queue.h"
 
 u16b daycount = 0;
@@ -949,6 +950,8 @@ void process_player(void)
  */
 void on_new_level(void)
 {
+	Term_control_context();
+	
 	/* Arena levels are not really a level change */
 	if (!player->upkeep->arena_level) {
 		/* Play ambient sound on change of level. */

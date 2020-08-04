@@ -807,7 +807,7 @@ static void keys_to_ui(struct menu *menu)
 	//plog_fmt("Keys %s\n", buf);
 
 	if (strlen(buf) > 0) {
-		keys_flash(buf);
+		soft_kbd_flash(buf);
 	}
 }
 

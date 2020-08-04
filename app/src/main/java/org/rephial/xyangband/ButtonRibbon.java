@@ -408,7 +408,12 @@ public class ButtonRibbon implements OnClickListener,
 
             userKeymaps = userActions[1];
 
-            restoreCommandMode();
+            if (state.inTheDungeon()) { 
+                restoreCommandMode();
+            }
+            else {
+                setCommandMode(false);
+            }
         }
     }
 
@@ -1260,11 +1265,11 @@ public class ButtonRibbon implements OnClickListener,
     public void procUserCommand(Command cmd)
     {
         String action = cmd.action.replace("USER_", "");
-        Iterator<Integer> iter = parseCodeKeys(action).iterator();
+        Iterator<Integer> iter = parseCodeKeys(action).iterator();        
         while (iter.hasNext()) {
             Integer num = iter.next();
-            state.addKey(num.intValue());
-        }
+            state.addKey(num.intValue());            
+        }        
     }
 
     @Override

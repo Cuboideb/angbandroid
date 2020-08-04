@@ -911,11 +911,11 @@ static size_t prt_terrain(int row, int col)
 	char buf[30];
 
 	if (square_isdownstairs(cave, player->grid)) {
-		keys_flash(">");
+		soft_kbd_flash(">");
 	}
 
 	if (square_isupstairs(cave, player->grid)) {
-		keys_flash("<");
+		soft_kbd_flash("<");
 	}
 
 	if (trap && !square_isinvis(cave, player->grid)) {
@@ -2338,7 +2338,6 @@ static void process_character_pref_files(void)
     }
 }
 
-
 static void ui_enter_init(game_event_type type, game_event_data *data,
 						  void *user)
 {
@@ -2346,6 +2345,8 @@ static void ui_enter_init(game_event_type type, game_event_data *data,
 
 	/* Set up our splashscreen handlers */
 	event_add_handler(EVENT_INITSTATUS, splashscreen_note, NULL);
+
+	Term_control_context();
 }
 
 static void ui_leave_init(game_event_type type, game_event_data *data,
@@ -2433,9 +2434,8 @@ static void ui_enter_world(game_event_type type, game_event_data *data,
 
 	/* Hack -- Decrease "icky" depth */
 	screen_save_depth--;
-
-	/* Notify the ui some more*/
-	Term_control_playing_now();
+	
+	Term_control_context();
 }
 
 static void ui_leave_world(game_event_type type, game_event_data *data,
@@ -2500,13 +2500,12 @@ static void ui_leave_world(game_event_type type, game_event_data *data,
 	event_add_handler(EVENT_USE_STORE, use_store, NULL);
 
 	/* If we've gone into a store, we need to know how to leave */
-	event_add_handler(EVENT_LEAVE_STORE, leave_store, NULL);
-
-	/* Signal to the ui */
-	Term_control_not_playing();
+	event_add_handler(EVENT_LEAVE_STORE, leave_store, NULL);	
 
 	/* Hack -- Increase "icky" depth */
 	screen_save_depth++;
+
+	Term_control_context();
 }
 
 static void ui_enter_game(game_event_type type, game_event_data *data,

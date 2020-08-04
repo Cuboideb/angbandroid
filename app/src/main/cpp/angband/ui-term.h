@@ -300,8 +300,7 @@ struct term
 #define TERM_XTRA_DELAY 13    /* Delay some milliseconds (optional) */
 
 #define TERM_CONTROL_LIST_KEYS 1
-#define TERM_CONTROL_NOT_PLAYING 2
-#define TERM_CONTROL_PLAYING_NOW 3
+#define TERM_CONTROL_CONTEXT 2
 #define TERM_CONTROL_VISUAL_STATE 4
 #define TERM_CONTROL_SHOW_CURSOR 5
 
@@ -394,12 +393,11 @@ extern errr Term_key_push(int k);
 extern errr Term_event_push(const ui_event *ke);
 extern errr Term_inkey(ui_event *ch, bool wait, bool take);
 
-extern errr Term_control_ws(int what, int n, const wchar_t *msg);
 extern errr Term_control(int what, const char *msg);
+extern errr Term_control_ws(int what, int n, const wchar_t *msg);
 #define Term_control_keys(msg) Term_control(TERM_CONTROL_LIST_KEYS,msg)
+extern errr Term_control_context();
 extern errr Term_control_visuals();
-extern errr Term_control_playing_now();
-extern errr Term_control_not_playing();
 
 extern errr Term_save(void);
 extern errr Term_load(void);

@@ -400,7 +400,7 @@ static struct keypress keymap_get_trigger(void)
 	/* Flush */
 	event_signal(EVENT_INPUT_FLUSH);
 
-	keys_flash("[^fkeys$]");
+	soft_kbd_flash("[^fkeys$]");
 
 	/* Get a key */
 	buf[0] = inkey();
@@ -501,8 +501,8 @@ static void ui_keymap_create(const char *title, int row)
 		c_prt(COLOUR_L_BLUE, format("(Maximum keymap length is %d keys.)",
 									KEYMAP_ACTION_MAX), 19, 0);
 
-		//keys_flash("abcdefghijklmnopqrstuvwxyz0123456789*'-\x15");
-		keys_flash("mabcdefghijk0123456789*'-$\x15");
+		//soft_kbd_flash("abcdefghijklmnopqrstuvwxyz0123456789*'-\x15");
+		soft_kbd_flash("mabcdefghijk0123456789*'-$\x15");
 
 		kp = inkey();
 
@@ -1854,12 +1854,8 @@ void do_cmd_options(void)
 	screen_save();
 	clear_from(0);
 
-	Term_control_not_playing();
-
 	menu_layout(option_menu, &SCREEN_REGION);
 	menu_select(option_menu, 0, false);
-
-    Term_control_playing_now();
 
 	screen_load();
 }

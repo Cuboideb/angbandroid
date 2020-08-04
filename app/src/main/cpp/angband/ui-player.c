@@ -1163,8 +1163,6 @@ void do_cmd_change_name(void)
 	/* Prompt */
 	p = "['c' to change name, 'f' to file, 'h' to change mode, or ESC]";
 
-	Term_control_not_playing();
-
 	/* Save screen */
 	screen_save();
 
@@ -1176,7 +1174,7 @@ void do_cmd_change_name(void)
 		/* Prompt */
 		Term_putstr(2, 23, -1, COLOUR_WHITE, p);
 
-		keys_flash("cfh");
+		soft_kbd_flash("cfh");
 
 		/* Query */
 		ke = inkey_ex();
@@ -1246,8 +1244,6 @@ void do_cmd_change_name(void)
 
 	/* Load screen */
 	screen_load();
-
-	Term_control_playing_now();
 }
 
 

@@ -56,7 +56,7 @@ bool get_string(const char *prompt, char *buf, size_t len)
 	else
 		status = false;
 	// Clean
-    keys_clear(true);
+    soft_kbd_clear(true);
 	return status;
 }
 

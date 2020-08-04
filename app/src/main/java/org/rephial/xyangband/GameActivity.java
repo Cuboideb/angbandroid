@@ -82,8 +82,7 @@ public class GameActivity extends Activity {
 	protected final int CONTEXTMENU_TOGGLE_SUBW = 12;
 
 	public static final int TERM_CONTROL_LIST_KEYS = 1;
-	public static final int TERM_CONTROL_NOT_PLAYING = 2;
-	public static final int TERM_CONTROL_PLAYING_NOW = 3;
+	public static final int TERM_CONTROL_CONTEXT = 2;
 	public static final int TERM_CONTROL_VISUAL_STATE = 4;
 	public static final int TERM_CONTROL_SHOW_CURSOR = 5;
 
@@ -225,25 +224,29 @@ public class GameActivity extends Activity {
 		if (what == TERM_CONTROL_LIST_KEYS) {
 			setFastKeys(msg);
 		}
-		if (what == TERM_CONTROL_NOT_PLAYING &&
-			bottomRibbon != null) {
-			bottomRibbon.setCommandMode(false);
-		}
-		if (what == TERM_CONTROL_PLAYING_NOW) {
+		if (what == TERM_CONTROL_CONTEXT) {
 
 			//Log.d("Angband", "Refresh: " + msg);
 
-			// Save keymaps for later			
+			// Save keymaps for later	
 			if (msg.startsWith("keymaps:")) {
 				coreKeymaps = msg.substring("keymaps:".length());
 				Preferences.setCoreKeymaps(coreKeymaps);
 			}
 
-			if (bottomRibbon != null) {
-				bottomRibbon.restoreCommandMode();
+			if (msg.indexOf("in_dungeon:1") > -1) {
+
+				if (bottomRibbon != null) {
+					bottomRibbon.restoreCommandMode();
+				}
+
+				//state.nativew.reloadGraphics();
 			}
-						
-			state.nativew.reloadGraphics();
+			else {
+				if (bottomRibbon != null) {
+					bottomRibbon.setCommandMode(false);
+				}
+			}
 		}
 		if (what == TERM_CONTROL_VISUAL_STATE && term != null) {
 

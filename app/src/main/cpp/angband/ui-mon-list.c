@@ -432,7 +432,7 @@ void monster_list_show_interactive(int height, int width)
 									  NULL);
 		region_erase_bordered(&r);
 
-		keys_flash("x");
+		soft_kbd_flash("x");
 
 		char buf[300];
 

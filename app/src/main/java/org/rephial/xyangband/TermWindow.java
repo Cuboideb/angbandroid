@@ -217,17 +217,7 @@ public class TermWindow {
 					p.isUgly = !p.isDirty;
 				}
 			}
-		}
-		
-		/*	
-		if (c >= TermView.COL_MAP && r >= TermView.ROW_MAP
-			&& c < cols && r < rows-1) {
-			x = (int)((c - TermView.COL_MAP) / tw) + TermView.COL_MAP;
-			y = (int)((r - TermView.ROW_MAP) / th) + TermView.ROW_MAP;
-			TermPoint p = buffer[y][x];
-			p.isUgly = !p.isDirty;
-		}
-		*/
+		}		
 	}
 
 	public void quiet()
@@ -326,6 +316,7 @@ public class TermWindow {
 		}
 	}
 
+	/*
 	public void addTilePad(int x, int y, int tw, int th)
 	{
 		int x2, y2;
@@ -352,6 +343,7 @@ public class TermWindow {
 			}
 		}
 	}
+	*/
 
 	public void addTile(int x, int y, int a, int c, int ta, int tc) {
 		if (x>-1 && x<cols && y>-1 && y<rows) {

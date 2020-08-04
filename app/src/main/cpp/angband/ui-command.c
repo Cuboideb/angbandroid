@@ -214,7 +214,7 @@ void textui_cmd_suicide(void)
 		prt("Please verify KILLING THIS CHARACTER by typing the '@' sign: ", 0, 0);
 		event_signal(EVENT_INPUT_FLUSH);
 
-        keys_flash("@");
+        soft_kbd_flash("@");
 
 		ch = inkey();
 		prt("", 0, 0);
@@ -233,7 +233,7 @@ void textui_cmd_rest(void)
 
 	char out_val[5] = "& ";
 
-    keys_linger("!*&0123456789");
+    soft_kbd_linger("!*&0123456789");
 
 	/* Ask for duration */
 	if (!get_string(p, out_val, sizeof(out_val))) return;

@@ -2537,7 +2537,7 @@ int big_pad(int col, int row, byte a, wchar_t c)
 }
 
 errr Term_control(int what, const char *msg)
-{
+{	
 	if (strlen(msg) == 0) {
 		return (-1);
 	}
@@ -2555,6 +2555,9 @@ errr Term_control_ws(int what, int n, const wchar_t *ws)
 		return (-1);
 	}
 
+	/* Verify the hook */
+	if (!Term->control_hook) return (-1);
+
 	/* Make a copy */
 	wchar_t* wbuf = mem_alloc(sizeof(wchar_t)*(n+1));
 	memcpy(wbuf,ws,sizeof(wchar_t)*n);
@@ -2571,25 +2574,12 @@ errr Term_control_ws(int what, int n, const wchar_t *ws)
 	return (status);
 }
 
+errr Term_control_context()
+{
+	return Term_control(TERM_CONTROL_CONTEXT,"dummy");
+}
+
 errr Term_control_visuals()
 {
-	char buf[2048] = "";
-
-	strnfmt(buf, sizeof(buf), "visual:%d:%d:%d",
-		tile_height, tile_width, use_graphics);
-
-	return Term_control(TERM_CONTROL_VISUAL_STATE, buf);
-}
-
-errr Term_control_playing_now()
-{
-	char keymaps[2048];
-	keymap_pack(keymaps, sizeof(keymaps));
-	/* Hack -- Piggyback the keymaps */
-	return Term_control(TERM_CONTROL_PLAYING_NOW, keymaps);
-}
-
-errr Term_control_not_playing()
-{
-	return Term_control(TERM_CONTROL_NOT_PLAYING, "dummy");
+	return Term_control(TERM_CONTROL_VISUAL_STATE,"dummy");
 }

@@ -1016,7 +1016,7 @@ bool target_set_interactive(int mode, int x, int y)
 				path_drawn = draw_path(path_n, path_g, path_char, path_attr,
 									   py, px);
 
-			keys_flash("t+-rpogq?");
+			soft_kbd_flash("t+-rpogq?");
 
 			/* Describe and Prompt */
 			press = target_set_interactive_aux(y, x, mode);
