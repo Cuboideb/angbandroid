@@ -50,35 +50,35 @@ static bool inkey_xtra;
 u32b inkey_scan;		/* See the "inkey()" function */
 bool inkey_flag;		/* See the "inkey()" function */
 
-static char control_keys[256] = "";
-static bool control_keys_flash = true;
+static char soft_kbd_buffer[256] = "";
+static bool flashing_keys = true;
 
 void soft_kbd_flash(const char *keys)
 {
-	control_keys_flash = true;
-	my_strcat(control_keys, keys, sizeof(control_keys));
-	strdeldup(control_keys);
+	flashing_keys = true;
+	my_strcat(soft_kbd_buffer, keys, sizeof(soft_kbd_buffer));
+	strdeldup(soft_kbd_buffer);
 }
 
 void soft_kbd_linger(const char *keys)
 {
 	soft_kbd_flash(keys);
-	control_keys_flash = false;
+	flashing_keys = false;
 }
 
 void soft_kbd_clear(bool force)
 {
-	if (control_keys_flash || force) {
-		control_keys[0] = 0;
-		control_keys_flash = true;
+	if (flashing_keys || force) {
+		soft_kbd_buffer[0] = 0;
+		flashing_keys = true;
 		Term_control_keys("[[:clear:]]");
 	}
 }
 
 void soft_kbd_flush()
 {
-	if (control_keys[0] != 0) {
-		Term_control_keys(control_keys);
+	if (soft_kbd_buffer[0] != 0) {
+		Term_control_keys(soft_kbd_buffer);
 	}
 }
 

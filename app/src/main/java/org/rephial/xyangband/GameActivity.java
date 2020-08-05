@@ -229,8 +229,10 @@ public class GameActivity extends Activity {
 			//Log.d("Angband", "Refresh: " + msg);
 
 			// Save keymaps for later	
-			if (msg.startsWith("keymaps:")) {
-				coreKeymaps = msg.substring("keymaps:".length());
+			String pattern = "keymaps:";
+			int pos = msg.indexOf(pattern);
+			if (pos > -1) {
+				coreKeymaps = msg.substring(pos + pattern.length());
 				Preferences.setCoreKeymaps(coreKeymaps);
 			}
 

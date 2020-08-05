@@ -381,6 +381,7 @@ static errr Term_control_android(int what, const char *msg)
 {
 	const char *pbuf = msg;
 	char buf[2048] = "";
+	int n;
 
 	if (what == TERM_CONTROL_VISUAL_STATE) {
 		strnfmt(buf, sizeof(buf), "visual:%d:%d:%d",
@@ -388,8 +389,12 @@ static errr Term_control_android(int what, const char *msg)
 		pbuf = buf;
 	}
 
-	if (what == TERM_CONTROL_CONTEXT && IN_THE_DUNGEON) {
+	if (what == TERM_CONTROL_CONTEXT && IN_THE_DUNGEON) {		
 		strnfmt(buf, sizeof(buf), "in_dungeon:1");
+
+		n = strlen(buf);
+		keymap_pack(buf+n, sizeof(buf)-n);
+
 		pbuf = buf;
 	}
 
