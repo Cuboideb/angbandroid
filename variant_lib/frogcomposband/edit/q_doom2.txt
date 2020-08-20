@@ -1,0 +1,89 @@
+# a quick creation by Jeff Coleburn <vsp@netaxs.com>
+
+?:[AND [EQU $WILDERNESS NORMAL] [GEQ [MOD $RANDOM0 52] 26] ]
+K:85
+?:1
+
+?:[EQU $QUEST21 Taken InProgress]
+D:Another strange hole in reality has opened up on the edge of
+D:our town, and appears to be even more dangerous than the 
+D:last. Five of our strongest knights ventured within -- only 
+D:one returned, scorched by fire and babbling incoherently.  
+D:We have not the resources to deal with this threat. Do you?
+?:1
+
+?:[AND [EQU $QUEST21 Completed] [EQU $WILDERNESS NORMAL] ]
+D:Gods be praised, you have returned alive! When the last
+D:demon fell, we felt an evil aura depart from this town,
+D:letting all breathe easier again. Please accept our 
+D:sincerest thanks for saving our lives -- and a powerful
+D:gift from our resident Wizard. May you find it useful in your 
+D:questing.
+?:1
+
+?:[AND [EQU $QUEST21 Completed] [EQU $WILDERNESS NONE] ]
+D:Gods be praised, you have returned alive! When the last
+D:demon fell, we felt an evil aura depart from this town,
+D:letting all breathe easier again. Please accept my 
+D:sincerest thanks for saving our town -- and a powerful
+D:gift from my wizard friend. May you find it useful in your 
+D:questing.
+?:1
+
+?:[EQU $QUEST21 Failed]
+D:I've sent out someone else to do the job. Now leave me alone!
+?:1
+
+T:QUEST:NORMAL
+L:a:MON(manes, NO_GROUP)
+L:b:MON(^imp$)
+L:c:MON(flying skull, NO_GROUP)
+L:d:MON(arch-vile)
+L:e:MON(revenant)
+L:f:MON(baron of hell)
+L:g:MON(iron lich)
+L:h:MON(maulotaur)
+L:i:MON(hell knight)
+
+L:#:PERMANENT
+L:.:FLOOR
+L:<:UP_STAIR
+L:%:GRANITE
+L:+:CLOSED_DOOR
+L:$:OBJ(*, DEPTH+1)
+
+M:#####################################################################
+M:#$$$$$$$..f..a..b..c..d..e..d..c..b..a..b..c..d..e..d..c..b..a%.#####
+M:###############################################################.#####
+M:#b...b.b..b.#.......##..#......#........#......#..........+.....#####
+M:#%#####..c.c#.......#a##%..b...+........#......#..b.......+.....#####
+M:#.....#.....#.......#.###..c...#........#...d..#..........+.....#####
+M:#####.#.....#.......#.###......#...$....+......#.b.c......#%%%%%#####
+M:#...#.#.b.$c#.......##c##......#........#......#.......c..#eeeee#####
+M:#<..%.#.....#........##c###+##############+#####..........#abcde#####
+M:#...#.#.....#..#####+##c#......#$$...c.c#......#...b......#%%%%%#####
+M:#####.#.ccb.#..#e##.###b#......#...$.db.#...e..#.......c..#.....#####
+M:#.....#.....#..##..##.#.#......#.$.c.cb.#......#.a........#f...f#####
+M:#########+###..#.###.#.##.bbb..#..d.c..a#......#....a..b..#.....#####
+M:#$##.......##..#.#b.########+###########+###+###....g.....#.....#####
+M:#d##......##...#.##.#####......#........#......#.a.c......#$.f.$#####
+M:#+##.....##....##.#.#.###......#....d...#......#....a.c...#%%%%%#####
+M:#.......##.....#.##..#.##......#........#......#.........##.....#####
+M:#......##$$....##.#cd#.##......+....ccc.+...$..#..b...b..##.....#####
+M:#.....######+####..##.###..$...#........#......##......d.##g...g#####
+M:#....######+#+##e##..##########################%##..a...##......#####
+M:#...########+##############$..................##f#...c..##$....$#####
+M:#..##f..........e....$...e#.c.................#+##......##%%%%%%#####
+M:#.#####...................#....................#####..a.##%%%%%%##i##
+M:#.##......................#g..$................#####....##......##.##
+M:#.##.....d................#e...................#####.b..##......##.##
+M:#.##......................#....................#####...##........%###
+M:#d##..........d..........$#.c..................####...##$$........###
+M:#d%%................e.....#$....................+....##$$$..h...$$$##
+M:#####################################################################
+R:OBJ(STAFF_HEAL_CURING)
+
+?:[EQU $CLASS Berserker]
+R:OBJ(potion of healing, NUMBER=5+1d4)
+
+# vim: filetype=q :

@@ -1,3 +1,11 @@
+Version 1.25 - 2020-08-20
+-Added an advanced soft keyboard. It has only 2 pages, supports key resizing and custom keymaps actions. Includes an option for vertical layout. Ctrl sequences are activated by pressing the shift key for a second time..
+-Added 2 variants, FrogComposband 7.1-salmiak and NPPAngband 0.4.1. Toggle is in Preferences. In a near future we will have FAangband 2.0.
+-Each game Profile now has its own keymaps.
+-Changed a couple of buttons in the ribbon. (Merged the shift and control modifiers into one button).
+-Added a toogle in the Quick Setting to activate Running mode.
+-Plenty of fixes and code refactoring.
+
 Version 1.24 - 2020-07-22:
 - Added a mouse toggle. Turn it on to access useful commands when pressing
 over a grid. The grid occupied by the player has special actions.

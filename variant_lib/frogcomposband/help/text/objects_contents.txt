@@ -1,0 +1,28 @@
+Objects
+
+Please choose one of the following help sections:
+
+  The following topics are in verbose tutorial format:
+    [a] Objects
+    [b] Where Can I Get Stuff?
+    [c] OK, I Found Something. What Does It Do?
+    [d] How Good is this Object, Anyway?
+    [e] Object Flavors
+    [f] Jewelry
+    [g] Object Lore
+    [h] Devices
+    [i] Spellbooks
+    [j] Object Inscriptions
+
+  The following topics are reference material:
+    [k] Object Symbols
+    [l] Commands for Using Objects
+    [m] Numbers on Items
+    [n] Equipment
+    [o] Inventory/Pack
+    [p] Pseudo-ID
+    [q] List of Abbreviations
+    [r] Inscriptions: Summary
+
+    (?) Help System Commands
+

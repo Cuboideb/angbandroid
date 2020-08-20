@@ -1,0 +1,17 @@
+<style:title>Defending and Armor</style>
+
+Please choose one of the following help sections:
+
+    <link:defend.txt> Defending and Armor
+    <link:defend.txt#Armor> Armor Class
+    <link:defend.txt#ResistingMagic> Resisting Magical Attacks
+    <link:defend.txt#EgoArtifact> Ego Armor and Artifacts
+    <link:defend.txt#Resistances> List of Resistances
+    <link:defend.txt#Immunities> Immunities
+    <link:defend.txt#Miscellaneous> Other Protection
+    <link:defend.txt#AttackPower> The Power of Monster Attacks
+    <link:defend.txt#Recovering> Recovering from Attacks
+
+    <color:y>(?) Help System Commands</color>
+
+

@@ -20,13 +20,13 @@ add_library( # Sets the name of the library.
              # Sets the library as a shared library.
              SHARED
 
-            # Provides a relative path to your source file(s).
+            # Provides a relative path to your source file(s).            
             ../common/angdroid.c
             ../curses/curses.c
             ../curses/mbstowcs.c
             ../curses/wcstombs.c
             ../curses/wctomb.c            
-            
+                        
             buildid.c
             cave-map.c
             cave-square.c
@@ -40,6 +40,7 @@ add_library( # Sets the name of the library.
             datafile.c
             debug.c
             effects.c
+            effects-info.c
             game-event.c
             game-input.c
             game-world.c

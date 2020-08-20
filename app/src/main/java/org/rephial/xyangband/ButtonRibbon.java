@@ -23,6 +23,7 @@ import android.widget.TableLayout;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.HorizontalScrollView;
 import android.os.Handler;
 
 import androidx.core.graphics.ColorUtils;
@@ -45,6 +46,8 @@ public class ButtonRibbon implements OnClickListener,
     LinearLayout atCenter = null;
     LinearLayout atRight = null;
     boolean fastMode = false;
+    boolean cloneMode = true;
+    ButtonRibbon parent = null;
     int fixedCount = 0;
     ArrayList<Command> commands = null;
     boolean shifted = false;
@@ -52,45 +55,11 @@ public class ButtonRibbon implements OnClickListener,
     boolean commandMode = false;
     int alphaLevel = 2;
     ArrayList<ButtonRibbon> siblings = null;
+    ArrayList<ButtonRibbon> clones = null;
 
     PopupWindow autoListWin = null;
     TableLayout autoListTable = null;    
     boolean autoListSolid = false;
-
-    public static char KC_TAB = 0x9D;
-    public static char KC_BACKSPACE = 0x9F;
-
-    public static char KC_ARROW_DOWN = 0x80;
-    public static char KC_ARROW_LEFT = 0x81;
-    public static char KC_ARROW_RIGHT = 0x82;
-    public static char KC_ARROW_UP = 0x83;
-
-    public static char KC_F1 = 0x84;
-    public static char KC_F2 = 0x85;
-    public static char KC_F3 = 0x86;
-    public static char KC_F4 = 0x87;
-    public static char KC_F5 = 0x88;
-    public static char KC_F6 = 0x89;
-    public static char KC_F7 = 0x8A;
-    public static char KC_F8 = 0x8B;
-    public static char KC_F9 = 0x8C;
-    public static char KC_F10 = 0x8D;
-    public static char KC_F11 = 0x8E;
-    public static char KC_F12 = 0x8F;
-
-    public static char keycodes[] = {
-            KC_TAB,
-            KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6,
-            KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, KC_F12,
-            0
-    };
-
-    public static String keynames[] = {
-            "tab",
-            "F1", "F2", "F3", "F4", "F5", "F6",
-            "F7", "F8", "F9", "F10", "F11", "F12",
-            ""
-    };
 
     public static int popupBackAlpha = 255;
     public static int popupButtonColor = Color.BLACK;
@@ -98,273 +67,17 @@ public class ButtonRibbon implements OnClickListener,
     public String userKeymaps = "";
 
     public enum CmdLocation {
-        Fixed,
+        FixedL,
         Dynamic,
-        Keymaps
-    }
-
-    public static char KTRL(char c)
-    {
-        return (char)(c & 0x1F);
-    }
-
-    public static char UN_KTRL(char c)
-    {
-        if (c < 0x01 || c > 0x1F) {
-            return c;
-        }
-        return (char)(c + 64);
-    }
-
-    public static boolean isKtrl(String str)
-    {
-        return str.length() == 2 && str.charAt(0) == '^' &&
-                Character.isAlphabetic(str.charAt(1));
-    }
-
-    public static String printableChar(char c)
-    {
-        if (c >= 1 && c <= 0x1F) {
-            return "^" + UN_KTRL(c);
-        }
-
-        for (int i = 0; keycodes[i] != 0; i++) {
-            if (keycodes[i] == c) {
-                return keynames[i];
-            }
-        }
-
-        return Character.toString(c);
-    }
-
-    public static char getKeyCode(String printable)
-    {
-        if (printable.length() == 0) {
-            return 0;
-        }
-
-        int i = 0;
-        for (String name: keynames) {
-            if (name.equals(printable)) {
-                return keycodes[i];
-            }
-            i++;
-        }
-
-        if (isKtrl(printable)) {
-            return KTRL(printable.charAt(1));
-        }
-
-        return printable.charAt(0);
-    }
-
-    public class Command implements Button.OnLongClickListener {
-        public String label;
-        public String action;
-        public char charValue;
-        public boolean isAlpha;
-        public CmdLocation location;
-        public Button btn;
-
-        public Command(String p_label, String p_action,
-               CmdLocation p_location, Button p_btn)
-        {
-            label = p_label;
-            action = p_action;
-            charValue = 0;
-            location = p_location;
-            btn = p_btn;
-            isAlpha = false;
-
-            // Single character
-            if (label.length() == 1) {
-                charValue = label.charAt(0);
-                label = printableChar(charValue);
-            }
-
-            if (action.length() == 0) {
-                action = label;
-            }
-
-            setButtonText(label);
-
-            // Just a simple alphabetic character
-            if (Character.isAlphabetic(charValue) && action == label) {
-                isAlpha = true;
-            }
-        }
-
-        public void setControlDown(boolean set)
-        {
-            String text;
-
-            if (isAlpha) {
-                if (set) {
-                    text = "^" + label.toUpperCase();
-                    action = text;
-                }
-                else {
-                    action = text = label;
-                }
-                setButtonText(text);
-                btn.invalidate();
-            }
-        }
-
-        public void setShift(boolean set) {
-            // Lower letter ?
-            if (isAlpha) {
-                if (Character.isUpperCase(charValue)) {
-                    set = !set;
-                }
-                if (set) {
-                    action = label.toUpperCase();
-                }
-                else {
-                    action = label.toLowerCase();
-                }
-                setButtonText(action);
-                btn.invalidate();
-            }
-        }
-
-        public boolean isCommand()
-        {
-            return action.length() > 4 && action.startsWith("CMD_");
-        }
-
-        public char getCommand(boolean translate)
-        {
-            if (isCommand()) {
-                char cmd = action.charAt(4);
-
-                if (translate) {
-                    // Original keyset
-                    CoreCommand core = state.findCommand(cmd, 0);
-                    if (core != null) {
-                        // Convert, or not
-                        cmd = (char)core.getKey();
-                    }
-                }
-
-                return cmd;
-            }
-            return 0;
-        }
-
-        public char fixIcon()
-        {
-            char raw = getCommand(false);
-            if (raw == 'h') raw = 0xF9;
-            if (raw == 'U') raw = 0xF5;
-            if (raw == 'n') raw = 0xD2;
-            if (raw == '~') raw = 0xEF;
-            if (raw == '+') raw = 0x42;
-            return raw;
-        }
-
-        public void setIconTooltip()
-        {
-            // Set tooltip text
-            if (android.os.Build.VERSION.SDK_INT >= 26) {
-                char cmd = getCommand(true);
-                btn.setTooltipText(printableChar(cmd));
-            }
-        }
-
-        public void setButtonText(String txt)
-        {
-            // Set icon
-            if (isCommand()) {
-                if (Preferences.getIconsEnabled() &&
-                        ButtonRibbon.fontCmd != null) {
-                    btn.setTypeface(ButtonRibbon.fontCmd);
-                    //setIconTooltip();
-                    btn.setOnLongClickListener(this);
-                    txt = Character.toString(fixIcon());
-                    btn.setText(txt);
-                    // Done!
-                    return;
-                }
-                else {
-                    txt = printableChar(getCommand(true));
-                    // Keep going
-                }
-            }
-
-
-
-            // Set bold
-            if (txt.length() == 1) {
-                btn.setTypeface(context.monoBoldFont);
-                /*
-                SpannableString spanString = new SpannableString(txt);
-                spanString.setSpan(new StyleSpan(Typeface.BOLD),
-                        0, spanString.length(), 0);
-                btn.setText(spanString);
-                */
-                btn.setText(txt);
-            }
-            // Normal text
-            else {
-                btn.setTypeface(context.monoFont);
-                btn.setText(String.format("%.3s", txt));
-            }
-        }
-
-        public boolean isKeymap()
-        {
-            return action.startsWith("KEYMAP_");
-        }
-
-        public boolean isUserCommand()
-        {
-            return action.startsWith("USER_");
-        }
-
-        public int getTrigger()
-        {
-            try {
-                String code = action.substring("KEYMAP_".length());
-                return Integer.parseInt(code);
-            } catch (Exception ex) {
-                return 0;
-            }
-        }
-
-        @Override
-        public boolean onLongClick(View v) {
-
-            char cmd = getCommand(false);
-            String desc = "";
-
-            CoreCommand core = state.findCommand(cmd, 0);
-            if (core != null) {
-                cmd = (char)core.getKey();
-                desc = core.desc;
-            }
-
-            String txt = printableChar(cmd);
-
-            if (desc == null) desc = "";
-            String msg = "Execute command: " + txt + "\n\n" + desc;
-            context.questionAlert(msg,
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            btn.performClick();
-                        }
-                    });
-            return false;
-        }
+        FixedR
     }
 
     public ButtonRibbon(GameActivity p_context, StateManager p_state,
-                        boolean p_fastMode) {
+        boolean p_fastMode, boolean p_cloneMode) {
         context = p_context;
         state = p_state;
         fastMode = p_fastMode;
+        cloneMode = p_cloneMode;
 
         rootView = context.getLayoutInflater().inflate(R.layout.buttonribbon, null);
 
@@ -374,6 +87,7 @@ public class ButtonRibbon implements OnClickListener,
 
         commands = new ArrayList();
         siblings = new ArrayList();
+        clones = new ArrayList();
 
         alphaLevel = Preferences.getRibbonAlpha();
 
@@ -386,25 +100,31 @@ public class ButtonRibbon implements OnClickListener,
             }
         }
 
+        //makeCommand(" ", "PageLeft", CmdLocation.FixedL);
+        //makeCommand(" ", "PageRight", CmdLocation.FixedR);
+
+        if (cloneMode) return;
+
         String userActions[] = KeymapEditor.getUserKeymaps();
 
         // Fixed keys
         if (fastMode) {
-            makeCommand("⎋", "Esc", CmdLocation.Fixed);
-            makeCommand("⏎", "Ret", CmdLocation.Fixed);
-            makeCommand("⌫", "BackSpace", CmdLocation.Fixed);
-            makeCommand("⎘", "show_keys", CmdLocation.Fixed);
+            makeCommand("⎋", "Esc", CmdLocation.FixedL);
+            makeCommand("⏎", "Ret", CmdLocation.FixedL);
+            //makeCommand(" ", " ", CmdLocation.FixedL);
+            makeCommand("⌫", "BackSpace", CmdLocation.FixedL);
+            //makeCommand("⎘", "show_keys", CmdLocation.FixedL);
 
             userKeymaps = userActions[0];
 
             rebuildKeymaps();
         }
         else {
-            makeCommand("▤", "Kbd", CmdLocation.Fixed);
-            makeCommand("✦", "do_cmd_list", CmdLocation.Fixed);
-            makeCommand("⎘", "show_keys", CmdLocation.Fixed);
-            makeCommand("⇧", "Sft", CmdLocation.Fixed);
-            makeCommand("^", "Ctrl", CmdLocation.Fixed);
+            makeCommand("⎘", "show_keys", CmdLocation.FixedL);
+            makeCommand("⇧", "Sft", CmdLocation.FixedL);
+            //makeCommand("▤", "Kbd", CmdLocation.FixedL);
+            //makeCommand("✦", "do_cmd_list", CmdLocation.FixedL);
+            //makeCommand("^", "Ctrl", CmdLocation.FixedL);
 
             userKeymaps = userActions[1];
 
@@ -422,9 +142,74 @@ public class ButtonRibbon implements OnClickListener,
         siblings.add(ribbon);
     }
 
+    public void addClone(ButtonRibbon ribbon)
+    {
+        clones.add(ribbon);
+        ribbon.parent = this;
+    }
+
     public void restoreCommandMode()
     {
         setCommandMode(Preferences.getCommandMode());
+    }
+
+    public ViewGroup getGroup(CmdLocation loc)
+    {
+        if (loc == CmdLocation.Dynamic) return atCenter;
+        if (loc == CmdLocation.FixedL) return atLeft;
+        return atRight;
+    }
+
+    public void clonify(ButtonRibbon from, CmdLocation loc,
+        int first)
+    {
+        ViewGroup grp = getGroup(loc);
+        removeCommands(grp);
+        int x0 = 0;
+        int i = 0;
+        for (Command aux: from.commands) {
+            if (aux.location != loc) continue;            
+            makeCommand(aux.label, aux.action, loc);                        
+            if (i < first) {
+                if (aux.btn.getWidth() > 0) {
+                    x0 += aux.btn.getWidth();
+                }
+                else {
+                    x0 += aux.btn.getMinWidth();
+                }
+            }
+            ++i;
+        }    
+        final int x = x0;        
+        final HorizontalScrollView hsv =
+            rootView.findViewById(R.id.scrollv);                
+        hsv.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+               hsv.scrollTo(x, 0);
+            }
+        }, 300L);
+    }
+
+    public void notifyClones()
+    {
+        if (clones.size() == 0) return;
+
+        int i = 0;
+
+        int n = atCenter.getChildCount();
+        if (n == 0) return;
+        int fixed = Math.max(0, atLeft.getChildCount());
+        n += fixed;
+
+        int page_size = n / (clones.size()+1);
+        page_size = Math.max(page_size, 1);
+        int first = page_size - fixed;
+
+        for (i = 0; i < clones.size(); i++) {
+            clones.get(i).clonify(this, CmdLocation.Dynamic, first);            
+            first += page_size;
+        }
     }
 
     public void setCommandMode(boolean set)
@@ -440,12 +225,15 @@ public class ButtonRibbon implements OnClickListener,
 
         removeCommands(atCenter);
 
+        makeCommand("▤", "Kbd", CmdLocation.Dynamic);
+        makeCommand("✦", "do_cmd_list", CmdLocation.Dynamic);
+
         rebuildUserKeymaps(CmdLocation.Dynamic);
 
         if (set) {
             // Hide shift and ctrl
-            atLeft.getChildAt(3).setVisibility(View.GONE);
-            atLeft.getChildAt(4).setVisibility(View.GONE);
+            atLeft.getChildAt(1).setVisibility(View.GONE);
+            //atLeft.getChildAt(4).setVisibility(View.GONE);
 
             String txt = ".iUmhfvngdR+ewb,azul[]C~LM=?";
             for (char c: txt.toCharArray()) {
@@ -456,16 +244,17 @@ public class ButtonRibbon implements OnClickListener,
         }
         else {
             // Show shift and ctrl
-            atLeft.getChildAt(3).setVisibility(View.VISIBLE);
-            atLeft.getChildAt(4).setVisibility(View.VISIBLE);
+            atLeft.getChildAt(1).setVisibility(View.VISIBLE);
+            //atLeft.getChildAt(4).setVisibility(View.VISIBLE);
 
             setKeys("abcdefghijklmnopqrstuvwxyz " +
-                    "0123456789.,*'~!#$%&<>|" +
-                    "/\\=[]{}@+-_:;\"?", CmdLocation.Dynamic);
+                    "0123456789.,*'?~!#$%&<>|^" +
+                    "/\\=[]{}@+-_:;\"", CmdLocation.Dynamic);
             // Other keys
-            for (int i = 0; keynames[i].length() > 0; i++) {
-                makeCommand(keynames[i], Character.toString(keycodes[i]),
-                        CmdLocation.Dynamic);
+            for (int i = 0; InputUtils.keynames[i].length() > 0; i++) {
+                makeCommand(InputUtils.keynames[i],
+                    Character.toString(InputUtils.keycodes[i]),
+                    CmdLocation.Dynamic);
             }
         }
 
@@ -476,6 +265,8 @@ public class ButtonRibbon implements OnClickListener,
         commandMode = set;
         shifted = false;
         controlDown = false;
+
+        notifyClones();
     }
 
     public void resizeButton(Button btn)
@@ -515,6 +306,15 @@ public class ButtonRibbon implements OnClickListener,
             btn.setWidth(w);
         }
 
+        if (action.equals("PageRight")
+            || action.equals("PageLeft")) {            
+            int w = btn.getMinWidth();
+            w = (int)(w * 0.75f);
+            btn.setMinimumWidth(w);
+            btn.setMinWidth(w);
+            btn.setWidth(w);
+        }
+
         return btn;
     }
 
@@ -534,7 +334,7 @@ public class ButtonRibbon implements OnClickListener,
         parent.invalidate();
     }
 
-    public void setShift(boolean set)
+    public void setShiftAux(boolean set)
     {
         if (fastMode || commandMode ||
                 (set == shifted && !controlDown)) {
@@ -546,9 +346,23 @@ public class ButtonRibbon implements OnClickListener,
         }
         shifted = set;
         controlDown = false;
+
+        for (ButtonRibbon _clone: clones) {
+            _clone.setShiftAux(set);
+        }        
     }
 
-    public void setControlDown(boolean set)
+    public void setShift(boolean set)
+    {
+        if (cloneMode && parent != null) {
+            parent.setShiftAux(set);
+            return;
+        }
+
+        setShiftAux(set);
+    }
+
+    public void setControlDownAux(boolean set)
     {
         if (fastMode || commandMode ||
                 (set == controlDown && !shifted)) {
@@ -560,6 +374,65 @@ public class ButtonRibbon implements OnClickListener,
         }
         controlDown = set;
         shifted = false;
+
+        for (ButtonRibbon _clone: clones) {
+            _clone.setControlDownAux(set);
+        }
+    }
+
+    public void setControlDown(boolean set)
+    {
+        if (cloneMode && parent != null) {
+            parent.setControlDownAux(set);
+            return;
+        }
+
+        setControlDownAux(set);
+    }
+
+    public void setTriStateShiftAux(boolean set)
+    {
+        if (fastMode || commandMode) {
+            return;
+        }
+
+        if (!set) {
+            shifted = false;
+            controlDown = false;
+        }        
+        else if (shifted) {
+            controlDown = true;
+            shifted = false;
+        }
+        else if (controlDown) {
+            controlDown = false;
+        }
+        else {
+            shifted = true;
+        }        
+
+        for (Command cmd: commands) {
+            if (controlDown) {
+                cmd.setControlDown(true);
+            }
+            else {
+                cmd.setShift(shifted);
+            }
+        }  
+
+        for (ButtonRibbon _clone: clones) {
+            _clone.setTriStateShiftAux(set);
+        }      
+    }
+
+    public void setTriStateShift(boolean set)
+    {
+        if (cloneMode && parent != null) {
+            parent.setTriStateShiftAux(set);
+            return;
+        }
+
+        setTriStateShiftAux(set);
     }
 
     public void makeCommand(String label, String action, CmdLocation loc)
@@ -568,15 +441,7 @@ public class ButtonRibbon implements OnClickListener,
         Command cmd = new Command(label, action, loc, btn);
         commands.add(cmd);
         updateAlphaCmd(cmd);
-        if (loc == CmdLocation.Fixed) {
-            atLeft.addView(btn);
-        }
-        else if (loc == CmdLocation.Keymaps) {
-            atRight.addView(btn);
-        }
-        else {
-            atCenter.addView(btn);
-        }
+        getGroup(loc).addView(btn);        
     }
 
     public void removeAutoList()
@@ -623,10 +488,13 @@ public class ButtonRibbon implements OnClickListener,
 
     public void rebuildKeymaps()
     {
-        removeCommands(atRight);
-        atRight.invalidate();
+        CmdLocation loc = CmdLocation.Dynamic;
+        ViewGroup grp = getGroup(loc);
 
-        rebuildUserKeymaps(CmdLocation.Keymaps);
+        removeCommands(grp);
+        grp.invalidate();
+
+        rebuildUserKeymaps(loc);
 
         String coreKeymaps = Preferences.getCoreKeymaps();
         if (coreKeymaps.length() > 0) {
@@ -640,17 +508,18 @@ public class ButtonRibbon implements OnClickListener,
                 }
                 String label = parts[0];
                 String action = "KEYMAP_" + parts[1];
-                makeCommand(label, action, CmdLocation.Keymaps);
+                makeCommand(label, action, loc);
             }
-        }
+        }        
     }
 
     public void addFKeys(CmdLocation loc)
     {
-        for (int i = 0; keynames[i].length() > 0; i++) {
-            if (keycodes[i] >= KC_F1 && keycodes[i] <= KC_F12) {
-                makeCommand(keynames[i], Character.toString(keycodes[i]),
-                        loc);
+        for (int i = 0; InputUtils.keynames[i].length() > 0; i++) {
+            if (InputUtils.keycodes[i] >= InputUtils.KC_F1
+                && InputUtils.keycodes[i] <= InputUtils.KC_F12) {
+                makeCommand(InputUtils.keynames[i],
+                    Character.toString(InputUtils.keycodes[i]), loc);
             }
         }
     }
@@ -669,8 +538,6 @@ public class ButtonRibbon implements OnClickListener,
                     showList = true;
                 }
 
-                removeCommands(atRight);
-
                 String pattern = "[^fkeys$]";
                 if (keys.contains(pattern)) {
                     addFKeys(loc);
@@ -678,10 +545,8 @@ public class ButtonRibbon implements OnClickListener,
                     keys = keys.replace(pattern, "");
                 }
             }
-            else {
-                if (atRight.getChildCount() == 0) {
-                    rebuildKeymaps();
-                }
+            else {                
+                rebuildKeymaps();
             }            
         }
 
@@ -735,6 +600,10 @@ public class ButtonRibbon implements OnClickListener,
         if (alphaLevel == 1) {
             alphaFg = 30;
             alphaBg = 10;            
+        }
+        if (alphaLevel == 2 && (cmd.action.equals("PageRight")
+            || cmd.action.equals("PageLeft"))) {
+            alphaBg = 200;
         }
         if (alphaLevel == 3) {
             color = 0x000044;
@@ -854,7 +723,7 @@ public class ButtonRibbon implements OnClickListener,
 
         for (CoreCommand cmd: state.coreCommands) {
             int key = cmd.getKey();
-            String trigger = printableChar((char)key);
+            String trigger = InputUtils.printableChar((char)key);
             String desc = cmd.desc;
 
             //Log.d("Angband", trigger + " | " + desc);
@@ -902,13 +771,7 @@ public class ButtonRibbon implements OnClickListener,
 
     public void showDynamicKeys(View parentView) {
         CmdLocation loc = CmdLocation.Dynamic;
-        if (atCenter.getChildCount() == 0) {
-            if (atRight.getChildCount() == 0) {
-                return;
-            }
-            loc = CmdLocation.Keymaps;
-        }
-
+        
         final PopupWindow win = new PopupWindow(context);        
         win.setFocusable(true);  
         win.setWidth(LayoutParams.WRAP_CONTENT);
@@ -1026,6 +889,14 @@ public class ButtonRibbon implements OnClickListener,
                 btn.getBackground().setAlpha(alphaBg);
             }
         }
+    }
+
+    public void doPageScroll(String action)
+    {
+        final HorizontalScrollView hsv =
+            rootView.findViewById(R.id.scrollv);
+        hsv.pageScroll(action.equals("PageLeft") ?
+            View.FOCUS_LEFT: View.FOCUS_RIGHT);
     }
 
     public void showAutoList(View parentView) {
@@ -1211,61 +1082,11 @@ public class ButtonRibbon implements OnClickListener,
         win.showAtLocation(parentView, gravity, 0, y);
     }
 
-    public List<Integer> parseCodeKeys(String txt)
-    {
-        int i = 0;
-        int n = txt.length();
-        int ch0;
-        char next;
-        ArrayList<Integer> lst = new ArrayList<>();
-
-        while (i < n) {
-            ch0 = txt.charAt(i);
-            next = 0;
-
-            // We have another char
-            if ((i+1) < n) next = txt.charAt(i+1);
-                            
-            if (ch0 == '^' && Character.isAlphabetic(next)) {
-                ch0 = KTRL(next);
-                i += 1;
-            }
-            else if (ch0 == '\\' &&
-                Character.toLowerCase(next) == 'n') {
-                ch0 = state.getKeyEnter();
-                i += 1;
-            }
-            else if (ch0 == '\\' &&
-                Character.toLowerCase(next) == 't') {
-                ch0 = state.getKeyTab();
-                i += 1;
-            }
-            else if (ch0 == '\\' &&
-                Character.toLowerCase(next) == 's') {
-                ch0 = ' ';
-                i += 1;
-            }
-            else if (ch0 == '\\' &&
-                Character.toLowerCase(next) == 'e') {
-                ch0 = state.getKeyEsc();
-                i += 1;
-            }
-            else if (ch0 == '\\') {
-                // ignore, and next char too
-                ch0 = 0;
-                i += 1;
-            }            
-
-            if (ch0 > 0) lst.add(ch0);
-            i += 1;
-        }
-        return lst;
-    }
-
     public void procUserCommand(Command cmd)
     {
         String action = cmd.action.replace("USER_", "");
-        Iterator<Integer> iter = parseCodeKeys(action).iterator();        
+        Iterator<Integer> iter = InputUtils.parseCodeKeys(action)
+            .iterator();        
         while (iter.hasNext()) {
             Integer num = iter.next();
             state.addKey(num.intValue());            
@@ -1290,6 +1111,12 @@ public class ButtonRibbon implements OnClickListener,
             return;
         }
 
+        if (action.equals("PageRight") ||
+            action.equals("PageLeft")) {
+            doPageScroll(action);
+            return;
+        }
+
         if (cmd.isCommand()) {
             action = Character.toString(cmd.getCommand(true));
             //Log.d("Angband", "Command: " +
@@ -1311,29 +1138,234 @@ public class ButtonRibbon implements OnClickListener,
             state.addKey(state.getKeyEnter());
         }
         else if (action.equals("Sft")) {
-            setShift(!shifted);
+            //setShift(!shifted);
+            setTriStateShift(true);
         }
         else if (action.equals("Ctrl")) {
-            setControlDown(!controlDown);
+            //setControlDown(!controlDown);
+            setTriStateShift(true);
         }
         else if (action.equals("BackSpace")) {
-            state.addKey(KC_BACKSPACE);
+            state.addKey(InputUtils.KC_BACKSPACE);
         }
         else if (action.equals("show_keys")) {
             showDynamicKeys(v);
         }
         else if (action.equals("tab")) {
-            state.addKey(KC_TAB);
-            setShift(false);
+            state.addKey(InputUtils.KC_TAB);
+            //setShift(false);
+            setTriStateShift(false);
         }
-        else if (isKtrl(action)) {
-            int key = KTRL(action.charAt(1));
+        else if (InputUtils.isKtrl(action)) {
+            int key = InputUtils.KTRL(action.charAt(1));
             state.addKey(key);
-            setShift(false);
+            //setShift(false);
+            setTriStateShift(false);
         }
         else if (action.length() == 1) {
             state.addKey(action.charAt(0));
-            setShift(false);
+            //setShift(false);
+            setTriStateShift(false);
+        }
+    }
+
+    public class Command implements Button.OnLongClickListener {
+        public String label;
+        public String action;
+        public char charValue;
+        public boolean isAlpha;
+        public CmdLocation location;
+        public Button btn;
+
+        public Command(String p_label, String p_action,
+               CmdLocation p_location, Button p_btn)
+        {
+            label = p_label;
+            action = p_action;
+            charValue = 0;
+            location = p_location;
+            btn = p_btn;
+            isAlpha = false;
+
+            // Single character
+            if (label.length() == 1) {
+                charValue = label.charAt(0);
+                label = InputUtils.printableChar(charValue);
+            }
+
+            if (action.length() == 0) {
+                action = label;
+            }
+
+            setButtonText(label);
+
+            // Just a simple alphabetic character
+            if (Character.isAlphabetic(charValue) && action.equals(label)) {
+                isAlpha = true;
+            }
+        }
+
+        public void setControlDown(boolean set)
+        {
+            String text;
+
+            if (isAlpha) {
+                if (set) {
+                    text = "^" + label.toUpperCase();
+                    action = text;
+                }
+                else {
+                    action = text = label;
+                }
+                setButtonText(text);
+                btn.invalidate();
+            }
+        }
+
+        public void setShift(boolean set) {
+            // Lower letter ?
+            if (isAlpha) {
+                if (Character.isUpperCase(charValue)) {
+                    set = !set;
+                }
+                if (set) {
+                    action = label.toUpperCase();
+                }
+                else {
+                    action = label.toLowerCase();
+                }
+                setButtonText(action);
+                btn.invalidate();
+            }
+        }
+
+        public boolean isCommand()
+        {
+            return action.length() > 4 && action.startsWith("CMD_");
+        }
+
+        public char getCommand(boolean translate)
+        {
+            if (isCommand()) {
+                char cmd = action.charAt(4);
+
+                if (translate) {
+                    // Original keyset
+                    CoreCommand core = state.findCommand(cmd, 0);
+                    if (core != null) {
+                        // Convert, or not
+                        cmd = (char)core.getKey();
+                    }
+                }
+
+                return cmd;
+            }
+            return 0;
+        }
+
+        public char fixIcon()
+        {
+            char raw = getCommand(false);
+            if (raw == 'h') raw = 0xF9;
+            if (raw == 'U') raw = 0xF5;
+            if (raw == 'n') raw = 0xD2;
+            if (raw == '~') raw = 0xEF;
+            if (raw == '+') raw = 0x42;
+            return raw;
+        }
+
+        public void setIconTooltip()
+        {
+            // Set tooltip text
+            if (android.os.Build.VERSION.SDK_INT >= 26) {
+                char cmd = getCommand(true);
+                btn.setTooltipText(InputUtils.printableChar(cmd));
+            }
+        }
+
+        public void setButtonText(String txt)
+        {
+            // Set icon
+            if (isCommand()) {
+                if (Preferences.getIconsEnabled() &&
+                        ButtonRibbon.fontCmd != null) {
+                    btn.setTypeface(ButtonRibbon.fontCmd);
+                    //setIconTooltip();
+                    btn.setOnLongClickListener(this);
+                    txt = Character.toString(fixIcon());
+                    btn.setText(txt);
+                    // Done!
+                    return;
+                }
+                else {
+                    txt = InputUtils.printableChar(getCommand(true));
+                    // Keep going
+                }
+            }
+
+            // Set bold
+            if (txt.length() == 1) {
+                btn.setTypeface(context.monoBoldFont);
+                /*
+                SpannableString spanString = new SpannableString(txt);
+                spanString.setSpan(new StyleSpan(Typeface.BOLD),
+                        0, spanString.length(), 0);
+                btn.setText(spanString);
+                */
+                btn.setText(txt);
+            }
+            // Normal text
+            else {
+                btn.setTypeface(context.monoFont);
+                btn.setText(String.format("%.3s", txt));
+            }
+        }
+
+        public boolean isKeymap()
+        {
+            return action.startsWith("KEYMAP_");
+        }
+
+        public boolean isUserCommand()
+        {
+            return action.startsWith("USER_");
+        }
+
+        public int getTrigger()
+        {
+            try {
+                String code = action.substring("KEYMAP_".length());
+                return Integer.parseInt(code);
+            } catch (Exception ex) {
+                return 0;
+            }
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+
+            char cmd = getCommand(false);
+            String desc = "";
+
+            CoreCommand core = state.findCommand(cmd, 0);
+            if (core != null) {
+                cmd = (char)core.getKey();
+                desc = core.desc;
+            }
+
+            String txt = InputUtils.printableChar(cmd);
+
+            if (desc == null) desc = "";
+            String msg = "Execute command: " + txt + "\n\n" + desc;
+            context.questionAlert(msg,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            btn.performClick();
+                        }
+                    });
+            return false;
         }
     }
 }

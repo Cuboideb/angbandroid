@@ -8,7 +8,10 @@ import java.util.zip.ZipInputStream;
 
 final public class Plugins {
 	public enum Plugin {
-		angband(0);
+		angband(0),		
+		frogcomposband(1),
+		npp041(2),
+		faangband(3);
 
 		private int id;
 
@@ -20,6 +23,18 @@ final public class Plugins {
 		}
 		public static Plugin convert(int value) {
 			return Plugin.class.getEnumConstants()[value];
+		}
+		public boolean onlyText()
+		{
+			return (id > 0);
+		}
+		public boolean only1x1()
+		{
+			return (id > 1) && (id != 3);
+		}
+		public boolean noMouse()
+		{
+			return (id > 1) && (id != 3);
 		}
 	}
 
@@ -54,12 +69,30 @@ final public class Plugins {
 		if (plugin == Plugin.angband.getId())
 			is = Preferences.getResources().openRawResource(R.raw.zipangband);
 
+		if (plugin == Plugin.faangband.getId())
+			is = Preferences.getResources().openRawResource(R.raw.zipfaangband);
+
+		if (plugin == Plugin.frogcomposband.getId())
+			is = Preferences.getResources().openRawResource(R.raw.zipfrogcomposband);
+
+		if (plugin == Plugin.npp041.getId())
+			is = Preferences.getResources().openRawResource(R.raw.zipnpp041);
+
 		return new ZipInputStream(is);
 	}
 	public static String getPluginCrc(int plugin) {
 		InputStream is = null;
 		if (plugin == Plugin.angband.getId()) {
 			is = Preferences.getResources().openRawResource(R.raw.crcangband);
+		}
+		else if (plugin == Plugin.faangband.getId()) {
+			is = Preferences.getResources().openRawResource(R.raw.crcfaangband);
+		}
+		else if (plugin == Plugin.frogcomposband.getId()) {
+			is = Preferences.getResources().openRawResource(R.raw.crcfrogcomposband);
+		}
+		else if (plugin == Plugin.npp041.getId()) {
+			is = Preferences.getResources().openRawResource(R.raw.crcnpp041);
 		}
 		else {
 			return "";

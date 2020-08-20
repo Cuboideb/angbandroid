@@ -33,6 +33,7 @@ final public class Preferences {
 
 	static final String KEY_RIBBONBUTTONMULT = "angband.ribbonbuttonmult";
 	static final String KEY_SHOWAUTOLIST = "angband.showautolist";
+	static final String KEY_RIBBON_ROWS = "angband.ribbon_rows";
 
 	static final String KEY_USERKEYMAPS = "angband.userkeymaps";
 
@@ -44,6 +45,11 @@ final public class Preferences {
 
 	static final String KEY_TERMWIDTH = "angband.termwidth";
 	static final String KEY_TERMHEIGHT = "angband.termheight";
+
+	static final String KEY_USE_ADV_KBD = "angband.use_adv_keyboard";
+	static final String KEY_USE_VERT_KBD = "angband.use_vert_keyboard";
+	static final String KEY_KBD_HEIGHT = "angband.keyboard_height";
+	static final String KEY_KBD_WIDTH = "angband.keyboard_width";
 
 	static final String KEY_QWERTYNUMPAD = "angband.qwertynumpad";
 
@@ -164,6 +170,24 @@ final public class Preferences {
 		return pref.getInt(Preferences.KEY_MIDDLEOPACITY, 100);
 	}
 
+	public static boolean getUseAdvKeyboard()
+	{
+		return pref.getBoolean(Preferences.KEY_USE_ADV_KBD, false);
+	}
+
+	public static boolean getVerticalKeyboard()
+	{
+		return pref.getBoolean(Preferences.KEY_USE_VERT_KBD, false);
+	}
+
+	public static int getKeyboardHeight() {
+		return pref.getInt(Preferences.KEY_KBD_HEIGHT, 100);
+	}
+
+	public static int getKeyboardWidth() {
+		return pref.getInt(Preferences.KEY_KBD_WIDTH, 100);
+	}
+
 	public static int getTouchMultiplier() {
 		return pref.getInt(Preferences.KEY_TOUCHMULTIPLIER, 40);
 	}
@@ -203,35 +227,20 @@ final public class Preferences {
 
 	public static String getTileMultiplier()
 	{
+		if (Preferences.getActivePlugin().only1x1()) {
+			return "1x1";
+		}
 		return pref.getString("angband.tile_multiplier", "4x2");
 	}
 
 	public static int getTileWidth()
 	{
-		/*
-		if (pref.getBoolean(Preferences.KEY_BIGTILES, true)) {
-
-			// In text-mode, set a smaller tile
-			if (Preferences.getGraphicsMode() == 0) {
-				return 2;
-			}
-
-			return 3;
-		}
-		return 1;
-		*/
 		String[] parts = getTileMultiplier().split("x");
 		return parts.length == 2 ? Integer.valueOf (parts[0]) : 1;
 	}
 
 	public static int getTileHeight()
 	{
-		/*
-		if (pref.getBoolean(Preferences.KEY_BIGTILES, true)) {
-			return 2;
-		}
-		return 1;
-		*/
 		String[] parts = getTileMultiplier().split("x");
 		return parts.length == 2 ? Integer.valueOf (parts[1]) : 1;
 	}
@@ -257,10 +266,20 @@ final public class Preferences {
 	public static int getGraphicsMode()
 	{		
 		String val = pref.getString(Preferences.KEY_GRAPHICS, "6");
-		int num = Integer.parseInt(val);
-		//return Math.min(num, 4);
+		int num = Integer.parseInt(val);		
+		if (getActivePlugin().onlyText()) {
+			num = 0;
+		}
 		return num;
 	}
+
+	public static int getExtraRibbonRows()
+	{
+		//String s = pref.getString(Preferences.KEY_RIBBON_ROWS, "0");
+		//return Integer.valueOf(s);
+		return 0;
+	}
+	
 	public static boolean getPseudoAscii()
 	{		
 		return pref.getBoolean(Preferences.KEY_PSEUDOASCII, false);

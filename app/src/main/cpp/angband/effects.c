@@ -297,6 +297,10 @@ static bool uncurse_object(struct object *obj, int strength, char *dice_string)
 			take_hit(player, damroll(5, 5), "Failed uncursing");
 			if (object_is_carried(player, obj)) {
 				destroyed = gear_object_for_use(obj, 1, false, &none_left);
+				if (destroyed->artifact) {
+					/* Artifacts are marked as lost */
+					history_lose_artifact(player, destroyed->artifact);
+				}
 				object_delete(&destroyed->known);
 				object_delete(&destroyed);
 			} else {
@@ -556,6 +560,8 @@ void brand_object(struct object *obj, const char *name)
 			}
 			if (ok) break;
 		}
+
+		assert(ok);
 
 		/* Make it an ego item */
 		obj->ego = &e_info[i];
@@ -880,14 +886,20 @@ bool effect_handler_NOURISH(effect_handler_context_t *context)
 	int amount = effect_calculate_value(context, false);
 	amount *= z_info->food_value;
 	if (context->subtype == 0) {
+		/* Increase food level by amount */
 		player_inc_timed(player, TMD_FOOD, MAX(amount, 0), false, false);
 	} else if (context->subtype == 1) {
+		/* Decrease food level by amount */
+		player_dec_timed(player, TMD_FOOD, MAX(amount, 0), false);
+	} else if (context->subtype == 2) {
+		/* Set food level to amount, vomiting if necessary */
 		bool message = player->timed[TMD_FOOD] > amount;
 		if (message) {
 			msg("You vomit!");
 		}
 		player_set_timed(player, TMD_FOOD, MAX(amount, 0), false);
-	} else if (context->subtype == 2) {
+	} else if (context->subtype == 3) {
+		/* Increase food level to amount if needed */
 		if (player->timed[TMD_FOOD] < amount) {
 			player_set_timed(player, TMD_FOOD, MAX(amount + 1, 0), false);
 		}
@@ -1449,6 +1461,12 @@ bool effect_handler_RECALL(effect_handler_context_t *context)
 
 	/* No recall from quest levels with force_descend */
 	if (OPT(player, birth_force_descend) && (is_quest(player->depth))) {
+		msg("Nothing happens.");
+		return true;
+	}
+
+	/* No recall from single combat */
+	if (player->upkeep->arena_level) {
 		msg("Nothing happens.");
 		return true;
 	}
@@ -2809,7 +2827,7 @@ bool effect_handler_PROBE(effect_handler_context_t *context)
 					MDESC_IND_HID | MDESC_CAPITAL);
 
 			/* Describe the monster */
-			msg("%s has %d hit points.", m_name, mon->hp);
+			msg("%s has %d hit point%s.", m_name, mon->hp, (mon->hp == 1) ? "" : "s");
 
 			/* Learn all of the non-spell, non-treasure flags */
 			lore_do_probe(mon);
@@ -3301,8 +3319,8 @@ bool effect_handler_DESTRUCTION(effect_handler_context_t *context)
 
 	context->ident = true;
 
-	/* No effect in town */
-	if (!player->depth) {
+	/* No effect in town or arena */
+	if ((!player->depth) || (player->upkeep->arena_level)) {
 		msg("The ground shakes for a moment.");
 		return true;
 	}
@@ -3421,10 +3439,11 @@ bool effect_handler_EARTHQUAKE(effect_handler_context_t *context)
 
 	context->ident = true;
 
-	if (player->depth) {
+	if ((player->depth) && ((!player->upkeep->arena_level)
+							|| (context->origin.what == SRC_MONSTER))) {
 		msg("The ground shakes! The ceiling caves in!");
 	} else {
-	/* No effect in town */
+		/* No effect in town or arena */
 		msg("The ground shakes for a moment.");
 		return true;
 	}
@@ -5014,9 +5033,9 @@ bool effect_handler_JUMP_AND_BITE(effect_handler_context_t *context)
 	drain = MIN(mon->hp, amount);
 	if (drain == 0) return true;
 	if (OPT(player, show_damage)) {
-		msg("You bite the %s. (%d)", m_name, drain);
+		msg("You bite %s. (%d)", m_name, drain);
 	} else {
-	msg("You bite the %s.", m_name);
+		msg("You bite %s.", m_name);
 	}
 	dead = mon_take_hit(mon, amount, &fear, " is drained dry!");
 
@@ -5136,7 +5155,10 @@ bool effect_handler_SINGLE_COMBAT(effect_handler_context_t *context)
 		}
 
 		/* Swap the targeted monster with the first in the monster list */
-		if (cave_monster(cave, 1)->race) {
+		if (old_idx == 1) {
+			/* Do nothing */
+			;
+		} else if (cave_monster(cave, 1)->race) {
 			monster_index_move(old_idx, cave_monster_max(cave));
 			monster_index_move(1, old_idx);
 			monster_index_move(cave_monster_max(cave), 1);
@@ -5618,10 +5640,12 @@ int effect_subtype(int index, const char *type)
 			case EF_NOURISH: {
 				if (streq(type, "INC_BY"))
 					val = 0;
-				else if (streq(type, "SET_TO"))
+				else if (streq(type, "DEC_BY"))
 					val = 1;
-				else if (streq(type, "INC_TO"))
+				else if (streq(type, "SET_TO"))
 					val = 2;
+				else if (streq(type, "INC_TO"))
+					val = 3;
 				break;
 			}
 

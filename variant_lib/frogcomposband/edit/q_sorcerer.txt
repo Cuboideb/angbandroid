@@ -1,0 +1,55 @@
+# This is an old quest that was slightly modified for FrogComposband
+# 7.0.strawberry. The descriptions are partly old, partly new and
+# partly based on Gwarl's quest descriptions from ComPosband
+
+?:[EQU $QUEST64 Taken InProgress]
+D:An old sorcerer has betrayed the order of wizards and gone over
+D:to serve the forces of darkness. He has built a tower nearby and 
+D:the Sultan is growing concerned. Go kill him, I'll give you credit.
+?:1
+
+?:[EQU $QUEST64 Completed]
+D:Well done on the special examination. Here is your wizard's hat.
+?:1
+
+?:[EQU $QUEST64 Failed]
+D:Back already? So you couldn't do it. No matter.
+D:The order of wizards will have to take care of its own problem.
+?:1
+
+T:QUEST:NORMAL
+L:#:PERMANENT
+L:.:FLOOR
+L:,:FLOOR(ICKY)
+L:<:UP_STAIR
+L:+:CLOSED_DOOR
+L:^:TRAP(*, 75%)
+L:a:PATTERN_1
+L:b:PATTERN_2
+L:c:PATTERN_3
+L:d:PATTERN_4
+L:A:PATTERN_START
+L:M:PATTERN_END
+L:L:PATTERN_EXIT
+L:p:FLOOR(ICKY):MON(old sorcerer, NO_SLEEP)
+L:$:OBJ(DEVICE)
+L:?:OBJ(HI_BOOK)
+M:#########################
+M:#?$+.................+$$#
+M:####.................####
+M:#.....dcbadcbadcbad.....#
+M:#...bad,,,,,,,,,,,dcc...#
+M:#...b,,,,,,,,,,,,,,,b...#
+M:#...c,,,,,,,,,,,,,,,a...#
+M:#...d,,,,,,,p,,,,,,,d...#
+M:#...a,,,,,,,,,,,,,,,c...#
+M:#..^bbcdML,,,,,,,,,,b...#
+M:#..^^^^,,,,,,,,,,,,,a...#
+M:#..^Abc,,,,,,,,,,,cda...#
+M:#.....cdabcdabcdabc.....#
+M:####.................####
+M:#<...................+$$#
+M:#########################
+R:OBJ(pointy hat, DEPTH+25):EGO(magi)
+
+# vim: filetype=q :

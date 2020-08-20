@@ -36,6 +36,7 @@
 #include "ui-command.h"
 #include "ui-game.h" // save_game()
 
+static char variant_name[100];
 static char android_files_path[1024];
 static char android_savefile[50];
 static int turn_save = 0;
@@ -163,6 +164,11 @@ void try_save(void) {
 	}
 }
 
+static bool only_text_variant()
+{
+	return (strcmp(variant_name, "angband") != 0);
+}
+
 static int get_input_from_ui(int wait)
 {
 	int key = angdroid_getch(wait);
@@ -223,9 +229,13 @@ int process_special_command(int key)
 
 		if (!PLAYER_PLAYING) return 0;
 
+		if (only_text_variant()) graf = 0;
+
 		use_graphics = graf;
 		current_graphics_mode = get_graphics_mode(use_graphics);
+#if defined(USE_PSEUDO_ASCII)			
 		pseudo_ascii = pseudo;
+#endif
 		tile_width = tcols;
 		tile_height = trows;
 		reset_visuals(true);
@@ -392,8 +402,10 @@ static errr Term_control_android(int what, const char *msg)
 	if (what == TERM_CONTROL_CONTEXT && IN_THE_DUNGEON) {		
 		strnfmt(buf, sizeof(buf), "in_dungeon:1");
 
+#if defined(HAS_KEYMAP_PACK)
 		n = strlen(buf);
 		keymap_pack(buf+n, sizeof(buf)-n);
+#endif
 
 		pbuf = buf;
 	}
@@ -542,7 +554,9 @@ static void term_data_link(int i)
 
 	tile_width = initial_tile_wid;
 	tile_height = initial_tile_hgt;	
+#if defined(USE_PSEUDO_ASCII)
 	pseudo_ascii = initial_pseudo_ascii;
+#endif
 
 	t->complex_input = true;
 
@@ -904,6 +918,12 @@ void angdroid_process_argv(int i, const char* argv)
 		case 4:
 			sscanf(argv, "%d:%d:%d:%d", &initial_graphics, &initial_tile_hgt,
 				&initial_tile_wid, &initial_pseudo_ascii);
+			break;
+		case 5:
+			my_strcpy(variant_name, argv, sizeof(variant_name));
+			if (only_text_variant()) {
+				initial_graphics = 0;
+			}
 			break;
 		default:
 			break;

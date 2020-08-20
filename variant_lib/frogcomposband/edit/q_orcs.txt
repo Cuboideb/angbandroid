@@ -1,0 +1,80 @@
+# A quick creation by Jeff Coleburn <vsp@netaxs.com>
+# Slightly modified for FrogComposband 7.0.mango
+
+?:[EQU $QUEST22 Taken InProgress]
+D:The marauding orcs approach ever closer to our quiet town, as
+D:is happening all over in these troubled times. To the southeast
+D:lies a valley where our scouts have found an orc raiding party
+D:preparing to overrun us once and for all. Our forces are
+D:committed elsewhere; please repel this threat before they reach
+D:our borders.
+?:1
+
+?:[EQU $QUEST22 Completed]
+D:Thank you for your assistance. Please accept this token of our
+D:appreciation. We may have need for your help in future, as well.
+?:1
+
+?:[EQU $QUEST22 Failed]
+D:I've sent out someone else to do the job. Now leave me alone!
+?:1
+
+T:QUEST:NORMAL
+L:#:PERMANENT
+L:.:FLOOR
+L:<:UP_STAIR
+L:^:TRAP(TRAP_ALARM, 15%)
+L:a:MON(orc captain)
+L:o:MON(orcish artillery)
+L:u:MON(uruk, NO_GROUP | NO_SLEEP)
+L:s:MON(snaga sapper)
+M:#########################################################
+M:########################.^<^......#######################
+M:##################.......^^^............#################
+M:############...............................##############
+M:###########...............................###############
+M:###########...............##..............###############
+M:##########...............####...............#############
+M:###########.....a.......####^...............s############
+M:###sss#######...........^#####..............s############
+M:#####ss####............######......a.........sss#########
+M:#####ss###..............###..................s###########
+M:######sss####.................................s##########
+M:#####.......................................#############
+M:####...............................######.....###########
+M:####...........................###########.....##########
+M:##...............#########.......##########........s#####
+M:#######.........###########........######.......uu..ss###
+M:########.........#########.......................uu...s##
+M:########......................................oo.....####
+M:###########............a.....................oo...#######
+M:##############..............................#############
+M:################.........................################
+M:#########################################################
+R:OBJ(WAND_BALL_COLD)
+?:[AND [EQU $WILDERNESS NONE] [EQU [MOD $RANDOM22 3] 0] ]
+R:OBJ(WAND_STONE_TO_MUD)
+?:[AND [EQU $WILDERNESS NONE] [EQU [MOD $RANDOM22 3] 1] ]
+R:OBJ(STAFF_CONFUSE_MONSTERS)
+?:[AND [EQU $WILDERNESS NONE] [EQU [MOD $RANDOM22 3] 2] ]
+R:OBJ(ROD_LITE_AREA, TYPE=Capacity | DEPTH+10)
+?:[AND [EQU $WILDERNESS NONE] [EQU $CLASS Mauler] ]
+R:OBJ(ROD_LITE_AREA, TYPE=Capacity | DEPTH+10)
+?:[EQU $CLASS Archaeologist]
+R:OBJ(ROD_BEAM_ELEC, DEPTH+3)
+?:[AND [EQU $CLASS Weaponmaster] [EQU $SPECIALITY Axes] ]
+R:OBJ(battle axe):EGO(slaying)
+?:[AND [EQU $CLASS Weaponmaster] [EQU $SPECIALITY Polearms] ]
+R:OBJ(halberd):EGO(slaying)
+?:[EQU $CLASS Priest Berserker]
+R:OBJ(HAFTED):EGO(slaying)
+?:[AND [EQU $CLASS Weaponmaster] [EQU $SPECIALITY Clubs] ]
+R:OBJ(flail):EGO(slaying)
+?:[AND [EQU $CLASS Weaponmaster] [EQU $SPECIALITY Staves] ]
+R:OBJ(bo staff):EGO(slaying)
+?:[EQU $CLASS Monk Force-Trainer Mystic]
+R:OBJ(GLOVES):EGO(slaying)
+#?:[EQU $RACE Beholder]
+#R:OBJ(^ring$):EGO(protection)
+
+# vim: filetype=q :

@@ -73,8 +73,10 @@ public class GameThread implements Runnable {
 			/* this is an onResume event */
 			if (game_fully_initialized &&
 				running_plugin != null &&
-				( running_plugin.compareTo(Preferences.getActivePluginName())!=0 ||
-				  running_profile.compareTo(Preferences.getActiveProfile().getName())!=0 ) ) {
+				running_profile != null && (
+				!running_plugin.equals(Preferences.getActivePluginName()) ||
+				  	!running_profile.equals(Preferences.getActiveProfile().getName())
+				)) {
 
 				/* plugin or profile has been changed */
 
@@ -88,6 +90,9 @@ public class GameThread implements Runnable {
 			}
 		}
 		else {
+
+			nativew.wclear(0);
+			nativew.updateNow();
 
 			/* time to start angband */
 
@@ -162,8 +167,11 @@ public class GameThread implements Runnable {
 			= ((!state.getSignalGameExit() || plugin_change)
 			   && !state.fatalError);
 
-		if	(local_restart)
+		if	(local_restart) {
+			nativew.wclear(0);
+			nativew.updateNow();
 			state.handler.sendEmptyMessage(AngbandDialog.Action.StartGame.ordinal());
+		}
 	}
 
 	public void setFullyInitialized() {
@@ -216,17 +224,20 @@ public class GameThread implements Runnable {
 			+ ":" + Preferences.getTileWidth()
 			+ ":" + (Preferences.getPseudoAscii() ? 1: 0);
 
+		String pluginName = Preferences.getActivePluginName();
+
 		/* game is not running, so start it up */
 		nativew.gameStart(
-				  pluginPath,
-				  5,
-				  new String[]{
-					  Preferences.getAngbandFilesDirectory(),
-					  Preferences.getActiveProfile().getSaveFile(),
-					  width,
-					  height,
-					  visuals
-				  }
+			pluginPath,
+			6,
+			new String[]{
+				Preferences.getAngbandFilesDirectory(),
+				Preferences.getActiveProfile().getSaveFile(),
+			  	width,
+			  	height,
+			  	visuals,
+			  	pluginName
+			}
 		);
 	}
 }

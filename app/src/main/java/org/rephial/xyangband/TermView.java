@@ -361,6 +361,14 @@ public class TermView extends View implements OnGestureListener {
         //state.addKey(' ');
 	}
 
+    public void resetDragOffset()
+    {
+        Preferences.setTouchDragOffset(0, 0);
+        dragOffset.x = 0;
+        dragOffset.y = 0;
+        invalidate();
+    }
+
     public boolean canDraw() {
 
         int tw = (char_width * tile_wid);
@@ -441,6 +449,8 @@ public class TermView extends View implements OnGestureListener {
         String txt = "graphics:" + useGraphics +
             ":" + tile_hgt + ":" + tile_wid +
             ":" + (pseudoAscii ? 1: 0);
+
+        Log.d("Angband", "Visual State: " + txt);
 
         return txt;
     }
@@ -566,8 +576,8 @@ public class TermView extends View implements OnGestureListener {
 	{
 	    this.zones.clear();
 
-		int totalw = getWidth();
-		int totalh = getHeight() - game_context.getKeyboardHeight();
+		int totalw = getWidth() - getHorizontalGap();
+		int totalh = getHeight() - getVerticalGap();
 		int w = (int)(totalw * 0.25f);
 		int h = (int)(totalh * 0.25f);
 
@@ -585,7 +595,7 @@ public class TermView extends View implements OnGestureListener {
 				if (x < padx) x = padx;
 				if (x + w >= totalw - padx) x = totalw - w - padx;
 
-				x += this.getScrollX();
+				x += this.getScrollX() + getHorizontalGap();
 
 				int y = (int)(totalh * pct[py-1]) - h / 2;
 				if (y < pady) y = pady;
@@ -608,14 +618,14 @@ public class TermView extends View implements OnGestureListener {
 	{
 	    this.zones.clear();
 
-		int totalw = getWidth();
-		int totalh = getHeight() - game_context.getKeyboardHeight();
-
-		int w = (int)(totalw * 0.10f);
 		// Get the height of the activity window
 		Point winSize = new Point();
 		windowDisplay.getSize(winSize);
+        int w = (int)(winSize.x * 0.10f);
 		int h = (int)(winSize.y * 0.10f);
+
+        int totalw = getWidth();
+        int totalh = getHeight() - getVerticalGap();
 
 		int padx = (int)(totalw * 0.01f);
 		int pady = (int)(totalh * 0.01f);
@@ -748,8 +758,10 @@ public class TermView extends View implements OnGestureListener {
                         int y2 = startY + currentRow * th;
                         Rect rect = new Rect(x2, y2,
                             x2 + columns * tw, y2 + th);
-                        fore_subw.setColor(Color.BLACK);
-                        fore_subw.setAlpha(200);
+                        //fore_subw.setColor(Color.BLACK);
+                        //fore_subw.setAlpha(200);
+                        fore_subw.setColor(0x0e093d);
+                        fore_subw.setAlpha(255);
                         p_canvas.drawRect(rect, fore_subw);
                     }
                 }
@@ -817,7 +829,7 @@ public class TermView extends View implements OnGestureListener {
                     else {
                         startY =
                             this.getScrollY() + this.getHeight()
-                            - game_context.getKeyboardHeight()
+                            - getVerticalGap()
                             - subWinHeight;
                         drawSubWindow(p_canvas, w, startX, startY);
                         startX -= subWinWidth;
@@ -850,7 +862,7 @@ public class TermView extends View implements OnGestureListener {
         Point winSize = new Point();
         windowDisplay.getSize(winSize);
 
-        int x = (int)(winSize.x * 0.6f) + getScrollX();
+        int x = (int)(getWidth() * 0.6f) + getScrollX();
         int y = 15 + getScrollY();
         //TSize size = calculateButtonSize();
         
@@ -944,9 +956,15 @@ public class TermView extends View implements OnGestureListener {
 		if (maxWidth == 0) maxWidth = getMeasuredWidth();
 		if (maxHeight == 0) maxHeight = getMeasuredHeight();
 
-		if (!Preferences.getKeyboardOverlap()) {
+		/*
+		if (game_context.horizontalInputMode()) {
             maxHeight -= game_context.getKeyboardHeight();
         }
+
+        if (game_context.verticalInputMode()) {
+            maxWidth -= game_context.getKeyboardWidth();
+        }
+        */
 
 		setFontFace();
 
@@ -971,9 +989,15 @@ public class TermView extends View implements OnGestureListener {
 		if (maxWidth == 0) maxWidth = getMeasuredWidth();
 		if (maxHeight == 0) maxHeight = getMeasuredHeight();
 
-        if (!Preferences.getKeyboardOverlap()) {
+		/*
+        if (game_context.horizontalInputMode()) {
             maxHeight -= game_context.getKeyboardHeight();
         }
+
+        if (game_context.verticalInputMode()) {
+            maxWidth -= game_context.getKeyboardWidth();
+        }
+        */
 
 		setFontFace();
 
@@ -995,6 +1019,18 @@ public class TermView extends View implements OnGestureListener {
 		//Log.d("Angband","autoSizeFontWidth "+font_text_size);
 	}
 
+	public int getHorizontalGap()
+    {
+        return (Preferences.getKeyboardOverlap() ?
+                game_context.getKeyboardWidth(): 0);
+    }
+
+    public int getVerticalGap()
+    {
+        return (Preferences.getKeyboardOverlap() ?
+                game_context.getKeyboardHeight(): 0);
+    }
+
 	public void adjustTermSize(int maxWidth, int maxHeight)
 	{
         if (!this.state.gameThread.gameRunning()) {
@@ -1007,9 +1043,15 @@ public class TermView extends View implements OnGestureListener {
 		if (maxWidth == 0) maxWidth = getMeasuredWidth();
 		if (maxHeight == 0) maxHeight = getMeasuredHeight();
 
-        if (!Preferences.getKeyboardOverlap()) {
+		/*
+        if (game_context.horizontalInputMode()) {
             maxHeight -= game_context.getKeyboardHeight();
         }
+
+        if (game_context.verticalInputMode()) {
+            maxWidth -= game_context.getKeyboardWidth();
+        }
+		*/
 
 		while ((maxHeight > 0) && ((this.rows+1) * this.char_height < maxHeight)) {
 			++this.rows;
@@ -1409,6 +1451,9 @@ public class TermView extends View implements OnGestureListener {
         //Log.d("Angband", "y x " + p.y + " " + p.x);
         if (mouseSpecial) {
             popupMouseOptions(p.y, p.x, y, x);
+        }
+        else if (Preferences.getActivePlugin().noMouse()) {
+            state.addKey(InputUtils.KC_ESCAPE);
         }
         else {
             state.addMousePress(p.y, p.x, 1, 0);

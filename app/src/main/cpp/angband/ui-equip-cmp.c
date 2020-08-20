@@ -357,6 +357,8 @@ void equip_cmp_display(void)
 		Term_get_size(&wid, &hgt);
 		prt(states[istate].prompt, hgt - 1, 0);
 
+		soft_kbd_flash("q!crvIxdR?");
+
 		ch = inkey();
 		istate = (*states[istate].keyfunc)(ch, istate, the_summary,
 			player);
@@ -925,10 +927,15 @@ static int prompt_for_easy_filter(struct equipable_summary *s, bool apply_not)
 	int itry;
 	bool threec;
 
+	soft_kbd_linger("abcdefghijklmnopqrstuvwxyz0123456789.-_");
+
 	if (! get_string("Enter 2 or 3 (for stat) character code and return or return to clear ", c,
 		N_ELEMENTS(c))) {
+		soft_kbd_clear(true);
 		return EQUIP_CMP_MENU_NEW_PAGE;
 	}
+
+	soft_kbd_clear(true);
 
 	/* Clear the current filter. */
 	if (c[0] == '\0') {

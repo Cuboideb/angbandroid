@@ -1,0 +1,222 @@
+# File blow_methods.txt
+
+# Methods for monster blows
+
+# name: blow method code
+# cut: 1 if the method can cut, 0 if not
+# stun: 1 if the method can stun, 0 if not
+# miss: 1 if the player is told when the blow misses, 0 if not
+# phys: 1 if the method does physical damage, 0 if not
+# msg: message type to display
+# act: action string to append
+# desc: monster lore description
+
+name:HIT
+cut:1
+stun:1
+miss:1
+phys:1
+msg:MON_HIT
+act:hits {target}
+desc:hit
+
+name:TOUCH
+cut:0
+stun:0
+miss:1
+phys:0
+msg:MON_TOUCH
+act:touches {target}
+desc:touch
+
+name:PUNCH
+cut:0
+stun:1
+miss:1
+phys:1
+msg:MON_PUNCH
+act:punches {target}
+desc:punch
+
+name:KICK
+cut:0
+stun:1
+miss:1
+phys:1
+msg:MON_KICK
+act:kicks {target}
+desc:kick
+
+name:CLAW
+cut:1
+stun:0
+miss:1
+phys:1
+msg:MON_CLAW
+act:claws {target}
+desc:claw
+
+name:BITE
+cut:1
+stun:0
+miss:1
+phys:1
+msg:MON_BITE
+act:bites {target}
+desc:bite
+
+name:STING
+cut:0
+stun:0
+miss:1
+phys:1
+msg:MON_STING
+act:stings {target}
+desc:sting
+
+name:BUTT
+cut:0
+stun:1
+miss:1
+phys:1
+msg:MON_BUTT
+act:butts {target}
+desc:butt
+
+name:CRUSH
+cut:0
+stun:1
+miss:1
+phys:1
+msg:MON_CRUSH
+act:crushes {target}
+desc:crush
+
+name:ENGULF
+cut:0
+stun:0
+miss:1
+phys:0
+msg:MON_ENGULF
+act:engulfs {target}
+desc:engulf
+
+name:CRAWL
+cut:0
+stun:0
+miss:0
+phys:0
+msg:MON_CRAWL
+act:crawls on {target}
+desc:crawl on you
+
+name:DROOL
+cut:0
+stun:0
+miss:0
+phys:0
+msg:MON_DROOL
+act:drools on {target}
+desc:drool on you
+
+name:SPIT
+cut:0
+stun:0
+miss:0
+phys:0
+msg:MON_SPIT
+act:spits on {target}
+desc:spit
+
+name:GAZE
+cut:0
+stun:0
+miss:0
+phys:0
+msg:MON_GAZE
+act:gazes at {target}
+desc:gaze
+
+name:WAIL
+cut:0
+stun:0
+miss:0
+phys:0
+msg:MON_WAIL
+act:wails at {target}
+desc:wail
+
+name:SPORE
+cut:0
+stun:0
+miss:0
+phys:0
+msg:MON_SPORE
+act:releases spores at {target}
+desc:release spores
+
+name:BEG
+cut:0
+stun:0
+miss:0
+phys:0
+msg:MON_BEG
+act:begs {target} for money
+desc:beg
+
+name:INSULT
+cut:0
+stun:0
+miss:0
+phys:0
+msg:MON_INSULT
+act:insults {target}!
+act:insults {oftarget} mother!
+act:gives {target} the finger!
+act:humiliates {target}!
+act:defiles {target}!
+act:dances around {target}!
+act:makes obscene gestures!
+act:moons {target}!!!
+desc:insult
+
+name:MOAN
+cut:0
+stun:0
+miss:0
+phys:0
+msg:MON_MOAN
+act:tells you it's too hard to cross rivers
+act:worries about getting lost in the mountains
+act:whines about the gang of novice paladins he met
+act:asks you the way to Nowhere Town
+act:says he can hear someone imprisoned in the rock
+act:wonders how a trapdoor can take you to a different dungeon
+act:babbles about mirages in the swamp
+act:theorises that time is standing still
+act:tries to give you an order for pizza
+act:requests some help with map-reading
+act:claims he can see through walls
+act:decries the standard of today's arrows
+act:questions the presence of vorpal bunnies in Beleriand
+act:gasps that he's just drunk a wooden potion
+act:relates his problems with running in the right direction
+act:testifies that some monsters speak in tongues
+act:reports that some adventurers lie about their past
+act:reminisces about bargaining with shopkeepers
+act:asserts that he has been cloned
+act:maintains that vaults are really just big larders
+act:alleges that patches of grass are really magical staircases
+act:calls Ironbark the Ent a stingy bastard
+act:declares that wilderness pathways dilate time
+act:observes that the dwarves of Khazad Dûm are getting bigger
+act:mutters that shopkeepers won't take no for an answer
+act:wants to know why some doors are purely decorative
+act:boggles at caps that look like gloves
+act:boasts of walking over lava unharmed
+act:screams that there are monsters in the walls
+act:marvels that his memory seems to disappear with the sun
+act:rails against towns with forbidden exits
+act:relates his difficulties in stopping running
+desc:moan
+

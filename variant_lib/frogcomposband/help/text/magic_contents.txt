@@ -1,0 +1,18 @@
+Spellcasting
+
+Please choose one of the following help sections:
+
+    [a] The Magic System
+    [b] Spellcaster Types
+    [c] Spellbook Magic
+    [d] Spell Proficiency
+    [e] What a Spellbook Looks Like
+    [f] Which Spells Should I Study?
+    [g] General Magic Realms
+    [h] Class-Specific Magic Realms
+    [i] On Casting Spells
+    [j] Spell Types
+    [k] Using Macros to Cast Spells
+
+    (?) Help System Commands
+

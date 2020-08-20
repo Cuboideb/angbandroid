@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/main_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="Keymap action:" />
+
+        <EditText
+            android:id="@+id/keymap_action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:ems="7"
+            android:inputType="text"
+            android:maxLength="10" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:password="false"
+        android:text="\\n: Return - \\t: Tab - \\e: Esc - \\s: Space" />
+
+    <CheckBox 
+        android:id="@+id/always_visible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Always Visible" />
+
+</LinearLayout>

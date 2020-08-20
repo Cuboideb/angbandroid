@@ -1,0 +1,21 @@
+Monsters
+
+Please choose one of the following help sections:
+
+    [a] Overview
+    [b] Monster Symbols
+    [c] Assessing a Monster
+    [d] Unique Monsters
+    [e] Listing All Monsters in View
+    [f] Monster Color
+    [g] Eldritch Horrors
+    [h] Pets and Riding
+    [i] Friendly Monsters
+    [j] Mimics and Shadowers
+    [k] Breeding Monsters
+    [l] Monster Knowledge
+    [m] It Resists...
+    [n] Genocide
+    [o] Health Bar Colors
+
+    (?) Help System Commands

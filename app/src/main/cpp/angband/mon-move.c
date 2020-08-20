@@ -147,6 +147,9 @@ static bool monster_can_kill(struct chunk *c, struct monster *mon,
 	/* No monster */
 	if (!mon1) return true;
 
+	/* No trampling uniques */
+	if (rf_has(mon1->race->flags, RF_UNIQUE)) return false;
+
 	if (rf_has(mon->race->flags, RF_KILL_BODY) &&
 		compare_monsters(mon, mon1) > 0) {
 		return true;
@@ -494,6 +497,35 @@ static bool get_move_advance(struct chunk *c, struct monster *mon, bool *track)
 }
 
 /**
+ * Choose a random passable grid adjacent to the monster since is has no better
+ * strategy.
+ */
+static struct loc get_move_random(struct chunk *c, struct monster *mon)
+{
+	int attempts[8] = { 0, 1, 2, 3, 4, 5, 6, 7 };
+	int nleft = 8;
+
+	while (nleft > 0) {
+		int itry = randint0(nleft);
+		struct loc trygrid;
+
+		trygrid = loc_sum(mon->grid, ddgrid_ddd[attempts[itry]]);
+		if (square_is_monster_walkable(c, trygrid) &&
+				!monster_hates_grid(c, mon, trygrid)) {
+			return ddgrid_ddd[attempts[itry]];
+		} else {
+			int tmp = attempts[itry];
+
+			--nleft;
+			attempts[itry] = attempts[nleft];
+			attempts[nleft] = tmp;
+		}
+	}
+
+	return loc(0, 0);
+}
+
+/**
  * Choose a "safe" location near a monster for it to run toward.
  *
  * A location is "safe" if it can be reached quickly and the player
@@ -823,10 +855,19 @@ static bool get_move(struct chunk *c, struct monster *mon, int *dir, bool *good)
 		struct monster *tracker = group_monster_tracking(c, mon);
 		if (tracker && los(c, mon->grid, tracker->grid)) { /* Need los? */
 			grid = loc_diff(tracker->grid, mon->grid);
+			/* No longer tracking */
+			mflag_off(mon->mflag, MFLAG_TRACKING);
+		} else {
+			if (mflag_has(mon->mflag, MFLAG_TRACKING)) {
+				/* Keep heading to the most recent goal. */
+				grid = loc_diff(mon->target.grid, mon->grid);
 		}
-
-		/* No longer tracking */
+			if (loc_is_zero(grid)) {
+				/* Try a random move and no longer track. */
+				grid = get_move_random(c, mon);
 		mflag_off(mon->mflag, MFLAG_TRACKING);
+	}
+		}
 	}
 
 	/* Monster is taking damage from terrain */
@@ -975,6 +1016,9 @@ static bool monster_turn_multiply(struct chunk *c, struct monster *mon)
 
 	/* Too many breeders on the level already */
 	if (c->num_repro >= z_info->repro_monster_max) return false;
+
+	/* No breeding in single combat */
+	if (player->upkeep->arena_level) return false;  
 
 	/* Count the adjacent monsters */
 	for (y = mon->grid.y - 1; y <= mon->grid.y + 1; y++)
@@ -1516,7 +1560,7 @@ static void monster_turn(struct chunk *c, struct monster *mon)
 		struct loc new = loc_sum(mon->grid, ddgrid[d]);
 
 		/* Tracking monsters have their best direction, don't change */
-		if ((i > 0) && stagger != NO_STAGGER && !square_isview(c, mon->grid) && tracking) {
+		if ((i > 0) && stagger == NO_STAGGER && !square_isview(c, mon->grid) && tracking) {
 			break;
 		}
 

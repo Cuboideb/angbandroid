@@ -1,0 +1,1552 @@
+# File: ego_item.txt
+
+
+# This file is used to initialize the "ego-item" information for Angband.
+
+# Do not modify this file unless you know exactly what you are doing,
+# unless you wish to risk possible system crashes and broken savefiles.
+
+# Note that several "ego-item" types may share the same "textual name",
+# such as with "Armor of Resistance" and "Shield of Resistance".
+
+# Note that jewellery egos are special; see the comments above the ring and
+# amulet sections at th ebottom of this file.
+
+# === Understanding ego_item.txt ===
+
+# name: ego type
+# info: cost : rating
+# alloc: commonness : min " to " max
+# combat: to-hit : to-dam : to-ac
+# min-combat: min to-hit : min to-dam : min to-ac
+# type: tval
+# item: tval : sval
+# flag: flag | flag | etc.
+# flags-off: flag | flag | etc
+# values: label[value] | label[value] | etc.
+# min-values: label[value] | label[value] | etc.
+# act:name
+
+# Some fields accept randomized numbers of the form "10+2d3M4" where
+# 10 is the non-variable base, 2d3 is a standard die roll, and
+# M4 uses the m_bonus function to generate a number between 0 and
+# 4 according to a normal distribution.  All three components are
+# optional, and the number of dice is optional and assumed to be 1
+# when not specified.  10+2d3M4 has the range 12-20.  10+M4 has the
+# range 10-14.  10+2d3 has the range 12-16.  10+d3 has the range 11-13.
+# 2d3, d3, M4, 2d3M4, and d3M4 are all acceptable as well.  Randomized
+# expressions which begin with "-" are currently handled differently in
+# the "values" line than they are elsewhere.  In the "values" line, the
+# leading "-" sets the sign on the base value (i.e. 10 in the example).
+# On other lines, a leading "-" in the randomized expression means multiply
+# what follows by negative one.  As a result, something like "-d4" will not
+# work as you want when used for a "values" line.  Use "-5+1d4" instead.
+
+# 'name' indicates the beginning of an entry.
+
+# 'info' is for item information.  Cost is the item's value and rating
+# affects level feelings.
+
+# 'alloc' is for allocation details. commonness determines how common
+# the object is, min depth is the earliest it is normally found, max
+# depth is the deepest it is ever found. The "allocation" depth need
+# not match the depth as specified in the "info:" line.
+
+# 'combat' is for combat bonuses - to-hit, to-dam, to-ac.
+# Cursed ego-items will negate the given value.  These are
+# extra bonuses on top of the normal values, and all of these
+# fields accept randomized values.
+
+# 'min-combat' is for minimum values - minimum allowed to-hit, to-dam, to-ac.
+# The value of 255 is special, meaning "there is no minimum". This
+# allows zero to be a valid minimum (e.g. for mixed-blessing items).
+
+# 'type' is for possible tvals (object bases).  A 'type' line indicates
+# that any object kind of that type can be used to generate this ego-item.
+
+# 'item' is for possible tval-sval pairs, which correspond to object kinds.
+# One or more 'item' lines are used when we don't want all object kinds of
+# this tval to be possible for this ego-item.
+
+# 'act' is for item activation.  Field is the name of the activation (as found
+# in activation.txt).
+
+# 'flags' is for flags, which can be either object flags (as found in
+# src/list-object-flags.h) or kind flags (src/list-kind-flags.h).  As many
+# flags: lines may be used as are needed to specify all the flags, and
+# flags are separated by the '|' symbol.
+
+# 'flags-off' is for flags to remove from the base object. For example, in
+# object.txt, lanterns are given TAKES_FUEL. We don't want (Everburning)
+# lanterns to take fuel, so we add a 'flags-off:TAKES_FUEL' line to subtract
+# that flag.
+
+# 'values' is for object modifiers which take a value - stats, slays, brands,
+# resistances and so on.  An example is SLAY_UNDEAD[3], which denotes that
+# the weapon concerned has a basic 3x slay against undead creatures.  Like
+# flags, values are separated by '|' and as many values: lines as needed
+# can be used.
+
+# 'min-values' is for minimum values of values recorded in a 'values' line.
+# These work like minimum combat values, but for value-defined modifiers.
+
+# 'desc' is for description. As many desc: lines may be used as are needed
+# to describe the object. Note that lines will need spaces at their
+# ends or the beginning of the next line to prevent words from running
+# together.
+
+
+### Lanterns/torches
+
+name:of Shadows
+cost:1000
+rating:10
+alloc:40:10 to 100
+item:light:Lantern
+values:STEALTH[d2] | RES_LIGHT[40] | LIGHT[-4]
+min-values:LIGHT[-4]
+desc:Desired by necromancers, this uncanny lamp burns dark and guards against
+desc: the dangers of the light.
+
+name:of Brightness
+cost:2000
+rating:10
+alloc:50:1 to 30
+item:light:Wooden Torch
+item:light:Lantern
+values:LIGHT[1]
+desc:This light is magically enhanced to shine unnaturally brightly.
+
+name:(Everburning)
+cost:2500
+rating:10
+alloc:100:1 to 30
+item:light:Lantern
+flags:NO_FUEL
+flags-off:TAKES_FUEL
+desc:A lantern which requires no oil to fuel it, but runs off a mysterious
+desc: internal power.
+
+#imported from S
+name:of True Sight
+cost:6000
+rating:10
+alloc:10:20 to 127
+item:light:Lantern
+flags:PROT_BLIND | SEE_INVIS
+desc:This wondrous lamp allows the user to see all creatures, always.
+
+### Weapons ###
+
+name:(Holy Avenger)
+cost:20000
+rating:30
+alloc:5:15 to 127
+combat:d6:d6:d4
+type:sword
+type:polearm
+type:hafted
+flags:SEE_INVIS | BLESSED | PROT_FEAR | RAND_SUSTAIN
+values:WIS[d4]
+slay:EVIL_2
+slay:UNDEAD_3
+slay:DEMON_3
+desc:The sanctified weapon of Priests and Paladins, it slays evil, demons, and
+desc: the undead, increases wisdom and sustains a random stat, gives bonuses to
+desc: pious characters, grants sight beyond sight, and boosts armour class.
+
+name:of Doriath
+rating:22
+alloc:5:10 to 80
+cost:10000
+combat:d4:d4:d8
+type:hafted
+type:polearm
+type:sword
+flags:FREE_ACT | SEE_INVIS | FEATHER | REGEN | RAND_SUSTAIN
+flags:IGNORE_ACID | IGNORE_ELEC | IGNORE_FIRE | IGNORE_COLD
+values:STEALTH[d4] | RES_ACID[40] | RES_ELEC[40] | RES_FIRE[40] | RES_COLD[40]
+desc:Strong friend in peril, this weapon enhances stealth, resists all four
+desc: basic elements and cannot be damaged by them, grants see invisible and
+desc: protection from paralysis, increases armour class, boosts regeneration
+desc: speed, and renders the wearer lightfooted.  It also randomly sustains one
+desc: stat.
+
+name:(Blessed)
+cost:5000
+rating:20
+alloc:5:1 to 60
+type:sword
+type:polearm
+type:hafted
+flags:BLESSED | RAND_POWER
+values:WIS[d3]
+desc:A priestly weapon that increases wisdom and bears a hidden power.
+
+name:of Gondolin
+cost:25000
+rating:30
+alloc:5:20 to 127
+combat:d7:d7:0
+type:sword
+type:polearm
+type:hafted
+flags:SEE_INVIS | FREE_ACT | RAND_POWER
+flags:IGNORE_ACID | IGNORE_FIRE
+values:LIGHT[1] | RES_DARK[40]
+slay:DEMON_3
+slay:ORC_3
+slay:TROLL_3
+slay:DRAGON_3
+desc:A weapon crafted for the defence of the Hidden Kingdom, it is deadly to the
+desc: invading hordes of orcs, trolls, dragons and demons from Angband.  It
+desc: gives its bearer resistance to dark, permanent light, the ability to see
+desc: those hidden from normal sight, immunity from paralysis, and one extra
+desc: power.
+
+name:of the Noldor
+cost:20000
+rating:20
+alloc:5:10 to 70
+combat:d5:d5:0
+type:sword
+type:polearm
+type:hafted
+flags:FREE_ACT | SEE_INVIS
+values:STR[d2] | DEX[d2] | CON[d2]
+slay:ORC_3
+slay:TROLL_3
+slay:GIANT_3
+desc:A weapon made by the Deep Elves, feared by trolls, orcs, and giants.  It
+desc: offers sight of the unseen and protects from paralysis, and increases
+desc: strength, dexterity and constitution.
+
+name:of Fury
+cost:20000
+rating:30
+alloc:2:50 to 127
+item:hafted:Morning Star
+item:hafted:Flail
+item:hafted:Two-Handed Great Flail
+item:hafted:Lead-Filled Mace
+item:hafted:Maul
+item:hafted:Great Hammer
+item:hafted:Mace of Disruption
+item:polearm:Halberd
+item:polearm:Beaked Axe
+item:polearm:Broad Axe
+item:polearm:Battle Axe
+item:polearm:Great Axe
+item:polearm:Scythe
+item:polearm:Glaive
+item:polearm:Lance
+item:polearm:Scythe of Slicing
+item:sword:Scimitar
+item:sword:Long Sword
+item:sword:Broad Sword
+item:sword:Bastard Sword
+item:sword:Katana
+item:sword:Zweihander
+item:sword:Executioner's Sword
+item:sword:Valinorean Sword
+combat:d10:d10:0
+flags:AGGRAVATE | PROT_FEAR
+flags:IGNORE_ACID | IGNORE_FIRE
+values:STR[1+d2M2] | BLOWS[d2]
+desc:A heavy weapon, seeming to almost have a mind of its own.  It swings with
+desc: unnatural speed, letting out demonic shrieks that rouse everything nearby.
+
+name:of Nogrod
+rating:19
+alloc:5:0 to 50
+combat:d5:d5:0
+type:hafted
+type:polearm
+type:sword
+cost:6000
+values:TUNNEL[d2] | SPEED[d2] | STR[d2] | LIGHT[1]
+flags:XTRA_DICE | LIGHTWEIGHT
+desc:Cunningly designed by the dwarves of Nogrod, this weapon will aid swift
+desc: movement underground.  It glows permanently, and increases the wielder's
+desc: strength, speed and tunnelling ability.
+
+# A Whip of the Balrog.  At least 2d5, and x3 damage to all not immune
+# to fire, but reduces stealth.  Can also lash out at a distance of two.
+name:of the Balrog
+rating:30
+item:hafted:Whip
+alloc:5:0 to 50
+cost:10000
+combat:-20:10:0
+min-combat:255:0:0
+values:STEALTH[-4] | RES_FIRE[45] | LIGHT[1]
+min-values:STEALTH[-4]
+flags:XTRA_DICE | HEAVY | IGNORE_FIRE
+brand:FIRE_4
+act:BALROG_WHIP
+desc:This perilous demon's lash burns redly with the dread fires of Utumno,
+desc: doing triple damage to all monsters not resitant to fire, and
+desc: blazing so brightly as to light your path and disturb nearby foes.
+
+# The "Branded" weapons (5)
+
+name:of Melting
+cost:5000
+rating:20
+alloc:30:1 to 60
+type:sword
+type:polearm
+type:hafted
+flags:IGNORE_ACID
+values:RES_ACID[45]
+brand:ACID_3
+desc:This weapon smokes and sizzles with noxious black corrosions.  It grants
+desc: resistance to acid and cannot be harmed by that element.
+
+name:of Shocking
+cost:4500
+rating:20
+alloc:30:1 to 60
+type:sword
+type:polearm
+type:hafted
+flags:IGNORE_ELEC
+values:RES_ELEC[45]
+brand:ELEC_3
+desc:Sparks form tiny coronas upon its surface from top to bottom, and it
+desc: grants resistance to electricity.
+
+name:of Burning
+cost:3500
+rating:15
+alloc:40:1 to 50
+type:sword
+type:polearm
+type:hafted
+flags:IGNORE_FIRE
+values:RES_FIRE[45]
+brand:FIRE_3
+desc:Flames dance merrily up and down it.  It grants resistance to fire, and
+desc: cannot be harmed by that element.
+
+name:of Freezing
+cost:3000
+rating:15
+alloc:40:1 to 50
+type:sword
+type:polearm
+type:hafted
+flags:IGNORE_COLD
+values:RES_COLD[45]
+brand:COLD_3
+desc:Crystals of coldly gleaming ice form upon its surface, and it grants
+desc: resistance to frost.
+
+name:of Poisoning
+cost:4000
+rating:15
+alloc:60:1 to 40
+type:sword
+type:polearm
+type:hafted
+values:RES_POIS[10]
+brand:POIS_3
+desc:It gleams a sickly green, and you dare not hold it above the handle.
+
+# Used to be the "Slay" weapons - now more interesting
+
+name:of the Hunter
+rating:12
+alloc:10:1 to 40
+type:hafted
+type:polearm
+type:sword
+cost:500
+flags:XTRA_TO_H
+slay:ANIMAL_2
+curse:poison:100
+desc:This weapon is especially deadly against natural creatures, but will
+desc: sometimes poison you.
+
+name:of Slay Evil
+rating:17
+alloc:10:1 to 40
+type:hafted
+type:polearm
+type:sword
+cost:500
+slay:EVIL_2
+desc:This weapon fights against evil with holy fury.
+
+name:of Dread
+rating:17
+alloc:8:20 to 50
+type:hafted
+type:polearm
+type:sword
+cost:-3000
+flags:DARKNESS
+values:SPEED[d3] | STEALTH[d3] | INFRA[d3]
+slay:UNDEAD_3
+curse:impair hitpoint recovery:100
+curse:treacherous weapon:100
+curse:paralysis:100
+desc:If you can overcome the crippling curses, this weapon will heighten your
+desc: senses and reactions and prove destructive to the undead.
+
+name:of Slay Demon
+rating:17
+alloc:10:1 to 40
+type:hafted
+type:polearm
+type:sword
+cost:500
+slay:DEMON_3
+curse:stat drain:100
+desc:This weapon smites the physical forms - demons - of the fallen Maiar of
+desc: Morgoth's following; use it warily, because it takes a toll on your bodily
+desc: attributes.
+
+name:of the Drûgs
+rating:7
+alloc:10:1 to 40
+type:hafted
+type:polearm
+type:sword
+cost:500
+flags:PROT_FEAR
+values:SPEED[-3+1d2] | CON[d2]
+min-values:SPEED[-2]
+slay:ORC_3
+desc:This weapon embodies the Drû-folk - slow, but courageous and sturdy,
+desc: and with a hatred of orcs.
+
+name:of Sneaking
+rating:7
+alloc:10:1 to 40
+item:hafted:Magestaff
+item:hafted:Whip
+item:polearm:Dart
+item:polearm:Spear
+item:sword:Dagger
+item:sword:Main Gauche
+item:sword:Rapier
+item:sword:Short Sword
+cost:500
+flags:LIGHTWEIGHT
+values:STEALTH[d3]
+slay:TROLL_3
+slay:GIANT_3
+curse:mana drain:100
+curse:teleportation:100
+desc:This weapon is small and light, making it ideal for use against the large
+desc: and slow-witted. Unfortunately it will also use up your magical energy to
+desc: teleport you around randomly.
+
+name:of Slay Dragon
+rating:18
+alloc:10:1 to 40
+type:polearm
+type:sword
+cost:500
+flags:XTRA_TO_D
+slay:DRAGON_3
+curse:cuts:100
+curse:wounds:100
+desc:This weapon is especially deadly against dragons, by virtue of it's extreme
+desc: sharpness to cut through or pierce their thick hide.
+
+# The *Slay* weapons (8)
+
+name:of *Slay* Animal
+rating:15
+alloc:5:10 to 50
+type:hafted
+type:polearm
+type:sword
+cost:1000
+flags:REGEN
+values:INT[d2]
+slay:ANIMAL_3
+desc:This weapon withers animals, increases intelligence, and hastens recovery.
+
+name:of *Slay* Evil
+rating:20
+alloc:5:10 to 50
+type:hafted
+type:polearm
+type:sword
+cost:1000
+flags:BLESSED
+values:WIS[d2]
+slay:EVIL_3
+desc:This holy weapon is peerless in combat with evil creatures, increases
+desc: wisdom, and is blessed.
+
+name:of *Slay* Undead
+rating:20
+alloc:5:10 to 50
+type:hafted
+type:polearm
+type:sword
+cost:1000
+flags:SEE_INVIS
+values:WIS[d2]
+slay:UNDEAD_5
+desc:This weapon dispels undead as you strike them, increases wisdom, and allows
+desc: you to see monsters that are normally invisible.
+
+name:of *Slay* Demon
+rating:20
+alloc:5:10 to 50
+type:hafted
+type:polearm
+type:sword
+cost:1000
+values:INT[d2] | RES_FIRE[40]
+slay:DEMON_5
+desc:This weapon smites down demons with holy wrath, increases intelligence,
+desc: and protects against the element of fire.
+
+name:of *Slay* Orc
+rating:12
+alloc:5:10 to 50
+type:hafted
+type:polearm
+type:sword
+cost:1000
+values:DEX[d2]
+slay:ORC_5
+desc:This weapon wreaks destruction on orcish armies and increases dexterity.
+
+name:of *Slay* Troll
+rating:12
+alloc:5:10 to 50
+type:hafted
+type:polearm
+type:sword
+cost:1000
+values:STR[d2]
+slay:TROLL_5
+desc:This weapon pierces the tough hides of trolls with ease, and you feel
+desc: mighty as you swing it.
+
+name:of *Slay* Giant
+rating:12
+alloc:5:10 to 50
+type:hafted
+type:polearm
+type:sword
+cost:1000
+values:STR[d2]
+slay:GIANT_5
+desc:This weapon loans you some of the strength of giants, and cripples them
+desc: with every deadly blow.
+
+name:of *Slay* Dragon
+rating:20
+alloc:5:10 to 50
+type:hafted
+type:polearm
+type:sword
+cost:1000
+values:CON[d3]
+slay:DRAGON_5
+desc:This weapon is a mighty dragonbane, and increases constitution.
+
+
+### Cursed Weapons
+
+name:of Angband
+rating:0
+type:hafted
+type:polearm
+type:sword
+alloc:10:10 to 80
+cost:-3000
+combat:-d10:d5:0
+min-combat:255:0:0
+flags:SEE_INVIS | HOLD_LIFE | RAND_CURSE | XTRA_SIDES | XTRA_TO_D | RAND_POWER
+values:RES_NETHER[50] | RES_COLD[20] | RES_POIS[20] | RES_FIRE[-30]
+values:RES_LIGHT[-15] | CON[-5+1d4] | DEX[-5+1d4] | STEALTH[-5+1d4]
+min-values:CON[-4] | DEX[-4] | STEALTH[-4]
+brand:COLD_3
+brand:POIS_3
+desc:A weapon of despair, that draws you ever deeper into the realm
+desc: of the undead.
+
+
+### Missile Launchers ###
+
+name:of Accuracy
+rating:10
+type:bow
+alloc:100:5 to 70
+cost:500
+combat:d15:d5:0
+flags:ACCURATE
+desc:This missile launcher shoots missiles with pinpoint accuracy, and
+desc: sometimes almost guarantees a hit.
+
+name:of Velocity
+rating:10
+type:bow
+alloc:100:5 to 70
+cost:500
+combat:d5:d15:0
+flags:VELOCITY
+desc:This missile launcher has an unnaturally high Deadliness bonus,
+desc: and sometimes energizes for additional damage.
+
+name:of Ossiriand
+rating:25
+item:bow:Short Bow
+item:bow:Long Bow
+alloc:5:20 to 127
+cost:5000
+combat:d10:d10:0
+flags:IGNORE_ACID | IGNORE_FIRE | RAND_POWER
+values:DEX[1+d2M2] | MIGHT[d2] | STEALTH[d2]
+desc:A bow of the Green Elves of the Land of the Seven Rivers.  It's wielder
+desc: will find extra power in its shots, and will have greater stealth and
+desc: dexterity.
+
+name:of Extra Might
+cost:10000
+rating:20
+alloc:20:15 to 100
+combat:d5:d10:0
+type:bow
+values:MIGHT[1]
+
+name:of Extra Shots
+cost:10000
+rating:20
+alloc:10:15 to 100
+combat:d10:d5:0
+type:bow
+values:SHOTS[2d3]
+
+
+### Ammo ###
+
+name:of Hurt Animal
+rating:7
+type:shot
+type:arrow
+type:bolt
+alloc:10:1 to 40
+cost:5
+slay:ANIMAL_2
+desc:They slay natural creatures.
+
+name:of Hurt Evil
+rating:10
+type:shot
+type:arrow
+type:bolt
+alloc:10:1 to 40
+cost:5
+slay:EVIL_2
+desc:They do extra damage to evil creatures.
+
+name:of Hurt Undead
+rating:10
+type:shot
+type:arrow
+type:bolt
+alloc:10:1 to 40
+cost:5
+slay:UNDEAD_3
+desc:They do extra damage to the undead.
+
+name:of Hurt Demon
+rating:10
+type:shot
+type:arrow
+type:bolt
+alloc:10:1 to 40
+cost:5
+slay:DEMON_3
+desc:They smite demonic foes.
+
+name:of the Noldor
+rating:10
+type:shot
+type:arrow
+type:bolt
+alloc:10:1 to 40
+cost:10
+slay:ORC_3
+slay:TROLL_3
+slay:GIANT_3
+desc:They pierce deeply into orcs, trolls and giants.
+
+name:of Hurt Dragon
+rating:10
+type:shot
+type:arrow
+type:bolt
+alloc:10:1 to 40
+cost:5
+slay:DRAGON_3
+desc:They do extra damage to dragons.
+
+name:of Holy Might
+rating:15
+type:shot
+type:arrow
+type:bolt
+alloc:5:30 to 100
+combat:d5:d5:0
+flags:IGNORE_FIRE | IGNORE_ACID
+slay:EVIL_2
+slay:UNDEAD_3
+slay:DEMON_3
+desc:They do extra damage to evil, undead and demons.
+
+name:of *Hurt* Evil
+rating:15
+type:shot
+type:arrow
+type:bolt
+alloc:5:30 to 100
+cost:5
+slay:EVIL_3
+desc:They are a great bane of evil.
+
+name:of Acid
+rating:11
+type:shot
+type:arrow
+type:bolt
+alloc:5:10 to 100
+cost:5
+brand:ACID_3
+flags:IGNORE_ACID
+desc:They smoke and sizzle with noxious black corrosions, and they cannot be
+desc: harmed by acid.
+
+name:of Electricity
+rating:11
+type:shot
+type:arrow
+type:bolt
+alloc:5:10 to 100
+cost:5
+brand:ELEC_3
+flags:IGNORE_ELEC
+desc:Sparks form tiny coronas upon their surfaces from top to bottom.
+
+name:of Flame
+rating:10
+type:shot
+type:arrow
+type:bolt
+alloc:5:10 to 100
+cost:5
+brand:FIRE_3
+flags:IGNORE_FIRE
+desc:Flames dance merrily up and down them, and they cannot be harmed by fire.
+
+name:of Frost
+rating:10
+type:shot
+type:arrow
+type:bolt
+alloc:5:10 to 100
+cost:5
+brand:COLD_3
+flags:IGNORE_COLD
+desc:Crystals of coldly gleaming ice form upon their surfaces.
+
+name:of Poison
+rating:10
+type:shot
+type:arrow
+type:bolt
+alloc:5:10 to 100
+brand:POIS_3
+desc:They gleam a sickly green.
+
+name:of Wounding
+rating:5
+type:shot
+type:arrow
+type:bolt
+alloc:15:15 to 127
+combat:3+d5:3+d5:0
+cost:10
+desc:They are easy to aim, and pierce deep into your foes.
+
+name:of Backbiting
+cost:0
+rating:0
+alloc:0:10 to 80
+combat:-26+d25:-26+d25:0
+min-combat:255:255:0
+type:shot
+type:arrow
+type:bolt
+desc:They seem only interested in hurting you.
+
+### Digging Tools
+
+name:of Digging
+cost:500
+rating:4
+alloc:100:1 to 40
+type:digger
+values:TUNNEL[d4]
+brand:ACID_3
+
+name:of Earthquakes
+cost:3000
+rating:8
+alloc:10:10 to 127
+combat:d10:d10:0
+type:digger
+flags:IMPACT
+values:STR[d4] | TUNNEL[d6]
+brand:ACID_3
+
+### Boots ###
+
+name:of Slow Descent
+cost:250
+rating:7
+alloc:100:1 to 15
+type:boots
+flags:FEATHER
+desc:They make you light-footed, able to escape pits and dance lightly over
+desc: lava.
+
+name:of Stealth
+cost:500
+rating:16
+alloc:20:15 to 100
+item:boots:Pair of Leather Sandals
+item:boots:Pair of Leather Boots
+item:boots:Pair of Ethereal Slippers
+values:STEALTH[d3]
+desc:Your footfalls make no noise at all wearing these.
+
+name:of Free Action
+cost:1000
+rating:15
+alloc:20:1 to 40
+type:boots
+flags:FREE_ACT
+desc:These protect against paralyzation and some slowing attacks.
+
+name:of Speed
+cost:100000
+rating:25
+alloc:3:20 to 127
+type:boots
+values:SPEED[2+M8]
+desc:All around you seem to move with dreamlike sloth; time itself waits
+desc: patiently for you.
+
+name:of Stability
+cost:5000
+rating:20
+alloc:10:15 to 100
+type:boots
+flags:FEATHER
+values:RES_NEXUS[40]
+desc:The wearer of these has his feet planted firmly on the floor, and need
+desc: not fear nexus attacks.
+
+name:of Elvenkind
+cost:200000
+rating:30
+alloc:3:60 to 127
+item:boots:Pair of Leather Boots
+item:boots:Pair of Iron Shod Boots
+flags:FEATHER | IGNORE_ACID | IGNORE_FIRE
+values:STEALTH[d4] | SPEED[4+M5]
+desc:Light and fast are your footfalls in these superbly made boots.
+
+name:of Kicking
+rating:0
+type:boots
+alloc:20:1 to 40
+cost:0
+combat:d5:d5:0
+flags:AGGRAVATE | HEAVY | XTRA_TO_H | XTRA_TO_D
+desc:These hefty boots add damage to every blow, but every step you take
+desc: echoes through the dungeon, and all around you annoyed creatures advance
+desc: to kill.
+
+### Crowns and Helms ###
+
+name:of Intelligence
+cost:500
+rating:13
+alloc:100:1 to 40
+type:helm
+flags:SUST_INT
+values:INT[d2]
+desc:It increases and sustains your intelligence.
+
+name:of Wisdom
+cost:500
+rating:13
+alloc:100:1 to 40
+type:helm
+flags:SUST_WIS
+values:WIS[d2]
+desc:It increases and sustains your wisdom.
+
+name:of the Magi
+cost:7500
+rating:15
+alloc:20:20 to 127
+type:crown
+flags:SUST_INT | RAND_POWER
+flags:IGNORE_ACID | IGNORE_ELEC | IGNORE_FIRE | IGNORE_COLD
+values:INT[d3] | RES_ACID[40] | RES_ELEC[40] | RES_FIRE[40] | RES_COLD[40]
+desc:It increases and sustains your intelligence, resists the four basic
+desc: elements, and cannot be harmed by elemental attacks.  You may benefit
+desc: greatly from the one hidden power it contains.
+
+name:of Might
+cost:7500
+rating:19
+alloc:10:40 to 127
+type:crown
+flags:SUST_STR | SUST_DEX | SUST_CON | FREE_ACT
+flags:IGNORE_ACID | IGNORE_ELEC | IGNORE_FIRE | IGNORE_COLD
+values:STR[d3] | DEX[d3] | CON[d3]
+desc:This warrior's crown increases and sustains strength, dexterity, and
+desc: constitution, and protects against paralysis.
+
+name:of Lordliness
+cost:7500
+rating:17
+alloc:20:40 to 127
+type:crown
+flags:SUST_WIS | PROT_FEAR | RAND_POWER
+flags:IGNORE_ACID | IGNORE_ELEC | IGNORE_FIRE | IGNORE_COLD
+values:WIS[d3]
+desc:This paladin's crown increases and sustains wisdom and protects from fear.
+desc: You may benefit greatly from the one hidden power it contains.
+
+name:of Seeing
+cost:2000
+rating:8
+alloc:50:10 to 60
+type:helm
+flags:PROT_BLIND | SEE_INVIS
+values:SEARCH[d5]
+desc:This helm grants sight beyond sight that can never be blinded, and its
+desc: wearer will seldom miss a trap.
+
+name:of Infravision
+cost:500
+rating:11
+alloc:100:1 to 20
+type:helm
+values:INFRA[d5]
+desc:It extends your infravision.
+
+name:of Light
+cost:1000
+rating:6
+alloc:50:5 to 30
+type:crown
+values:LIGHT[1] | RES_LIGHT[40]
+desc:This helm shines so brightly as to light the way for the wearer, and offers
+desc: resistance to light.
+
+name:of Telepathy
+cost:50000
+rating:20
+alloc:10:40 to 127
+type:helm
+flags:TELEPATHY
+desc:Suddenly, the minds of your enemies stand revealed, and you perceive
+desc: those who attempt to waylay you in the dark.
+
+name:of Regeneration
+cost:1500
+rating:10
+alloc:20:1 to 60
+type:helm
+flags:REGEN
+desc:This helm offers hastened recovery of both hit points and mana.
+
+name:of Serenity
+cost:4000
+rating:20
+alloc:15:20 to 127
+type:crown
+flags:PROT_CONF | PROT_FEAR | PROT_STUN
+values:RES_SOUND[40]
+desc:This headgear makes the wearer serene among the sound and confusion
+desc: of the world.
+
+name:of Night and Day
+cost:4000
+rating:18
+alloc:15:10 to 80
+type:crown
+flags:SEE_INVIS | PROT_BLIND | IGNORE_ACID
+values:LIGHT[1] | RES_LIGHT[40] | RES_DARK[40]
+desc:It grants resistance to light and darkness, and the power to see all.
+
+name:of Trollkind
+rating:0
+alloc:100:1 to 20
+cost:0
+type:helm
+values:INT[-6+1d5] | WIS[-6+1d5] | STR[d3] | CON[d3]
+min-values: INT[-5] | WIS[-5]
+desc:This headgear saps the powers of the mind, but adds to the powers of the
+desc: body.
+
+name:of the Shadow Realm
+rating:15
+alloc:15:10 to 80
+cost:5000
+type:helm
+type:crown
+flags:DARKNESS | XTRA_TO_A
+values:RES_DARK[40] | RES_NETHER[25] | STEALTH[d3] | INFRA[d3]
+curse:undead summon:100
+curse:experience drain:100
+curse:paralysis:100
+desc:This headgear takes you into the realm of shadow, with the attendant
+desc: bonuses and dangers.
+
+### Body Armor ###
+
+name:of Anchoring
+rating:5
+alloc:10:1 to 40
+cost:200
+type:soft armor
+type:hard armor
+combat:0:0:20
+flags:HEAVY | XTRA_TO_A
+curse:anti-teleportation:100
+desc:This armour will protect you well, but at the cost of keeping you tethered
+desc: to the Earth.
+
+name:(Wolfhide)
+rating:5
+alloc:10:1 to 40
+cost:1000
+item:soft armor:Soft Leather Armour
+item:soft armor:Studded Leather Armour
+item:soft armor:Hard Leather Armour
+item:soft armor:Leather Scale Mail
+combat:0:0:10
+values:RES_COLD[60]
+flags:PROT_FEAR | XTRA_TO_A
+curse:poison:100
+curse:hallucination:100
+desc:This tough armour is made of the hide of wolves of the frozen North, and
+desc: still bears an overpowering stench.
+
+name:of Ered Engrin
+rating:5
+alloc:10:1 to 40
+cost:1000
+item:hard armor:Metal Scale Mail
+item:hard armor:Chain Mail
+item:hard armor:Augmented Chain Mail
+item:hard armor:Bar Chain Mail
+item:hard armor:Metal Brigandine Armour
+item:hard armor:Partial Plate Armour
+item:hard armor:Metal Lamellar Armour
+item:hard armor:Full Plate Armour
+item:hard armor:Ribbed Plate Armour
+combat:0:0:10
+values:RES_FIRE[40] | STEALTH[-3+1d2]
+min-values:STEALTH[-2]
+flags:HOLD_LIFE | XTRA_TO_A
+curse:cuts:100
+curse:impair hitpoint recovery:100
+desc:Forged in the fire of Angband beneath the Iron Mountains, this rough iron
+desc: suit of armour is hard on your body, but will defend against the dread
+desc: touch of Morgoth's servants.
+
+name:of Desirability
+rating:5
+alloc:10:5 to 80
+cost:100000
+item:hard armor:Mithril Chain Mail
+item:hard armor:Mithril Plate Mail
+item:hard armor:Adamantite Plate Mail
+combat:0:0:15
+values:RES_LIGHT[30] | LIGHT[1]
+flags:REGEN | XTRA_TO_A
+flags:IGNORE_ACID | IGNORE_FIRE
+curse:demon summon:100
+curse:undead summon:100
+desc:Lovingly crafted of the finest materials, this is more a work of art than a
+desc: battle suit.  Everyone will want to take it from you.
+
+name:of Resistance
+rating:10
+alloc:20:5 to 127
+cost:500
+combat:0:0:10
+type:soft armor
+type:hard armor
+type:dragon armor
+flags:RAND_RES
+flags:IGNORE_ACID | IGNORE_ELEC | IGNORE_FIRE | IGNORE_COLD
+desc:It grants at least one resistance, and cannot be harmed by elemental
+desc: attacks.
+
+name:of Elvenkind
+cost:15000
+rating:25
+alloc:10:30 to 127
+combat:0:0:d10
+min-combat:255:0:0
+type:soft armor
+type:hard armor
+flags:RAND_RES_XTRA
+flags:IGNORE_ACID | IGNORE_ELEC | IGNORE_FIRE | IGNORE_COLD
+values:STEALTH[d3] | RES_ACID[40] | RES_ELEC[40] | RES_FIRE[40] | RES_COLD[40]
+desc:Made in the smithies of Beleriand, this armour resists the elements and
+desc: at least one other attack, cannot be harmed by the elements, and conceals
+desc: the wearer from hostile eyes.
+
+### Robes only ###
+
+name:of Permanence
+cost:30000
+rating:30
+alloc:10:30 to 127
+combat:0:0:d20
+item:soft armor:Robe
+flags:SUST_STR | SUST_DEX | SUST_CON | SUST_INT | SUST_WIS
+flags:HOLD_LIFE
+flags:IGNORE_ACID | IGNORE_ELEC | IGNORE_FIRE | IGNORE_COLD
+flags:RAND_HI_RES
+values:RES_ACID[45] | RES_ELEC[45] | RES_FIRE[45] | RES_COLD[45]
+desc:The great sorcerers of old wore light mantles that protected against the
+desc: elements and at least one other attack, stat-draining, and experience
+desc: loss.  Fortunate indeed are you to discover one.
+
+### Heavy metal armor only ###
+
+name:(Dwarven)
+cost:5000
+rating:18
+alloc:20:20 to 127
+combat:0:0:d15
+min-combat:255:0:0
+type:hard armor
+flags:IGNORE_ACID | IGNORE_FIRE
+flags:FREE_ACT
+values:STR[d2] | CON[d2] | INFRA[d2M3]
+desc:The dwarven smiths of Beleriand were renowned through the ages.  This
+desc: cunning suit of armor will increase the wearer's physical prowess and
+desc: dark vision, and endow the wearer with freedom of action.
+
+### Cloaks ###
+
+name:of Protection
+rating:8
+alloc:30:1 to 40
+cost:200
+combat:0:0:10
+type:cloak
+flags:IGNORE_ACID | IGNORE_ELEC | IGNORE_FIRE | IGNORE_COLD | RAND_RES_SML
+desc:It offers enhanced ordinary protection and some resistance, and cannot be
+desc: harmed by elemental attacks.
+
+name:of Shard Protection
+cost:1500
+rating:10
+alloc:20:1 to 40
+combat:0:0:d10
+type:cloak
+flags:IGNORE_ACID | IGNORE_ELEC | IGNORE_FIRE | IGNORE_COLD
+values:RES_SHARD[40]
+desc:It wraps around you, offering protection from blasts of shards.
+
+name:of Stealth
+cost:500
+rating:10
+alloc:60:1 to 70
+type:cloak
+values:STEALTH[d3]
+desc:It improves your ability to hide from your enemies.
+
+name:of Aman
+cost:4000
+rating:20
+alloc:10:20 to 127
+combat:0:0:d20
+type:cloak
+flags:IGNORE_ACID | IGNORE_ELEC | IGNORE_FIRE | IGNORE_COLD
+flags:RAND_HI_RES
+values:STEALTH[d3]
+desc:Made in the Blessed Realm far to the west, these highly magical garments
+desc: are seldom seen and highly valued.  They increase stealth, have at least
+desc: one special resistance, and cannot be harmed by the elements.
+
+name:of the Magi
+cost:2000
+rating:15
+alloc:10:30 to 127
+combat:0:0:d4
+type:cloak
+flags:SUST_INT | IGNORE_ACID | RAND_POWER
+values:INT[d2] | STEALTH[d3] | MAGIC_MASTERY[d2]
+desc:This spellcaster's cloak will make you smarter, surer, stealthier and
+desc: confer another useful power.
+
+name:of Enveloping
+rating:0
+alloc:30:0 to 40
+cost:0
+combat:-10:-10:10
+min-combat:255:255:0
+type:cloak
+flags:XTRA_TO_A
+values:DAM_RED[2+d3]
+desc:The swirling folds of this cloak seem always to be in the way when you
+desc: most want to strike your opponents, or they you.
+
+### Gloves ###
+
+name:of Free Action
+cost:1000
+rating:11
+alloc:100:1 to 60
+type:gloves
+flags:FREE_ACT
+desc:They protect from paralyzation and certain slowing attacks.
+
+name:of Slaying
+cost:1500
+rating:17
+alloc:20:10 to 75
+combat:d5:d5:0
+type:gloves
+desc:They boost your to-hit and to-dam values.
+
+name:of Agility
+cost:1000
+rating:14
+alloc:10:20 to 50
+type:gloves
+values:DEX[d5]
+desc:While wearing these, your fingers seem divinely nimble, and your whole body
+desc: lithe and limber.
+
+name:of Power
+cost:2500
+rating:22
+alloc:5:30 to 127
+combat:d5:d5:0
+type:gloves
+values:STR[d5]
+desc:The wearer these gains considerable combat power to hammer foes.
+
+name:of Magic Mastery
+rating:15
+alloc:5:30 to 127
+type:gloves
+cost:500
+values:MAGIC_MASTERY[d4]
+desc:They enhance magical device skill.
+
+name:of Thievery
+cost:5000
+rating:22
+alloc:5:40 to 127
+combat:d8:d3:0
+item:gloves:Set of Leather Gloves
+item:gloves:Set of Alchemist's Gloves
+flags:FEATHER | FREE_ACT
+values:DEX[1+M4] | SEARCH[1+d2M3] | MOVES[-1+d2]
+desc:After slipping on these gloves an adventurer will feel agile enough to
+desc: slip through dangers and pick the very pockets of death.
+
+name:of Combat
+cost:7000
+rating:22
+alloc:5:50 to 127
+combat:d5:d8:0
+item:gloves:Set of Gauntlets
+item:gloves:Set of Mithril Gauntlets
+item:gloves:Set of Caestus
+flags:AGGRAVATE
+values:STR[d2] | CON[d2]
+desc:These powerful hand-coverings challenge your foes to come and be beaten.
+
+### Shields ###
+
+name:(Reinforced)
+rating:5
+alloc:10:1 to 60
+cost:2000
+combat:0:0:15
+type:shield
+flags:HEAVY | XTRA_SIDES | IGNORE_ACID | IGNORE_FIRE
+desc:This shield has been given extra weight, so that it becomes an offensive
+desc: weapon in the hands of a strong fighter.
+
+name:(Coated)
+rating:5
+alloc:10:1 to 40
+cost:1000
+combat:0:0:8
+item:shield:Wicker Shield
+item:shield:Leather Shield
+values:RES_ACID[40] | RES_FIRE[-10]
+flags:IGNORE_ACID
+desc:Its porous surface has been given an acid-resistant (but flammable)
+desc: coating.
+
+name:of the Earth
+rating:5
+alloc:10:1 to 40
+cost:1000
+combat:0:0:8
+item:shield:Small Metal Shield
+item:shield:Large Metal Shield
+item:shield:Knight's Shield
+item:shield:Body Shield
+item:shield:Shield of Deflection
+values:RES_ELEC[50] | INFRA[-3+1d2] | SEARCH[-3+1d2]
+min-values:INFRA[-2] | SEARCH[-2]
+flags:IGNORE_ACID
+desc:Cunningly constructed to divert electricity from its bearer, this shield
+desc: also makes perception less clear.
+
+name:(Dwarven)
+cost:5000
+rating:20
+alloc:20:40 to 127
+combat:1+M3:1+M3:d5
+item:shield:Small Metal Shield
+flags:IGNORE_ACID | IGNORE_FIRE
+flags:FREE_ACT
+values:STR[d2] | CON[d2]
+
+name:of Resistance
+rating:10
+alloc:20:5 to 127
+cost:500
+combat:0:0:10
+type:shield
+flags:RAND_RES
+flags:IGNORE_ACID | IGNORE_ELEC | IGNORE_FIRE | IGNORE_COLD
+desc:It grants at least one resistance, and cannot be harmed by elemental
+desc: attacks.
+
+name:of Night and Day
+rating:10
+alloc:10:10 to 70
+cost:1000
+combat:0:0:5
+type:shield
+values:RES_LIGHT[35] | RES_DARK[35]
+desc:It grants resistance to light and darkness.
+
+name:of Elvenkind
+cost:18000
+rating:25
+alloc:10:30 to 127
+combat:0:0:d10
+type:shield
+values:STEALTH[d3]
+values:RES_ACID[35] | RES_ELEC[35] | RES_FIRE[35] | RES_COLD[35]
+flags:RAND_RES_XTRA | IGNORE_ACID | IGNORE_ELEC | IGNORE_FIRE | IGNORE_COLD
+desc:Made in the smithies of Beleriand, this shield resists the elements and
+desc: at least one other attack, cannot be harmed by the elements, and conceals
+desc: the wearer from hostile eyes.
+
+name:of Preservation
+cost:24000
+rating:25
+alloc:5:40 to 127
+combat:0:0:d20
+type:shield
+flags:SUST_STR | SUST_CON | SUST_DEX | HOLD_LIFE
+flags:RAND_RES | RAND_RES_XTRA | RAND_RES_SML
+flags:IGNORE_ACID | IGNORE_ELEC | IGNORE_FIRE | IGNORE_COLD
+desc:A powerful shield that preserves your physical nature as
+desc: well as offering protection from a variety of attacks.
+
+### Dragon Scale Mail egos ###
+
+# This is the 'default' DSM ego - roughly half of them
+name:of Craftsmanship
+cost:500
+rating:4
+alloc:60:20 to 95
+combat:0:0:1d6M4
+min-combat:0:0:4
+type:dragon armor
+desc:This armour is finely wrought, tough yet unencumbering.
+
+name:of Stealth
+cost:500
+rating:16
+alloc:10:20 to 100
+min-combat:255:0:0
+type:dragon armor
+values:STEALTH[d2]
+desc:This armor allows the wearer to approach unheard.
+
+name:of Elvenkind
+cost:15000
+rating:25
+alloc:3:50 to 127
+combat:0:0:d10
+item:dragon armor:Shining Dragon Scale Mail
+item:dragon armor:Law Dragon Scale Mail
+item:dragon armor:Gold Dragon Scale Mail
+item:dragon armor:Chaos Dragon Scale Mail
+item:dragon armor:Balance Dragon Scale Mail
+flags:RAND_RES_XTRA
+values:STEALTH[d2] | RES_ACID[35] | RES_ELEC[35] | RES_FIRE[35] | RES_COLD[35]
+desc:A suit of armor made of to use the power of Morgoth's dragons against him,
+desc: and cunningly enhanced by the Noldor of Beleriand.
+
+name:(Dwarven)
+cost:5000
+rating:18
+alloc:5:40 to 127
+combat:0:0:d15
+min-combat:255:0:5
+type:dragon armor
+flags:FREE_ACT
+values:STR[d2] | CON[d2] | INFRA[d2M3]
+desc:Armor wrought by the dwarves from the skin of their mightiest enemies.
+
+name:of Speed
+cost:100000
+rating:25
+alloc:2:40 to 127
+min-combat:255:0:0
+type:dragon armor
+values:DEX[d3] | SPEED[d5]
+desc:This armor gives you the lithe and rapid movement.
+
+# Rings and amulets in FAangband are designed individually, based on one of
+# the themes below.  Editing the descriptions is fine, but changing a name
+# or adding new ring/amulet ego types will require additional code in
+# src/obj-design.c.
+
+### Amulets ###
+
+name:of Mental Strength
+type:amulet
+desc:It will enhance your mental abilities.
+
+name:of Doom
+type:amulet
+desc:As a millstone around your neck, this amulet drags you toward destruction.
+
+name:of Basic Resistance
+type:amulet
+desc:It gives magical protection from one of the base elements; the elements
+desc: of Acid and Lightning are most easily controlled by an amulet.
+
+name:of Magical Item Mastery
+type:amulet
+desc:It helps your ability to use rods, wands and staves.
+
+name:of Clarity
+type:amulet
+desc:Its wearer gains the mental powers to be master of their own destiny.
+
+name:of the Shadows
+type:amulet
+desc:As you don this amulet you feel yourself at one with the night.
+
+name:of Metamorphosis
+type:amulet
+desc:Within this amulet is locked the Maiar secret of shapechanging; a pity
+desc: that it is not a power that lesser beings can easily control.
+
+name:of Sustenance
+type:amulet
+desc:It will help to ward off attacks that would reduce your potency.
+
+name:of Trickery
+type:amulet
+desc:Wary should be the foe who attacks the wearer of this amulet.
+
+name:of Weaponmastery
+type:amulet
+desc:It allows the warrior to concentrate on his attacking with no fear of fell
+desc: magic.
+
+name:of Vitality
+type:amulet
+desc:The life force of this amulet's fortunate wearer is held secure by the
+desc: power within.
+
+name:of Insight
+type:amulet
+desc:It gives you vision of that which would otherwise be hard to see.
+
+### Rings ###
+
+name:of the Elements
+type:ring
+desc:It imparts elemental force to your blows.
+
+name:of Physical Prowess
+type:ring
+desc:It enhances your physical powers.
+
+name:of Combat
+type:ring
+desc:You feel your combative urges rising as you slip this ring on.
+
+name:of Mobility
+type:ring
+desc:It guarantees your freedom to move.
+
+name:of Arcane Resistance
+type:ring
+desc:It protects you from at least one high element.
+
+name:of Utility
+type:ring
+desc:It seems designed to make your life a little easier.
+
+name:of Basic Resistance
+type:ring
+desc:It gives magical protection from one of the base elements;
+desc: the elements of Fire and Cold are most easily controlled by a ring.
+
+name:of Hindrance
+type:ring
+desc:It grabs you and reduces your abilities.
+
+name:of the Dawn
+type:ring
+desc:It calls a truce around you between the powers of Dark and Light.
+
+name:of Speed
+type:ring
+desc:As you put on this ring, you feel the world slow down around you.
+
+name:of Woe
+type:ring
+desc:It seems to be draining everything good and joyous from your being.
+
+name:of Fickleness
+type:ring
+desc:Wearing this ring will put you at the mercy of the whims and chances of
+desc: fate.
+
+name:of Power
+type:ring
+desc:Immunity from one of the base elements is just one prize for the finder of
+desc: this mighty ring.

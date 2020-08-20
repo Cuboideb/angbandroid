@@ -6,15 +6,13 @@
 	<Preference android:title="Game Profile" 
 		android:key="angband.gameprofile">
 	  	<intent android:action="org.rephial.xyangband.PROFILES" />
-	</Preference>
-		<!--
+	</Preference>		
 		<org.rephial.xyangband.ProfileListPreference
 		   android:title="@string/preferences_gameplugin_title"
 		   android:key="angband.gameplugin"
 		   android:summary="@string/preferences_gameplugin_summary"
 		   android:entries="@array/gamePluginDescriptions"
-		   android:entryValues="@array/gamePlugins" />
-		-->
+		   android:entryValues="@array/gamePlugins" />		
 		<org.rephial.xyangband.ProfileCheckBoxPreference
 		   android:title="@string/preferences_skipwelcome_title"
 		   android:key="angband.skipwelcome"
@@ -104,11 +102,39 @@
 		  seekBar:min="0"
 		  seekBar:max="100"
 		  seekBar:defaultVal="100" />
-	  <CheckBoxPreference
-		  android:key="angband.qwertynumpad"
-		  android:defaultValue="false"
-		  android:title="Qwerty NumPad"
-		  android:summary="Qwerty keyboard comes with NumPad" />	  
+
+		<CheckBoxPreference
+			android:key="angband.qwertynumpad"
+			android:defaultValue="false"
+			android:title="Qwerty NumPad"
+			android:summary="Qwerty keyboard comes with NumPad" />
+
+		<CheckBoxPreference
+			android:key="angband.use_adv_keyboard"
+			android:defaultValue="false"
+			android:title="Use Advanced Keyboard" />
+
+		<CheckBoxPreference
+			android:key="angband.use_vert_keyboard"
+			android:defaultValue="false"
+			android:dependency="angband.use_adv_keyboard"
+			android:title="Use Vertical Layout for Advanced Keyboard" />
+
+      <org.rephial.xyangband.SeekBarPreference
+		  android:key="angband.keyboard_width"
+		  android:title="Keyboard Width"
+		  android:dependency="angband.use_adv_keyboard"
+		  seekBar:min="0"
+		  seekBar:max="100"
+		  seekBar:defaultVal="100" />
+	  <org.rephial.xyangband.SeekBarPreference
+		  android:key="angband.keyboard_height"
+		  android:title="Keyboard Height"
+		  android:dependency="angband.use_adv_keyboard"
+		  seekBar:min="0"
+		  seekBar:max="100"
+		  seekBar:defaultVal="100" />
+
 	  <org.rephial.xyangband.SeekBarPreference
 		  android:key="angband.ribbonbuttonmult"
 		  android:title="Ribbon button size multiplier"
@@ -120,6 +146,16 @@
 		  android:defaultValue="false"		  
 		  android:title="Auto display long lists"
 		  android:summary="When you are prompted for selection" />
+		
+		<!--
+		<ListPreference
+			android:key="angband.ribbon_rows"
+			android:title="Number of extra rows in ribbon"	
+			android:defaultValue="0"
+			android:entries="@array/extraRibbonRows"
+			android:entryValues="@array/extraRibbonRows"/>
+		-->
+			
       <CheckBoxPreference
 		  android:key="angband.useicons"
 		  android:defaultValue="true"

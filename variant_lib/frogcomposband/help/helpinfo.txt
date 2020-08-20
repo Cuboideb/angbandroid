@@ -1,0 +1,25 @@
+<style:title>Online Help Commands</style>
+
+<style:heading>Movement Commands</style>
+<color:keypress>   Q q    </color>(Leave the help system)
+<color:keypress>   ESC    </color>(Return to the previous file)
+<color:keypress>    !     </color>(Go to the help system's main page)
+
+<color:keypress>   Home   </color>(Go to the top)
+<color:keypress>  PageUp  </color>(Go up 1 page)
+<color:keypress> Up Arrow </color>(Go up 1 line)
+<color:keypress>Down Arrow</color>(Go down 1 line)
+<color:keypress> PageDown </color>(Go down 1 page)
+<color:keypress>   End    </color>(Go to the bottom)
+
+<color:keypress>    >     </color>(Go to next section)
+<color:keypress>    <     </color>(Go to previous section)
+
+<style:heading>Other Commands</style>
+<color:keypress>    /     </color>(Search forward for a string - case-sensitive)
+<color:keypress>    \     </color>(Search backward for a string - case-sensitive)
+<color:keypress>    |     </color>(Copy to file)
+          <color:note>(<indent>Note: You can save as html by giving the file an htm or html extension. Otherwise, color formatting will be removed.)</indent></color>
+
+<style:heading>Links</style>
+Press the indicated letter <color:link>[a-z]</color> to activate a link. For example, press the <color:keypress>a</color> key when you see "(see <link:monster.txt#Pets>)" etc.

@@ -1,0 +1,18 @@
+<style:title>Creating a Character</style>
+
+Please choose one of the following help topics:
+
+    <link:birth.txt#CreateAt> Creating a Character
+    <link:birth.txt#Welcome> The Welcome Screen
+    <link:birth.txt#RaceClass> The Race/Class Screen
+    <link:birth.txt#Stats> The Stats Screen
+    <link:birth.txt#CharAttributes> Character Attributes
+    <link:birth.txt#PrimaryStats> Statistics
+    <link:birth.txt#PrimarySkills> Skills
+    <link:birth.txt#Abilities> Additional Abilities
+    <link:birth.txt#BirthOptions> Birth Options
+    <link:birth.txt#Reference> Reference
+    <link:speed.txt> Game Speed Modes
+
+    <color:y>(?) Help System Commands</color>
+

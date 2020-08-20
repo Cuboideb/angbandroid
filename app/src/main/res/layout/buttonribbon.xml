@@ -2,43 +2,34 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    >
+    android:orientation="horizontal">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/at_left"
-        />
+        android:orientation="horizontal"        
+        android:id="@+id/at_left" />
 
     <HorizontalScrollView
-        android:layout_width="fill_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:id="@+id/scrollv"
-        >
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:id="@+id/scrollv">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
             android:layout_gravity="right"
-            >
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:id="@+id/at_center"
-                />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:id="@+id/at_right"
-            />
-        </LinearLayout>
+            android:orientation="horizontal"            
+            android:id="@+id/at_center" />
+            <!-- android:layout_gravity="right" -->        
+        
     </HorizontalScrollView>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"        
+        android:id="@+id/at_right" />
 </LinearLayout>

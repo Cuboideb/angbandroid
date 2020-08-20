@@ -1,0 +1,378 @@
+# File: store.txt
+
+# Syntax for this file:
+
+# store: store number : store name
+# town: town code                   - towns which have one of these stores
+# owner: max purse : name			- one per player race, ordered as p_race.txt
+# turnover: turnover				- how many items the store turns over
+# slots: min : max					- number of 'normal' slots to keep stocked
+# normal: type name : item name		- for the normal stocking list
+# always: type name : ?item name	- for things to always stock
+# buy: type name					- base types the store will buy
+# buy-flag: flag : type name		- types to buy if the flag is present
+
+
+# General store
+store:General Store
+town:KHAZAD_DUM
+town:BELEGOST
+town:MENEGROTH
+town:GONDOLIN
+town:ANGBAND
+owner:300:Easterling:Rincewind the Chicken
+owner:300:Green-Elf:Ella the Quiet
+owner:300:Grey-Elf:Lyar-el the Comely
+owner:350:Hobbit:Haldro the Friendly
+owner:450:Petty-Dwarf:Snafu the Midget
+owner:400:Dwarf:Bezel Broadbeam
+owner:200:Drúadan:Gorgrund the Haggler
+owner:300:Longbeard:Falin of ZirakZigil
+owner:250:Adan:Dorlas the Craven
+owner:350:High-Elf:Eldalin of the Swallow
+owner:200:Dark-Elf:Anwë the Cautious
+owner:450:Ent:Quickbeam the Gentle
+owner:350:Beorning:Bruna of Carrock
+slots:0:4
+turnover:2
+always:cloak:Cloak
+always:food:Ration of Food
+always:light:Wooden Torch
+always:flask:Flask of Oil
+always:digger:Shovel
+always:digger:Pick
+always:shot:Iron Shot
+always:arrow:Arrow
+always:bolt:Bolt
+normal:food:Pint of Fine Wine
+normal:food:Slime Mold
+normal:food:Flask of Whisky
+normal:food:Hard Biscuit
+normal:mushroom:Stoneskin
+normal:mushroom:Purging
+buy:light
+buy:food
+buy:mushroom
+buy:flask
+buy:digger
+
+# Armoury
+store:Armoury
+town:KHAZAD_DUM
+town:BELEGOST
+town:MENEGROTH
+town:GONDOLIN
+town:ANGBAND
+owner:10000:Easterling:Darg-Low the Grim
+owner:20000:Green-Elf:Ambol of Legolin
+owner:25000:Grey-Elf:Ella the Dextrous
+owner:5000:Hobbit:Éagol the Stoor
+owner:10000:Petty-Dwarf:Amûn the Cunning
+owner:30000:Dwarf:Mauglin the Grumpy
+owner:5000:Drúadan:Kon-Dar the Ugly
+owner:15000:Longbeard:Alebeard the Tipsy
+owner:25000:Adan:Decado the Handsome
+owner:30000:High-Elf:Mardil of the Harp
+owner:15000:Dark-Elf:Vivirion True-Forger
+owner:25000:Ent:Ironbark of Arvernien
+owner:20000:Beorning:Cuddle the Victorious
+slots:6:18
+turnover:9
+normal:boots:Pair of Leather Sandals
+normal:boots:Pair of Leather Boots
+normal:boots:Pair of Iron Shod Boots
+normal:helm:Hard Leather Cap
+normal:helm:Metal Cap
+normal:helm:Iron Helm
+normal:soft armour:Robe
+normal:soft armour:Soft Leather Armour
+normal:soft armour:Studded Leather Armour
+normal:soft armour:Hard Leather Armour
+normal:soft armour:Leather Scale Mail
+normal:hard armour:Metal Scale Mail
+normal:hard armour:Chain Mail
+normal:gloves:Set of Leather Gloves
+normal:gloves:Set of Gauntlets
+normal:shield:Wicker Shield
+normal:shield:Small Metal Shield
+normal:shield:Leather Shield
+buy:boots
+buy:gloves
+buy:crown
+buy:helm
+buy:shield
+buy:cloak
+buy:soft armor
+buy:hard armor
+buy:dragon armor
+
+# Weaponsmith
+store:Weapon Smiths
+town:KHAZAD_DUM
+town:BELEGOST
+town:MENEGROTH
+town:GONDOLIN
+town:ANGBAND
+owner:7500:Easterling:William Wrathful
+owner:20000:Green-Elf:Jarl the Generous
+owner:15000:Grey-Elf:Arndal the Staunch
+owner:25000:Hobbit:Tarl Stronginthearm
+owner:15000:Petty-Dwarf:Yîn the Brave
+owner:30000:Dwarf:Oglign Dragon-Slayer
+owner:30000:Drúadan:Stor the Steadfast
+owner:5000:Longbeard:Borin the Grasping
+owner:15000:Adan:Alach of Dor-Lómin
+owner:25000:High-Elf:Shrada of the Golden Flower
+owner:10000:Dark-Elf:Silence the Stealthy
+owner:10000:Ent:Borobab the Solid
+owner:5000:Beorning:Bearclaw the Fierce
+slots:3:14
+turnover:9
+normal:shot:Iron Shot
+normal:arrow:Arrow
+normal:bolt:Bolt
+normal:sword:Dagger
+normal:sword:Main Gauche
+normal:sword:Rapier
+normal:sword:Short Sword
+normal:sword:Cutlass
+normal:sword:Tulwar
+normal:sword:Broad Sword
+normal:sword:Long Sword
+normal:sword:Scimitar
+normal:sword:Katana
+normal:sword:Bastard Sword
+normal:polearm:Spear
+normal:polearm:Awl-Pike
+normal:polearm:Trident
+normal:polearm:Pike
+normal:polearm:Beaked Axe
+normal:polearm:Broad Axe
+normal:polearm:Battle Axe
+normal:polearm:Lance
+normal:polearm:Lucerne Hammer
+normal:hafted:Whip
+normal:bow:Sling
+normal:bow:Short Bow
+normal:bow:Long Bow
+normal:bow:Light Crossbow
+buy:shot
+buy:bolt
+buy:arrow
+buy:bow
+buy:digger
+buy:sword
+buy:polearm
+buy:hafted
+
+
+# Bookseller
+store:Bookseller
+town:ERIADOR
+town:OSSIRIAND
+town:ERED_LUIN_SOUTH
+town:TAUR_IM_DUINATH
+town:EPHEL_BRANDIR
+town:GLADDEN_FIELDS
+town:KHAZAD_DUM
+town:BELEGOST
+town:MENEGROTH
+town:GONDOLIN
+town:ANGBAND
+owner:15000:Easterling:Borfang the Learned
+owner:12500:Green-Elf:Marwë of Tol Galen
+owner:10000:Grey-Elf:Nastra the Dusty
+owner:20000:Hobbit:Bilbo the Tome-master
+owner:20000:Petty-Dwarf:Gabberam the Sage
+owner:30000:Dwarf:Arlin Stiffbeard
+owner:20000:Drúadan:Olin the Librarian
+owner:25000:Longbeard:Lavin Stonedweller
+owner:25000:Adan:Silmarien the Joyous
+owner:30000:High-Elf:Hastiel the Encyclopedist
+owner:20000:Dark-Elf:Eril the Ancient
+owner:15000:Ent:Skinbark of Dorthonion
+owner:12500:Beorning:Targor Pagemaster
+slots:0:2
+turnover:0
+always:prayer book
+always:magic book
+always:nature book
+always:shadow book
+buy:magic book
+buy:prayer book
+buy:nature book
+buy:shadow book
+
+# Alchemist
+store:Alchemy Shop
+town:ERIADOR
+town:OSSIRIAND
+town:ERED_LUIN_SOUTH
+town:TAUR_IM_DUINATH
+town:EPHEL_BRANDIR
+town:GLADDEN_FIELDS
+town:KHAZAD_DUM
+town:BELEGOST
+town:MENEGROTH
+town:GONDOLIN
+town:ANGBAND
+owner:10000:Easterling:Mauser the Chemist
+owner:10000:Green-Elf:Vella the Slender
+owner:7500:Grey-Elf:Dilon of Region
+owner:7500:Hobbit:Wizzle the Chaotic
+owner:15000:Petty-Dwarf:Ga-nat the Greedy
+owner:15000:Dwarf:Oroglad the Thaumaturge
+owner:12500:Drúadan:Sopor the Druid
+owner:10000:Longbeard:Tarin the Mystic
+owner:15000:Adan:Arawen son of Aranor
+owner:12500:High-Elf:Belegon of the Tree
+owner:15000:Dark-Elf:Ingwil of Cuiviénen
+owner:12500:Ent:Fieriel of Fangorn
+owner:12500:Beorning:Sevestor the Silent
+slots:6:10
+turnover:9
+always:scroll:Word of Recall
+always:scroll:Phase Door
+always:scroll:Remove Curse
+always:potion:Cure Light Wounds
+normal:scroll:Monster Confusion
+normal:scroll:Magic Mapping
+normal:scroll:Detect Invisible
+normal:scroll:Recharging
+normal:scroll:Remove Hunger
+normal:scroll:Blessing
+normal:scroll:Holy Chant
+normal:potion:Boldness
+normal:potion:Berserk Strength
+normal:potion:Resist Heat
+normal:potion:Resist Cold
+normal:potion:Restore Life Levels
+normal:potion:Neutralize Poison
+normal:potion:Cure Serious Wounds
+normal:potion:Cure Critical Wounds
+buy:scroll
+buy:potion
+
+# Magic-user's
+store:Magic Shop
+town:KHAZAD_DUM
+town:BELEGOST
+town:MENEGROTH
+town:GONDOLIN
+town:ANGBAND
+owner:10000:Easterling:Murid the Skinflint
+owner:20000:Green-Elf:Ariel the Sorceress
+owner:30000:Grey-Elf:Inglorian the Mage
+owner:25000:Hobbit:Aradoc of the Anduin
+owner:20000:Petty-Dwarf:Buggerby the Great
+owner:20000:Dwarf:Arin Firebeard
+owner:30000:Drúadan:Úghu the Conjurer
+owner:10000:Longbeard:Pagin Silverbeard
+owner:25000:Adan:Allach of Brethil
+owner:30000:High-Elf:Ariengil of the Pillar
+owner:20000:Dark-Elf:Barinel of the East
+owner:10000:Ent:Oakblood the Old
+owner:17500:Beorning:Yeovil the Skinchanger
+slots:4:14
+turnover:9
+normal:ring:Steel
+normal:ring:Pewter
+normal:amulet:Chalcedony
+normal:amulet:Malachite
+normal:wand:Light
+normal:wand:Slow Monster
+normal:wand:Confuse Monster
+normal:wand:Magic Missile
+normal:wand:Stinking Cloud
+normal:wand:Stone to Mud
+normal:staff:Teleportation
+normal:staff:Light
+normal:staff:Mapping
+normal:staff:Detect Invisible
+normal:staff:Detect Evil
+buy:magic book
+buy:amulet
+buy:ring
+buy:staff
+buy:wand
+buy:rod
+buy:scroll
+buy:potion
+
+# Black Market - no stock given but we still need slot/turnover info
+store:Black Market
+town:KHAZAD_DUM
+town:BELEGOST
+town:MENEGROTH
+town:GONDOLIN
+town:ANGBAND
+owner:25000:Easterling:Tancred of the Axe
+owner:30000:Green-Elf:Ravil of Thalos
+owner:20000:Grey-Elf:Saeros the Sarcastic
+owner:20000:Hobbit:Grollo Marshdweller
+owner:27500:Petty-Dwarf:Neo the Twisted
+owner:30000:Dwarf:Ara Blacklock
+owner:20000:Drúadan:Histor the Stumpy
+owner:30000:Longbeard:Murin the Dark
+owner:30000:Adan:Durwin the Shifty
+owner:25000:High-Elf:Muril of the Mole
+owner:22500:Dark-Elf:Arvin the Shady
+owner:27500:Ent:Darkheart the Huorn
+owner:20000:Beorning:Lo-Hak the Awful
+slots:6:18
+turnover:9
+
+store:Home
+
+store:Travelling Merchant
+town:ERIADOR
+town:OSSIRIAND
+town:ERED_LUIN_SOUTH
+town:TAUR_IM_DUINATH
+town:EPHEL_BRANDIR
+town:GLADDEN_FIELDS
+owner:25000:Easterling:Sandor the Pedlar
+owner:30000:Green-Elf:Erdil the Traveller
+owner:30000:Grey-Elf:Damleg the Grey
+owner:20000:Hobbit:Bongo the Wanderer
+owner:27500:Petty-Dwarf:Ild son of Gild
+owner:30000:Dwarf:Volin Stonefoot
+owner:20000:Drúadan:Gald of the Woods
+owner:30000:Longbeard:Gilette the Lawful
+owner:30000:Adan:Bella the Merchant
+owner:25000:High-Elf:Erdan of the Harp
+owner:22500:Dark-Elf:Tervin of Arda
+owner:27500:Ent:Fairleaf of Neldoreth
+owner:20000:Beorning:Bergin of Hithaeglir
+slots:2:6
+turnover:6
+always:food:Ration of Food
+always:light:Wooden Torch
+always:flask:Flask of Oil
+always:digger:Pick
+always:shot:Iron Shot
+always:arrow:Arrow
+always:bolt:Bolt
+normal:food:Pint of Fine Wine
+normal:food:Flask of Whisky
+normal:food:Hard Biscuit
+normal:bow:Sling
+normal:bow:Short Bow
+normal:bow:Long Bow
+normal:bow:Light Crossbow
+normal:cloak:Cloak
+normal:soft armour:Robe
+normal:soft armour:Soft Leather Armour
+normal:soft armour:Hard Leather Armour
+normal:hard armour:Chain Mail
+normal:gloves:Set of Leather Gloves
+normal:boots:Pair of Leather Boots
+normal:boots:Pair of Iron Shod Boots
+normal:helm:Hard Leather Cap
+normal:helm:Iron Helm
+normal:shield:Wicker Shield
+normal:sword:Dagger
+normal:sword:Short Sword
+normal:polearm:Spear
+normal:polearm:Throwing Axe
+normal:hafted:Mace

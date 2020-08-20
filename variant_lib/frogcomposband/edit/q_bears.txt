@@ -1,0 +1,57 @@
+# New quest for FrogComposband 7.0.strawberry (not actually used at the time)
+# The original description ended up as the description for Shadow Fairies,
+# and the original map ended up as the map for Djinni's Cavern...
+# Redesigned for FrogComposband 7.1.chocolate
+
+?:[EQU $QUEST62 Taken InProgress]
+D:The bear population in our eastern forests has exploded recently; before
+D:we'd only see the occasional solitary grizzly, but now they're forming
+D:groups and even use our roads. They seem to live in a cave near the southern
+D:edge of the forest, at the base of a large hill. The Count believes them
+D:responsible for the disappearances of some of our citizens, who were last
+D:seen walking in that area. Please explore their den and make our town safe
+D:again.
+
+?:[EQU $QUEST62 Completed]
+D:Thank you, truly you are stronger than any bear.
+?:1
+
+?:[EQU $QUEST62 Failed]
+D:I hope I can find someone more capable than you.
+?:1
+
+T:QUEST:NORMAL
+L:#:MOUNTAIN_WALL
+L:%:PERMANENT
+L:<:UP_STAIR
+L:i:DIRT
+L:.:DIRT
+L:m:MON(mad bear)
+L:M:MON(mad bear, NO_GROUP)
+L:N:MON(mad bear, NO_GROUP | NO_SLEEP)
+L:(:OBJ(filthy rag, DEPTH+18)
+L:h:OBJ(human skeleton)
+L:H:OBJ(human skeleton)
+L:i:OBJ(human skeleton)
+L:o:OBJ(*, DEPTH+1)
+L:O:OBJ(*, DEPTH+1)
+L:q:OBJ(*, DEPTH+1)
+L:p:OBJ(potion of berserk strength)
+!:SCRAMBLE(h,o,H,O)
+!:SCRAMBLE(i,q)
+
+M:%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+M:%#############################%
+M:%####M(######<################%
+M:%###OH..####...######ii#######%
+M:%##HNMo...##......##..Mq######%
+M:%##oM.h......####.......iq####%
+M:%###hO.....#######...m...q####%
+M:%####..m##########N.....M#####%
+M:%##################M...i######%
+M:%#############################%
+M:%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+R:OBJ(STAFF_ENLIGHTENMENT)
+
+?:[EQU $CLASS Berserker]
+R:OBJ(potion of enlightenment, NUMBER=1)

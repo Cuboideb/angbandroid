@@ -1,0 +1,22 @@
+Attacking and Weapons
+
+Please choose one of the following help sections:
+
+    [a] Overview
+    [b] Attacking from a Distance
+    [c] Melee Weapons
+    [d] Ranged Weapons
+    [e] Ego Weapons and Artifacts
+    [f] Slays and Brands
+    [g] Choosing the Right Weapon
+    [h] Attacking Monsters in Walls
+    [i] Attacking Pets or Friendly Monsters
+    [j] Martial Arts
+    [k] Two-Handed Wielding
+    [l] Dual-Wielding
+    [m] Magical Aids to Physical Combat
+    [n] Improving Your Odds
+    [o] Basic Tactics
+
+    (?) Help System Commands
+

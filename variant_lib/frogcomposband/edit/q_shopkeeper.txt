@@ -1,0 +1,57 @@
+?:[GEQ [MOD $RANDOM0 72] 36]
+K:93
+?:1
+
+?:[EQU $QUEST53 Taken InProgress]
+D:While you were gone, I had a visit from an old friend and we were 
+D:reminiscing about the infamous storekeeper from the ancient city. 
+D:My Dwarven friend always got the better end of the bargain when it 
+D:came to haggling, but he met his match whenever he encountered this 
+D:storekeeper. My advisor believes that the storekeeper used magic
+D:to charm his clients. Why don't you search the ruins and see if 
+D:you can shed some light on the matter.
+?:1
+
+?:[EQU $QUEST53 Completed]
+D:Once again, we are in your debt.
+?:1
+
+?:[EQU $QUEST53 Failed]
+D:You have failed me, beware you do not do so again!
+?:1
+
+T:QUEST:NORMAL
+L:#:PERMANENT
+L:+:CLOSED_DOOR
+L:.:FLOOR
+L:<:UP_STAIR
+L:^:TRAP(*, 25%)
+L:a:MON(mithril golem):OBJ(mithril shod boots)
+L:b:MON(mithril golem):OBJ(mithril shield)
+L:c:MON(mithril golem):OBJ(mithril plate)
+L:d:MON(mithril golem):OBJ(mithril helm)
+L:e:MON(mithril golem):OBJ(mithril gauntlets)
+L:f:MON(colossus)
+L:g:OBJ(*, DEPTH+7):MON(silent watcher)
+L:h:MON(eog golem)
+L:i:OBJ(*, DEPTH+20):MON(drolem)
+L:k:OBJ(potion of charisma)
+L:l:OBJ(WAND_CHARM_MONSTER)
+L:m:OBJ(SCROLL, DEPTH+10)
+L:n:OBJ(small iron chest)
+
+M:######################################################################
+M:#..............################################################.h.####
+M:#..............#################################################+#####
+M:#......f.......+..................................................+h.#
+M:#..............#..###################+################################
+M:#..............#..#.................................##################
+M:################..#.......g.......g......g..........##############kml#
+M:#..............#..#.................................##############..n#
+M:#.<............+..#...###########################...##########......k#
+M:#..............#..#...###########################...##########.i.##nm#
+M:################..#.................................+...^..^.+...#####
+M:########......##..#^^^^^##^^^^^##^^^^^##^^^^^##^^^^^##################
+M:########..f....+..#..a..##..b..##..c..##..d..##..e..##################
+M:########......##..####################################################
+M:######################################################################

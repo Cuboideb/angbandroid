@@ -1,0 +1,390 @@
+Defending and Armor
+ 
+There are a number of ways in which monsters can attack you: in direct 
+melee combat, by exploding next to you, by breathing on you, or by 
+casting spells (this is to say nothing of those lovely summoners who 
+summon other monsters to lend them a helping hand!). All types of 
+monster attacks can either harm your hit points directly, cause status 
+effects ([a]), cause other nasty side-effects (like stat drain or 
+elemental damage to your items), or - way too often - all of the above.
+
+Virtually all monsters have melee attacks; usually they can only use 
+them if they are directly next to you, but a few monsters have longer 
+(two-square) reach, and then there are the dreaded beholders... Melee 
+attacks are not guaranteed to hit, though; often they miss.
+
+Many monsters also have an array of magical spells which they may use 
+against you; and some have breath attacks (for example, red dragons 
+breathe fire). Spell and breath attacks can be used from some distance 
+away; usually they require line of sight, but sometimes a powerful ball 
+or breath attack might snipe you from around a corner, still doing some 
+damage even though the monster could not target you directly.
+
+You need three things to protect you from this onslaught of attacks: 
+armor class (AC) to make melee attacks miss more; resistances to reduce 
+damage from elements (like fire) and to mitigate or eliminate the 
+side-effects that elements have; and enough hit points (HP) to survive 
+the damage you can't help taking. (In practice, you also need a fourth 
+thing as well: plenty of healing to recover from the damage!)
+
+Armor Class
+
+The higher your armor class (or AC) is, the better. The effects of high 
+AC are twofold: it causes all monster melee attacks to miss more often, 
+and it reduces damage from some melee attacks even when they do hit. 
+The latter only happens against the "Hurt" and "Shatter" attack types, 
+and not against melee attacks of other types.
+
+You can get some AC from your dexterity (essentially this is your 
+ability to dodge attacks, interpreted as AC); but the bulk of your AC 
+will be accounted for by your equipment, especially your armor.
+
+All armor-type items (body armors, shields, cloaks, gloves, boots, 
+helmets etc.) have two different AC values: base AC and bonus AC. These 
+are displayed in square brackets as [x,+y] (e.g. [8,+0]), where x is 
+the base AC and y is the bonus AC. Base AC is usually the same for all 
+items of the same kind (e.g. all small leather shields), cannot be 
+magically enchanted or otherwise improved, and cannot be damaged. Bonus 
+AC can be magically enchanted, but can also suffer damage from 
+disenchantment and acid.
+
+Non-armor items (such as weapons, amulets or rings) never have base AC, 
+but may still have bonus AC. If present, this is indicated simply as 
+[+y] (e.g. [+10]); since these items never have base AC, only one 
+number is needed. See [b] for a full account of all numbers that might 
+be displayed in an item description.
+
+For most characters, AC runs from around 0 to 150, maybe a bit higher. 
+AC can go arbitrarily high; direct damage reduction from AC reaches its 
+maximum level at an AC of 180, but the more important hit chance 
+reduction from AC is not similarly capped. Yet, since armor is needed 
+for resistances as much as (or even more than) it is needed for AC, 
+compromises that limit AC are often necessary.
+
+Resisting Magical Attacks
+
+A few evil curses might give you a saving throw (see [c]); but breaths, 
+bolts, balls, and other nasty spell attacks offer no such easy way out. 
+Against them, your only recourse is to find equipment (or some other 
+source) that grants resistance to the attack's damage type, or element.
+
+There are two categories of resistances: 1) the base or low resistances 
+(acid, electricity, fire, cold, poison); and 2) the high resistances: 
+light, dark, confusion, nether, nexus, sound, shards, chaos, 
+disenchantment, blindness and time. (Poison is sometimes counted as a 
+high resistance, but is functionally a low one.) In addition, there is 
+the special resistance to fear, which works differently (see [d]).
+
+Each resistance both reduces damage from the corresponding element and 
+gives you a saving roll against side-effects caused by that element. 
+Multiple sources of the same resistance stack, though not linearly: one 
+source of fire resistance (or another low resistance), for example, 
+provides 50% resistance; two sources would give 65%, three sources 72%, 
+and so on. The corresponding numbers for high resistances are lower: 
+30% for one source of resistance, 40% for two and 45% for three. These 
+resistance percentages are displayed on the Character Sheet, so there 
+is no need to memorize them.
+
+For damage reduction, 50% resistance simply means damage is reduced by 
+approximately 50% (there is slight randomness, so for any one attack it 
+could be 52% or 49%, but it will be close to 50%). For side-effects, 
+the calculation is somewhat different: the resistance level (here 50) 
+is compared to a 66-sided die for item destruction calculations, and a 
+55-sided die for other side effects. So two sources of fire resistance 
+(65%) would almost eliminate item damage from fire, but there's still 
+that pesky 1 in 66 chance... For high resistances the numbers are 
+lower: a 41-sided die for item destruction, and a 33-sided die for 
+other side effects; again, two sources of resistance are almost but not 
+quite enough to prevent item destruction.
+
+A few races, such as Androids (electricity) or Werewolves and Ents 
+(fire), are exceptionally vulnerable to one element and trigger special 
+resistance calculations for that element only. The item destruction 
+limit is lowered in these special cases (three sources of resistance 
+will still fully protect your inventory); but damage and side-effect 
+calculations are not similarly forgiving.
+
+A number of exotic elements (like gravity) have no corresponding 
+resistance, though it may still be possible to resist some of their 
+effects (see [e]).
+
+Ego Armor and Artifacts
+
+Ordinary, mundane armor isn't likely to give you a resistance; but 
+armor crafted by the great smiths of the age and imbued with mighty 
+magics is another matter entirely. These items will fall into two broad 
+categories: 1) artifacts and 2) ego items. These categories are 
+explained in more detail elsewhere ([f] and [g]); the main difference 
+between them is that an artifact can only be found once in each game, 
+while an ego item shares its type with unlimitedly many other items.
+
+Both artifacts and ego items can be highly valuable, and can provide 
+not only resistances but also other nice stuff - boosts to your 
+statistics, boosts to your speed, protection from paralysis, the 
+ability to reflect enemy arrows and bolt spells, even skill with 
+magical devices or telepathy.
+
+A list of all artifacts and ego types, and all the bonuses they give, 
+would be both a spoiler and excessively long; so play the game and find 
+out what there is :)
+
+List of Resistances
+
+This section describes the various damage types that you can resist. As 
+mentioned above, your current resistance sources (and resistance 
+percentages) are noted on your Character Sheet (accessed with the C 
+command), and you should look there regularly to see what you have and 
+what you still lack. You start the game with few or no resistances, but 
+by the endgame you will resist nearly everything.
+
+The most important resistances are to the four base elements: acid, 
+electricity, fire and cold. These are the first four resistances your 
+character needs, and as early as DL 30-35 you should already have them 
+doubly covered if possible, to reduce both direct damage and item loss. 
+In the midgame and late game, attacks based on electricity, fire and 
+cold can do extremely high damage, and might kill even a fully 
+developed character from full health if not resisted.
+
+The high resistances are not as important in the early game, but by the 
+late game you should have at least most of them covered too. Nether, 
+Shards and Chaos are particularly important resistances in the endgame; 
+you should always have them in the really deep dungeons, even if it 
+means major compromises elsewhere.
+
+  Acid
+  Acid is a corrosive form of attack. Not only is it painful to you, 
+  the player, but it may also damage your armor and destroy items such 
+  as staves and scrolls. Worse, the damage to equipped armor ignores 
+  normal resistance, and can only be prevented with full immunity or by 
+  wearing acid-proof equipment (use the Inspect command to see if a 
+  given piece of armor is acid-proof; all artifacts and many egos are). 
+  Acid damage is halved by armor, making it less deadly than the other 
+  base elements, but the damage to staves combined with the commonness 
+  of acid-based attacks still makes Acid Resistance a must-have.
+
+  Electricity/Lightning
+  Electricity is quite shocking (and quite painful) to experience up 
+  close. In addition, it destroys rings and wands, and you can be sure 
+  that the unidentified ring that just got fried was that Ring of Speed 
+  you'd long been looking for... Resistance to electricity is slightly 
+  more negotiable than the other three base elements, but not by much: 
+  you don't want to lose your wands, and you probably don't want to 
+  take 900 damage from a single lightning breath either.
+
+  Fire
+  In addition to causing physical damage to the player, fire-based 
+  attacks are prolific destroyers of essential gear in your backpack. 
+  Without resistance you can say goodbye to your staves, scrolls, town 
+  spellbooks, unequipped equipment, and (pretty soon) this cruel world. 
+  Of all resistances in the game, resistance to Fire is the most 
+  important, and Werewolves and Ents (who are vulnerable to fire) never 
+  stop feeling the pain.
+
+  Cold/Frost
+  Cold-based attacks may destroy potions (in addition to killing you 
+  outright). Some potions are so rare, so precious and so essential 
+  that they must be protected at all costs... but unfortunately, also 
+  so fragile that Cold resistance is only a part of that puzzle.
+
+  Poison
+  Poison does extremely high damage, the highest of any element, but it 
+  does so with some delay (see [h]). This means that you can use curing 
+  items such as Mushrooms of Cure Poison to tackle poisoning, and so 
+  this resistance is not absolutely needed... except that there's an 
+  exotic element called Toxic Waste, which is basically poison (and 
+  checks poison resistance) but has some very nasty extra side-effects.
+
+  Light
+  You need light to see, it is true, but too much light can blind you! 
+  While blinded, you won't be able to read scrolls or spellbooks, or 
+  even see the monsters around you (see [i])... and a few monsters have 
+  Light-based attacks that deal high damage directly. Luckily, these 
+  monsters are relatively rare, which makes Light one of the least 
+  important high resistances.
+
+  Dark
+  In addition to causing physical damage, darkness may also blind the 
+  player and darken the dungeon; so having resistance will protect your 
+  eyesight as well as your health. Darkness-based attacks tend to be 
+  fairly mild in the early game, but late-game Darkness Storms can be 
+  deadly.
+
+  Confusion
+  This form of attack is quite baffling, and I must confess to being 
+  puzzled as to how it manages to hurt the player, but it does. The 
+  main problem, though, is not the damage but the side-effect: a 
+  confused player cannot read scrolls, cast spells or even reliably 
+  move in the right direction. See [j] for tips on how to deal with 
+  confusion.
+
+  Nether
+  Nether is the element of the underworld; not only is it deadly, but 
+  it can drain your life points (see [k]). In the late game, the undead 
+  are everywhere, and you lack Nether resistance at your peril.
+
+  Nexus
+  Nexus is seldom deadly, but often highly annoying; it can teleport 
+  you to very unexpected places, or even swap your primary stats 
+  around. Some of nexus's side-effects are so hated that birth options 
+  ([l] and [m]) exist to replace them with a mere foul curse...
+
+  Sound
+  Loud noises can be very painful, stun you, and cause your potions to 
+  shatter. Resistance to Sound also protects you from stunning as a 
+  side-effect of exotic elements; see [n] for why being stunned is bad.
+
+  Shards
+  Shard-based attacks may cause bleeding as well as direct damage. 
+  While bleeding, you lose hit points every turn; the deeper the gash, 
+  the faster you will die (see [o]). In addition, shards can destroy 
+  potions. Resistance to shards is not needed in the early game, but in 
+  the late game it rivals base resistances in importance.
+
+  Chaos/Logrus
+  Chaos is another of the most dangerous damage types: if chaos attacks 
+  don't kill you outright, their side effects might. You may find 
+  yourself a confused, hallucinating, mutated wretch, twisted by forces 
+  unfathomable. Oh, and chaos destroys staves and wands too... Best to 
+  resist it, if you can.
+
+  Disenchantment
+  Disenchantment is the undoing of magic of all kinds. Not only might 
+  it (permanently!) reduce the quality of your equipment, it can also 
+  dispel the beneficial spells you weave; and it is plenty deadly, too. 
+  Disenchantment is the only element capable of harming an artifact.
+
+  Blindness
+  Blindness resistance, unlike all of the resistances listed above, 
+  does not reduce damage; its sole purpose is to protect you from the 
+  Blindness status effect, whether caused by directly blinding attacks 
+  or as a side-effect of Light or Dark. Apart from Time, Blindness is 
+  the least important resistance.
+
+  Time
+  Time-based attacks can be an enormous inconvenience; they have the 
+  potential to drain your experience or your stats, even ignoring any 
+  sustains you might have. Luckily, Time attacks are very rare, and the 
+  direct damage from them tends to be low; this makes Time resistance 
+  one you don't really need, which is good since it is by far the 
+  hardest resistance to find.
+
+  Fear
+  There is much in the world that may un-nerve the boldest hero, not 
+  least the special game mechanics around this resistance, which 
+  functions unlike any of the others. See [p] for an explanation of 
+  fear and fear resistance.
+
+Immunities
+
+If you are very lucky, you may find items which grant immunity to one 
+or (very occasionally) more of the four base elements (Acid, Fire, Cold 
+and Electricity). An immunity fully protects you from all damage and 
+other effects that element might otherwise cause.
+
+Other Protection
+
+These item attributes are not technically resistances, but will still 
+help you stay safe:
+
+  Free Action
+  Free Action gives you a saving throw against paralysis, and becomes a 
+  necessity once you start going into quests with paralyzing monsters 
+  (such as the Old Barracks quest or the Old Man Willow quest). Three 
+  sources of Free Action are always good enough to save you from 
+  paralysis (regardless of how bad your saving throw is), and two 
+  sources are always good enough against monsters of level 41 and 
+  below. Free Action also helps you recover much faster if you do get 
+  paralyzed; with no Free Action at all, paralysis often means death.
+
+  Hold Life
+  Having your experience drained is often an inconvenience, and 
+  sometimes outright dangerous if you lose levels. Hold Life gives you 
+  a save against experience drain, and generally reduces the amount of 
+  experience lost even if the saves fail. Multiple sources of Hold Life 
+  will stack.
+  
+  Hold Life also gives some protection against life point drain, which 
+  in the late game can be an even more serious problem than experience 
+  loss. As you lose life points, your maximum HP is effectively lowered 
+  ([q]); even worse, some life-draining attacks make the draining 
+  monster stronger! If you run out of life points, you will usually 
+  turn into an undead rather than die outright; but some races (like 
+  Androids, Werewolves and monster races) cannot turn undead and will 
+  therefore die.
+
+  See Invisible
+  Some monsters are invisible, and cannot be seen by ordinary eyes. 
+  Needless to say, being attacked by something you cannot see is very 
+  frustrating, not to mention deadly! See Invisible gives you a chance 
+  to see these monsters; the more sources of See Invisible you have, 
+  and the better your Searching skill is, the more reliably you can see 
+  invisible threats.
+  
+  Note that some invisible monsters are warm blooded; if you have 
+  infravision, you may see these monsters once they get close enough, 
+  even if you have no See Invisible. Unfortunately for you, though, all 
+  the really dangerous invisible monsters are cold-blooded...
+
+  Telepathy
+  Telepathy is the ultimate in monster detection: it lets you see all 
+  approaching monsters and keep track of where nearby monsters are, and 
+  allows you to see invisible monsters more reliably. Telepathic sight 
+  is not even affected by blindness, often allowing normal combat while 
+  blind.
+  
+  Don't let up your guard, though: the common, "universal" form of 
+  Telepathy only detects monsters with minds. Dangerous mindless 
+  monsters, like drolems or steam-powered mechanical dragons, can still 
+  surprise you if you don't detect regularly.
+
+The Power of Monster Attacks
+
+Damage from monster melee attacks is usually a dice roll that depends 
+on the monster's race (and is reduced by your AC for the Hurt and 
+Shatter attack methods). The damage is not affected by the monster's 
+health. The hit chance of monster melee attacks depends on your AC and 
+the native level of the monster's race.
+
+Damage from monster spells can be either fixed, a dice roll or a 
+combination of both, depending on the monster's race. The damage is not 
+affected by the monster's health, but may be reduced for ball attacks 
+if you are not hit directly.
+
+Damage from monster breath attacks is usually a percentage of the 
+monster's current HP (and therefore is affected by the monster's 
+health). Breath damage has an upper limit (for example, 900 for the 
+base elements); this cap varies from element to element, and is applied 
+before resistances. Breath damage can be reduced if the player is not 
+hit directly.
+
+Melee and spell attacks can become stronger if the attacking monster 
+grows more powerful through Unlife attacks (see [r]). All attacks based 
+on resistable elements, whether melee, spell or breath, can be defended 
+against through appropriate resistances.
+
+Recovering from Attacks
+
+You cannot combat monsters and expect to come out unscathed every time; 
+you will suffer damage many times, even come close to death. If there 
+is no danger about, you can simply rest (R) to recover, but often this 
+cannot be safely (or efficiently) done and magical healing is required. 
+In the early game, this usually means Potions of Cure Serious Wounds, 
+Mushrooms of Fast Recovery or an effect-specific cure like a Mushroom 
+of Cure Confusion. Later, you will rely on Potions of Curing, Staves of 
+Cure Wounds, Wands of Vampirism, Potions of Healing and Staves of 
+Healing, maybe even a Rod of Angelic Healing.
+
+Simple heals and cures will not fix everything, though: some attacks 
+can drain your statistics, your experience, or even your life points. 
+These can also be cured with certain potions or with a Rod of 
+Restoring, but it is often simpler to seek a healer in the town.
+
+
+Original   : (??), Leon Marrick and Chris Weisiger
+Updated    : (??)
+Updated    : Zangband DevTeam
+Updated    : Hengband 1.0.11
+Updated    : PosChengband 7.0.0
+Updated    : FrogComposband 7.1.liquorice
+
+

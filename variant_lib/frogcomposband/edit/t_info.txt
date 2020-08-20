@@ -1,0 +1,26 @@
+
+?:[AND [EQU $TOWN 1] [EQU $SPEED 2] ]
+%:t_ulite.txt
+?:[AND [EQU $TOWN 1] [EQU $WILDERNESS NONE] [LEQ $SPEED 1] ]
+%:t_lite.txt
+?:[AND [EQU $TOWN 1] [EQU $WILDERNESS NORMAL] [LEQ $SPEED 1] ]
+%:t_outp.txt
+?:1
+
+?:[EQU $TOWN 2]
+%:t_telmo.txt
+
+?:[EQU $TOWN 3]
+%:t_mori.txt
+
+?:[EQU $TOWN 4]
+%:t_angwil.txt
+
+?:[EQU $TOWN 5]
+%:t_ana.txt
+
+?:[EQU $TOWN 6]
+%:t_thalos.txt
+
+?:[EQU $TOWN 7]
+%:t_zul.txt

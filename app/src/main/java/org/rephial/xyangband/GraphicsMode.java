@@ -24,7 +24,7 @@ public class GraphicsMode {
         if (row >= overdrawRow && row <= overdrawMax) return true;
 
         // Some large tiles are placed outside the overdraw rows
-        if (row == 27 && col >= 122) return true;
+        //if (row == 27 && col >= 122) return true;
         
         return false;            
     }

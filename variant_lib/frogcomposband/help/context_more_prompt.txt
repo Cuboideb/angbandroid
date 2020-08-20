@@ -1,0 +1,5 @@
+<style:title>The Dreaded -more- Prompt</style>
+
+<style:note>Note: If you are viewing this, it is because you pressed <color:keypress>?</color> when prompted for <color:B>-more-</color> messages.</style>
+
+In the bad old days, when there was only one message line, <color:B>-more-</color> prompts were very frequent and this file was 40 times longer, detailing all the cute keys and options for reducing the number of <color:B>-more-</color> prompts you would get. The cute keys still exist, like <color:keypress>n</color> to dismiss all messages up to the next message boundary and <color:keypress>ESC</color> to dismiss all messages, period; but in practice things are very simple now. Press <color:keypress>SPACE</color> every time you receive a <color:B>-more-</color> prompt, and you can't go wrong!

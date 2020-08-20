@@ -1,0 +1,815 @@
+# File: object_property.txt
+
+# name: the property name
+# type: the type of object property.  Each property needs one, and it must 
+#       appear before the code in this file 
+# subtype: subtype of object property, currently only used by flags
+# id-type: how a property is identified, currently only used by flags
+# code: a code for the object property, which is used to associate it with its
+#       index among the other properties of that type
+# adjective: adjective describing the property as a player attribute, currently
+#            only used by stats
+# neg-adjective: adjective describing the opposite of the property as a player
+#                attribute, currently only used by stats
+# msg: message printed on noticing a property, currently used for flags which
+#      are identified after time or on an effect
+# bindui: Binds the property to a user interface element in ui_entry.txt.
+#         Takes two additional integer parameters.  The first, if nonzero,
+#         specifies that the value bound be passed as an auxiliary value (a
+#         sustain for a stat, for instance).  The second is optional and is
+#         the value to pass when the object has the property (either on as a
+#         flag or a nonzero value for a modifier or resistance).  When not set,
+#         the value (0 for off flag, 1 for on flag, value for modifier,
+#         resistance level for a resistance) is sent.  bindui is currently only
+#         used for parts of the second character screen.  This field can appear
+#         multiple times to bind a property to more than one user interface
+#         element.
+# desc: an extra piece of descriptive text used in object information
+# price-constant: constant used in pricing where there is no associated value
+# price-linear: constant used in pricing to multiply an associated value
+# price-square: constant used in pricing to multiply a value squared
+# design-constant: constant used in design where there is no associated value
+# design-linear: constant used in design to multiply an associated value
+# design-square: constant used in design to multiply a value squared
+
+## Stat bonuses
+
+name:strength
+type:stat
+code:STR
+adjective:strong
+neg-adjective:weak
+price-linear:200
+price-square:100
+design-linear:150
+design-square:8
+bindui:stat_mod_ui_compact_0<STR>:0
+
+name:intelligence
+type:stat
+code:INT
+adjective:smart
+neg-adjective:stupid
+price-linear:200
+price-square:100
+design-linear:150
+design-square:8
+bindui:stat_mod_ui_compact_0<INT>:0
+
+name:wisdom
+type:stat
+code:WIS
+adjective:wise
+neg-adjective:naive
+price-linear:200
+price-square:100
+design-linear:150
+design-square:8
+bindui:stat_mod_ui_compact_0<WIS>:0
+
+name:dexterity
+type:stat
+code:DEX
+adjective:dextrous
+neg-adjective:clumsy
+price-linear:200
+price-square:100
+design-linear:130
+design-square:7
+bindui:stat_mod_ui_compact_0<DEX>:0
+
+name:constitution
+type:stat
+code:CON
+adjective:healthy
+neg-adjective:sickly
+price-linear:200
+price-square:100
+design-linear:130
+design-square:7
+bindui:stat_mod_ui_compact_0<CON>:0
+
+## Non-stat modifiers
+
+name:stealth
+type:mod
+code:STEALTH
+price-linear:100
+design-linear:20
+design-square:1
+bindui:stealth_ui_compact_0:0
+
+name:searching skill
+type:mod
+code:SEARCH
+price-linear:40
+design-linear:20
+design-square:1
+bindui:search_ui_compact_0:0
+
+name:infravision
+type:mod
+code:INFRA
+price-linear:50
+design-linear:15
+design-square:1
+bindui:infravision_ui_compact_0:0
+
+name:tunneling
+type:mod
+code:TUNNEL
+price-linear:50
+design-linear:25
+design-square:1
+bindui:tunneling_ui_compact_0:0
+
+name:speed
+type:mod
+code:SPEED
+price-square:5000
+design-linear:360
+design-square:18
+bindui:speed_ui_compact_0:0
+
+name:damage reduction
+type:mod
+code:DAM_RED
+price-linear:150
+design-linear:30
+design-square:2
+bindui:damage_reduction_ui_compact_0:0
+
+name:extra blows
+type:mod
+code:BLOWS
+price-linear:5000
+design-linear:1000
+bindui:blows_ui_compact_0:0
+
+name:shooting speed
+type:mod
+code:SHOTS
+price-linear:800
+design-linear:150
+bindui:shots_ui_compact_0:0
+
+name:shooting power
+type:mod
+code:MIGHT
+price-linear:6000
+design-linear:1250
+bindui:shooting_power_ui_compact_0:0
+
+name:extra moves
+type:mod
+code:MOVES
+price-square:1000
+design-linear:100
+design-square:8
+bindui:movement_speed_ui_compact_0:0
+
+name:light
+type:mod
+code:LIGHT
+price-linear:300
+design-linear:50
+design-square:4
+bindui:light_ui_compact_0:0
+
+name:magic mastery
+type:mod
+code:MAGIC_MASTERY
+price-linear:600
+design-linear:20
+design-square:1
+bindui:magic_mastery_ui_compact_0:0
+
+## Object flags
+
+name:sustain strength
+type:flag
+subtype:sustain
+id-type:on effect
+code:SUST_STR
+msg:Your {name} glows.
+price-constant:500
+design-constant:550
+bindui:stat_mod_ui_compact_0<STR>:1
+
+name:sustain intelligence
+type:flag
+subtype:sustain
+id-type:on effect
+code:SUST_INT
+msg:Your {name} glows.
+price-constant:300
+design-constant:350
+bindui:stat_mod_ui_compact_0<INT>:1
+
+name:sustain wisdom
+type:flag
+subtype:sustain
+id-type:on effect
+code:SUST_WIS
+msg:Your {name} glows.
+price-constant:300
+design-constant:350
+bindui:stat_mod_ui_compact_0<WIS>:1
+
+name:sustain dexterity
+type:flag
+subtype:sustain
+id-type:on effect
+code:SUST_DEX
+msg:Your {name} glows.
+price-constant:400
+design-constant:350
+bindui:stat_mod_ui_compact_0<DEX>:1
+
+name:sustain constitution
+type:flag
+subtype:sustain
+id-type:on effect
+code:SUST_CON
+msg:Your {name} glows.
+price-constant:400
+design-constant:350
+bindui:stat_mod_ui_compact_0<CON>:1
+
+name:protection from fear
+type:flag
+code:PROT_FEAR
+subtype:protection
+id-type:on effect
+msg:Your {name} strengthens your courage.
+bindui:pfear_ui_compact_0:0
+desc:fear
+price-constant:500
+design-constant:500
+
+name:protection from blindness
+type:flag
+code:PROT_BLIND
+subtype:protection
+id-type:on effect
+msg:Your {name} soothes your eyes.
+bindui:pblind_ui_compact_0:0
+desc:blindness
+price-constant:700
+design-constant:650
+
+name:protection from confusion
+type:flag
+code:PROT_CONF
+subtype:protection
+id-type:on effect
+msg:Your {name} clears your thoughts.
+bindui:pconf_ui_compact_0:0
+desc:confusion
+price-constant:800
+design-constant:700
+
+name:protection from stunning
+type:flag
+code:PROT_STUN
+subtype:protection
+id-type:on effect
+msg:Your {name} steadies you.
+bindui:pstun_ui_compact_0:0
+desc:stunning
+price-constant:500
+design-constant:550
+
+name:slow digestion
+type:flag
+subtype:misc ability
+id-type:timed
+code:SLOW_DIGEST
+msg:You realise your {name} is slowing your metabolism.
+bindui:slow_digestion_ui_compact_0:0
+desc:Slows your metabolism
+price-constant:200
+design-constant:300
+
+name:feather falling
+type:flag
+subtype:misc ability
+id-type:on effect
+code:FEATHER
+msg:Your {name} slows your fall.
+bindui:feather_falling_ui_compact_0:0
+desc:Feather Falling
+price-constant:200
+design-constant:300
+
+name:regeneration
+type:flag
+subtype:misc ability
+id-type:timed
+code:REGEN
+msg:You note that your {name} is speeding up your recovery.
+bindui:regen_ui_compact_0:0
+desc:Speeds regeneration
+price-constant:400
+design-constant:500
+
+name:telepathy
+type:flag
+subtype:misc ability
+id-type:on wield
+code:TELEPATHY
+bindui:esp_ui_compact_0:0
+desc:Grants telepathy
+price-constant:5000
+design-constant:2500
+
+name:see invisible
+type:flag
+subtype:misc ability
+id-type:on wield
+code:SEE_INVIS
+bindui:see_invis_ui_compact_0:0
+desc:Grants the ability to see invisible things
+price-constant:700
+design-constant:700
+
+name:free action
+type:flag
+subtype:misc ability
+id-type:on effect
+code:FREE_ACT
+msg:Your {name} keeps you moving.
+bindui:free_action_ui_compact_0:0
+desc:Prevents paralysis
+price-constant:800
+design-constant:700
+
+name:hold life
+type:flag
+subtype:misc ability
+id-type:on effect
+code:HOLD_LIFE
+msg:Your {name} warms your spirit.
+bindui:holdlife_ui_compact_0:0
+desc:Sustains your life force
+price-constant:700
+design-constant:1400
+
+name:earthquakes
+type:flag
+subtype:weapon
+id-type:on effect
+code:IMPACT
+msg:Your {name} causes an earthquake!
+desc:Sometimes creates earthquakes on impact
+price-constant:50
+
+name:blessed melee
+type:flag
+subtype:weapon
+id-type:on wield
+code:BLESSED
+bindui:bless_ui_compact_0:0
+desc:Blessed by the gods (combat bonuses for holy casters)
+price-constant:500
+design-constant:100
+
+name:two hands desired
+type:flag
+subtype:weapon
+id-type:on wield
+code:TWO_HANDED_DES
+desc:two-handed wielding desirable
+
+name:two hands required
+type:flag
+subtype:weapon
+id-type:on wield
+code:TWO_HANDED_REQ
+desc:two-handed wielding needed
+
+name:accurate
+type:flag
+subtype:weapon
+id-type:on effect
+code:ACCURATE
+desc:accurate shooter
+
+name:velocity
+type:flag
+subtype:weapon
+id-type:on effect
+code:VELOCITY
+desc:powerful shooter
+
+name:burns out
+type:flag
+subtype:light
+id-type:on wield
+code:BURNS_OUT
+
+name:takes fuel
+type:flag
+subtype:light
+id-type:on wield
+code:TAKES_FUEL
+
+name:no fuel
+type:flag
+subtype:light
+id-type:on wield
+code:NO_FUEL
+
+name:impaired hitpoint recovery
+type:flag
+subtype:bad
+id-type:timed
+code:IMPAIR_HP
+msg:You feel your {name} is slowing your recovery.
+bindui:imphp_ui_compact_0:0
+desc:Impairs hitpoint recovery
+price-constant:-200
+design-constant:-100
+
+name:impaired mana recovery
+type:flag
+subtype:bad
+id-type:timed
+code:IMPAIR_MANA
+msg:You feel your {name} is slowing your mana recovery.
+bindui:impsp_ui_compact_0:0
+desc:Impairs mana recovery
+price-constant:-200
+design-constant:-100
+
+name:constant fear
+type:flag
+subtype:bad
+id-type:on wield
+code:AFRAID
+bindui:fear_ui_compact_0:0
+desc:Makes you afraid of melee, and worse at shooting and casting spells
+price-constant:-500
+design-constant:-100
+
+name:teleportation ban
+type:flag
+subtype:bad
+id-type:on effect
+code:NO_TELEPORT
+msg:Your {name} prevents you teleporting.
+bindui:noteleport_ui_compact_0:0
+desc:Prevents teleportation
+price-constant:-1000
+design-constant:-300
+
+name:aggravation
+type:flag
+subtype:bad
+id-type:timed
+code:AGGRAVATE
+msg:You notice your {name} aggravating things around you.
+bindui:aggravate_ui_compact_0:0
+desc:Aggravates creatures nearby
+price-constant:-2000
+design-constant:-1000
+
+name:experience drain
+type:flag
+subtype:bad
+id-type:timed
+code:DRAIN_EXP
+msg:You sense your {name} is draining your life.
+bindui:drainxp_ui_compact_0:0
+desc:Drains experience
+price-constant:-800
+design-constant:-600
+
+name:stuck on
+type:flag
+subtype:bad
+id-type:on wield
+code:STICKY
+bindui:sticky_ui_compact_0:0
+desc:Can't be removed
+price-constant:-2500
+design-constant:-500
+
+name:fragile
+type:flag
+subtype:bad
+id-type:on wield
+code:FRAGILE
+bindui:fragile_ui_compact_0:0
+desc:Can be destroyed if you attempt to remove its curses
+price-constant:-50
+
+name:intensity 2 light
+type:flag
+subtype:light
+id-type:on wield
+code:LIGHT_2
+
+name:intensity 3 light
+type:flag
+subtype:light
+id-type:on wield
+code:LIGHT_3
+
+name:power 1 digging
+type:flag
+subtype:dig
+id-type:on wield
+code:DIG_1
+bindui:tunneling_ui_compact_0:0:1
+
+name:power 2 digging
+type:flag
+subtype:dig
+id-type:on wield
+code:DIG_2
+bindui:tunneling_ui_compact_0:0:2
+
+name:power 3 digging
+type:flag
+subtype:dig
+id-type:on wield
+code:DIG_3
+bindui:tunneling_ui_compact_0:0:3
+
+name:explode
+type:flag
+subtype:light
+id-type:on wield
+code:EXPLODE
+
+name:trap immunity
+type:flag
+subtype:misc ability
+id-type:on effect
+code:TRAP_IMMUNE
+msg:Your {name} stops you from setting off the trap.
+bindui:trap_immunity_ui_compact_0:0
+desc:Gives immunity to traps
+price-constant:800
+design-constant:800
+
+name:throwing
+type:flag
+subtype:throw
+id-type:on wield
+code:THROWING
+price-constant:10
+
+name:perfect balance
+type:flag
+subtype:weapon
+id-type:on wield
+code:PERFECT_BALANCE
+desc:Is ideal for throwing
+price-constant:100
+
+name:darkness
+type:flag
+subtype:misc ability
+id-type:on wield
+code:DARKNESS
+bindui:darkness_ui_compact_0:0
+desc:Allows you to see in the dark
+price-constant:400
+
+## Ignore elements
+
+name:ignore acid
+type:ignore
+code:ACID
+price-constant:100
+
+name:ignore electricity
+type:ignore
+code:ELEC
+price-constant:100
+
+name:ignore fire
+type:ignore
+code:FIRE
+price-constant:100
+
+name:ignore cold
+type:ignore
+code:COLD
+price-constant:100
+
+## Resistance (and immunity and vulnerability) to elements
+
+name:acid resistance
+type:element
+code:ACID
+price-linear:60
+design-linear:10
+bindui:resist_ui_compact_0<ACID>:0
+
+name:electricity resistance
+type:element
+code:ELEC
+price-linear:60
+design-linear:10
+bindui:resist_ui_compact_0<ELEC>:0
+
+name:fire resistance
+type:element
+code:FIRE
+price-linear:60
+design-linear:10
+bindui:resist_ui_compact_0<FIRE>:0
+
+name:cold resistance
+type:element
+code:COLD
+price-linear:60
+design-linear:10
+bindui:resist_ui_compact_0<COLD>:0
+
+name:poison resistance
+type:element
+code:POIS
+price-linear:120
+design-linear:20
+bindui:resist_ui_compact_0<POIS>:0
+
+name:light resistance
+type:element
+code:LIGHT
+price-linear:60
+design-linear:10
+bindui:resist_ui_compact_0<LIGHT>:0
+
+name:dark resistance
+type:element
+code:DARK
+price-linear:60
+design-linear:10
+bindui:resist_ui_compact_0<DARK>:0
+
+name:sound resistance
+type:element
+code:SOUND
+price-linear:60
+design-linear:10
+bindui:resist_ui_compact_0<SOUND>:0
+
+name:shards resistance
+type:element
+code:SHARD
+price-linear:60
+design-linear:10
+bindui:resist_ui_compact_0<SHARD>:0
+
+name:nexus resistance
+type:element
+code:NEXUS
+price-linear:60
+design-linear:10
+bindui:resist_ui_compact_0<NEXUS>:0
+
+name:nether resistance
+type:element
+code:NETHER
+price-linear:90
+design-linear:15
+bindui:resist_ui_compact_0<NETHER>:0
+
+name:chaos resistance
+type:element
+code:CHAOS
+price-linear:90
+design-linear:15
+bindui:resist_ui_compact_0<CHAOS>:0
+
+name:disenchantment resistance
+type:element
+code:DISEN
+price-linear:120
+design-linear:20
+bindui:resist_ui_compact_0<DISEN>:0
+
+## Elemental brands
+
+name:acid brand
+type:brand
+price-constant:-3000
+price-linear:300
+design-constant:-1000
+design-linear:100
+
+name:lightning brand
+type:brand
+price-constant:-3000
+price-linear:300
+design-constant:-1000
+design-linear:100
+
+name:fire brand
+type:brand
+price-constant:-2000
+price-linear:200
+design-constant:-1000
+design-linear:100
+
+name:cold brand
+type:brand
+price-constant:-2000
+price-linear:200
+design-constant:-1000
+design-linear:100
+
+name:poison brand
+type:brand
+price-constant:-1500
+price-linear:150
+design-constant:-1000
+design-linear:100
+
+## Slays
+
+name:slay animals
+type:slay
+price-constant:-1500
+price-linear:150
+design-constant:-600
+design-linear:60
+
+name:slay evil creatures
+type:slay
+price-constant:-5000
+price-linear:500
+design-constant:-1000
+design-linear:100
+
+name:slay undead
+type:slay
+price-constant:-2000
+price-linear:200
+design-constant:-600
+design-linear:60
+
+name:slay demons
+type:slay
+price-constant:-2000
+price-linear:200
+design-constant:-500
+design-linear:50
+
+name:slay orcs
+type:slay
+price-constant:-1000
+price-linear:100
+design-constant:-400
+design-linear:40
+
+name:slay trolls
+type:slay
+price-constant:-1500
+price-linear:150
+design-constant:-500
+design-linear:50
+
+name:slay giants
+type:slay
+price-constant:-1000
+price-linear:100
+design-constant:-400
+design-linear:40
+
+name:slay dragons
+type:slay
+price-constant:-2000
+price-linear:200
+design-constant:-600
+design-linear:60
+
+## Combat bonuses - these should stay in this order
+
+name:armor bonus
+type:combat
+price-linear:100
+design-linear:40
+
+name:skill bonus
+type:combat
+price-linear:100
+design-linear:40
+
+name:deadliness bonus
+type:combat
+price-linear:100
+design-linear:40
+
+name:extra armor
+type:combat
+price-linear:100
+design-linear:40
+
+# enhanced dice require special calculations
+name:enhanced dice
+type:combat

@@ -1,0 +1,30 @@
+<color:y>FrogComposband <$:version></color>
+<style:screenshot>
+<color:g>Azog, King of the Uruk-Hai attacks you: </color>He misses.<color:g> </color>He hits.<color:g> </color>He hits.<color:g> </color>             
+<color:B>You feel that your </color>Guisarme (Pattern)<color:B> is protecting you.</color><color:g> </color>You stand your           
+ground!                                                                           
+<color:g>The Snaga sapper attacks you: </color>He hits.<color:g> </color>He misses.                                 
+                                                                                  
+<color:U>You attack Azog, King of the Uruk-Hai: </color>You miss.<color:U> </color>You miss.<color:U> </color>You hit.<color:U> </color>You           
+bite.<color:U> </color>He is <color:r>burned</color>!                                                               
+<color:g>Azog, King of the Uruk-Hai</color> says, 'I shall have my way with your women!'           
+<color:g>Azog, King of the Uruk-Hai attacks you: </color>He hits.<color:g> </color>He hits.<color:g> </color>He misses.              
+<color:g>Azog, King of the Uruk-Hai attacks you: </color>He hits.<color:g> </color>He misses.<color:g> </color>He hits.              
+                                                                                  
+<color:U>You attack Azog, King of the Uruk-Hai: </color>You hit.<color:U> </color>You hit.<color:U> </color>You hit.<color:U> </color>You             
+hit.<color:U> </color>Azog, King of the Uruk-Hai shouts, 'AAAARRRGGGHHH!!!'<color:U> </color>That was               
+very harmonious.<color:U> </color><color:R>You have slain Azog, King of the Uruk-Hai.</color>                       
+Are you sure? <color:y>[y/n]</color> => <color:y>y</color>. Wow! You feel very dextrous! <color:G>You have </color>                  
+<color:G>conquered Orc cave!</color> How heroic!                                                   
+                         <color:U>######</color>                                                   
+                        ##<color:u>...</color> <color:o>#</color>              #####                                
+                        <color:o>#</color><color:u>.</color><color:g>.</color><color:o>##</color><color:g>.</color>###           ##<color:u>..</color><color:g>.</color>#                                
+                      ###<color:u>.</color>###<color:u>.</color><color:g>.</color><color:u>.</color>#          ##<color:u>.</color><color:g>.</color><color:u>.</color><color:g>..</color>                                
+                     ##<color:u>....</color>##<color:g>.</color><color:u>..</color>##        ##<color:u>.</color><color:g>.</color><color:u>.</color><color:g>.</color><color:u>..</color>                                
+    <color:o>#</color>##              #<color:u>...</color><color:r>T</color><color:u>..</color>##<color:u>..</color><color:g>.</color>          <color:U>'</color><color:u>......</color>                                
+      <color:o>#</color>              #<color:u>..</color><color:G>o</color><color:r>o</color><color:u>...</color>#<color:g>.</color><color:u>.</color>##         #<color:g>..</color><color:u>....</color>                                
+    #<color:s>/</color><color:o>#</color>#             ##<color:u>.</color><color:U>o</color><color:g>=</color><color:u>..</color>##<color:u>.</color><color:g>.</color>#           #<color:g>.</color><color:u>..</color><color:g>.</color><color:u>.</color>                                
+    # <color:G>$</color>#<color:o>#</color>##           <color:u>'..</color>#<color:u>.</color>##<color:u>...</color>#           ##<color:g>.</color><color:u>..</color>#                                
+    <color:o>##</color>   ~#<color:o>#</color>         <color:g>.</color>### ##<color:u>....</color><color:o>#</color>            ##<color:u>.</color>##                                
+     <color:o>##</color><color:b>(</color>   <color:o>##</color>       <color:g>.</color>      <color:o>#</color><color:g>.</color><color:o>#</color>##<color:o>#</color>             <color:o>#</color><color:g>.</color><color:o>#</color>#                                
+</style>

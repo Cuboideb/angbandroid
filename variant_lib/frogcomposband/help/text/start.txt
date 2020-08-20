@@ -1,0 +1,30 @@
+Welcome to the Online Help System
+
+    Getting Started:
+    [a] General Information
+    [b] Creating a Character    
+    [c] Commands
+    [d] Frequently Asked Questions
+    [e] Common Mistakes to Avoid
+
+    Core Concepts:
+    [f] Races, Classes and Personalities
+    [g] The Towns and Wilderness
+    [h] The Dungeons
+    [i] Objects
+    [j] Monsters and Pets
+    [k] Attacking and Weapons
+    [l] Defending and Armor
+    [m] Spellcasting
+    [n] Status Effects
+    [o] Glossary/List of Concepts
+
+    Advanced Topics:
+    [p] Options
+    [q] User Preference Files
+    [r] The Proficiency System
+    [s] The Mogaminator
+    [t] Subwindows
+
+    (?) Help System Commands
+

@@ -1,5 +1,7 @@
 package org.rephial.xyangband;
 
+import android.util.Base64;
+
 public class Profile {
 
 	protected int id = 0;
@@ -7,7 +9,10 @@ public class Profile {
     protected String saveFile = "";
 	protected int flags = 0;
     protected int plugin = 0;
+    protected String keymaps = "";
+    protected String advBtnKeymaps = "";   
 	protected static String dl = "~";
+	protected static String dlEscaped = "¿@?";	
 
 	public Profile(int id, String name, String saveFile, int flags, int plugin) {
 		this.id = id;
@@ -60,9 +65,41 @@ public class Profile {
 	public void setPlugin(int value) {
 		plugin = value;
 	}
-
-	public String serialize() {
-		return id+dl+name+dl+saveFile+dl+flags+dl+plugin;
+	public String getKeymaps()
+	{
+		return keymaps;
+	}
+	public void setAdvButtonKeymaps(String value)
+	{
+		advBtnKeymaps = value;
+	}
+	public String getAdvButtonKeymaps()
+	{
+		return advBtnKeymaps;
+	}
+	public void setKeymaps(String value)
+	{
+		keymaps = value;
+	}	
+	public static String escape(String str)
+	{
+		return str.replace(dl, dlEscaped);
+	}
+	public static String unescape(String str)
+	{
+		return str.replace(dlEscaped, dl);
+	}
+	public static String encode64(String str)
+	{
+		return Base64.encodeToString(str.getBytes(), Base64.DEFAULT);
+	}	
+	public static String decode64(String str)
+	{	
+		return new String(Base64.decode(str, Base64.DEFAULT));
+	}
+	public String serialize() {		
+		return id+dl+name+dl+saveFile+dl+flags+dl+plugin+dl+
+			escape(keymaps)+dl+escape(advBtnKeymaps);
 	}
 	public static Profile deserialize(String value) {
 		String[] tk = value.split(dl);
@@ -72,6 +109,12 @@ public class Profile {
 		if (tk.length>2) try {p.saveFile = tk[2];} catch (Exception ex) {}
 		if (tk.length>3) try {p.flags = Integer.parseInt(tk[3]);} catch (Exception ex) {}
 		if (tk.length>4) try {p.plugin = Integer.parseInt(tk[4]);} catch (Exception ex) {}
+		if (tk.length>5) try {
+			p.keymaps = unescape(tk[5]);
+		} catch(Exception ex) {};
+		if (tk.length>6) try {
+			p.advBtnKeymaps = unescape(tk[6]);
+		} catch(Exception ex) {};
 		return p;
 	}
 }

@@ -1,0 +1,464 @@
+Skillmasters
+
+Using a point-based skill system, the Skillmaster allows you to design 
+your own class. You receive 5 skill points to spend immediately upon 
+birth, and will gain an additional point every 5 character levels, for 
+a total of 15 points. You may spend these skill points to gain or 
+improve various skills with the Gain command.
+
+To be effective as a Skillmaster, you should have a plan as to which 
+skills you will learn and when; your skill choices are permanent, and 
+there are many more skills to learn than you could possibly hope to 
+acquire with just 15 skill points, so make sure you won't be stuck with 
+choices you regret. A bit of forethought is needed; this document 
+should help.
+
+Overview of the Various Skills
+
+The available skills come in various kinds, or groups. You invest 
+points in individual skills, not in groups, but the overall number of 
+points for the corresponding group is sometimes also important. For 
+example, the first group of skills is Melee; here, you may specialize 
+in various melee-weapon classes or learn bare-handed combat (Martial 
+Arts). The total number of points spent in this group determines your 
+overall Melee skill (as shown on the Character Sheet) and even affects 
+your STR and DEX. On the other hand, the number of points spent in the 
+skill itself determines your proficiency with that particular class of 
+weaponry, and also influences how many attacks per round you get. Each 
+skill group is discussed in detail below.
+
+The main skill groups are:
+
+  Melee       Effectiveness in hand-to-hand combat
+  Ranged      Effectiveness in ranged combat (archery and throws)
+  Magic       Access to spell realms as an INT-based caster. Every 
+              spell realm except Life is available.
+  Prayer      Access to prayer realms as a WIS-based caster. Only good 
+              and evil realms are available.
+  Skills      Basic skills such as Devices, Stealth, Speed and Saving 
+              Throw
+  Techniques  Access to advanced or unusual talents that most players 
+              lack. This includes some book-based talents, such as 
+              Burglary and Kendo, as well as non-standard talents like 
+              Riding and Dual Wielding.
+  Abilities   For a single skill point, you can buy a power like Stone 
+              Skin or an ability like Good Luck.
+
+Proficiency
+
+Before discussing each of the skill groups in detail, it helps to 
+understand the proficiency system. It is explained in detail at [a], 
+but the short version is: the game has several different proficiency 
+systems, all of which are closely related; other classes' proficiency 
+usually starts at a very low level, improves through use and practice, 
+and is indicated through the five broad tiers [Un]skilled, [Be]ginner, 
+[Sk]illed, [Ex]pert and [Ma]ster.
+
+But Skillmasters are very different; they do not learn through use and 
+practice. When Skillmasters spend a skill point, they instantly acquire 
+proficiency; as an example (of very bad advice), a level 1 Skillmaster 
+could spend all 5 points in Riding and instantly achieve Master-level 
+proficiency. The same goes for weapons: spending points is the only way 
+to gain proficiency (even the Weapon Versatility demigod talent is not 
+available). Skillmasters are [Un]skilled in everything they haven't 
+spent points in, and [Ma]ster in everything they have spent five points 
+in, but the tiers in between vary a bit.
+
+Melee Skills
+
+Melee skills affect your skill in hand-to-hand combat. Each skill in 
+this group improves your proficiency either with a single class of 
+weapons (swords, polearms, hafted weapons, diggers) or in bare-handed 
+fighting, and also affects how many blows you can get per round. To use 
+any particular class of weaponry, you will need some skill. Thus, when 
+investing in melee skills, you must choose whether to be really good 
+with one or two weapon classes or decently good with all of them.
+
+The total number of points in this group determines your basic Melee 
+skill in the same way your class choice normally would. That is, you 
+get a fixed amount of base Melee skill, and an extra amount that 
+improves with level; warriors get plenty, mages not so much; but you, 
+as a Skillmaster, can improve your melee whenever you choose simply by 
+investing more points in various melee related skills. As a rough 
+guide, consider the following tables:
+
+  Melee Group                          Weapon Class
+  Pts  Relative Skill                  Pts  Proficiency Blows
+    0  Mage                              0  Unskilled   4.00
+  1-2  Priest                            1  Beginner    5.00
+  3-4  Ranger                            2  Skilled     5.25
+  5-8  Paladin                           3  Expert      5.50
+   9+  Warrior                           4  Master      5.75
+                                         5  Master      6.00
+
+Note that Melee and Magic are somewhat antithetical. Investing in Melee 
+also improves your STR and DEX, but too many magic points will decrease 
+your STR (and CON). Magic points also decrease the maximum number of 
+blows displayed in the table above (by just 0.05 blows per point, but 
+too much magic will make this effect noticeable). Also, Magic improves 
+your INT and device skill, but too much Melee will have a slight 
+negative effect on both of these. 
+
+The individual melee skills are discussed next.
+
+  Swords
+  Swords (|) are the most common class of weaponry and include swords, 
+  daggers, blades of chaos and all other weapons listed under swords in 
+  the ~P proficiency menu. Swords and polearms are the most obvious 
+  choices if you wish to specialize in a particular class of weaponry, 
+  due to their commonness.
+
+  Polearms
+  Polearms (/) are the second-most common class of weaponry and include 
+  tridents, spears, lances, axes and all other weapons listed under 
+  polearms in the ~P proficiency menu. This is a good skill to invest 
+  in if you are building a Riding skillmaster, since Lances and Heavy 
+  Lances are perfectly suited for riding melee.
+
+  Hafted (Blunt Weapons)
+  Hafted weapons (\) are less common than swords or polearms, but 
+  include the deadly Maces of Disruption and some exceptional artifacts 
+  like the Staff of Asclepius (again, see ~P for the full list). Note 
+  that prayer-based skillmasters have no weapon restrictions, and so 
+  don't need hafted weapons like normal priests do; still, this group 
+  is worth investing in if you want general access to weapon-based 
+  melee, or just have faith that a great hafted weapon will drop.
+
+  Diggers
+  Yes, you can melee with Picks and Shovels if you want, but the 
+  weapons in this class are incredibly uncommon when compared to the 
+  three main groups; there are a couple of powerful end-game diggers, 
+  but realistically this is an option for deliberate challenge runs.
+
+  Martial Arts
+  With this skill you may fight monsters using a special, bare-handed 
+  combat technique. Skillmasters who invest a full 5 points in martial 
+  arts will be almost as effective in combat as a monk; the only 
+  difference is that your blows per round are marginally lower.
+  
+  A few cautions regarding this skill are in order, though. If you 
+  fight bare-handed, you also get the monk armor weight restrictions, 
+  but will not gain the monk speed boost or access to various postures. 
+  (The armor restrictions stop applying if you switch back to 
+  weapon-based melee.) In addition, martial arts will not work when 
+  mounted, and Kendo techniques require a melee weapon to work.
+
+Ranged Skills
+
+Ranged skills include Archery and Throwing. As a group, the total 
+number of points affects your Archery skill, as displayed on the 
+Character Sheet; yet most players treat Archery and Throwing as 
+mutually exclusive talents.
+
+  Archery
+  This skill improves your proficiency with all of Slings, Bows and 
+  Crossbows (unlike Melee, this skill does not require you to 
+  specialize in only one weapon type). With 2 or more points of 
+  Archery, you begin to gain extra shots per round, as well as reduced 
+  breakage odds for your missiles. You will never be quite as good as a 
+  specialist Archer, but then specialist Archers don't get 10 skill 
+  points to spend elsewhere... This skill also increases your stealth.
+
+  Throwing
+  This skill gives you the special power of Throw Weapon, which allows 
+  you to use your leading melee weapon as a throwing weapon. The range 
+  of a throw depends exclusively on your STR and the weight of the 
+  weapon; the damage depends on the weapon (and any slays it might 
+  have), your STR, and your Throwing skill. Investing enough points in 
+  Throwing also improves your throwing speed.
+  
+  A thrown weapon will often return to you after striking a foe; with 
+  enough skill, this return effect becomes very likely. You even have a 
+  chance to catch the returning weapon with the same hand which threw 
+  it, effectively re-equipping the weapon in a single, graceful, fluid 
+  motion; this also becomes more likely with more skill, but depends on 
+  your DEX as well. With a high enough DEX and full Throwing skill, you 
+  can be almost certain to recover your weapon, fully equipped, after 
+  each toss... however, you should always be prepared for an occasional 
+  failure, no matter how skilled you are. So, carry a spare weapon!
+  
+  The damage from a thrown weapon can be formidable; as your skill 
+  improves, so does the damage multiplier of the toss. Throwing 
+  functions much like archery, except you are the shooter and supply 
+  the damage multiplier through your skill; as with normal shooters, 
+  the multiplier is scaled slightly by STR. And the weapon is the 
+  projectile... Damage is calculated very similarly to archery, using 
+  the damage dice of the weapon thrown, applying any slays, adding in 
+  the damage bonus of the weapon and then multiplying everything 
+  together to get a nice, tasty sum. You can view the details in the 
+  Throwing section of your Character Sheet. Note, though, that most 
+  off-weapon boosts will not apply to throwing; Rings of Archery and a 
+  few other items can boost your accuracy, but that's pretty much it.
+
+Magic Skills
+
+Each skill in the Magic group grants access to a single spellbook 
+realm. The realm will use INT as your spellcasting stat (usually this 
+means INT will also determine the size of your mana pool, but that gets 
+more complicated if you also learn Techniques or Prayer skills). With 
+INT-based mana comes mage-like glove encumbrance; but if you invest at 
+least 5 overall points in magic, you also gain the mage ability to 
+benefit from cheap-spell and easy-spell items like Wizardstaves.
+
+With just a single point in a given realm, you will be a poor caster; 
+investing more points helps a Skillmaster even more than proficiency 
+normally helps casters, in that it reduces not only the mana cost but 
+also the level of the spell. Your minimum fail rates also go down with 
+points invested; only a full 5-point investment allows 0% fail. 
+
+See [b] for a list of the various spellbook realms. The Life realm is 
+not available as a Magic skill (only as a Prayer skill); but apart from 
+this you can learn all book realms, and can study as many different 
+realms as you like. You do not need to learn individual spells; you can 
+cast any spell in a studied realm, provided you have the book and your 
+level is high enough.
+
+Spending points in this group boosts your class Device skill, although 
+not as much as direct investment in Skills/Devices. Your INT is also 
+directly influenced by the total number of points in this group. Magic 
+makes you squishy and bad at melee; too much magic will adversely 
+affect your STR, CON and life rating multiplier and reduce your maximum 
+blows per round. However, studying Craft magic boosts your melee a bit.
+
+Prayer Skills
+
+Prayer skills are like Magic skills in that each one grants access to a 
+single spellbook realm; but Prayer realms use WIS, not INT, as the 
+spellcasting stat. As with Magic, investing 5 points in the Prayer 
+group lets you benefit from cheap-spell (Dm) and easy-spell (Es) items; 
+but here you don't have to worry about glove encumbrance, unless you 
+have invested at least equally in Magic.
+
+The downside is that the selection of realms is more limited; only the 
+good realms (Life/Crusade) and evil realms (Death/Daemon) are available 
+through the Prayer group. Note that Crusade, Death and Daemon are also 
+offered by Magic; you can learn them as either WIS-based Prayer realms 
+or INT-based Magic realms, but not both.
+
+Investing points in the Prayer group boosts your Saving Throw, though 
+not as much as direct investment in Skills/Magic Resistance. Investment 
+in Prayer skills also boosts your WIS; unlike Magic, this group does 
+not come with any stat or melee penalties.
+
+As mentioned above, Prayer skillmasters are not priests, so there are 
+no weapon restrictions. You can gleefully slice and dice while piously 
+enjoying Life prayers; if you wish, you can even freely mix good realms 
+with evil realms.
+
+Miscellaneous Skills
+
+This group contains a number of skills that influence your character 
+attributes. These skills each allow a maximum of 3 points to be 
+invested. Invest here to flesh out your character design.
+
+  Agility
+  This skill directly improves your DEX and also determines your class 
+  Disarming skill, as displayed on the Character Sheet. (By default, 
+  the Skillmaster will disarm about as well as a priest.) The only 
+  other skill that influences disarming is the Burglary technique 
+  discussed below.
+
+  Awareness
+  This skill determines your class Searching and Perception skills, as 
+  displayed on the Character Sheet. Since these are two of the least 
+  important primary skills, Awareness also gives additional benefits to 
+  compensate. These depend on the number of points invested: see 
+  invisible and faster pseudo-ID (1); automatic pseudo-ID (2); and 
+  finally a telepathic awareness of nearby monsters (3).
+
+  Devices
+  Skill with magic devices is extremely important for most players: the 
+  difference between being able to reliably use a Staff of Healing and 
+  not can be the difference between life and death. By default your 
+  Device skill is primarily determined by the number of points spent in 
+  the Magic group; a small positive influence is also granted for 
+  Prayer skills as well as learning the Sorcery realm, but Melee points 
+  have a small negative influence on device skills. If you never learn 
+  any magic skills, it may be worth investing at least a point here, 
+  depending on your race and personality.
+
+  Health
+  This skill directly improves your CON and also determines your class 
+  base HP and life rating multiplier; by default Skillmasters have a 
+  100% multiplier, but investment in Magic skills slightly reduces it. 
+  If you want more hit points, or wish to undo the negative health 
+  effects of too many magic skills, invest in this skill. 
+  
+  A quick note on HP distribution. Even independently of their higher 
+  life rating multipliers, Warriors gain HP much faster than Mages; the 
+  Mage HP progression is very late-game-heavy. Investing in Health (or 
+  Melee) makes your HP progression more warrior-like, while investing 
+  in Magic makes it more mage-like (investing in Archery or Prayers 
+  encourages an in-between HP progression, which is also the default). 
+  By the time you reach level 50 it all evens out, but in the mid-game 
+  the progression makes quite a difference.
+
+  Magic Resistance
+  This skill increases your Saving Throw; a couple points here and some 
+  Prayer investment, and you will be almost immune to evil curses.
+
+  Speed
+  Each point in this skill increases your speed by +2. Speed is very 
+  important, especially in the early game; so if you plan to invest 
+  here, you should probably do so quite early. (Too bad there are so 
+  many other things you also want to invest in early...)
+
+  Stealth
+  This skill directly increases your Stealth. By default, Skillmasters 
+  have absolutely terrible stealth... both Archery and Burglary 
+  increase stealth a bit, but even if you are investing in one or both 
+  of those, spending points here as well can still help. Each point 
+  invested in this skill increases your stealth by +3; a single point 
+  will make you as stealthy as a mage, while two points make you 
+  slightly stealthier than a rogue. With three points you will be so 
+  stealthy you often gain powerful sneak attacks on sleeping monsters.
+
+Techniques
+
+Techniques are speciality skills otherwise limited to one or two 
+classes. For example, only Samurai can learn Kendo; and while Riding is 
+more generally open, only Cavalry and Beastmasters are really good at 
+it. But Skillmasters may also learn these techniques, often in powerful 
+combination with other skills. You may invest up to five points in each 
+technique in this group; the total number of points in this group has 
+no gameplay effects.
+
+  Burglary
+  Normally restricted to the Rogue, Burglary ([c]) is a spellbook realm 
+  that uses DEX as the primary stat. This realm functions much like the 
+  normal realms in Magic and Prayer, and you need to invest a full five 
+  points to match a rogue in burglary. Burglary skill also improves 
+  your stealth and your disarming skills.
+
+  Kendo
+  Normally available only to Samurai, Kendo is a book-based technique 
+  that enhances melee combat. Indeed, in order to use any Kendo 
+  technique you must wield a melee weapon (so do not try to combine 
+  this skill with Martial Arts). Kendo techniques have no fail rates.
+  
+  Learning this skill changes your mana to behave like that of the 
+  Samurai: your max resting mana is very small and determined solely by 
+  your WIS, but using the special Concentration class power temporarily 
+  boosts your mana pool. Boosted mana decays rather quickly with each 
+  turn, so you must time your concentration carefully before engaging 
+  an enemy in battle, and then hurry to defeat your foe before your 
+  mana runs out.
+  
+  Unlike real Samurai, Kendo skillmasters must carry the books around 
+  to access the various techniques. Note that if you mix Kendo with 
+  other spell realms, the Samurai mana mechanics have priority; this 
+  can be convenient at times (you can regain mana quickly if you have 
+  time to concentrate), but inconvenient at other times (Restore Mana 
+  becomes less effective, and your mana pool even after concentration 
+  is not all that large). As a final insult, Kendo mana mechanics block 
+  all cheap-spell and easy-spell effects except realm stones. 
+  
+  Investment in Kendo should generally be combined with investment in 
+  Melee. Kendo techniques make your attacks more powerful, but you 
+  still need to hit monsters in order to benefit...
+
+  Dual Wielding
+  The Dual Wielding skill, pioneered by Miyamoto Musashi, allows 
+  effective melee with two weapons at once. Investment in this skill 
+  increases your dual-wielding proficiency; but like Kendo, this skill 
+  should also be combined with Melee talents.
+
+  Riding
+  With this technique, you may ride your pets into battle. Each point 
+  invested in Riding immediately increases your riding proficiency, 
+  which affects your riding speed as well as your ability to ride more 
+  powerful mounts. Without adequate skill you will be tossed 
+  frequently, especially after taking a substantial amount of damage 
+  (which of course is the least convenient time for it). Full riding 
+  mastery requires five points in this skill, though you might be able 
+  to get by with just four. Investment in Riding also makes you more 
+  effective at using Capture Balls. Note that unarmed combat is not 
+  possible while mounted. See [d] and [e] for more information.
+
+Abilities
+
+Finally, you may invest a single point in any of the following skills 
+to gain a single power or talent. Unlike normal race and class powers, 
+powers gained through these skills are available for immediate use 
+without any mana cost and (usually) without any fail rate. For example, 
+you may buy the power of Stone Skin on level one and use it right away. 
+Stone Skin is also available as a spell in the Craft and Nature realms, 
+but then you'd have to level up, find the right spellbooks and spend 
+mana... Other powers in this group, such as Create Ammo or Eat Magic, 
+have no such spellcasting alternative and are accessible only through 
+the Abilities group.
+
+Not all Abilities give powers; some grant a passive talent, such as 
+Regeneration or Good Luck. Since Ability skills only cost a single 
+point each, they are a cheap way to flesh out your character.
+
+  Clear Mind
+  This power regenerates a small amount of mana on each usage, helping 
+  spellcasters recover mana more rapidly. To save your typing fingers, 
+  the game automatically activates Clear Mind every turn when you rest.
+
+  Create Ammo
+  Normally restricted to Archers, this talent allows you to create 
+  missiles from junk objects in the dungeon. You may create shots from 
+  rubble, arrows from skeletons and broken sticks, and bolts from 
+  skeletons; the quality of such ammo depends on your character level.
+
+  Eat Magic
+  This power allows you to drain mana from devices to replenish your 
+  mana pool. Unlike the other powers in this group, Eat Magic can fail; 
+  and even if you succeed in activating the power itself, you may still 
+  fail to drain mana from the target device. You might even destroy the 
+  device in the process! Nevertheless, Eat Magic can be useful for 
+  endgame spellcasters; it directly competes with Clear Mind in the 
+  mana-regaining stakes, offering a faster but more expensive and 
+  unreliable alternative.
+
+  Good Luck
+  With this ability, you will have slightly better odds of finding 
+  excellent items; even artifacts, especially rare ones, become easier 
+  to find. Note that this ability does not stack with the Lucky aura.
+
+  Loremastery
+  This ability grants automatic, instantaneous identification of 
+  objects as you step over them. Spend a point here to save an 
+  inventory slot if you lack Identify spells or find them too slow.
+
+  Massacre
+  This power allows you to simultaneously attack each and every 
+  adjacent monster with your normal melee attacks. If you find yourself 
+  frequently surrounded by enemies, it helps if you can dispatch them 
+  by eights instead of ones!
+
+  Panic Hit
+  A power familiar to thieves and ninjas: in a single turn, you attack 
+  an adjacent enemy with your normal melee attacks and then teleport 
+  away. This is very useful in situations where you'd like to teleport 
+  anyway, as you get to land some additional damage in the process; but 
+  watch out, as the teleport has a chance to fail. High Disarming skill 
+  will improve your odds, but you can never fully rely on Panic Hit as 
+  an escape.
+
+  Regeneration
+  This ability simply gives +150% to regeneration, allowing you to 
+  recover both hit points and spell points much faster.
+
+  Resistance
+  This power grants temporary resistance to the base elements acid, 
+  fire, cold, electricity and poison. Having no-cost resistance 
+  available on demand helps protect both you and your inventory, and 
+  reduces the need to get full 65% base resistance from your equipment.
+
+  Rodeo
+  This power, otherwise exclusive to Cavalry, allows you to attempt to 
+  forcibly mount an unfriendly monster. If successful, you may tame 
+  yourself a new mount to ride; but often such an attempt ends in utter 
+  humiliation.
+
+  Stone Skin
+  This power grants temporary extra AC, making you harder to hit and 
+  harder to damage in melee combat. The amount of protection increases 
+  with your character level. This is a useful ability to have if you 
+  plan to kill monsters in melee.
+
+
+

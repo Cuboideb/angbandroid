@@ -1,0 +1,34 @@
+#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=# begin Dump window settings
+# *Warning!*  The lines below are an automatic dump.
+# Don't edit them; changes will be deleted and replaced automatically.
+
+# Options
+
+# Window 'Term-1', Flag 'Display messages'
+window:1:6:1
+
+# Window 'Term-2', Flag 'Display inven/equip'
+window:2:0:1
+
+# Window 'Term-3', Flag 'Display monster list'
+window:3:10:1
+
+# Window 'Term-4', Flag 'Display item list'
+window:4:12:1
+
+# Window 'Term-5', Flag 'Display monster recall'
+window:5:8:1
+
+# Window 'Term-5', Flag 'Display object recall'
+window:5:9:1
+
+# Window 'Term-6', Flag 'Display overhead view'
+window:6:7:1
+
+# Window 'Term-7', Flag 'Display player (compact)'
+window:7:4:1
+
+
+# *Warning!*  The lines above are an automatic dump.
+# Don't edit them; changes will be deleted and replaced automatically.
+#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=# end Dump window settings

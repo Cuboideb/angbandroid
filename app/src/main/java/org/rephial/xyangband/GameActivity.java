@@ -42,6 +42,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import java.util.regex.Matcher;
@@ -62,6 +63,8 @@ public class GameActivity extends Activity {
 	AngbandKeyboard virtualKeyboard = null;
 	AngbandKeyboardView virtualKeyboardView = null;
 
+	public AdvKeyboard advKeyboard = null;
+
 	private LinearLayout ribbonZone = null;
     private ButtonRibbon bottomRibbon = null;
 	private ButtonRibbon topRibbon = null;
@@ -80,6 +83,8 @@ public class GameActivity extends Activity {
 	protected final int CONTEXTMENU_LOWER_RIBBON = 10;
 	protected final int CONTEXTMENU_KEYMAPS = 11;
 	protected final int CONTEXTMENU_TOGGLE_SUBW = 12;
+	protected final int CONTEXTMENU_RUNNING = 13;
+	protected final int CONTEXTMENU_RESET_DPAD = 14;
 
 	public static final int TERM_CONTROL_LIST_KEYS = 1;
 	public static final int TERM_CONTROL_CONTEXT = 2;
@@ -149,6 +154,8 @@ public class GameActivity extends Activity {
 
 	@Override
 	public void onStart() {
+		Log.d("Angband", "START");
+
 		super.onStart();
 
 		final AngbandDialog ad = dialog;
@@ -165,7 +172,17 @@ public class GameActivity extends Activity {
 	}
 
 	@Override
+	public void onDestroy()
+	{
+		Log.d("Angband", "DESTROY");
+
+		super.onDestroy();
+	}
+
+	@Override
 	public void onStop() {
+		Log.d("Angband", "STOP");
+
 		super.onStop();
 
 		StatPublisher.stop(this);
@@ -326,12 +343,24 @@ public class GameActivity extends Activity {
 
 			ribbonZone.removeAllViews();
 
-			topRibbon = new ButtonRibbon(this, state, true);
+			topRibbon = new ButtonRibbon(this, state,
+				true, false);
 			ribbonZone.addView(topRibbon.rootView);
 
-			bottomRibbon = new ButtonRibbon(this, state, false);
+			bottomRibbon = new ButtonRibbon(this, state,
+				false, false);
 			ribbonZone.addView(bottomRibbon.rootView);
 			bottomRibbon.addSibling(topRibbon);
+			
+			for (int i = 0; i < Preferences.getExtraRibbonRows(); i++) {
+				ButtonRibbon another = new ButtonRibbon(this, state,
+					false, true);
+				ribbonZone.addView(another.rootView);
+				bottomRibbon.addSibling(another);
+				bottomRibbon.addClone(another);
+			}
+
+			bottomRibbon.notifyClones();			
 		}
 	}
 
@@ -368,9 +397,9 @@ public class GameActivity extends Activity {
 			setFastKeysAux("");
 
 			if (screenLayout != null) screenLayout.removeAllViews();
-			screenLayout = new RelativeLayout(this);
+			screenLayout = null;
 
-			Boolean kb = Preferences.isKeyboardVisible();
+			Boolean makeOldKbd = Preferences.isKeyboardVisible();
 
 			virtualKeyboard = null;
             virtualKeyboardView = null;
@@ -379,51 +408,87 @@ public class GameActivity extends Activity {
 			bottomRibbon = null;
 			topRibbon = null;
 
-			if (kb) {
-				virtualKeyboard = new AngbandKeyboard(this);
-				virtualKeyboardView = virtualKeyboard.virtualKeyboardView;
-				virtualKeyboardView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+			advKeyboard = null;
+
+			boolean makeAdvKeyboard = false;
+			boolean vertical = false;
+
+			if (makeOldKbd && Preferences.getUseAdvKeyboard()) {
+				makeAdvKeyboard = true;
+				makeOldKbd = false;
+				vertical = Preferences.getVerticalKeyboard();
 			}
+
+			if (Preferences.getKeyboardOverlap()) {
+				if (vertical) {
+					screenLayout = (RelativeLayout)getLayoutInflater()
+							.inflate(R.layout.term_horiz_overlap, null);
+				}
+				else {
+					screenLayout = (RelativeLayout)getLayoutInflater()
+							.inflate(R.layout.term_vert_overlap, null);
+				}
+			}
+			else {
+				if (vertical) {
+					screenLayout = (RelativeLayout)getLayoutInflater()
+							.inflate(R.layout.term_horiz_no_overlap, null);
+				}
+				else {
+					screenLayout = (RelativeLayout)getLayoutInflater()
+							.inflate(R.layout.term_vert_no_overlap, null);
+				}
+			}
+
+			FrameLayout frameTerm = screenLayout.findViewById(R.id.frameTerm);
+			FrameLayout frameInput = screenLayout.findViewById(R.id.frameInput);
 
 			term = new TermView(this);
 			term.setFocusable(false);
 			registerForContextMenu(term);
 			state.link(term, handler);
 
-			term.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-					LayoutParams.WRAP_CONTENT));
-			screenLayout.addView(term);
+			term.setLayoutParams
+					(new FrameLayout.LayoutParams(
+							FrameLayout.LayoutParams.MATCH_PARENT,
+							FrameLayout.LayoutParams.MATCH_PARENT));
+			frameTerm.addView(term);
 
-			RelativeLayout.LayoutParams rLParams =
-					new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT,
-							LayoutParams.WRAP_CONTENT);
-			rLParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 1);
-
-			int newId = View.generateViewId();
-
-			if (kb) {
-				screenLayout.addView(virtualKeyboardView, rLParams);
-				virtualKeyboardView.setId(newId);
+			if (makeAdvKeyboard) {
+				advKeyboard = new AdvKeyboard(this);
+				if (vertical) {
+					advKeyboard.mainView.setLayoutParams
+							(new FrameLayout.LayoutParams(
+									FrameLayout.LayoutParams.WRAP_CONTENT,
+									FrameLayout.LayoutParams.MATCH_PARENT));
+				}
+				else {
+					advKeyboard.mainView.setLayoutParams
+							(new FrameLayout.LayoutParams(
+									FrameLayout.LayoutParams.MATCH_PARENT,
+									FrameLayout.LayoutParams.WRAP_CONTENT));
+				}
+				frameInput.addView(advKeyboard.mainView);
+			}
+			else if (makeOldKbd) {
+				virtualKeyboard = new AngbandKeyboard(this);
+				virtualKeyboardView = virtualKeyboard.virtualKeyboardView;
+				virtualKeyboardView.setLayoutParams
+						(new FrameLayout.LayoutParams(
+								FrameLayout.LayoutParams.MATCH_PARENT,
+								FrameLayout.LayoutParams.WRAP_CONTENT));
+				frameInput.addView(virtualKeyboardView);
 			}
 			else {
 				ribbonZone = new LinearLayout(this);
-				ribbonZone.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-						LayoutParams.WRAP_CONTENT));
 				ribbonZone.setOrientation(LinearLayout.VERTICAL);
-				ribbonZone.setId(newId);
-
+				ribbonZone.setLayoutParams
+						(new FrameLayout.LayoutParams(
+								FrameLayout.LayoutParams.MATCH_PARENT,
+								FrameLayout.LayoutParams.WRAP_CONTENT));
+				frameInput.addView(ribbonZone);
 				rebuildButtonRibbon();
-
-				screenLayout.addView(ribbonZone, rLParams);
 			}
-
-			/*
-			RelativeLayout.LayoutParams rLParams2 =
-					new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
-							LayoutParams.WRAP_CONTENT);
-			rLParams2.addRule(RelativeLayout.ABOVE, newId);
-			screenLayout.addView(mouse.mainView, rLParams2);
-			*/
 
 			setContentView(screenLayout);
 			dialog.restoreDialog();
@@ -460,7 +525,13 @@ public class GameActivity extends Activity {
 		else {
 			menu.add(0, CONTEXTMENU_VKEY_ITEM, 0, "Show Button Ribbon");
 			menu.add(0, CONTEXTMENU_TOGGLE_SUBW, 0, "Toggle Sub-Windows");
+			//menu.add(0, CONTEXTMENU_KEYMAPS, 0, "Manage Keymaps");
 		}
+		if (state != null) {
+			menu.add(0, CONTEXTMENU_RUNNING, 0, "Toggle Running " +
+				(state.getRunningMode() ? "OFF": "ON"));
+		}
+		menu.add(0, CONTEXTMENU_RESET_DPAD, 0, "Reset D-Pad Position");
 		menu.add(0, CONTEXTMENU_PREFERENCES_ITEM, 0, "Preferences");
 		menu.add(0, CONTEXTMENU_PROFILES_ITEM, 0, "Profiles");
 		menu.add(0, CONTEXTMENU_HELP_ITEM, 0, "Help");
@@ -487,9 +558,15 @@ public class GameActivity extends Activity {
                 state.nativew.lockWithTimer.waitAndRelease();
 			}
 			return true;
+		case CONTEXTMENU_RUNNING:
+			state.setRunningMode(!state.getRunningMode());
+			return true;
 	    case CONTEXTMENU_KEYMAPS:
 	    	KeymapEditor editor = new KeymapEditor(this, screenLayout);
 	    	editor.show();
+	    	return true;
+	    case CONTEXTMENU_RESET_DPAD:	    	
+	    	if (term != null) term.resetDragOffset();	    	
 	    	return true;
 	    case CONTEXTMENU_TOGGLE_SUBW:
 	    	state.showSubWindows = !state.showSubWindows;
@@ -527,19 +604,19 @@ public class GameActivity extends Activity {
 	}
 
 	public void questionAlert(String msg,
-							  DialogInterface.OnClickListener okHandler) {
+		DialogInterface.OnClickListener okHandler) {
 		new AlertDialog.Builder(this)
-				//.setTitle("Angband")
-				.setMessage(msg)
-				.setCancelable(true)
-				.setNegativeButton("No", new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
-					}
-				})
-				.setPositiveButton("Yes", okHandler)
-				.show();
+			//.setTitle("Angband")
+			.setMessage(msg)
+			.setCancelable(true)
+			.setNegativeButton("No", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			})
+			.setPositiveButton("Yes", okHandler)
+			.show();
 	}
 
 	public void infoAlert(String msg) {
@@ -564,7 +641,8 @@ public class GameActivity extends Activity {
 
 	@Override
 	protected void onResume() {
-		//Log.d("Angband", "onResume");
+		Log.d("Angband", "RESUME");
+
 		super.onResume();
 
 		setScreen();
@@ -576,7 +654,8 @@ public class GameActivity extends Activity {
 
 	@Override
 	protected void onPause() {
-		//Log.d("Angband", "onPause");
+		Log.d("Angband", "PAUSE");
+		
 		super.onPause();
 
 		clearKeyTimer();
@@ -622,18 +701,32 @@ public class GameActivity extends Activity {
 		return state;
 	}
 
-    	public int getKeyboardHeight() {
+	public int getKeyboardHeight() {
 		int h = 0;
 
-        	if (Preferences.isKeyboardVisible() &&
+		if (advKeyboard != null && !advKeyboard.vertical) {
+			h += advKeyboard.mainView.getHeight();
+		}
+
+    	if (Preferences.isKeyboardVisible() &&
 			virtualKeyboardView != null) {
 			h += virtualKeyboardView.getHeight();
 		}
 
-        	if (ribbonZone != null) {
-        		h += ribbonZone.getHeight();
+    	if (ribbonZone != null) {
+    		h += ribbonZone.getHeight();
 		}
 
-        	return h;
-    	}
+    	return h;
+	}
+
+	public int getKeyboardWidth() {
+		int w = 0;
+
+		if (advKeyboard != null && advKeyboard.vertical) {
+			w += advKeyboard.mainView.getWidth();
+		}
+
+    	return w;
+	}
 }

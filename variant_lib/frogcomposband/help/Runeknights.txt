@@ -1,0 +1,203 @@
+<style:title>Rune-Knights</style>
+
+A large part of playing as a Rune-Knight involves the attachment of mystical runes of power to various pieces of equipment. Each type of rune grants some special thematic abilities; these abilities will vary slightly depending on the type of object to which the rune is affixed. Generally, runes are more powerful when attached to body armor than when attached to helmets, gloves or shields. Since attaching a rune generally consumes all of your mana and rune-knights do not regenerate mana normally, trying to figure things out by trial and error would be time-consuming and lead to suboptimal rune placement. Note that you can only attach a single rune to any given object, and cannot remove or change that rune once it has been added, although nothing prevents you from adding the same rune to multiple objects.
+
+The rune cheat-sheet below is a bit of a spoiler, but most players are happy to play with this information handy.
+
+<topic:RunesByType><style:heading>Equipment/Inventory Runes by Type</style>
+
+In this section, each rune is displayed along with each type of object to which it may be affixed; thus, you may see what each rune does at a glance, and decide where to use it best.
+
+<color:B>Absorption</color>
+<color:R>Melee Weapons</color> <color:G>L1</color>  Magic Resistance; Mana Absorption
+<color:R>Shields</color>       <color:G>L1</color>  Magic Resistance; Mana Absorption
+<color:R>Body Armor</color>    <color:G>L1</color>  Magic Resistance; Mana Absorption
+
+<color:B>Protection</color>
+<color:R>Shields</color>       <color:G>L5</color>  AC Bonus; Protection from Corrosion
+<color:R>Body Armor</color>    <color:G>L5</color>  AC Bonus; Protection from Corrosion
+<color:R>Helmets</color>       <color:G>L5</color>  AC Bonus; Protection from Corrosion
+<color:R>Cloaks</color>        <color:G>L5</color>  AC Bonus; Protection from Corrosion
+<color:R>Gloves</color>        <color:G>L5</color>  AC Bonus; Protection from Corrosion
+<color:R>Boots</color>         <color:G>L5</color>  AC Bonus; Protection from Corrosion
+
+<color:B>Regeneration</color>
+<color:R>Body Armor</color>    <color:G>L7</color>  Regeneration
+<color:R>Cloaks</color>        <color:G>L7</color>  Regeneration
+
+<color:B>Fire</color>
+<color:R>Melee Weapons</color> <color:G>L9</color>  Flame Tongue
+<color:R>Shields</color>       <color:G>L9</color>  Resist Fire
+<color:R>Body Armor</color>    <color:G>L9</color>  Resist Fire; Fiery Aura
+<color:R>Cloaks</color>        <color:G>L9</color>  Fiery Aura
+<color:R>Lights</color>        <color:G>L9</color>  Fiery Aura
+<color:R>Gloves</color>        <color:G>L45</color> Flame Tongue
+
+<color:B>Air</color>
+<color:R>Melee Weapons</color> <color:G>L40</color> +0.75 Attacks
+<color:R>Cloaks</color>        <color:G>L11</color> Levitation
+<color:R>Boots</color>         <color:G>L11</color> Levitation
+
+<color:B>Water</color>
+<color:R>Melee Weapons</color> <color:G>L13</color> Acid Brand
+<color:R>Shields</color>       <color:G>L13</color> Resist Acid
+<color:R>Body Armor</color>    <color:G>L13</color> Resist Acid and Stunning
+<color:R>Cloaks</color>        <color:G>L13</color> Resist Acid
+<color:R>Gloves</color>        <color:G>L45</color> Acid Brand
+
+<color:B>Light</color>
+<color:R>Helmets</color>       <color:G>L15</color> Resist Light
+<color:R>Lights</color>        <color:G>L15</color> Resist Light
+
+<color:B>Shadow</color>
+<color:R>Shields</color>       <color:G>L17</color> Resist Darkness
+<color:R>Body Armor</color>    <color:G>L17</color> Resist Darkness; +5L/50 Stealth
+<color:R>Helmets</color>       <color:G>L17</color> Resist Darkness
+<color:R>Cloaks</color>        <color:G>L17</color> +5L/50 Stealth
+
+<color:B>Earth</color>
+<color:R>Melee Weapons</color> <color:G>L35</color> Vorpal
+<color:R>Shields</color>       <color:G>L19</color> Resist Shards
+<color:R>Body Armor</color>    <color:G>L19</color> Resist Shards; Aura of Shards
+<color:R>Cloaks</color>        <color:G>L19</color> Aura of Shards
+
+<color:B>Understanding</color>
+<color:R>Helmets</color>       <color:G>L21</color> +2 INT; Easy Identify
+<color:R>Lights</color>        <color:G>L21</color> +1 INT
+
+<color:B>Preservation</color>
+If this rune is carried in your pack, the chance of items in your pack being destroyed by elemental attacks is cut to half.
+
+<color:B>Haste</color>
+<color:R>Gloves</color>        <color:G>L25</color> +2 DEX
+<color:R>Boots</color>         <color:G>L25</color> +3L/50 Speed
+
+<color:B>Seeing</color>
+<color:R>Helmets</color>       <color:G>L27</color> Resist Blindness; See Invisible
+<color:R>Lights</color>        <color:G>L27</color> Resist Blindness
+
+<color:B>Life</color>
+<color:R>Shields</color>       <color:G>L29</color> Hold Life
+<color:R>Body Armor</color>    <color:G>L29</color> Hold Life; +1 CON
+<color:R>Lights</color>        <color:G>L29</color> Hold Life
+
+<color:B>Stability</color>
+<color:R>Body Armor</color>    <color:G>L31</color> Resist Nexus, Chaos and Disenchantment
+<color:R>Helmets</color>       <color:G>L31</color> Resist Nexus
+<color:R>Cloaks</color>        <color:G>L31</color> Resist Nexus
+<color:R>Boots</color>         <color:G>L31</color> Resist Nexus
+
+<color:B>Reflection</color>
+<color:R>Shields</color>       <color:G>L33</color> Reflection
+
+<color:B>Death</color>
+<color:R>Melee Weapons</color> <color:G>L35</color> Vampiric
+<color:R>Shields</color>       <color:G>L35</color> Resist Nether
+<color:R>Body Armor</color>    <color:G>L35</color> Resist Nether and Poison
+<color:R>Helmets</color>       <color:G>L35</color> Resist Nether
+
+<color:B>Mind</color>
+<color:R>Helmets</color>       <color:G>L37</color> +2 INT; Sustain INT; Telepathy
+<color:R>Lights</color>        <color:G>L37</color> Telepathy
+
+<color:B>Might</color>
+<color:R>Body Armor</color>    <color:G>L39</color> +2 STR, DEX, CON; Sustain STR, DEX, CON
+<color:R>Helmets</color>       <color:G>L39</color> +2 STR, CON
+
+<color:B>Destruction</color>
+<color:R>Melee Weapons</color> <color:G>L41</color> +2 Damage Dice
+<color:R>Gloves</color>        <color:G>L41</color> Slaying
+
+<color:B>Good Fortune</color>
+If this rune is carried in your pack, you will be blessed with good luck. This grants increased odds of finding excellent and special items. The good-luck effect is similar to the White Aura mutation and the Lucky personality, and does not stack with them.
+
+<color:B>Immortality</color>
+<color:R>Shields</color>       <color:G>L45</color> Resist Time
+<color:R>Body Armor</color>    <color:G>L45</color> Resist Time; Hold Life; Sustain Stats
+<color:R>Helmets</color>       <color:G>L45</color> Resist Time
+<color:R>Cloaks</color>        <color:G>L45</color> Resist Time
+
+<topic:RunesBySlot><style:heading>Runes by Equipment Slot</style>
+
+In this section, the various runes are grouped according to equipment slot. This will enable you to see at a glance which types of runes may be used on which types of objects. Hopefully, this will assist you in planning the ultimate allocation of power.
+
+<color:R>Melee Weapons</color>
+<color:B>Absorption</color>    <color:G>L1</color>  Magic Resistance; Mana Absorption
+<color:B>Fire</color>          <color:G>L9</color>  Flame Tongue
+<color:B>Water</color>         <color:G>L13</color> Acid Brand
+<color:B>Earth</color>         <color:G>L35</color> Vorpal
+<color:B>Death</color>         <color:G>L35</color> Vampiric
+<color:B>Air</color>           <color:G>L40</color> +0.75 Attacks
+<color:B>Destruction</color>   <color:G>L41</color> +2 Damage Dice
+
+<color:R>Shields</color>
+<color:B>Absorption</color>    <color:G>L1</color>  Magic Resistance; Mana Absorption
+<color:B>Protection</color>    <color:G>L5</color>  AC Bonus; Protection from Corrosion
+<color:B>Fire</color>          <color:G>L9</color>  Resist Fire
+<color:B>Water</color>         <color:G>L13</color> Resist Acid
+<color:B>Shadow</color>        <color:G>L17</color> Resist Darkness
+<color:B>Earth</color>         <color:G>L19</color> Resist Shards
+<color:B>Life</color>          <color:G>L29</color> Hold Life
+<color:B>Reflection</color>    <color:G>L33</color> Reflection
+<color:B>Death</color>         <color:G>L35</color> Resist Nether
+<color:B>Immortality</color>   <color:G>L45</color> Resist Time
+
+<color:R>Body Armor</color>
+<color:B>Absorption</color>    <color:G>L1</color>  Magic Resistance; Mana Absorption
+<color:B>Protection</color>    <color:G>L5</color>  AC Bonus; Protection from Corrosion
+<color:B>Regeneration</color>  <color:G>L7</color>  Regeneration
+<color:B>Fire</color>          <color:G>L9</color>  Resist Fire; Fiery Aura
+<color:B>Water</color>         <color:G>L13</color> Resist Acid and Stunning
+<color:B>Shadow</color>        <color:G>L17</color> Resist Darkness; Stealth
+<color:B>Earth</color>         <color:G>L19</color> Resist Shards; Aura of Shards
+<color:B>Life</color>          <color:G>L29</color> Hold Life; +1 CON
+<color:B>Stability</color>     <color:G>L31</color> Resist Nexus, Chaos and Disenchantment
+<color:B>Death</color>         <color:G>L35</color> Resist Nether and Poison
+<color:B>Might</color>         <color:G>L39</color> +2 STR, DEX, CON; Sustain STR, DEX, CON
+<color:B>Immortality</color>   <color:G>L45</color> Resist Time; Hold Life; Sustain All Stats
+
+<color:R>Helmet</color>
+<color:B>Protection</color>    <color:G>L5</color>  AC Bonus; Protection from Corrosion
+<color:B>Light</color>         <color:G>L15</color> Resist Light
+<color:B>Shadow</color>        <color:G>L17</color> Resist Darkness
+<color:B>Understanding</color> <color:G>L21</color> +2 INT; Easy Identify
+<color:B>Seeing</color>        <color:G>L27</color> Resist Blindness; See Invisible
+<color:B>Stability</color>     <color:G>L31</color> Resist Nexus
+<color:B>Death</color>         <color:G>L35</color> Resist Nether
+<color:B>Mind</color>          <color:G>L37</color> +2 INT; Sustain Int; Telepathy
+<color:B>Might</color>         <color:G>L39</color> +2 STR, CON
+<color:B>Immortality</color>   <color:G>L45</color> Resist Time
+
+<color:R>Cloak</color>
+<color:B>Protection</color>    <color:G>L5</color>  AC Bonus; Protection from Corrosion
+<color:B>Regeneration</color>  <color:G>L7</color>  Regeneration
+<color:B>Fire</color>          <color:G>L9</color>  Fiery Aura
+<color:B>Air</color>           <color:G>L11</color> Levitation
+<color:B>Water</color>         <color:G>L13</color> Resist Acid
+<color:B>Shadow</color>        <color:G>L17</color> Stealth
+<color:B>Earth</color>         <color:G>L19</color> Aura of Shards
+<color:B>Stability</color>     <color:G>L31</color> Resist Nexus
+<color:B>Immortality</color>   <color:G>L45</color> Resist Time
+
+<color:R>Gloves</color>
+<color:B>Protection</color>    <color:G>L5</color>  AC Bonus; Protection from Corrosion
+<color:B>Haste</color>         <color:G>L25</color> +2 DEX
+<color:B>Destruction</color>   <color:G>L41</color> Slaying
+<color:B>Fire</color>          <color:G>L45</color> Flame Tongue
+<color:B>Water</color>         <color:G>L45</color> Acid Brand
+
+<color:R>Boots</color>
+<color:B>Protection</color>    <color:G>L5</color>  AC Bonus; Protection from Corrosion
+<color:B>Air</color>           <color:G>L11</color> Levitation
+<color:B>Haste</color>         <color:G>L25</color> +3L/50 Speed
+<color:B>Stability</color>     <color:G>L31</color> Resist Nexus
+
+<color:R>Lights</color>
+<color:B>Fire</color>          <color:G>L9</color>  Fiery Aura
+<color:B>Light</color>         <color:G>L15</color> Resist Light
+<color:B>Understanding</color> <color:G>L21</color> +1 INT
+<color:B>Seeing</color>        <color:G>L27</color> Resist Blindness
+<color:B>Life</color>          <color:G>L29</color> Hold Life
+<color:B>Mind</color>          <color:G>L37</color> Telepathy
+
+

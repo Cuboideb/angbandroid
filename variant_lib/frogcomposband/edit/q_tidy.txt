@@ -1,0 +1,73 @@
+# Designed by Gwarl for ComPosband
+# Simplified for FrogComposband 7.0.mango
+
+?:[EQU $QUEST65 Taken InProgress]
+D:You again. Tell you what, a couple of other students left
+D:the laboratory in a mess. Go and tidy it up! That should
+D:keep you busy.
+?:1
+
+?:[EQU $QUEST65 Completed]
+D:Hrm, you know you're meant to follow lab safety and wear
+D:gloves in there? Go to the stockroom and get yourself a
+D:pair.
+?:1
+
+?:[EQU $QUEST65 Failed]
+D:Ugh now who is going to clean up the mess in there.
+?:1
+
+T:QUEST:NORMAL
+L:#:PERMANENT
+L:+:CLOSED_DOOR
+L:.:FLOOR
+L:<:UP_STAIR
+L:^:TRAP(*, 25%)
+L:T:TRAP(*, 40%)
+L:p:OBJ(POTION)
+L:w:OBJ(WAND_BOLT_FIRE)
+L:x:OBJ(WAND_BOLT_COLD)
+L:y:OBJ(WAND_BOLT_ACID)
+L:z:OBJ(WAND_BOLT_ELEC)
+L:e:MON(ooze elemental)
+L:f:MON(smoke elemental)
+L:g:MON(air elemental)
+L:h:MON(beer elemental)
+L:i:MON(quasit)
+L:s:OBJ(SCROLL, DEPTH+5)
+L:t:OBJ(JUNK)
+L:r:OBJ(JUNK)
+L:u:OBJ(STAFF_LITE_AREA)
+L:v:OBJ(STAFF_DARKNESS)
+L:a:OBJ(RING, DEPTH+10):EGO(wizardry)
+L:b:OBJ(BOOK)
+L:c:OBJ(ROD_CLARITY)
+L:d:MON(disenchanter mold)
+L:j:MON(ochre jelly)
+L:k:MON(silver jelly)
+!:SCRAMBLE(s,t,r,T,^,b)
+!:SCRAMBLE(j,p)
+!:SCRAMBLE(w,x,y,z)
+!:SCRAMBLE(f,h)
+!:SCRAMBLE(u,v)
+
+M:##########################################
+M:#<...........#t^.........#.y....#......r.#
+M:#.......r....#p.t........#......+.T......#
+M:#............#p..k...jb..#......#..th....#
+M:#.......T..g.#####+#######......#........#
+M:#...r........#..................#.i......#
+M:#.......b....+................h.#...s....#
+M:#............#..k...............#p...t.uv#
+M:##############^........s.......b##########
+M:#.....#..w.....t.....e......^r..#........#
+M:#.b...#.........................#.......b#
+M:#...g^+...^...#.T...#...T.#.....#.^sf...s#
+M:#.cdk.#...j...#...T.#.T...#.....+..k...js#
+M:#.dat.#.p...z.#x..b.#...r.#.r...#.......s#
+M:##########################################
+
+
+R:OBJ(leather gloves):EGO(wizard)
+
+# vim: filetype=q :

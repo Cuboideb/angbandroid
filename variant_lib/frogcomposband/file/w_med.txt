@@ -1,0 +1,136 @@
+N: 1:BIAS_ELEC
+'Blue Thunder'
+'Typhoon'
+'Tempest'
+'Lightning Cutter'
+'Shock and Awe'
+of Energy
+
+N: 2:BIAS_POIS
+'Assassin'
+'Scorpion'
+'Poison Brand'
+'Marsh Viper'
+'Assassinstrike'
+of the Black Adder
+
+N: 3:BIAS_FIRE
+'Prominence'
+'Fire Tornado'
+'Hot Wolf'
+'Hell's Tooth'
+'Eaglefire'
+of Solar Wind
+of Zhuque
+of Vallach
+
+N: 4:BIAS_COLD
+'Silver Frost'
+'Icicle'
+'White Death'
+'Frostbite'
+of Alaska
+of the Winter Wonderland
+of the Abominable Snowman
+
+N: 5:BIAS_ACID
+'Acid Drop'
+'Sargassonne'
+'Eliminator'
+of the Cube Prince
+of the Icky Queen
+
+N:12:BIAS_CHAOS
+'Lawslayer'
+'Distorter'
+'Banquet of Azathoth'
+'Cosmic Horror'
+'Nounverber'
+of Gehn
+of Hionhurn
+
+N:14:BIAS_NECROMANTIC
+'Bloody Mary'
+'Scream of the Damned'
+'Scarlet Silk'
+'Manhunter'
+'Dark Art'
+of Helband
+of Thuringwethil
+of the Erlking
+of the Styx
+of Nosferatu
+of Asmodeus
+
+N:15:BIAS_LAW
+N:13:BIAS_PRIESTLY
+N: 8:BIAS_WIS
+'Lawgiver'
+'Demonbane'
+'God Hand'
+'Evilbanisher'
+of Holiness
+of Justice
+of the Priests
+of Soul
+of Pantheras
+of Mother Teresa
+
+N:16:BIAS_ROGUE
+'Speed King'
+'Silencer'
+of the Night
+of the Superlemming
+of the Spymaster
+
+N:17:BIAS_MAGE
+N: 7:BIAS_INT
+'Manabringer'
+'Brainstorm'
+of Grand Wizardry
+of Zarathustra
+of Ritual
+of Logimagix
+of Aldarix
+
+N:18:BIAS_WARRIOR
+N: 6:BIAS_STR
+N:10:BIAS_CON
+'Giant Strength'
+'Bonebreaker'
+'Warrior's Honor'
+of Rage
+of Erkenbrando
+of Genghis Khan
+of Conquest
+of Lorgan
+of Ulath
+
+N: 9:BIAS_DEX
+'Mutant Smiley'
+of Charismatic Cook
+of Nimipula
+
+N:19:BIAS_RANGER
+'Hellwind'
+'Grassroot'
+of the Eagle Lord
+of the Druid
+of the Valkyrie
+
+N:*:Default
+'Weapon Alpha'
+'Fury'
+'Howler'
+'Roarer'
+'Witchfire'
+'Bloodrain'
+'Fight Insurance'
+'Murder Weapon'
+'Old Gory'
+'Orphanizer'
+'Lootbringer'
+'Deathblow'
+'Super-Ego'
+of Gibbitude
+of Moido

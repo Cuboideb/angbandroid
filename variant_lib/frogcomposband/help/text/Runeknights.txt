@@ -1,0 +1,225 @@
+Rune-Knights
+
+A large part of playing as a Rune-Knight involves the attachment of 
+mystical runes of power to various pieces of equipment. Each type of 
+rune grants some special thematic abilities; these abilities will vary 
+slightly depending on the type of object to which the rune is affixed. 
+Generally, runes are more powerful when attached to body armor than 
+when attached to helmets, gloves or shields. Since attaching a rune 
+generally consumes all of your mana and rune-knights do not regenerate 
+mana normally, trying to figure things out by trial and error would be 
+time-consuming and lead to suboptimal rune placement. Note that you can 
+only attach a single rune to any given object, and cannot remove or 
+change that rune once it has been added, although nothing prevents you 
+from adding the same rune to multiple objects.
+
+The rune cheat-sheet below is a bit of a spoiler, but most players are 
+happy to play with this information handy.
+
+Equipment/Inventory Runes by Type
+
+In this section, each rune is displayed along with each type of object 
+to which it may be affixed; thus, you may see what each rune does at a 
+glance, and decide where to use it best.
+
+Absorption
+Melee Weapons L1  Magic Resistance; Mana Absorption
+Shields       L1  Magic Resistance; Mana Absorption
+Body Armor    L1  Magic Resistance; Mana Absorption
+
+Protection
+Shields       L5  AC Bonus; Protection from Corrosion
+Body Armor    L5  AC Bonus; Protection from Corrosion
+Helmets       L5  AC Bonus; Protection from Corrosion
+Cloaks        L5  AC Bonus; Protection from Corrosion
+Gloves        L5  AC Bonus; Protection from Corrosion
+Boots         L5  AC Bonus; Protection from Corrosion
+
+Regeneration
+Body Armor    L7  Regeneration
+Cloaks        L7  Regeneration
+
+Fire
+Melee Weapons L9  Flame Tongue
+Shields       L9  Resist Fire
+Body Armor    L9  Resist Fire; Fiery Aura
+Cloaks        L9  Fiery Aura
+Lights        L9  Fiery Aura
+Gloves        L45 Flame Tongue
+
+Air
+Melee Weapons L40 +0.75 Attacks
+Cloaks        L11 Levitation
+Boots         L11 Levitation
+
+Water
+Melee Weapons L13 Acid Brand
+Shields       L13 Resist Acid
+Body Armor    L13 Resist Acid and Stunning
+Cloaks        L13 Resist Acid
+Gloves        L45 Acid Brand
+
+Light
+Helmets       L15 Resist Light
+Lights        L15 Resist Light
+
+Shadow
+Shields       L17 Resist Darkness
+Body Armor    L17 Resist Darkness; +5L/50 Stealth
+Helmets       L17 Resist Darkness
+Cloaks        L17 +5L/50 Stealth
+
+Earth
+Melee Weapons L35 Vorpal
+Shields       L19 Resist Shards
+Body Armor    L19 Resist Shards; Aura of Shards
+Cloaks        L19 Aura of Shards
+
+Understanding
+Helmets       L21 +2 INT; Easy Identify
+Lights        L21 +1 INT
+
+Preservation
+If this rune is carried in your pack, the chance of items in your pack 
+being destroyed by elemental attacks is cut to half.
+
+Haste
+Gloves        L25 +2 DEX
+Boots         L25 +3L/50 Speed
+
+Seeing
+Helmets       L27 Resist Blindness; See Invisible
+Lights        L27 Resist Blindness
+
+Life
+Shields       L29 Hold Life
+Body Armor    L29 Hold Life; +1 CON
+Lights        L29 Hold Life
+
+Stability
+Body Armor    L31 Resist Nexus, Chaos and Disenchantment
+Helmets       L31 Resist Nexus
+Cloaks        L31 Resist Nexus
+Boots         L31 Resist Nexus
+
+Reflection
+Shields       L33 Reflection
+
+Death
+Melee Weapons L35 Vampiric
+Shields       L35 Resist Nether
+Body Armor    L35 Resist Nether and Poison
+Helmets       L35 Resist Nether
+
+Mind
+Helmets       L37 +2 INT; Sustain INT; Telepathy
+Lights        L37 Telepathy
+
+Might
+Body Armor    L39 +2 STR, DEX, CON; Sustain STR, DEX, CON
+Helmets       L39 +2 STR, CON
+
+Destruction
+Melee Weapons L41 +2 Damage Dice
+Gloves        L41 Slaying
+
+Good Fortune
+If this rune is carried in your pack, you will be blessed with good 
+luck. This grants increased odds of finding excellent and special 
+items. The good-luck effect is similar to the White Aura mutation and 
+the Lucky personality, and does not stack with them.
+
+Immortality
+Shields       L45 Resist Time
+Body Armor    L45 Resist Time; Hold Life; Sustain Stats
+Helmets       L45 Resist Time
+Cloaks        L45 Resist Time
+
+Runes by Equipment Slot
+
+In this section, the various runes are grouped according to equipment 
+slot. This will enable you to see at a glance which types of runes may 
+be used on which types of objects. Hopefully, this will assist you in 
+planning the ultimate allocation of power.
+
+Melee Weapons
+Absorption    L1  Magic Resistance; Mana Absorption
+Fire          L9  Flame Tongue
+Water         L13 Acid Brand
+Earth         L35 Vorpal
+Death         L35 Vampiric
+Air           L40 +0.75 Attacks
+Destruction   L41 +2 Damage Dice
+
+Shields
+Absorption    L1  Magic Resistance; Mana Absorption
+Protection    L5  AC Bonus; Protection from Corrosion
+Fire          L9  Resist Fire
+Water         L13 Resist Acid
+Shadow        L17 Resist Darkness
+Earth         L19 Resist Shards
+Life          L29 Hold Life
+Reflection    L33 Reflection
+Death         L35 Resist Nether
+Immortality   L45 Resist Time
+
+Body Armor
+Absorption    L1  Magic Resistance; Mana Absorption
+Protection    L5  AC Bonus; Protection from Corrosion
+Regeneration  L7  Regeneration
+Fire          L9  Resist Fire; Fiery Aura
+Water         L13 Resist Acid and Stunning
+Shadow        L17 Resist Darkness; Stealth
+Earth         L19 Resist Shards; Aura of Shards
+Life          L29 Hold Life; +1 CON
+Stability     L31 Resist Nexus, Chaos and Disenchantment
+Death         L35 Resist Nether and Poison
+Might         L39 +2 STR, DEX, CON; Sustain STR, DEX, CON
+Immortality   L45 Resist Time; Hold Life; Sustain All Stats
+
+Helmet
+Protection    L5  AC Bonus; Protection from Corrosion
+Light         L15 Resist Light
+Shadow        L17 Resist Darkness
+Understanding L21 +2 INT; Easy Identify
+Seeing        L27 Resist Blindness; See Invisible
+Stability     L31 Resist Nexus
+Death         L35 Resist Nether
+Mind          L37 +2 INT; Sustain Int; Telepathy
+Might         L39 +2 STR, CON
+Immortality   L45 Resist Time
+
+Cloak
+Protection    L5  AC Bonus; Protection from Corrosion
+Regeneration  L7  Regeneration
+Fire          L9  Fiery Aura
+Air           L11 Levitation
+Water         L13 Resist Acid
+Shadow        L17 Stealth
+Earth         L19 Aura of Shards
+Stability     L31 Resist Nexus
+Immortality   L45 Resist Time
+
+Gloves
+Protection    L5  AC Bonus; Protection from Corrosion
+Haste         L25 +2 DEX
+Destruction   L41 Slaying
+Fire          L45 Flame Tongue
+Water         L45 Acid Brand
+
+Boots
+Protection    L5  AC Bonus; Protection from Corrosion
+Air           L11 Levitation
+Haste         L25 +3L/50 Speed
+Stability     L31 Resist Nexus
+
+Lights
+Fire          L9  Fiery Aura
+Light         L15 Resist Light
+Understanding L21 +1 INT
+Seeing        L27 Resist Blindness
+Life          L29 Hold Life
+Mind          L37 Telepathy
+
+
+

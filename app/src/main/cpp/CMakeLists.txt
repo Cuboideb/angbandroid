@@ -13,3 +13,9 @@ cmake_minimum_required(VERSION 3.4.1)
 add_subdirectory(loader)
 
 add_subdirectory(angband)
+
+add_subdirectory(faangband)
+
+add_subdirectory(frogcomposband)
+
+add_subdirectory(npp041)

@@ -1,0 +1,1124 @@
+Options and Effects
+
+Most of the options are accessible through the = command, which 
+provides an interface to the various sets of options available to the 
+player.
+
+In the descriptions below, each option is listed as the textual summary 
+which is shown on the options screen, plus the internal name of the 
+option in parenthesis, followed by a textual description of the option.
+
+Note that the internal name of the option can be used in user pref 
+files to force the option to a given setting (see [a] for more info).
+
+Various concepts are mentioned in the descriptions below, including 
+disturb (cancel any running, resting, or repeated commands, which are 
+in progress), flush (forget any keypresses waiting in the keypress 
+queue, including any macros in progress), and fresh (dump any pending 
+output to the screen).
+
+Birth options
+
+The birth options can only be accessed while creating a new character 
+(press = during character creation). There is no way to turn them off 
+(or on) after the game has started!
+  
+  
+  Easy Identify (easy_id)
+  With this option enabled, all objects are automatically fully 
+  identified on walkover, and items, spells and town services of 
+  Identify/*Identify* become unnecessary.
+  
+  Easy Lore (easy_lore)
+  With this option enabled, the player will be born with complete 
+  knowledge of monster lore, including the various attacks and nasty 
+  surprises that many monsters usually offer to the uninitiated. This 
+  is a bit of a spoiler option, but is available for those who don't 
+  enjoy learning each of the many monsters present in the game. Easy 
+  Lore also renders a few aspects of the game non-functional or 
+  pointless, including the ability to Probe monsters to learn about 
+  them as you encounter them, and the Research Monster town service to 
+  learn about monsters before you see them (for a price, of course).
+  
+  Easy monster health and damage information (easy_damage)
+  Also known as "Fnord-mode", this option allows the player to see the 
+  exact damage delivered by each attack, and to receive additional 
+  information about monster health and debuffs through a percentage 
+  display. Player health bars are also converted to use percentages. 
+  This is a very powerful easy-mode, and using it gives a score 
+  penalty.
+  
+  Allow spoilers (allow_spoilers)
+  Enabling this option allows the player to view some spoiler files 
+  in-game with the ^Z command.
+  
+  Use enhanced telepathy (power_tele)
+  With this option off ("fuzzy telepathy"), telepathy only reveals the 
+  "species" (default display character) of a monster; its color and 
+  race are hidden. Turning on this option allows the player to see the 
+  color and race of telepathically detected monsters the same way as 
+  with normal sight.
+  
+  Allow easy teleportation to Thalos (easy_thalos)
+  If this option is on, inns will start offering teleportation to the 
+  town of Thalos as soon as at least one out of Anambar, Angwil, 
+  Morivant or Telmora has been visited by the player. Since Thalos is 
+  located on an island, travelling there by foot is very dangerous for 
+  a low-level character, especially at night. This option makes it 
+  possible to reach Thalos safely earlier in the game.
+  
+  Easy Labyrinth and no amnesia (never_forget)
+  This option removes amnesia attacks from the game, and allows the 
+  player to map the normally unmappable Labyrinth dungeon in the same 
+  way as all other dungeons. (Turning this option on does not 
+  necessarily make the game easier, since monsters who might normally 
+  use the annoying but ultimately harmless Amnesia spell will instead 
+  select one of their other, more dangerous spell options.)
+  
+  Always forget item lore between games (empty_lore)
+  With this option off, a new game started by opening a dead 
+  character's savefile inherits the dead character's ability to 
+  recognize attributes on excellent items and artifacts. Turning this 
+  option on empties this item lore, allowing savefile re-use without 
+  meta-progression.
+  
+  Monsters learn from their mistakes (smart_learn)
+  Allow monsters to learn which spell attacks you are resistant to, and 
+  to use this information to choose the best spells.
+  
+  Monsters exploit player's weaknesses (smart_cheat)
+  Allow monsters to know which spell attacks you are resistant to, and 
+  to use this information to choose the best spells; essentially, this 
+  option gives Easy Lore to the monsters.
+  
+  Play without a wilderness (no_wilderness)
+  This option disables the wilderness, forcing you to play with a 
+  single special town level. The only dungeon available will be 
+  Angband. Turning this option on manually is not recommended; it is 
+  intended to be used together with the Coffee-Break and Instant-Coffee 
+  game speed settings, which activate it automatically.
+  
+  Stores are permanently closed (ironman_shops)
+  This option closes all shops, forcing you to survive off what you 
+  find in the dungeon. Your home will still function normally, and 
+  additional town services remain available.
+  
+  Disable recall and use of up stairs (ironman_downward)
+  With this option on, you are not allowed to climb upwards or (at 
+  Normal game speed) recall home. All stairs are downstairs, and every 
+  level-teleport will take you to a deeper level. (Coffee-Break Mode 
+  and Instant-Coffee Mode activate this option automatically, but do 
+  allow you to recall home.)
+  
+  Always create empty 'arena' levels (ironman_empty_levels)
+  If this option is enabled, every dungeon level will be an open 
+  'arena' level; these levels will be almost completely empty, apart 
+  from monsters and the occasional room. See the empty_levels option 
+  below.
+  
+  Nightmare mode(it isn't even remotely fair!) (ironman_nightmare)
+  If this option is enabled, all monsters become unusually powerful and 
+  fast. And there will be various unbelievable things happening in 
+  various situations. Furthermore, at 12:00 every night, you will have 
+  a real nightmare. You need to be crazy to turn this option on!
+  
+  Thrall mode (start in extreme danger) (thrall_mode)
+  With this option enabled, you start the game on level 90 of R'lyeh 
+  (or level 90 of Angband in no-wilderness mode) as a runaway slave of 
+  the dungeon's demonic masters. With extreme care, you have managed to 
+  steal a few useful items that might help you in your escape. But now 
+  you've been noticed, everyone's on alert, and it is up to you to die, 
+  escape - or fight your way through...
+  
+  Always generate very unusual rooms (wacky_rooms)
+  If this option is enabled, every room becomes a vault (except in a 
+  few dungeons with special generation rules), vaults are allowed to 
+  generate extremely out-of-depth monsters and floor items, and 
+  extremely small levels are made slightly larger (to accommodate the 
+  vaults). This option is purposely game-unbalancing, and is intended 
+  for experienced players who have found they actually like the game 
+  unbalanced now and then.
+  
+  Monsters can only be damaged in melee (melee_challenge)
+  With this option on, hostile monsters will be protected from any 
+  damage except player melee damage and auras. Status effects and 
+  genocide will apply normally. Monster infighting is limited, since 
+  monsters cannot damage each other.
+  
+  Monsters cannot be damaged in melee (no_melee_challenge)
+  With this option on, player melee is disabled; weapons can still be 
+  wielded, but not used to attack a monster. This option has no effect 
+  on monster infighting, including melee between two monsters. (Turning 
+  on both Melee Challenge and No-Melee Challenge is probably not 
+  recommended...)
+  
+  Enable virtues (enable_virtues)
+  Turns on the virtue system. Virtues can help or hinder the player; 
+  among other things, they affect spell fail rates, the strength of 
+  many magical effects, and the friendliness of some monsters.
+  
+  Deeper wanted uniques give better rewards (no_wanted_points)
+  With this option on, the reward for turning in a wanted corpse 
+  depends on the unique's position on the list of all wanted uniques 
+  (deeper uniques give better rewards); with the option off, the 
+  rewards depend on the total number of wanted uniques turned in. 
+  Turning the option off is not recommended if the reduce_uniques 
+  option is on, since the best rewards would then be completely 
+  inaccessible.
+  
+  Preserve artifacts (preserve_mode)
+  With this option off, once a standard artifact is generated (either 
+  on the dungeon floor or in a monster drop), it will never be 
+  generated again during that game; if you miss the artifact, it is 
+  gone forever. With the option on, undiscovered standard artifacts can 
+  generate again on subsequent levels; this makes it safer to leave a 
+  level before it has been completely explored. (Standard artifacts 
+  that have been discovered and left behind will never generate again, 
+  regardless of whether this option is off or on.)
+  
+  Allow friendly monsters (allow_friendly_monster)
+  This option allows some monsters to generate as friendly. A few 
+  monster races are friendly by default; turning virtues on allows 
+  additional monsters of specific types to spawn friendly if the 
+  player's virtues are appropriately aligned with their type.
+  
+  Allow monsters hostile to each other (allow_hostile_monster)
+  If this option is on, monster infighting is disallowed except when 
+  one of the monsters is a pet or friendly monster. With the option on, 
+  infighting can also occur between hostile (or friendly) monsters of 
+  opposite alignments.
+  
+  Allow player to summon/charm monsters (allow_pets)
+  This option allows the player to summon pets or turn hostile monsters 
+  into pets (see [b]). Turning this option off is generally not 
+  recommended, and would make pet-based characters like Quylthulgs, 
+  Beastmasters and Cavalry essentially unplayable.
+  
+  Random quests for unique monsters only (quest_unique)
+  With this option turned on, the ten random quests in the Pits of 
+  Angband will all require you to kill a unique monster. With the 
+  option off, some of them (especially the early ones) may feature 
+  groups of non-unique monsters instead, similarly to the fixed Warg 
+  Quest.
+  
+  Randomize standard artifacts (random_artifacts)
+  If this option is turned on, some percentage of standard artifacts 
+  will be replaced wtih random ones. A small number of standard 
+  artifacts (such as the Rings of Power) are fixed and cannot be 
+  substituted. Note that additional random artifacts, which complement 
+  rather than replace the standard set, can generate whether this 
+  option is on or not.
+  
+  Never create artifacts (no_artifacts)
+  If this option is turned on, no artifacts will ever generate. This 
+  makes the game much more difficult.
+  
+  Never create non-jewelry ego items (no_egos)
+  Turning this option on prevents non-jewelry ego items from generating 
+  randomly. This makes the game much more difficult, although ego items 
+  specified in quests can still generate.
+  
+  Disable selling but increase gold drops (no_selling)
+  With this option on, the player cannot sell items for money (only 
+  give them for free), and turning items into gold through Alchemy is 
+  less effective; but gold drops in quests and dungeons are increased 
+  to compensate. (Gold drops in the wilderness are not affected.)
+  
+  Reduce the number of uniques (randomly) (reduce_uniques)
+  This option removes some percentage of uniques from the game. A few 
+  uniques (mostly those who appear in either quests or the Thalos 
+  arena) are fixed and will never be removed.
+  
+  Play with only one pantheon (single_pantheon)
+  This option removes one of the game's two main monster pantheons 
+  (Olympian or Egyptian) from the game, but also re-adds all members of 
+  the remaining pantheon if they have been removed by the 
+  reduce_uniques option. In wilderness mode, the dungeon associated 
+  with the removed pantheon is also removed from the game. Which 
+  pantheon remains can be either specified by the player or left to a 
+  random decision.
+  
+  Level size (always_small_levels)
+  This option allows you to select from a variety of different 
+  level-size selection methods. See [c] for more details.
+  
+  Increase monster density on small levels (increase_density)
+  This option switches to the old PosChengband 6.1.0 monster density 
+  formula for small levels, increasing the number of monsters generated 
+  on newly entered small levels.
+  
+  Allow small levels in all dungeons except Arena (no_big_dungeons)
+  If this option is enabled, small levels can generate even in dungeons 
+  that normally always generate maximum-sized levels. The exception is 
+  Arena, which will still always generate large levels.
+  
+  Sometimes reshape very flat "pipe" levels (even_proportions)
+  If this option is turned on, levels with a very high (6-to-1 or 
+  higher) width-to-height ratio are sometimes re-shaped to have the 
+  same total area but different proportions.
+  
+  Nexus attacks never teleport to another dungeon (no_chris)
+  Turning on this option disables the "Chris effect" (a nexus attack 
+  effect that teleports the player to another dungeon, potentially one 
+  that's highly dangerous and was never previously visited by the 
+  player). As a substitute for the Chris effect, the player's stats 
+  will be scrambled; or if stat scrambling is also disabled, the Baby 
+  Foul Curse (a less deadly version of the infamous Ancient Foul Curse) 
+  will trigger. This option has no effect (or, rather, is effectively 
+  always on) in no-wilderness mode, since no-wilderness mode only has 
+  the one dungeon.
+  
+  Disallow stat scrambling from monster attacks (no_scrambling)
+  Selecting this option disables stat scrambling, an effect that 
+  permanently switches two of the player's six stats. Stat scrambling 
+  can potentially set the player back a long way if a high key stat is 
+  swapped with a low, less important stat. Attacks (and other effects) 
+  that would normally trigger a scramble will instead trigger the Baby 
+  Foul Curse, which is more dangerous in the short-term but doesn't 
+  have the same long-term effects.
+  
+  Disallow permanent changes to player race (comp_mode)
+  Disables all effects (except for monster evolution) that might 
+  permanently change the player's race during the game. This option is 
+  intended for use in competitions, and to ensure challenging builds 
+  remain challenging. (It can also be used to ensure an easy build 
+  remains easy, but who'd do that?!)
+  
+  
+Input Options
+  
+  Rogue-like commands (rogue_like_commands)
+  Activates the roguelike keyset, an alternative way of mapping 
+  keystrokes to underlying game commands. The roguelike keyset is 
+  recommended for players who lack a numpad on their keyboard (see [d] 
+  for more information).
+  
+  Pick things up by default (always_pickup)
+  Tells the game that walking onto an item should attempt to pick it 
+  up. Otherwise, manually picking up an item requires you to use the g 
+  command, or the - command while walking. Combined with 
+  carry_query_flag, allows you to selectively pick up all items which 
+  you step on. This option disables the autodestroyer functions of the 
+  Mogaminator, so it's often used together with destroy_items for the 
+  easy auto-destroyer, as well as leave_mogaminator if picking up 
+  absolutely everything starts feeling like overkill.
+  
+  Substitute Walk for Run in macros (online_macros)
+  If this option is turned on, all running macros will be interpreted 
+  as either walking macros or direction macros, depending on what is 
+  appropriate. This option compensates for the unusual default 
+  preferences of angband.live, and is unnecessary in offline play. 
+  (Turning Numlock off is another way to solve the problem on 
+  angband.live; it is generally the preferable solution, but may 
+  sometimes be inapplicable or introduce additional complications.)
+  
+  Activate quick messages (quick_messages)
+  Allows the use of any keypress as a response to the -more- prompt, 
+  and allows most keys to mean "no" in any "(y/n)" prompt.
+  
+  Enable command selection menu (command_menu)
+  The command selection menu is a helpful tool for beginning players 
+  (Beginner Mode activates it automatically). If this option is on, 
+  pressing ENTER during the game displays a menu of available commands, 
+  which the user may drill into with the arrow keys. This allows 
+  discovering and learning the keypresses for specific actions without 
+  constant reference to the in-game help:
+  
+    +----------------------------------------------------+
+    |   Magic/Special         > Action                   |
+    |   Item+----------------------------------------------------+
+    |   Equi| > Rest(R)                 Disarm a trap(D)         |
+    |   Info|   Search(s)               Look(l/x)                |
+    |   Save|   Target(*)               Dig(T/^t)                |
+    +-------|   Enter global map(<)     Go down stairs(>)        |
+            |   Command pets(p)         Search mode ON/OFF(S/#)  |
+            +----------------------------------------------------+
+  
+  
+  Use old target by default (use_old_target)
+  This option forces all commands which normally ask for a target or 
+  direction to re-use the latest target, provided that one exists and 
+  remains acceptable for the purpose. This option is often used 
+  together with auto_target (see below).
+  
+  Automatically target nearest monster (auto_target)
+  With this option enabled, all targeting prompts will automatically 
+  target the closest monster. This option is best used together with 
+  the use_old_target option; a valid old target will take priority over 
+  automatic targeting, so in situations where the nearest monster is 
+  not your desired target, you can simply specify another target up 
+  front.
+  
+  Repeat obvious commands (always_repeat)
+  Tells the game that when you attempt to open a door or chest, bash a 
+  door, tunnel through walls, or disarm traps or chests, that you wish 
+  to repeat the command 99 times (see [e]). Turning this option off is 
+  not recommended, and would make the game very tedious without 
+  providing any real advantages.
+  
+  Prompt for destruction of known worthless items (confirm_destroy)
+  If this option is off, no confirmation will be asked if you attempt 
+  to destroy an object which you know to be worthless. If this option 
+  is on, the Destroy command always asks for confirmation.
+  
+  Confirm to wear/wield known cursed items (confirm_wear)
+  This option prompts you if you attempt to wear or wield an item known 
+  to be cursed, to make sure you are equipping it intentionally.
+  
+  Allow targetting pets (target_pet)
+  If this option is off, monster-targetting prompts will not offer pets 
+  as target options (a pet can still be targeted if necessary, by 
+  switching into free-targetting mode). If this option is on, all 
+  monsters including pets will be offered as target options.
+  
+  Automatically open doors (easy_open)
+  Makes it easy for your character to open a door: simply by walking 
+  into it! Also, the open command will automatically select the 
+  direction if only one door is near you.
+  
+  Automatically disarm traps (easy_disarm)
+  Makes it easy for your character to disarm a known trap: simply by 
+  walking into it! Also, the disarm command will automatically select 
+  the direction if only one known trap is near you.
+  
+  Ctrl-G automatically gets nearby ammo (auto_get_ammo)
+  This option instructs the auto-get command (^G) to automatically 
+  travel to and pick up any nearby, visible ammo inscribed with =g. 
+  This option is most often used by archery characters, who regularly 
+  have to pick up many projectiles after a fight. Compare 
+  auto_get_objects below.
+  
+  Ctrl-G automatically gets nearby wanted objects (auto_get_objects)
+  This option instructs the Auto-Get Objects command (^G) to 
+  automatically travel to nearby visible objects which you have 
+  registered to either pickup or destroy. This option subsumes (and 
+  extends) the auto_get_ammo option since ammo inscribed with =g is 
+  certainly registered for auto-pickup.
+  
+  Automatically detect traps while running (auto_detect_traps)
+  With this option enabled, the game will attempt to automatically 
+  detect traps whenever you run outside a trap-detected region. Use the 
+  view_unsafe_grids to make trap detected regions more visually 
+  obvious. For this option to work, you must be carrying a scroll, 
+  staff or rod able to detect traps. The game will use the object for 
+  you automatically, consuming a scroll or a single charge from an 
+  appropriate device.
+  
+  Automatically map area while running (auto_map_area)
+  With this option enabled, the game will attempt to automatically map 
+  your surroundings whenever you run outside a previously mapped zone. 
+  Unlike auto_detect_traps, there is no visual indication of regions 
+  that are flagged as mapped versus those that are not. When you invoke 
+  magic mapping, the game maps your surroundings, and it also sets a 
+  flag on each tile in the area of effect. When your player runs from a 
+  tile so flagged onto one not so flagged, then the game attempts to 
+  automatically map for you by locating an appropriate scroll or device 
+  and using it for you. Both this option and auto_detect_traps work 
+  best if you always run when travelling about. When you enter a new 
+  level, manually detect traps and map your surroundings. If you always 
+  run when travelling, the game will automatically take care of the 
+  detection tedium for the rest of the level.
+  
+  Use numpad keys as cursor keys in editor mode (numpad_as_cursorkey)
+  If this option is on, numpad keys are interpreted as cursor-movement 
+  keys rather than numbers while editing any text (such as Mogaminator 
+  preferences or a macro action). If this option is off, numpad keys 
+  are interpreted as adding numbers to the text.
+  
+  Retain backpack slot labels in other inventories (use_pack_slots)
+  If this option is on, inventory items will have the same default 
+  label keys in all object prompts; for example, if a scroll is the 
+  ninth item in your backpack and accordingly labeled i) for the Show 
+  Inventory command, then it will also be labeled i) for the Read 
+  Scroll command, even if you have no other scrolls. If this option is 
+  off, each object prompt recomputes the labels, counting the relevant 
+  items only; the example scroll would still be i) for Show Inventory, 
+  but a) in the Read Scroll prompt. Having the option off reduces the 
+  risk of objects unexpectedly changing labels between successive calls 
+  to a command; the scroll could only be bumped to b) by the addition 
+  of another scroll, the appearance (or disappearance) of a potion or 
+  spellbook would have no effect on its label. (Either way, the only 
+  fully reliable way to ensure items retain their expected slots is to 
+  inscribe them accordingly; see [f] for help.)
+  
+Map & Screen Options
+  
+  Center map on player while walking (center_player)
+  With this option enabled, the map window automatically recenters on 
+  you as you walk. Whether this is a good thing divides players; some 
+  find it extremely disorienting, while others consider it natural. 
+  Turning this option on can make the game noticeably slow on older 
+  machines, but most modern computers are sufficiently fast for this to 
+  not be an issue.
+  
+  Center map even while running (center_running)
+  If this option is off, the game waits until the player is finished 
+  running or travelling before it recenters the map. If this option is 
+  on, the map always centers on the player after every step. This 
+  option has no effect if the center_player option is not on.
+  
+  Use special colors for torch-lit grids (view_yellow_lite)
+  If this option is enabled, visible floor or wall grids illuminated by 
+  a torch or other moving light source will be drawn in yellow. Keeping 
+  this option turned off may slightly improve game speed. This option 
+  has no effect if both view_granite_lite and view_special_lite are 
+  off.
+  
+  Use special colors for 'viewable' grids (view_bright_lite)
+  If this option is enabled, known floor or wall grids not currently in 
+  line of sight will be drawn in dark gray, allowing the player to 
+  easily tell which parts of a room or corridor are in line of sight. 
+  Turning this option off may slightly improve game speed. This option 
+  has no effect if both view_granite_lite and view_special_lite are 
+  off.
+  
+  Use special colors for wall grids (view_granite_lite)
+  If this option is enabled, the view_yellow_lite and view_bright_lite 
+  options are applied to wall grids; in addition, special dark coloring 
+  is used for wall grids if the player is blinded. Keeping this option 
+  turned off may slightly improve game speed. This option may produce 
+  unexpected results if wall visuals have been modified by the player.
+  
+  Use special colors for floor grids (view_special_lite)
+  If this option is enabled, the view_yellow_lite and view_bright_lite 
+  options are applied to open floor grids; in addition, special dark 
+  coloring is used for floor grids if the player is blinded. Turning 
+  this option off may slightly improve game speed. This option may 
+  produce unexpected results if floor visuals have been modified by the 
+  player.
+  
+  Map remembers all perma-lit grids (view_perma_grids)
+  Memorizes all permanently lit floor grids seen by the player. This 
+  option allows you to keep track of which explored floor grids were 
+  permanently lit, but does not distinguish between dark floor grids, 
+  unexplored floor grids, and unknown grids. Turning off this option 
+  allows the player to always know which lit floor grids are in line of 
+  sight, but this is better accomplished by the "view_bright_lite" 
+  option. Note that non-floor grids seen by the player are always 
+  memorized, regardless of this setting.
+  
+  Map remembers all torch-lit grids (view_torch_grids)
+  Memorizes all floor grids seen by the player. This option allows you 
+  to keep track of which floor grids have been explored.
+  
+  Map marked by detect traps (view_unsafe_grids)
+  If this option is on, all unmapped grids in areas where trap 
+  detection spells have not been used will be marked x, providing a 
+  visual indication of whether Detect Traps has been used in an area. 
+  If this option is off, a green DTrap status indicator is used instead 
+  for the same purpose. (Note that it is possible for undetected traps 
+  to exist in detected areas, as traps can be created post-detection by 
+  monster spells or by triggering another trap.)
+  
+  Fresh screen before automated input (fresh_before)
+  This option forces the game to fresh the screen before every new 
+  command. This will give you maximal information, but may slow down 
+  the game somewhat. Note that this option is only useful when using 
+  macros, resting, running/travelling, or repeating commands, since 
+  output is always flushed when the game is waiting for a keypress from 
+  the user.
+  
+  Fresh screen after processing monsters (fresh_after)
+  This option forces the game to fresh the screen after not only every 
+  player command, but also after every round of processing monsters or 
+  objects. This will give you maximal information, but may slow down 
+  the game somewhat, especially on slower machines; on faster machines 
+  this option usually makes little difference either way.
+  
+  Fresh screen after every message (fresh_message)
+  This option forces the game to fresh the screen after every message 
+  displayed by the game. This will give you maximal information, but 
+  may slow down the game somewhat.
+  
+  Hilite the player with the cursor (hilite_player)
+  Places the visible cursor on the player. Note that only some machines 
+  are able to *not* show the cursor; but on those machines, hiding the 
+  cursor often speeds up the game and looks less ugly.
+  
+  Display actual path before shooting (display_path)
+  If this option is enabled, targeting mode will continuously show the 
+  projection path from you to the target point.
+  
+  Use square-based delay factors (square_delays)
+  If this option is on, animation delays will be calculated by squaring 
+  rather than cubing the base delay factor. This permits greater 
+  fine-tuning of very short delays, at the cost of not allowing a 
+  longer delay.
+  
+  
+Text Display Options
+  
+  Plain object descriptions (plain_descriptions)
+  If this option is on, object flavors are included in descriptions 
+  only if the flavor remains unidentified; a Blue Potion, for example, 
+  might be shown simply as a Potion of Speed after identification. If 
+  this option is not on, flavors are always listed, and the identified 
+  potion would be a Blue Potion of Speed.
+  
+  Always show list when choosing spells (always_show_list)
+  No one actually wants this option off, so there is no need for any 
+  details about what it does.
+  
+  Show dungeon level in feet (depth_in_feet)
+  Displays the current depth in feet instead of levels; 50 feet 
+  corresponds to one level.
+  
+  Show speeds as energy multipliers (effective_speed)
+  Displays player and monster speeds as energy multipliers; this style 
+  is somewhat ugly, but helps players understand what a given speed 
+  actually means in terms of energy. This option is turned on by 
+  default in Beginner Mode.
+  
+  Show equipment slot descriptions (describe_slots)
+  Displays descriptions of the slots equipment objects are worn in, 
+  such as "right hand", "left ring", "neck" or "feet".
+  
+  Show weights in object listings (show_weights)
+  Displays the weights of objects in all object inventories, including 
+  any subwindow displaying an inventory.
+  
+  Show discounts in object listings (show_discounts)
+  Displays the discount of the object, if any, as part of its 
+  inscription. Disabling this option won't remove the object's 
+  discount; it will just no longer be displayed to the player.
+  
+  Show device power in object listings (if known) (show_power)
+  Displays details about an object's power (like dam 158 or heal 250) 
+  in inventories, allowing you to compare items at a glance.
+  
+  Show item graphics in object listings (show_item_graph)
+  Displays graphical representations of items (/, (, etc.) in 
+  inventories.
+  
+  Display 'equippy' chars (equippy_chars)
+  Displays graphical representations of your equipment (/, (, etc.) in 
+  the main screen sidebar.
+  
+  Display player hp bar (display_hp_bar)
+  This option will display a status bar on the main screen that details 
+  your current health. For example:
+    @[*******--]
+  
+  Display player sp bar (display_sp_bar)
+  This option will display a status bar on the main screen that details 
+  your current mana. For example:
+    ?[***------]
+  
+  Display detailed food status (display_food_bar)
+  This option will display a status bar on the main screen that details 
+  your current state of hunger. For example:
+    ,[**-------]
+  
+  Display stats as decimals (decimal_stats)
+  Displays stats above 18 as decimals (for example, 39.7 instead of 
+  18/217). New players sometimes find this format more intuitive.
+  
+  Display roguelike movement keys as reminder (show_rogue_keys)
+  Displays the movement keys of the roguelike keyset in the main screen 
+  sidebar, provided that there is enough room for them to be displayed 
+  and that the roguelike keyset is on. This option is intended for very 
+  new players, or at least players new to the roguelike keyset, and is 
+  on by default in Beginner Mode.
+  
+  Compress messages in savefiles (compress_savefile)
+  Compress the savefile, by only saving the most recent messages 
+  received by the player. This can cut the size of the savefile by a 
+  drastic amount, but will result in the loss of message information.
+  
+  Describe extra object attributes by abbreviation (abbrev_extra)
+  If this option is on, any extra resistances and other special 
+  attributes on an object will be added to its description as a fake 
+  inscription. "Extra attributes" are ones the object is not guaranteed 
+  to have from its kind or ego type; for example, Boots of Levitation 
+  might have an extra resistance to Shards, but the levitation itself 
+  would not be an extra attribute since all Boots of Levitation have 
+  it. See [g] for a list of abbreviations.
+  
+  Describe all object attributes by abbreviation (abbrev_all)
+  If this option is on, all attributes on an object will be added to 
+  its description as a fake inscription. See [h] for a list of 
+  abbreviations.
+  
+  Show the experience needed for the next level (exp_need)
+  If this option is on, the experience display in the main screen 
+  sidebar displays the experience needed to reach the next character 
+  level. If this option is off, the character's current total 
+  experience is displayed instead.
+  
+  Ignore actions of out of sight monsters (ignore_unview)
+  If this option is on, you will not receive messages when out-of-sight 
+  monsters fight one another.
+  
+  Display distance in monster list (display_distance)
+  If this option is on, the distance between a player and a monster 
+  will be displayed when the monster is targeted; for example, "Rng 4" 
+  for a monster 4 squares away. The distance will also be displayed in 
+  the monster list if only one monster of that race is visible; with 
+  the option off, the list instead displays the monster's coordinates 
+  relative to the player.
+  
+  Player character depends on their race (display_race)
+  If this option is on, the player's representation on the map depends 
+  on their monster race; a player Quylthulg, for example, would be 
+  represented by a Q. If the option is off, the player will always be @ 
+  even in Monster Mode.
+  
+  Show object origins on examination (show_origins)
+  With this option selected, the origins of an object (where you found 
+  it, and who or what you got it from) are displayed when the object is 
+  examined.
+  
+  Show time of discovery on examination (show_discovery)
+  With this option enabled, the date of object discovery and the 
+  player's character level at time of discovery are added to the 
+  object's origins. (Also, with this option off, if a pile of objects 
+  with different origins is formed, all information about the origins 
+  is lost. With this option on, the details of the first object to be 
+  discovered are applied to the whole pile instead.)
+  
+  Show origins in final character dumps (final_dump_origins)
+  If this option is on, the origins of the player's equipment are 
+  included in character dumps if the character is either dead or a 
+  winner, but omitted otherwise. (Whether discovery details are 
+  included with the origins depends on whether show_discovery is on or 
+  not.)
+  
+  Show origins in all character dumps (always_dump_origins)
+  If this option is on, the origins of the player's equipment are 
+  always included in character dumps.
+  
+  Use 'x' for monsters that look like things (easy_mimics)
+  If this option is enabled, monsters that are easily mistaken for 
+  non-monsters (like mimics, cloakers, death swords and wall monsters) 
+  will be displayed with the 'x' glyph instead of their native glyph. 
+  (A few thing-like monsters do still retain their original glyphs; 
+  these include death scythes, mushrooms and creeping coins.)
+  
+  Display stairs in the object list (list_stairs)
+  If this option is enabled, the list of visible objects (accessible 
+  in-game by pressing O or ]) will include stairs in its Interesting 
+  Features section. (The inclusion of stairs in the object list can be 
+  toggled in the list itself by pressing S, but this option determines 
+  whether stairs are shown by default.)
+  
+  Include known future race/class powers in lists (show_future_powers)
+  If this option is on, the U bonus-power command (O in the roguelike 
+  keyset) will include known future powers in the list, and gray them 
+  out. Known future powers are ones the player will gain access to at 
+  higher levels, but is currently too low-level to use. Powers that 
+  require evolution, mutations or other special developments besides 
+  level gain will not be included.
+  
+  Include known future class spells in lists (show_future_spells)
+  If this option is on, the m magic/mental-power command will include 
+  known future class spells in the list, and gray them out. Known 
+  future spells are ones the player will gain access to at higher 
+  levels, but is currently too low-level to use. This option has no 
+  effect on book spellcasters; book spell menus always include 
+  high-level spells.
+  
+  Display skills as numbers in the character sheet (display_skill_num)
+  If this option is on, the character sheet displays the player's 
+  skills numerically in addition to the usual verbal description; 
+  Superb may become Superb (82), for example. This format is familiar 
+  to players of Composband, where the numerical display is always on.
+  
+  Show statistics before proceeding with a reforge (reforge_details)
+  This option shows statistics about how good a reforge result is 
+  likely to be (and why), gives warnings in case of reforges that look 
+  particularly misguided, and allows you to cancel the reforge if the 
+  statistics are not to your liking.
+  
+  Automatically make all power labels sticky (auto_sticky_labels)
+  With this option on, all powers used through the U key (O in the 
+  roguelike keyset) will be assigned a permanent and unchanging letter 
+  slot, allowing reliable macros, keymaps and finger memory.
+  
+  
+Game Play Options
+  
+  Merge inscriptions when stacking (stack_force_notes)
+  Forces otherwise identical objects to merge, even if one has an empty 
+  inscription and the other does not. The resulting stack keeps the 
+  non-empty inscription.
+  
+  Merge discounts when stacking (stack_force_costs)
+  Forces otherwise identical objects to merge, even if they have 
+  different discounts. The resulting stack keeps the largest discount. 
+  This option may cause you to lose "value", but will give you optimal 
+  pack usage.
+  
+  Allow query option lists to loop to beginning (expand_list)
+  If this option is turned on, several interfaces that allow cycling 
+  between possibilities (the looking/targeting interface, the identify 
+  symbol interface, and the monster-research interface) will wrap back 
+  to the initial option after reaching the end. If this option is off, 
+  these prompts will close after the end is reached.
+  
+  Expand the "listing" commands so that they "wrap" at the "edges" of 
+  the appropriate list. This allows the "look" and "target" commands to 
+  "cycle" through all appropriate grids forever, and the "identify 
+  symbol" to browse through all of the monsters of a given type.
+  
+  Allow empty 'arena' levels (empty_levels)
+  Normal dungeon levels consist mostly of rock; if this option is on, 
+  empty 'arena' levels are sometimes generated which substitute empty 
+  floor for the rock. These levels can be highly deadly due to the 
+  dearth of hiding places and the open lines of sight, although rooms, 
+  vaults and pits will still be surrounded by walls. Compare 
+  ironman_empty_levels, which generates all levels as arena levels.
+  
+  Display dungeon boundaries as permanent walls (bound_walls_perm)
+  If this option is set, boundaries of dungeon floors will explicitly 
+  look like permanent walls. If the option is not set, boundary walls 
+  will look like regular walls, but still behave as permanent walls.
+  
+  Leave last words when your character dies (last_words)
+  Allows you to speak a few last words when your character dies. If 
+  this option is not on, a simple "You die" message is displayed 
+  instead.
+  
+  Allow use of debug/cheat options (allow_debug_opts)
+  Enables use of the debug command (^A), wizard mode (^W) and cheat 
+  options (C in the main options menu). Using any of these irrevocably 
+  marks the character as a cheater; having the option off ensures they 
+  cannot be triggered accidentally.
+  
+  
+Disturbance Options
+  
+  Run past stairs (find_ignore_stairs)
+  Toggles whether stairs are ignored while running.
+  
+  Run through open doors (find_ignore_doors)
+  Toggles whether open doors are ignored while running.
+  
+  Run past buried treasure (find_ignore_veins)
+  Toggles whether treasure veins are ignored while running.
+  
+  Run past known corners (find_cut)
+  If this option is on, the player cuts sharply around known corners 
+  while running. This will result in faster running, but increases the 
+  chance of blundering into a lurking monster.
+  
+  Ignore identified items while travelling (travel_ignore_items)
+  With this option on, all identified items (except some extremely 
+  valuable objects, and objects that add to a stack of already carried 
+  items) are ignored by the Mogaminator while travelling. With the 
+  option off, the Mogaminator may try to pick up already identified 
+  items walked over during the travel, which is sometimes good but 
+  often disturbs the travel annoyingly.
+  
+  Check for user abort of automated input (check_abort)
+  If this option is turned off, automatically handled commands such as 
+  resting, running, travelling or repeated commands cannot be cancelled 
+  or disturbed by the user. This is somewhat dangerous, but makes the 
+  game more efficient on some systems.
+  
+  Flush input on various failures (flush_failure)
+  This option forces the game to flush all pending input whenever 
+  various "failures" occur, such as failure to cast a spell, failure to 
+  use a wand, etc. This is very useful if you use macros which include 
+  "directional" components with commands that can fail, since it will 
+  prevent you from walking towards monsters when your spells fail.
+  
+  Give -more- prompts on device/spell failures (prompt_on_failure)
+  This option forces a -more- prompt whenever an attempt to use a 
+  device or cast a spell fails. This is useful if the player is in the 
+  habit of pressing keys (e.g. to target the device) on the assumption 
+  the device won't fail, which if unchecked can result in a potentially 
+  costly lost turn when the device does fail.
+  
+  Flush input whenever disturbed (flush_disturb)
+  This option forces the game to flush all pending input whenever the 
+  character is disturbed. This is useful if you use macros which take 
+  time, since it will prevent you from continuing your macro while 
+  being attacked by a monster.
+  
+  Disturb whenever any monster moves (disturb_move)
+  Disturbs the player when any visible monster moves, appears, or 
+  disappears. This includes monsters visible through telepathy, which 
+  is sometimes inconvenient if you wish to rest near such monsters.
+  
+  Disturb whenever high-level monster moves (disturb_high)
+  Disturbs the player when any monster whose native level is higher 
+  than the player's character level moves, appears, or disappears. This 
+  includes monsters visible through telepathy.
+  
+  Disturb whenever viewable monster moves (disturb_near)
+  Disturbs the player when any monster in line of sight moves, and when 
+  any monster moves into or out of line of sight.
+  
+  Disturb when visible pets move (disturb_pets)
+  If this option is on, the same disturbance rules are applied to all 
+  monsters, regardless of whether they are friendly or hostile. If this 
+  option is not on, moves by pets or friendly monsters never disturb.
+  
+  Disturb whenever map panel changes (disturb_panel)
+  This option causes you to be disturbed by the map scrolling, as 
+  happens when you get close to the edge of the screen.
+  
+  Disturb whenever player state changes (disturb_state)
+  This option causes you to be disturbed whenever the player state 
+  changes, including changes to hunger level, temporary buffs or status 
+  effects running out, etc.
+  
+  Disturb whenever boring things happen (disturb_minor)
+  This option causes you to be disturbed by various minor things, 
+  including monsters bashing down doors, new inventory object feelings, 
+  and beginning to run out of fuel.
+  
+  Never disturb when a town monster moves (town_no_disturb)
+  If this option is on, non-attacking moves by monsters native to towns 
+  (such as mercenaries, drunks or street urchins) will never disturb 
+  you.
+  
+  Audible bell (on errors, etc.) (ring_bell)
+  Attempts to make a bell noise when various errors occur. The bell may 
+  not work on some systems.
+  
+  Disturb when leaving trap-detected area (disturb_trap_detect)
+  This option causes you to be disturbed when you move out of a 
+  trap-detected area.
+  
+  Alert when leaving trap-detected area (alert_trap_detect)
+  This option alerts you with a message when you move out of a 
+  trap-detected area.
+  
+  Alert when carried device is destroyed or stolen (alert_device_gone)
+  This option forces a -more- prompt whenever any wand, rod or staff in 
+  your inventory is destroyed or stolen.
+  
+  Alert when inscribed item is destroyed or stolen (alert_insc_gone)
+  This option forces a -more- prompt whenever any inscribed item in 
+  your inventory is destroyed or stolen.
+  
+  Alert on killing wanted uniques (alert_wanted_kill)
+  This option forces a -more- prompt when a unique with a price on its 
+  head is killed.
+  
+  Alert on dangerously high poison counter (alert_poison)
+  This option alerts you with a message before your move if your poison 
+  counter exceeds your current HP, 80% of your maximum HP, or 499 
+  points, whichever is lowest. (Subsequent warnings for the same 
+  instance of poisoning will be displayed only if you are at immediate 
+  risk of dying from poison.)
+  
+  
+Easy Auto-Destroyer Options
+  
+  Use easy auto-destroyer (destroy_items)
+  This option turns the Easy Destroyer on and off. If enabled, the Easy 
+  Destroyer will destroy all objects unless the object is protected by 
+  one or more of the leave_* options discussed below.
+  
+    Note: The Easy Auto-Destroyer is a simpler version of 
+    the full-featured Mogaminator discussed at [i]. It is 
+    designed for those who feel the full version is too 
+    complicated to use. However, you really should only use 
+    one or the other; if you are using the Mogaminator, 
+    then you should not also enable the Easy Destroyer, 
+    unless you have turned the always_pickup option on.
+  
+  Apply auto-destroy on sensing an item (destroy_feeling)
+  If this option is turned on, both the Mogaminator and the Easy 
+  Destroyer will take actions whenever the player senses the quality of 
+  an object (i.e., whenever pseudo-ID kicks in).
+  
+  Apply auto-destroy on identifying an item (destroy_identify)
+  If this option is turned on, both the Mogaminator and the Easy 
+  Destroyer will take actions whenever the player identifies an object 
+  with a spell or magical device. Identifying objects with a town 
+  service does not trigger auto-destruction.
+  
+  List the rule used when applying the Mogaminator (destroy_debug)
+  This is a debugging option for the Mogaminator. If this option is 
+  enabled, the rule applied when the Mogaminator does something is 
+  reported in a message; for example:
+    You have 26 charges remaining. (AutoID:~?unidentified rods) You see a 
+    Rod: Frost Ball (1/3 charges). (Destroy:(!rods:frost ball$)
+    Auto-destroying.
+  
+  In addition, the matching rule will be displayed when an object is 
+  inspected, for example:
+    a Law Book [Attractions of Law]                               3.0 lbs 
+      You can't remember ever not having it.
+      Score: 100                                            
+      Autopick: ~first realm's first spellbooks#@ma!k                           
+  
+  Never apply the Mogaminator (no_mogaminator)
+  This option deactivates the Mogaminator. (It is redundant if the 
+  Mogaminator was never activated in the first place.)
+  
+  Leave items the Mogaminator wants to destroy (leave_mogaminator)
+  With this option on, the Mogaminator never destroys items (the easy 
+  auto-destroyer can still destroy items), but items the Mogaminator 
+  wants to destroy are not automatically picked up on walkover even 
+  with the always_pickup option on. 
+  
+  Allow manual pickup before applying auto-pickup (delay_autopick)
+  With this option on, any command that allows you to pick up items 
+  manually will give the manual pickup priority over auto-pickup. (With 
+  the option off, this only happens if you are picking up items from 
+  the square you were already on.)
+  
+  Auto-destroyer leaves known worthy items (leave_worth)
+  This option protects known objects that can be sold in stores from 
+  auto-destruction by the Easy Destroyer.
+  
+  Auto-destroyer leaves weapons and armour (leave_equip)
+  This option protects all weapons and armour from auto-destruction by 
+  the Easy Destroyer.
+  
+  Auto-destroyer leaves closed chests (leave_chest)
+  This option protects all chests which have not yet been opened from 
+  auto-destruction by the Easy Destroyer.
+  
+  Auto-destroyer leaves wanted corpses (leave_wanted)
+  This option protects corpses of monsters wanted at a bounty office 
+  from auto-destruction by the Easy Destroyer.
+  
+  Auto-destroyer leaves corpses and skeletons (leave_corpse)
+  This option protects all corpses and skeletons from auto-destruction 
+  by the Easy Destroyer.
+  
+  Auto-destroyer leaves junk (leave_junk)
+  This option protects all junk items, such as Broken Sticks or Shards 
+  of Pottery, from auto-destruction by the Easy Destroyer. This can be 
+  helpful on a class like Archer, although the leave_special option 
+  also covers such special cases.
+  
+  Auto-destroyer leaves items your race/class needs (leave_special)
+  This option protects specific items which are normally worthless, but 
+  very important for specific classes or races. These include bones for 
+  Archers, ego light sources of darkness for Ninjas, Wands of Heal 
+  Monster for Beastmasters and Cavalry, humanoid corpses for Balrogs, 
+  and other items with similar niche uses.
+  
+Base Delay Factor
+
+The delay_factor value, if non-zero, is used to slow down the game, 
+which is useful to allow you to observe the animations of bolt, beam, 
+and ball attacks. The actual delay is equal to the delay factor cubed, 
+in milliseconds, unless the square_delays option has been turned on.
+
+Hitpoint Warning
+
+The hitpoint_warn value, if non-zero, is the percentage of maximal HP 
+at which the player receives a low hitpoint warning. It is also used as 
+the cut-off for displaying both hitpoints and mana in red.
+
+Autosave Options
+
+These settings determine when the game is automatically saved. An 
+automatic save can help salvage progress in case of a power outage or 
+other catastrophic crash:
+  
+  Autosave when entering new levels (autosave_l)
+  If this option is set, the program will attempt to save your 
+  character every time before creating a new dungeon level.
+  
+  Timed autosave (autosave_t)
+  If this option is set, the program will attempt to save your 
+  character every n game turns, where n is the "frequency". To modify 
+  the frequency, press F; this will increase the frequency to the next 
+  category (and from 25000 to 0), the categories being every 50, 100, 
+  250, 500, 1000, 2500, 5000, 10000 and 25000 turns. Note that the 
+  frequency must be higher than 0, and "Timed autosave" set to "yes", 
+  for timed autosaves to take place.
+  
+Window Flags
+
+Some platforms support subwindows, which are additional, automatically 
+updating terminals used to keep useful information on permanent display 
+(see [j] for more information). These window flags can be used to 
+specify what information each subwindow displays; the possible choices 
+should be fairly obvious.
+  
+  Display inven/equip
+  Displays the player inventory (and sometimes the equipment). Note 
+  that you can toggle between Inventory and Equipment by pressing ^I.
+  
+  Display equip/inven
+  Displays the player equipment (and sometimes the inventory). Note 
+  that you can toggle between Inventory and Equipment by pressing ^I.
+  
+  Display Object List
+  This option displays the results of the Object List command (O/]); 
+  for example:
+  
+    There is 1 wanted object:
+     ! a Potion of Resistance               S 17 E 29
+  
+    There are 4 other objects:
+     | a Two-Handed Sword                   S 18 E 30
+     \ a Lead-Filled Mace                   S 18 E 28
+     ] a Pair of Metal Shod Boots           S 18 E 29
+     / an Awl-Pike                          S 19 E 29
+  
+  Display Monster List
+  This option displays the results of the Monster List command (Y/[); 
+  for example:
+  
+    You are aware of 4 monsters, 4 are awake:
+     t Aimless looking merchant (2 awake)
+     t Agent of black market                N  9 W 54
+     t Singing, happy drunk                 S 22 E 72
+  
+  Display messages
+  Displays the most recent messages (compare the ^P command).
+  
+  Display overhead view
+  Displays an overhead view of the entire dungeon; this can be somewhat 
+  slow on older machines, and gives the same results as the M command.
+  
+  Display monster recall
+  Displays a description of the monster most recently attacked, 
+  targeted, or examined in some way.
+  
+  Display spell recall
+  Displays the contents of the spellbook most recently used or browsed. 
+  This window flag may be usefully combined with others, such as 
+  monster recall.
+  
+  Display dungeon view
+  Displays a copy of the map.
+  
+  Cheating Options
+  
+  Using the cheating options permanently marks your character as a 
+  cheater; cheaters cannot score a real win, and will not get an entry 
+  on the high-score list, even if they turn the cheating options off 
+  later.
+  
+  Peek into object creation (cheat_peek)
+  Cheaters never win. But they can peek at object creation.
+  
+  Peek into monster creation (cheat_hear)
+  Cheaters never win. But they can peek at monster creation.
+  
+  Peek into dungeon creation (cheat_room)
+  Cheaters never win. But they can peek at room creation.
+  
+  Peek into something else (cheat_xtra)
+  Cheaters never win. But they can see debugging messages.
+  
+  Allow player to avoid death (cheat_live)
+  Cheaters never win. But they can cheat death.
+  
+  Ask for saving death (cheat_save)
+  Cheaters never win. But they can choose whether to save the 
+  character's data when they die.
+  
+
+Original   : Ben Harrison
+Updated    : Zangband 2.1.* by Topi Ylinen
+Updated    : Zangband 2.2.0 through 2.2.6c by Robert Ruehlmann
+Updated    : Zangband DevTeam
+Updated    : Hengband 1.5.2
+Updated    : PosChengband 4.0.0
+Updated    : FrogComposband 7.0.nougat
+Updated    : FrogComposband 7.1.chocolate
+Updated    : FrogComposband 7.1.liquorice
+
+

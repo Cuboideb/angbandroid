@@ -1,0 +1,25 @@
+Command Descriptions
+
+Please choose one of the following help sections:
+
+    [a] Command Descriptions
+    [b] Inventory Commands
+    [c] Movement Commands
+    [d] Resting Commands
+    [e] Searching Commands
+    [f] Alter Commands
+    [g] Spell and Prayer Commands
+    [h] Object Use Commands
+    [i] Ranged Combat Commands
+    [j] Looking Commands
+    [k] Message Commands
+    [l] Game Status Commands
+    [m] Saving and Exiting Commands
+    [n] User Preference Commands
+    [o] Help Commands
+    [p] Extra Commands
+    [q] Summary
+
+    (?) Help System Commands
+
+

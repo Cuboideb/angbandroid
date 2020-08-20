@@ -1,0 +1,465 @@
+<style:title>Objects</style>
+
+Objects are a key aspect of the game; much of your effort will be devoted to acquiring better, and then even better, objects. Whether they are potions to heal you during a difficult fight, scrolls to teleport you out of danger, armor to protect you from fire-breathing dragons, or swords to slay the minions of evil, objects permeate every aspect of your journey from the safety of towns to the dread lair of the Serpent of Chaos. Naked, you are nothing; be well-equipped, and perhaps, just maybe, you will stand a chance.
+
+There are various types of objects, each with its own symbol for display, and often with its own command for use. These will be described fully in the reference section near the end of this document (<link:objects.txt#Reference> to skip there); for now, here is an overview.
+
+First, there are objects you may wield or wear as <color:keyword>equipment</color>. This includes melee weapons (swords, axes, pikes, lances, etc.); armor such as suits of chain mail, shields, helmets, cloaks, gloves and boots; jewelry (rings and amulets); and light sources like torches and lanterns. All of these objects must be equipped with the <color:keypress>w</color> command to wield or wear them, but your equipment slots are limited; generally, you only have one or two slots for any one type of item. Your equipment is never going to be perfect; you will spend the entire game trying to fill these slots with better and better (and better) gear.
+
+Next, there are objects you carry around in your <color:keyword>pack</color> for utility purposes, or as provisions. Of course, you need to eat: killing stuff is hard work! Equally, you need spare torches (or oil for your lantern) to ensure illumination in the dark, dank places where evil lurks. But even more, you need magical objects to survive: <color:keyword>spellbooks</color> (if you are playing a book class); <color:keyword>scrolls</color> which all but the stupidest may read; magical <color:keyword>potions</color> which any may drink; and <color:keyword>magic devices</color> (wands, rods and staves). Each scroll and magic device produces its own particular spell effect when used; most of these effects are good in one way or another (offense, healing, speed, teleportation etc.), but some are bad or only useful in rare circumstances.
+
+Finally, there are precious metals such as <color:keyword>gold</color>. If you are a dwarf, you will barely resist singing of your longing for the lost, ancient treasures of yore; but other players will find gold just as useful, for it is the currency of the realm, accepted by shopkeepers everywhere. You can dig for gold or kill monsters for what they have in their pockets, but don't lose sight of your real purpose: your ultimate objective is to slay the Serpent of Chaos, and gold is but a tool that will help you get there.
+
+The next chapters will explain objects in more detail; we will begin with how you get objects, then discuss how you learn about their powers, and finally discuss how to use them. At the end, we will give a table of all the types of objects you might encounter, at a broad level. This is a helpfile, and not a spoiler page (and also only 10 times as long as you'd like, not 100 times), so we won't be listing everything that objects might do...
+
+<topic:Acquisition><style:heading>Where Can I Get Stuff?</style>
+
+Every player is born with a starting kit of a few objects to get them started on their adventures. The starting kit depends on which class you play, but usually it includes a cheap weapon, some torches and armor, a few rations of food, and maybe some items particularly suitable for your race or class (like spellbooks on a mage). You also begin with enough gold to let you buy additional supplies (like <color:G>Scrolls of Teleportation</color> or <color:G>Potions of Cure Serious Wounds</color>) from the various shops in the town. Most shops specialize in a particular class of objects (like weapons, bows and arrows at the Weapon Shop); but there is also the Black Market, an unregulated forum to buy and sell just about anything... at exorbitant prices. Often, you can buy a really great object there, but you need to be pretty rich! See <link:town.txt#Shopping> for the basics of shopping, and <link:town.txt#TheShops> for a list of shops.
+
+So <color:keyword>town stores</color> are the first place you will get items from, and they remain a useful source of basic supplies throughout the game. The most valuable objects, though, can only be found deep in the dungeons. Sometimes you get lucky and spot something valuable just lying on the ground for anyone to take - left behind by previous adventurers, maybe? But this is not very common: monsters, too, like to pick up treasures. Indeed, it is mostly by <color:keyword>killing monsters</color> that you will acquire items; many monsters carry objects or money, which you can retrieve should you prove skillful enough to defeat them.
+
+<color:keyword>Town quests</color> (<link:town.txt#TownQuests>) are also a good source of valuable items; often, you will both find something useful in the quest itself and then get a nice object as a reward for your good work. Finally, there is one place in the dungeons where good floor items can be relied on: <color:keyword>treasure vaults</color>. Vaults are usually well-guarded, both by traps and by highly dangerous monsters - but as any adventurous hobbit will tell you, sneaking and burglary can still go a long way...
+
+Objects can be picked up by moving on top of them and using the <color:keypress>g</color>et command. Turning on the <color:keyword>always_pickup</color> option automatizes picking up at no extra cost to you - indeed, it allows you to move to a square and pick up the items there in a single turn! But indiscriminately picking everything up soon fills your inventory with useless dead weight; so many players prefer to pick things up manually in combination with use of the <color:keyword>Mogaminator</color> (<link:editor.txt>), an automatic system based on modifiable rules that (hopefully) picks up useful items while destroying junk. During your quest to defeat the Serpent you may find tens of thousands of objects, so it is nice to have an automatic way to deal with them; and if you find the Mogaminator overeager to destroy things, you can turn on <color:keyword>always_pickup</color> or the <color:keyword>leave_mogaminator</color> option (<link:option.txt#leave_mogaminator>) to make sure only true junk is eliminated.
+
+<topic:Knowledge><style:heading>OK, I Found Something. What Does It Do?</style>
+
+When you find an object, you won't know much about it. For example, it might be described simply as "a Long Sword", with no other information given. You can tell it's a weapon, and therefore that you can wield it if you are so inclined... but, is this particular long sword any good? Is it magical? Cursed? What other bonuses might it have? This object is what we call <color:keyword>unidentified</color>, and you will usually want to learn a bit more about it before deciding to wield it.
+
+Given time, your character will sense the quality of most unidentified objects in their pack. This ability is called pseudo-identification or more simply <color:keyword>pseudo-ID</color>, and its strength (how much it reveals) and speed (whether it kicks in immediately or with some delay) will depend on your class, wisdom, character level and mode of play. Pseudo-ID is your first line of defense against the onslaught of junk objects; pick stuff up, wait a bit if needed (while continuing to play, of course), and learn which objects are junk and which might be worthy of further investigation. Note that <color:y>pseudo-ID works best on wearable items</color>; it is less useful for magic devices, and does not work for scrolls, potions or edibles at all. See <link:objects.txt#Pseudo-ID> below for more information, and a list and explanation of all pseudo-ID object feelings.
+
+If this rough object feeling is promising, you will probably want to <color:keyword>Identify</color> the object. The ideal way to do this is with either a spell or with a <color:U>Staff of Identify</color>; but most characters never get an Identify spell, and Staves of Identify are expensive. Until you can afford one, you can use Scrolls of Identify or the town service provided by Count Uldrik as a stopgap; and magical devices can often be identified simply by trying them out.
+
+Identifying an object reveals its full name, damage dice or multipliers (if any), and magical bonuses to accuracy, deadliness and armor class. The object's name tells you whether the item is a valuable <color:keyword>ego</color> or even an <color:keyword>artifact</color>; and Identify will also tell you if the object has a curse on it. <color:keypress>I</color>nspecting an identified item will show everything you learned, as well as provide a rough estimate of the object's monetary value.
+
+In the case of ego items and artifacts Identify may not be enough; special powers might remain hidden. Sometimes those extra powers can be learned simply by equipping and using the object (though this is risky with cursed items!); for example, you will notice if the item increases your stats. Other attributes might take much longer to learn, though; if the item grants resistance to fire, you would need to get hit with a fire attack to find out.
+
+It is possible to learn everything about an object this way, but doing so is much too time-consuming, especially as the game progresses. There are two much quicker ways to learn everything: <color:keyword>*Identify*</color> and <color:keyword>selling</color>. The first is available as a spell, scroll, device or town service, and is somewhat expensive; but it instantly reveals everything about the item. The second method is to simply sell an item to a shop; this produces the same result (the item is *Identified* by the shopkeeper) and is the opposite of expensive (you're the one who makes money!); but if the item turned out to be actually good, <color:y>getting it back</color> could be very expensive indeed...
+
+<topic:Quality><style:heading>How Good is this Object, Anyway?</style>
+
+The broad quality of equipment is given by the strong version of pseudo-ID: objects are, in increasing order of quality, either <color:keyword>average</color>, <color:keyword>good</color>/<color:keyword>bad</color>, <color:keyword>excellent</color>/<color:keyword>awful</color> or <color:keyword>special</color>/<color:keyword>terrible</color>. What does this mean?
+
+If you did some shopping, then you probably saw what average equipment looks like. For example, you might have seen this inventory at the Weapon Smiths:
+<style:screenshot>
+    <color:U>Solvistani the Ranger (Wood-Elf)</color>                     <color:G>Weapon Smiths</color> (<color:r>25000</color>)  
+                                                                                
+    Item Description                                               Weight  Price
+ a) <color:v>?</color> <color:B>a Rage Spellbook [Northern Frights]</color>                         3.0 lbs <color:D>  1610</color>
+ b) <color:U>~</color> <color:U>a Quiver [100]</color>                                              1.0 lbs    423
+ c) <color:U>~</color> <color:U>a Quiver [70]</color>                                               1.0 lbs     61
+ d) <color:W>|</color> a Rapier (1d8) (+0,+0) {25% off}                            4.0 lbs     35
+ e) <color:W>|</color> a Small Sword (1d8) (+0,+0)                                 7.5 lbs     89
+ f) <color:W>|</color> a Short Sword (1d8) (+0,+0)                                 8.0 lbs     95
+ g) <color:W>|</color> a Sabre (1d9) (+0,+0)                                       5.0 lbs     68
+ h) <color:W>|</color> a Broad Sword (2d6) (+0,+0)                                15.0 lbs    330
+ i) <color:W>|</color> a Bastard Sword (3d5) (+0,+0)                              14.0 lbs    411
+ j) <color:s>/</color> a Sickle (2d4) (+0,+0)                                      7.0 lbs    182
+ k) <color:y>/</color> 2 Tridents (1d10) (+0,+0)                                   7.0 lbs    192
+ l) <color:s>/</color> a Fauchard (1d12) (+0,+0)                                  15.5 lbs    319
+ m) <color:s>/</color> a Broad Axe (2d7) (+5,+2)                                  13.0 lbs <color:D>  1340</color>
+ n) <color:s>/</color> a Lance (2d10) (+0,+0)                                     30.0 lbs <color:D>   750</color>
+ o) <color:s>/</color> a Battle Axe (2d9) (+4,+3)                                 17.0 lbs <color:D>  1700</color>
+ p) <color:u>}</color> <color:u>a Short Bow (x2.50) (+3,+6)</color>                                 3.0 lbs <color:D>  1540</color>
+ q) <color:s>{</color> <color:U>43 Bolts (3d5) (+0,+0)</color>                                      0.3 lbs      6
+ r) <color:U>{</color> <color:U>39 Arrows (3d4) (+0,+0)</color>                                     0.2 lbs      3
+ </style>
+Here, we see a bunch of different types of weapons, each of which is fully *Identified* (as objects in town shops always are). They don't look very impressive, though! First of all, you can notice that each type of weapon has different <color:keyword>damage dice</color>: 3d5 or the like. These work in a very simple way: for example, a 3d5 Bastard Sword means rolling three five-sided dice (which gives an average of 9 damage per strike), while a 1d9 Sabre (roll a single nine-sided die, if such a thing could be imagined!) gives an average of 5 damage per blow.
+
+Next, you may notice that (+0,+0) is repeated over and over again. That's because all of these objects are <color:keyword>average</color>. Hey, this small-town Weapon Smith is no wizard; he just forges weapons of average quality, and might occasionally buy something more interesting from intrepid adventurers (like yourself!). The (+0,+0) simply gives the object's combat bonuses: the first +0 is the accuracy (<color:keyword>to-hit</color>) bonus, which affects your chance to hit monsters with that weapon; the second +0 is the damage bonus (<color:keyword>to-dam</color>), which gets added to the total rolled by the damage dice if you land a blow with that weapon.
+
+Objects can be magically enhanced, at which point they become <color:keyword>good</color> objects. This means nothing more than that (+0,+0) becomes something non-zero, giving you bonuses either to hit, or to damage, or both. For example, you might have noticed that <color:u>Short Bow (x2.50) (+3,+6)</color>. The (x2.50) is part of every average short bow, and is called the <color:keyword>damage multiplier</color>; see <link:attack.txt#MissileLaunch> for an explanation of that. But bows have <color:keyword>combat bonuses</color> just as melee weapons do, and they mean the same thing here: the bow gives +3 to hit (making you more accurate with it), and +6 to damage (making you more deadly as well). That would be a nice starting bow - but alas, it costs 1540 gold pieces, which is more than I have.
+
+<topic:EgoItems><color:U>Excellent Objects</color>
+
+So that's average and good objects. What about excellent objects? And special objects? Excellent objects are called <color:keyword>ego items</color> (a term of mysterious origin), and each ego item represents a particular ego type. For example, a <color:y>Long Sword of Slaying (2d6) (+7,+3) {/o}</color> represents the <color:keyword>Slaying</color> weapon ego type! Ego types vary greatly; some egos predictably always give the same bonuses to an item, while others are much more random. The Slaying ego is somewhat random within limits - <color:y>what exactly does that weapon slay?</color> Our example long sword, for instance, slays orcs (I can tell without inspection by the <color:keyword>{/o}</color>); but the next Slaying weapon you find might slay demons and animals instead.
+
+Our example sword is not a particularly powerful or exciting ego item; it is simply more deadly against orcs. More precisely, it will do 2.8 times as much damage from the base damage dice against orcs: roll two six-sided dice (2d6), add up the result, and multiply by 2.8 if the monster struck is an orc; then add in the +3 damage bonus, and maybe other damage bonuses from elsewhere. Slays are a fairly common ego weapon effect; but ego items can do many other things as well, like boost your stats, give you resistances or other important abilities, or even activate for various magical effects.
+
+Initially, your character will not know very much about ego items; so some of their effects might remain hidden after simple Identify. For example, the Long Sword might show as <color:y>a Long Sword of Slaying (2d6) (+7,+3) {?}</color> until we discovered (through selling, *Identify* or by hitting an orc) that it slays orcs. But learning this new fact also teaches us something new about the Slaying ego: the next time we find a Slaying weapon that slays orcs, simple Identify will let us recognize the orc slay, although other slays on the weapon might still be hidden.
+
+<topic:SpecialItems><color:U>Special Objects</color>
+
+Special objects are <color:keyword>artifacts</color>. Think of these as unique objects: you can only find any one artifact once in a particular game, and they can be substantially more powerful than an ordinary ego item. Like egos, artifacts can give combat bonuses, armor bonuses, stat bonuses, resistances, abilities, slays and other (generally) nice stuff. There are two basic types of artifact: <color:keyword>standard artifacts</color>, which are the same in every game, and <color:keyword>random artifacts</color>, which are highly unpredictable. Generally, you will want to *Identify* every artifact you find; even if you have played the game before and recognize a familiar standard artifact, it might have some random bonus.
+
+Artifacts are almost indestructible; they cannot be harmed by the base elements, are more resistant to disenchantment than other items, and can only be completely destroyed in exotic circumstances.
+
+<topic:CursedItems><color:U>Cursed Objects</color>
+
+What about the evil end of the pseudo-ID spectrum (bad -> awful -> terrible)? These objects are <color:keyword>cursed</color>, but they need not be junk. Well, bad objects are just the opposite of good ones, so they genuinely are junk; but awful objects are ego items that happen to have some bad attributes (either because of a random curse or because the ego type is inherently cursed), and terrible items are artifacts that similarly have bad attributes on top of the good. Whether or not these items remain useful is up to you to determine: sometimes they are junk, sometimes the good can outweigh the bad. In either case, you will need *identify* to discover everything.
+
+All cursed items have one thing in common: <color:y>you cannot take off cursed equipment while it is still cursed</color>. Most equipment can be uncursed; this will allow you to take it off, but will not necessarily remove all of its other downsides.
+
+We've talked a lot about equipment; it is time to move on to utility objects you might want to carry in your inventory.
+
+<topic:Flavors><style:heading>Object Flavors</style>
+
+Mushrooms, potions and scrolls have <color:keyword>flavors</color>: you might find a <color:U>Black Spotted Mushroom</color> or a <color:B>Bubbling Potion</color>. Flavors and item effects go hand-in-hand; if the bubbling potion turns out to be a Potion of Healing, then all other bubbling potions are also Potions of Healing and all Potions of Healing will be bubbling potions.
+
+Flavored items can be fully identified with normal Identify (you can also try to identify them by using them... if you are very brave). By default, flavors are only displayed for unidentified items; once you have identified one Bubbling Potion, both it and all future Bubbling Potions will be displayed simply as <color:B>Potions of Healing</color>.
+
+You only need to identify any given flavor once per game; but <color:G>flavors change between games.</color> Next game you play, Bubbling Potions might be Potions of Salt Water instead!
+
+<topic:Jewelry><style:heading>Jewelry</style>
+
+While rings and amulets are wearable objects, they differ from weapons and armor in an important way: there is no such thing as <color:keyword>good</color> jewelry. Rings and amulets are always either average, ego or artifacts; average jewelry has no effect at all, and is only useful for reforging.
+
+There aren't very many different jewelry ego types, but those that do exist allow high variability; the ego type is essentially a theme that allows a particular set of attributes, but which of those attributes any one piece of jewelry generates with is very random.
+
+<topic:Lore><style:heading>Object Lore</style>
+
+Every time you identify any attribute on an ego item or a standard artifact, you also learn about the artifact or ego item type. This is called <color:keyword>object lore</color> and will help you recognize the same attribute on similar future items, without the need to *Identify*. By default, object lore is kept in your savefile after death just like monster lore, although you can change this with the <color:keyword>empty_lore</color> option (<link:option.txt#empty_lore>).
+
+You can view your current artifact and ego lore at any time through the <color:keypress>~</color> Knowledge Menu. There is no real advantage to doing so, but it can be a fun distraction!
+
+<topic:Devices><style:heading>Devices</style>
+
+Magical devices include wands, staves and rods. Since these are available in town, I'll talk you through one example in detail without much of a guilty conscience over spoilers. Here's a basic wand:
+<style:screenshot>
+<color:g>a Wand: </color><color:G>Stinking Cloud</color>
+  <color:U>This device has the following magical strength:</color>
+  Power  : <color:G>13</color>
+  Mana   : <color:y>10</color>/<color:G>39</color>
+
+  <color:U>This device is loaded with a spell:</color>
+  Spell  : <color:B>Stinking Cloud</color>
+  Info   : dam 15
+  Level  : <color:G>8</color>
+  Cost   : <color:G>4</color>
+  Charges: <color:y>2</color>/<color:G>9</color>
+  Fail   : <color:G>2.4%</color>
+  Desc   : It fires a ball of poison.
+</style>
+It may help if you already familiar with spellcasting, since one way to think of devices is as spellcasters with access to a single spell. The device, just like a spellcaster, has a casting level (labelled as <color:keyword>Power</color>) and spell points (<color:keyword>Mana</color>); and the spell it is loaded with has a <color:keyword>spell level</color>, <color:keyword>mana cost</color> and <color:keyword>fail rate</color> just as normal spells do.
+
+The <color:keyword>Power</color> of a device determines how much mana the device can have, which spell effects it had a chance to generate with, and how difficult it is to use. Power also determines how strong the spell is; sometimes this has no practical meaning at all, but in our Stinking Cloud example the <color:keyword>dam 15</color> is a direct result of the device's power.
+
+The <color:keyword>Mana</color> of the device indicates how many times the device can be used before it needs to "rest" a bit. Traditionally, this has been displayed as <color:keyword>charges</color>; our example device has 2 charges right now, but 9 when fully charged. You can see this matches the device's mana and the spell's mana cost: with its current <color:y>10</color> mana, the wand has 10/4 = 2 (and a half) charges, and at full <color:G>39</color> mana it would have 9 charges and a bit.
+
+There is no need to throw a device away once all of its charges have been spent: devices also resemble spellcasters in that their mana regenerates. This happens much faster on rods than on wands or staves.
+
+The <color:keyword>Fail Rate</color> of the device indicates the probability that you fail to use it successfully. This depends on the device's power, the player's <color:keyword>device skill</color>, and the inherent difficulty of the spell effect itself. Fail rates never hit zero, but our example wand comes pretty close at <color:G>2.4%</color>; due to its low level and fairly unimpressive effect, it is very easy to use. Devices differ from spellcasters in that failed attempts to use a device do not consume mana.
+
+Devices, like equipment, can be ego; but the difference between average devices and ego devices is much smaller than that between average and ego equipment. The ego type simply gives the device one of a handful of special attributes:
+   <indent>
+<color:U>Power</color>         <indent>The device's spells are more powerful than its casting level would indicate.</indent>
+<color:U>Simplicity</color>    <indent>The device is easier to use than its effect and casting level would indicate.</indent>
+<color:U>Holding</color>       <indent>The device is resistant to having its charges drained by monsters.</indent>
+<color:U>Regeneration</color>  <indent>The device's mana regenerates much faster than normally (+100% regen per pval point).</indent>
+<color:U>Resistance</color>    <indent>The device cannot be destroyed by the base elements.</indent>
+<color:U>Capacity</color>      <indent>The device has an unusually large mana pool.</indent>
+<color:U>Quickness</color>     <indent>Using the device consumes less than a full turn (-10% energy cost per pval point).</indent>
+</indent>
+See <link:faq.txt#DeviceTypes> for an overview of the differences between wands, rods and staves, as well as the somewhat similar scrolls and potions.
+
+<topic:Spellbooks><style:heading>Spellbooks</style>
+
+Many spellcasters need books in order to learn and cast spells. Books do not require identification, and each spellbook of the same type is exactly the same. No issues of object knowledge or quality to worry about! See <link:magic.txt#Spellbook> for more on spellbooks and the magic system.
+
+<topic:Inscriptions><style:heading>Object Inscriptions</style>
+
+This is an advanced topic which you may want to skip if you are just getting started; but <color:keyword>inscriptions</color>, once learned, are very powerful and useful. The Mogaminator automatically inscribes some items, so activating it is a good way to both get easy utility out of inscriptions and to see how they work in practice.
+
+Inscriptions are text appended to individual objects; the game uses inscriptions on an object to communicate information to you, and you can use inscriptions to communicate back to the game.
+
+To add an inscription, use the <color:keypress>{</color> command, then type whatever you like. If you later decide to remove that inscription, use <color:keypress>}</color>. Note that inscriptions are displayed to you inside curly braces as {inscription}, so the inscription commands themselves should be easy to remember. In the original keyset, the <color:keypress>Z</color> key is functionally identical with <color:keypress>{</color>, and can be used as a convenient substitute if <color:keypress>{</color> is hard to access on your system or keyboard.
+
+<topic:FakeInsc>  <indent><color:o>Fake Inscriptions</color>
+
+These are added by the game to communicate information to the player. Pseudo-ID, for example, communicates the quality of an item through a fake inscription; so you might have "a Long Sword {special}" where the object feeling is displayed as an inscription between curly braces. These inscriptions are "fake" in that no literal inscription is involved; the game simply displays the information as if it were an inscription. Fake inscriptions include the following:
+
+<color:G>Type             Comment</color>
+Pseudo-ID        <indent>Displays the quality of the object as average, good, excellent, etc. These inscriptions will be removed once the player identifies the object.</indent>
+Discount         <indent>If an item is purchased at a discount, this fake inscription displays that discount. You can turn it off with the <link:option.txt#show_discounts> show_discounts option.</indent>
+Abbreviations    <indent>Indicate the resistances, slays, stat bonuses and other attributes an item has. See <link:objects.txt#InscriptionAbbrev> below for a list of the abbreviations that might appear.</indent>
+</indent>
+<topic:RealInsc>  <indent><color:o>Useful Inscriptions</color>
+
+"Real" inscriptions include those you type in yourself, using the <color:keypress>{</color> command, as well as those added by the Mogaminator. These inscriptions can be any text you like, maybe a note to yourself "this potion is probably Speed" before you have officially identified it. Alternatively, you can use special syntax to communicate your preferences to the game; let's call these <color:keyword>useful inscriptions</color>.
+
+The most useful use of the useful inscriptions (sorry!) is to control object selection when entering a given command. For example, when a Mage goes to cast a spell (using the <color:keypress>m</color> command), they are prompted for a spellbook, which they must select from their inventory. By default, this choice is made through a letter label corresponding to the book's position in a list of all available books, for example:
+<style:screenshot>
+<color:G>Inventory</color>
+ a) <color:R>?</color> <color:R>a Chaos Spellbook [Sign of Chaos]</color>
+ b) <color:R>?</color> <color:R>a Chaos Spellbook [Chaos Mastery]</color>
+ c) <color:B>?</color> <color:B>a Sorcery Spellbook [Beginner's Handbook]</color>
+ d) <color:B>?</color> <color:B>a Sorcery Spellbook [Master Sorcerer's Handbook]</color>
+</style>
+I only have 4 spellbooks at the moment, so this choice is not too bad. But let's say I get very used to casting spells from my [Chaos Mastery] book with something like <color:keypress>mbe</color>, where <color:keypress>e</color> corresponds to a particular spell in that book. Now, along comes an arch-vile who burns up one of my books, perhaps my [Sign of Chaos]. Now, the prompt for a spellbook looks like:
+<style:screenshot>
+<color:G>Inventory</color>
+ a) <color:R>?</color> <color:R>a Chaos Spellbook [Chaos Mastery]</color>
+ b) <color:B>?</color> <color:B>a Sorcery Spellbook [Beginner's Handbook]</color>
+ c) <color:B>?</color> <color:B>a Sorcery Spellbook [Master Sorcerer's Handbook]</color>
+</style>
+If I fail to notice that the letters for my books changed, or if I am so darned used to typing <color:keypress>mbe</color> for the spell I want - or if I built a macro for the spell I wanted - I am in for a nasty surprise. Instead of casting the spell I want from [Chaos Mastery], I'll be casting something else entirely from my [Beginner's Handbook]!
+
+This type of reordering happens with all kinds of objects: your inventory sorts itself as you find stuff, and objects move around. As they move, the letters you enter to select them move around as well. To deal with these situations, use the special inscription of the form: @<color:G>Command-Letter</color><color:R>Choice-Label</color>. For example, perhaps I should try adding <color:v>@mb</color> to my [Chaos Mastery]? And to illustrate a point, I will actually inscribe it with "Master of @mb Chaos" (the point being that @mb just needs to be part of the inscription, not the entire inscription). Now, here is what I see:
+<style:screenshot>
+<color:G>Inventory</color>
+ b) <color:R>?</color> <color:R>a Chaos Spellbook [Chaos Mastery] {Master of @mb Chaos}</color>
+ a) <color:B>?</color> <color:B>a Sorcery Spellbook [Beginner's Handbook]</color>
+ c) <color:B>?</color> <color:B>a Sorcery Spellbook [Master Sorcerer's Handbook]</color>
+</style>
+Better, but not ideal; my copy of [Beginner's Handbook] has unexpectedly moved to the a) slot, which will likely also throw me off! This illustrates an important principle with regard to spellbooks: if you inscribe one spellbook, it is a good idea to inscribe all of them. Most players use @ma through @md for their first realm of magic (each realm has four spellbooks) and @me through @mh for their second realm; the Mogaminator even does this automatically. Let's see what effect this has:
+<style:screenshot>
+<color:G>Inventory</color>
+ b) <color:R>?</color> <color:R>a Chaos Spellbook [Chaos Mastery] {Master of @mb Chaos}</color>
+ e) <color:B>?</color> <color:B>a Sorcery Spellbook [Beginner's Handbook] {@me}</color>
+ f) <color:B>?</color> <color:B>a Sorcery Spellbook [Master Sorcerer's Handbook] {@mf}</color>
+</style>
+That's better. My inventory, you remember, still looks like this:
+<style:screenshot>
+<color:G>Inventory</color> <color:b>|</color> <color:D>Equipment</color>                                                           
+ a) <color:R>?</color> <color:R>a Chaos Spellbook [Chaos Mastery] {Master of @mb Chaos}</color>
+ b) <color:B>?</color> <color:B>a Sorcery Spellbook [Beginner's Handbook] {@me}</color>
+ c) <color:B>?</color> <color:B>a Sorcery Spellbook [Master Sorcerer's Handbook] {@mf}</color>
+ d) <color:U>,</color> <color:U>9 Rations of Food</color>
+ e) <color:u>~</color> <color:y>4 Wooden Torches (with 3500 turns of light)</color>
+</style>
+All we are doing is using inscriptions to change the lettering of choices, and then, only for the <color:keypress>m</color> command. If I <color:keypress>b</color>rowse my spellbooks, I am back in my original situation. Of course, I can rectify this by appending inscriptions of the form @ba through @bh to all of my books; or, since I don't use the Browse command that often, I can simply slow down and read the prompt.
+
+There is another option, though: instead of using the format @<color:G>Command-Letter</color><color:R>Choice-Label</color>, I could use @<color:R>Choice-Digit</color> where the label is a single digit between 0 and 9 and the command-letter is omitted. For example, I could inscribe my books with <color:v>@1</color> through <color:v>@8</color>:
+<style:screenshot>
+<color:G>Inventory</color>
+ 1) <color:R>?</color> <color:R>a Chaos Spellbook [Sign of Chaos] {@1}</color>
+ 2) <color:R>?</color> <color:R>a Chaos Spellbook [Chaos Mastery] {@2}</color>
+ 5) <color:B>?</color> <color:B>a Sorcery Spellbook [Beginner's Handbook] {@5}</color>
+ 6) <color:B>?</color> <color:B>a Sorcery Spellbook [Master Sorcerer's Handbook] {@6}</color>
+</style>
+Now, I can cast my desired spell with <color:keypress>m2e</color>, browse my [Master Sorcerer's Handbook] with <color:keypress>b6</color> and learn a new spell from [Sign of Chaos] with <color:keypress>G1</color>; the same numbers apply for all commands.
+
+<topic:WhatElse><color:U>What Else Can Inscriptions Do?</color>
+
+Controlling object selection letters is not the only useful inscription; you can also have the game prompt for confirmation when attempting to use an object with a given command. For example, suppose you just found <color:B>a Potion of Super-Duper Healing</color>, and you really want to make sure you do not quaff it by mistake. To protect this potion from accidental quaffing, add the inscription <color:v>!q</color>, which is of the form !<color:G>Command-Letter</color>. Now, whenever I try to <color:keypress>q</color>uaff the potion - whether accidentally or intentionally - the game will prompt me for confirmation.
+
+If I am paranoid, I can increase the prompting with the inscription !q!q, or even !q!q!q!q; the game will prompt me once for each !q in the inscription, making extra-sure that I only have myself to blame when I still quaff this potion by mistake.
+
+A related inscription is <color:v>!*</color>; it works on the same principle as <color:v>!q</color>, but uses the wild-card <color:v>*</color> to have the game prompt you for every command that uses the object. You cannot quaff it by accident, sell it by accident, drop it by accident, destroy it by accident... we cater to the most paranoid of players!
+
+So we have @<color:G>Command-Letter</color><color:R>Choice-Label</color> as well as @<color:R>Choice-Digit</color> to control object labeling; and !<color:G>Command-Letter</color> to add confirmation prompts before using an object in various ways. What else can we do? Quite a bit actually. Try the following:
+
+<color:G>Inscription  Meaning</color>
+    !!       <indent>Disturb the player when the inscribed object (typically a magical device, but this also works for equipment activations) is fully recharged. This means you can issue a long rest command like <color:keypress>R777\r</color> to rest for 777 turns, and the game will interrupt your dozing once your device is ready for use again (unless it still hasn't finished recharging, which is a real possibility...)</indent>
+    !1       <indent>Disturb the player when the inscribed device has recharged enough to have 1 charge again.</indent>
+    =g       <indent>Automatically pick this object up. Use this on your arrows and such, and you can quickly regather discharged ammunition after a lengthy shooting battle.</indent>
+    .        <indent>Suppress the prompt for random teleportation on objects with this attribute.</indent>
+    $        <indent>Suppress the warning prompt for items that warn you before taking dangerous actions. Of course, this defeats the warning altogether, but sometimes you are confident enough in your own decisions to forgo second-guessing by pretentious jewelry.</indent>
+    !?       <indent>Request confirmation of melee attacks, a handy inscription if you are so weak in physical combat that any melee you might engage in would likely be accidental. The inscription can be combined with a monster level, e.g. !?40, to only request confirmation for attacks against monsters of (in this example) level 40 or above.</indent>
+
+Finally, there is also a special inscription form ^<color:G>Command-Letter</color>. Adding this to a worn piece of equipment causes the game to prompt for verification every time you attempt the indicated command, even if the command is one not involving the object in question. If you like, you could inscribe (say) <color:v>^<^></color> on your boots; and the game will now prompt for confirmation every time you attempt to use the <color:keypress><</color> and <color:keypress>></color> commands!
+
+<style:note>Command letters used in inscriptions must always match the commands of the <color:o>underlying keyset</color>. If you use the default Original Keyset this is not a problem, but if you have switched to the roguelike keyset, stay alert, as you may need to use unfamiliar command-letters.</style>
+</indent>
+<topic:Reference><style:title>The Reference Section</style>
+
+<topic:ObjectSymbols><style:heading>Object Symbols</style>
+
+  <color:B>!</color>   Potions, flasks                 <color:o>/</color>   Polearms
+  <color:w>?</color>   Scrolls, spellbooks             <color:W>|</color>   Edged weapons
+  <color:U>,</color>   Mushrooms/food                  <color:B>\</color>   Hafted weapons
+  <color:r>-</color>   Rods (<color:r>always dark red</color>)          <color:U>}</color>   Ranged weapons
+  <color:B>-</color>   Wands (<color:B>always light blue)</color>       <color:s>{</color>   Ammunition
+  <color:U>_</color>   Staves                          <color:U>(</color>   Soft armor, cloaks
+  <color:g>=</color>   Rings                           <color:s>[</color>   Hard armor
+  <color:y>"</color>   Amulets                         <color:U>]</color>   Misc. armor
+  <color:y>$</color>   Gold or gems                    <color:s>)</color>   Shields
+  <color:o>~</color>   Lamps, spikes, quivers          <color:o>&</color>   Chests
+  <color:r>~</color>   Junk, sticks, skeletons, etc    <color:b>*</color>   Unusual objects
+  <color:b>`</color>   Statues, figurines
+
+<topic:ObjectCommands><style:heading>Commands for Using Objects</style>
+
+Where two commands separated by a <color:v>/</color> are indicated, the first is the command in the standard keyset and the second the command in the roguelike keyset.
+
+  <color:B>!</color>  Potion        <color:keypress>q</color>uaff
+  <color:w>?</color>  Scroll        <color:keypress>r</color>ead
+  <color:R>?</color>  Spellbook     <indent><color:keypress>b</color>rowse<color:v>/</color><color:keypress>p</color>eruse, <color:keypress>G</color>ain a spell, <color:keypress>m</color> to cast</indent>
+  <color:U>,</color>  Food/Mushroom <color:keypress>E</color>at
+  <color:B>-</color>  Wand          <color:keypress>a</color>im<color:v>/</color><color:keypress>z</color>ap
+  <color:r>-</color>  Rod           <color:keypress>z</color>ap<color:v>/</color><color:keypress>a</color>ctivate
+  <color:U>_</color>  Staff         <color:keypress>u</color>se<color:v>/</color><color:keypress>Z</color>ap
+  <color:o>&</color>  Chest         <color:keypress>s</color>earch for trap, <color:keypress>D</color>isarm, <color:keypress>o</color>pen
+  <color:s>{</color>  Ammo          <color:keypress>f</color>ire<color:v>/</color>shoot at <color:keypress>t</color>arget, <color:keypress>w</color>ield to put in quiver
+
+With most equipment, you simply need to use the <color:keypress>w</color>ear command:
+<color:o>/</color><color:W>|</color><color:B>\</color><color:U>}</color> Weapons/Bows  <color:keypress>w</color>ield, <color:keypress>t</color><color:v>/</color><color:keypress>T</color>ake off
+<color:U>(</color><color:s>[</color><color:U>]</color><color:s>)</color> Armor         <color:keypress>w</color>ear, <color:keypress>t</color><color:v>/</color><color:keypress>T</color>ake off
+  <color:g>=</color>  Ring          <color:keypress>w</color>ear, <color:keypress>t</color><color:v>/</color><color:keypress>T</color>ake off
+  <color:y>"</color>  Amulet        <color:keypress>w</color>ear, <color:keypress>t</color><color:v>/</color><color:keypress>T</color>ake off
+  <color:U>~</color>  Quiver        <color:keypress>w</color>ear, <color:keypress>d</color>rop ammo, <color:keypress>t</color><color:v>/</color><color:keypress>T</color>ake off
+  <color:U>~</color>  Lantern       <color:keypress>w</color>ear, <color:keypress>t</color><color:v>/</color><color:keypress>T</color>ake off, <color:keypress>F</color>uel
+
+<topic:WeirdNumbers><style:heading>Numbers on Items</style>
+
+     (2d6)            Damage dice
+     <color:u>(x2.50)</color>          Damage multiplier (shooters only)
+     (+4,+6)          Accuracy and damage bonuses
+     <color:s>(-2)</color>             Accuracy penalty (armor only)
+     <color:U>(+2)</color>             Damage bonus (boots and gloves only)
+     [15,+10]         Base AC (Armor Class) and bonus AC
+     [+10]            Bonus AC (items with no base AC)
+     (+2)             Pval (size of stat and ability bonuses)
+     {+15%}           Device power bonus
+     <+15%>           Spell power bonus
+     [+15%]           Spell capacity bonus
+
+<topic:Equipment><style:heading>Equipment</style>
+
+The number and kinds of equipment you may wear depends on your racial body type. The usual body type is humanoid:
+
+ a) <color:W>|</color> Right Hand: a Dagger (1d5) (+0,+0)
+ b) <color:U>)</color> Left Hand : <color:U>a Small Leather Shield [3,+0]</color>
+ c) <color:U>}</color> Shooting  : <color:u>a Short Bow (x2.50) (+3,+6)</color>
+ d) <color:U>~</color> Quiver    : <color:U>a Quiver [0 of 80]</color>
+ e) <color:g>=</color> Right Ring: <color:r>a Ring of Combat (+5,+0) {Fe A:Earthquake}</color>
+ f) <color:g>=</color> Left Ring : <color:r>a Ring of Protection [+1] {Wr~L(Wi}</color>
+ g) <color:y>"</color> Neck      : <color:o>an Amulet</color>
+ h) <color:u>~</color> Light     : <color:y>a Wooden Torch (with 1999 turns of light)</color>
+ i) <color:U>(</color> Body      : <color:s>Soft Leather Armour [4,+0]</color>
+ j) <color:g>(</color> Cloak     : <color:U>a Cloak [1,+3]</color>
+ k) <color:s>]</color> Head      : <color:U>an Iron Helm [5,+5]</color>
+ l) <color:U>]</color> Hands     : <color:U>a Set of Leather Gloves [1,+5]</color>
+ m) <color:U>]</color> Feet      : <color:U>a Pair of Soft Leather Boots [2,+3]</color>
+
+Many <color:r>Monster</color> mode races have unique body types, and adapting to different equipment possibilities is part of the fun of playing as a monster!
+
+<topic:Inventory><style:heading>Inventory/Pack</style>
+
+The size of your pack also slightly varies, but most characters have 26 slots in their inventory. You can place any object you like in your pack, and objects here will sort and stack as allowed; however, should your pack grow too heavy, your character will become <color:keyword>encumbered</color> and will gradually move slower and slower. View your equipment with the <color:keypress>e</color>quipment command, and your inventory with the <color:keypress>i</color>nventory command. Examine items in detail with the <color:keypress>I</color>nspect command. Add objects to your pack with the <color:keypress>g</color>et command and equip objects for use with the <color:keypress>w</color>ear command. You can remove an equipped object with the <color:keypress>t</color>ake off command, and discard an item with either the <color:keypress>d</color>rop command, which places the item on the ground, or the <color:keypress>k</color>ill command, which destroys the object.
+
+<topic:Pseudo-ID><style:heading>Pseudo-ID</style>
+
+To recap, pseudo-ID is the ability to roughly sense the quality of unidentified objects in your pack (or equipment!), and it comes in two forms: strong and weak. The speed and strength of the sensing varies with class, wisdom, and virtue of the player. From birth in coffee-break mode, and from CL20 otherwise, players automatically sense the quality of objects underfoot, and this sensing is always strong regardless of class; so weak pseudo-ID is only relevant in the early game.
+
+Pseudo-ID communicates the quality of an object via a fake inscription on that object. For example, you might have a Long Sword {excellent} or Hard Studded Leather {terrible}. The meanings of these object feelings are indicated by the tables below:
+  <indent>
+<color:o>Table 1 - Strong Pseudo-ID</color>
+<color:G>Inscription    Meaning</color>
+Terrible       a cursed artifact
+Awful          a cursed ego item
+Bad            a cursed nameless item
+Average        an average item
+Good           an enchanted item
+Excellent      a non-cursed ego item
+Special        a non-cursed artifact
+
+Or, to put this another way:
+
+                   <color:G>Egos         Artifacts</color>
+Average -> Good -> Excellent -> Special
+        -> Bad  -> Awful     -> Terrible
+
+<color:o>Table 2 - Weak Pseudo-ID</color>
+<color:G>Inscription    Meaning</color>
+Average        an average item
+Cursed         <indent>a cursed item (includes cursed ego items and artifacts)</indent>
+Enchanted      <indent>an enchanted item (includes good ego items and artifacts)</indent>
+</indent>
+<topic:InscriptionAbbrev><style:heading>List of Abbreviations</style>
+<style:table>
+  At : extra blows                    Ac : resistance to acid
+  Sp : affects speed                  El : resistance to electricity
+  St : affects strength               Fi : resistance to fire
+  In : affects intelligence           Co : resistance to cold
+  Wi : affects wisdom                 Po : resistance to poison
+  Dx : affects dexterity              Li : resistance to light
+  Cn : affects constitution           Dk : resistance to darkness
+  Ch : affects charisma               Cf : resistance to confusion
+  Md : affects magic devices          Nt : resistance to nether
+  Sl : affects stealth                Nx : resistance to nexus
+  Sr : affects searching ability      So : resistance to sound
+  If : affects infravision            Sh : resistance to shards
+  Dg : affects tunneling ability      Ca : resistance to chaos
+  Lf : affects your life rating       Di : resistance to disenchantment
+  *Ac: immune to acid                 Ti : resistance to time
+  *El: immune to electricity          Bl : resistance to blindness
+  *Fi: immune to fire                 Fe : resistance to fear
+  *Co: immune to cold
+
+  Es : easy spell                     [F : fiery sheath
+  Dm : decreases mana consumption     [E : electric sheath
+  Th : suitable for throwing          [C : cold sheath
+  Rf : reflection                     [Sh: aura of shards
+  Fa : free action                    [At: aura of retaliation
+  Si : see invisible                  [M : anti-magic shell
+  Hl : hold life                      [T : prevents teleportation
+  Sd : slow digestion                 [Sm: anti-summoning shell
+  Rg : regeneration                   [Mr: magic resistance
+  Rm : mana recovery                  |A : acid brand
+  Lv : levitation                     |E : electricity brand
+  Nv : night vision                   |F : fire brand
+  Lu : extra light                    |Co: cold brand
+  Wr : provides warning               |P : poison brand
+  Xm : extra might when shooting      |Dk: darkness brand
+  Xs : extra shots (shooting speed)   |Ca: mark of chaos
+  Te : random teleportation           |V : vampiric weapon
+  Ag : aggravate monsters             |Q : impact weapon
+  Bs : blessed                        |St: hits to stun
+  Ty : ancient foul curse             |S : sharp weapon
+  Ds : darkness                       |SS: really sharp weapon
+  Wm : weaponmastery (extra dice)     |M : mana brand
+  Id : loremastery (auto-identify)
+
+  /* : slay evil                      /X* : *slay* evil
+  /p : slay human                     /Xp : *slay* human
+  /D : slay dragon                    /XD : *slay* dragon
+  /o : slay orc                       /Xo : *slay* orc
+  /T : slay troll                     /XT : *slay* troll
+  /P : slay giant                     /XP : *slay* giant
+  /U : slay demon                     /XU : *slay* demon
+  /L : slay undead                    /XL : *slay* undead
+  /Z : slay animal                    /XZ : *slay* animal
+  /A : slay good
+  /Lv: slay living
+
+  ~Tele : telepathy                   (St : sustain strength
+  ~Evil : ESP evil                    (In : sustain intelligence
+  ~Good : ESP good                    (Wi : sustain wisdom
+  ~Nolv : ESP non-living              (Dx : sustain dexterity
+  ~Lvng : ESP living                  (Cn : sustain constitution
+  ~p : ESP human                      (Cn : sustain charisma
+  ~D : ESP dragon
+  ~o : ESP orc
+  ~T : ESP troll
+  ~P : ESP giant
+  ~U : ESP demon
+  ~L : ESP undead
+  ~Z : ESP animal
+</style>
+For example, armor with base resistance would display as {AcElFiCo} while a really good weapon might display as {Cn;LuAg|VS/XU/*~U}, meaning it gives a bonus to Constitution, grants increased light radius, aggravates monsters, is both vampiric and sharp (|V and |S; notice the second | does not repeat), has *slay* demons, also slays evil and grants ESP demons as well. (Quick quiz: which item is it?)
+
+<topic:InscriptionSummary><style:heading>Inscriptions: Summary</style>
+
+<color:U>Inscription Form     Meaning</color>
+@<color:G>Command-Letter</color><color:R>Choice-Label</color>
+                     <indent>Use the given choice label (a-z, A-Z or 0-9) to select the inscribed object whenever the Command-Letter command is issued.</indent>
+
+@<color:R>Choice-Digit</color>        <indent>Use the given choice digit (0-9) to select the inscribed object whenever any command is issued.</indent>
+
+!<color:G>Command-Letter</color>      <indent>Prompt for verification whenever attempting to use the inscribed object with the Command-Letter command.</indent>
+
+!*                   <indent>Prompt for verification whenever attempting to use the inscribed object with any command.</indent>
+
+!!                   <indent>Disturb the player whenever the inscribed object is fully recharged.</indent>
+
+!1                   <indent>Disturb the player whenever the inscribed object has recharged enough to have 1 charge.</indent>
+
+=g                   <indent>Automatically pick up the inscribed object.</indent>
+.                    <indent>Disable prompt for random teleportation.</indent>
+$                    <indent>Disable warning prompt.</indent>
+!?                   <indent>Request confirmation for melee attacks.</indent>
+
+^<color:G>Command-Letter</color>      <indent>Prompt for verification whenever the Command-Letter command is issued, provided the inscribed object is currently being worn.</indent>
+
+Be sure to read <link:objects.txt#Inscriptions> if this is unclear to you.
+<color:D>
+--
+Original   : (??)
+Updated    : (??)
+Updated    : Zangband DevTeam
+Updated    : Hengband 1.3.0
+Updated    : PosChengband 4.0.0
+Updated    : FrogComposband 7.1.chocolate
+Updated    : FrogComposband 7.1.liquorice
+</color>

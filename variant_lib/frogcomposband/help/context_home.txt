@@ -1,0 +1,83 @@
+<style:title>Home, Sweet Home</style>
+
+Press <link:context_home.txt#QuickRef> for the <color:keyword>Quick Reference</color>.
+
+Your home is a special building found in all the normal towns on the surface (Outpost, Morivant, Anambar, Thalos, Telmora and Angwil). In your home, you may stash goodies for future use; there are no limits on the amount of objects you may store in your home, but if your house gets too cluttered, finding the item you are looking for can be a chore. Somehow, magically, all of your homes share the same inventory.
+
+<topic:Tutorial><style:heading>Using Your Home</style>
+
+When you first enter your home, you will see an empty inventory. To leave items at your home, simply drop them using the <color:keypress>d</color> command and select the item you wish to drop. Similarly, to get items from your home, use the <color:keypress>g</color> command and then enter the label of the item you want. After a bit of play, your home might look like this:
+<style:screenshot>
+                                   <color:G>Home</color>                                         
+                                                                                
+    Item Description                                               Weight  Score
+ a) <color:U>{</color> <color:U>23 Arrows of Slaying (3d4) (+7,+7) {/pLv}</color>                   0.2 lbs    137
+ b) <color:U>{</color> <color:U>16 Arrows of Slaying (3d4) (+6,+8) {/pZA}</color>                   0.2 lbs    102
+ c) <color:o>{</color> <color:U>9 Sheaf Arrows (4d4) (+4,+2)</color>                                0.4 lbs     28
+ d) <color:o>{</color> <color:U>30 Sheaf Arrows (4d4) (+5,+4)</color>                               0.4 lbs     45
+ e) <color:o>{</color> <color:U>26 Sheaf Arrows (Elemental) (4d4) (+6,+6) {|P}</color>              0.4 lbs     77
+ f) <color:o>{</color> <color:U>31 Sheaf Arrows of Returning (4d4) (+8,+7)</color>                  0.4 lbs    231
+ g) <color:o>{</color> <color:U>23 Sheaf Arrows of Endurance (4d4) (+8,+10)</color>                 0.4 lbs    317
+ h) <color:o>{</color> <color:U>25 Sheaf Arrows of Exploding (4d4) (+9,+9)</color>                  0.4 lbs    157
+ i) <color:o>{</color> <color:U>6 Sheaf Arrows of Endurance (4d4) (+10,+9)</color>                  0.4 lbs    310
+ j) <color:B>{</color> <color:U>18 Mithril Arrows of Slaying (5d4) (+6,+8) {/L}</color>             0.4 lbs    139
+ k) <color:B>{</color> <color:U>23 Mithril Arrows of Slaying (5d4) (+6,+10) {/*A}</color>           0.4 lbs    369
+ l) <color:B>{</color> <color:U>21 Mithril Arrows of Endurance (5d4) (+9,+7)</color>                0.4 lbs    299
+ m) <color:B>{</color> <color:U>35 Mithril Arrows (Elemental) (5d4) (+9,+9) {|ECoP}</color>         0.4 lbs    225
+ n) <color:G>{</color> <color:U>19 Seeker Arrows of Returning (6d4) (+4,+9)</color>                 0.2 lbs    284
+ o) <color:G>{</color> <color:U>15 Seeker Arrows of Slaying (6d4) (+9,+8) {/ULv}</color>            0.2 lbs    399
+ p) <color:G>{</color> <color:U>22 Seeker Arrows of Returning (6d4) (+11,+9)</color>                0.2 lbs    308
+ q) <color:U>{</color> <color:U>The Black Arrow of Bard (8d4) (+30,+19) {/XD}</color>               0.2 lbs   1660
+ r) <color:s>{</color> <color:U>30 Rounded Pebbles (2d3) (+0,+0)</color>                            0.4 lbs      1
+ s) <color:s>{</color> <color:U>24 Rounded Pebbles (2d3) (+5,+4)</color>                            0.4 lbs     32
+ t) <color:s>{</color> <color:U>26 Rounded Pebbles (Elemental) (2d3) (+7,+6) {|F}</color>           0.4 lbs     54
+ <color:B>(Page 33 of 35)</color>                                                                 
+ <color:o>g</color> to get an item. <color:o>d</color> to drop an item. <color:o>x</color> to begin examining items.                
+ <color:o>r</color> to begin removing (destroying) items.                                         
+ <color:o>Esc</color> to exit. <color:o>?</color> for help.                                                        
+</style>
+Once there are more objects than can be displayed on your screen, the inventory will be listed in pages. Use the <color:keypress>Page Up</color> and <color:keypress>Page Down</color> keys to navigate.
+
+If you find your home too cluttered, you may want to clean up a bit. The simple solution is to <color:keypress>g</color>et items into your pack, walk outside, and drop them on the town commons; but this is littering, and also a bit of work. There's an alternative way to clean up, with the <color:keypress>r</color> command; be careful, though, since using it <color:v>permanently destroys</color> the selected items, you are not allowed to specify a quantity, and you will stay in item-removal mode until you press <color:keypress>ESC</color>. 
+
+Note that you can view your home inventory not just at your home, but also through your Character Sheet (<color:keypress>C</color>); although you cannot select (or inspect) individual items this way, it is often the fastest and most convenient way to locate useful items hidden in pages of trash, especially if you are shuffling your equipment. This reduces the need to clean up.
+
+<topic:Museum><style:heading>The Museum</style>
+
+The Museum behaves very much like your home, except that you cannot take items from the Museum: all donations to the Museum are final. The Museum is exclusively for keepsakes - which some players seem to have awfully many of!
+
+Another difference between the Museum and your home is that items given to the Museum are automatically *Identified*, as with shops; but there is no advantage to *identifying* items through the Museum compared to doing so through a shop, where you get paid for the item and can potentially buy it back.
+
+<topic:QuickRef><style:heading>Quick Reference</style>
+  <indent><color:G>Basic Commands</color>
+<color:keypress>d s</color>       Drop an item from your pack to your home
+<color:keypress>g p b</color>     Get an item from your home to your pack
+<color:keypress>x</color>         Examine an item in your home
+<color:keypress>r</color>         Permanently remove items from your home
+<color:keypress>q Esc</color>     Leave your home
+
+<color:G>Extra Commands</color>
+<color:keypress>w</color>         Wear an item
+<color:keypress>t T</color>       Take off an item
+<color:keypress>k ^D</color>      Destroy items in your pack
+<color:keypress>e</color>         Display equipment
+<color:keypress>i</color>         Display inventory
+<color:keypress>I</color>         Inspect objects in your pack
+<color:keypress>Tab</color>       Toggle inventory/equipment subwindows
+<color:keypress>{</color>         Inscribe objects in your pack
+<color:keypress>}</color>         Uninscribe objects in your pack
+<color:keypress>C</color>         Display character sheet
+
+<style:note>Note: These <color:keyword>Extra Commands</color> are simply normal game commands made available for your convenience so you need not leave your home to use them. However, the keybindings for these commands are <color:keyword>hard-coded</color>, so any keymaps you may have defined will not apply.</style>
+
+<color:G>Navigation</color>
+<color:keypress>Page Up</color>   Scroll through long object lists
+<color:keypress>Page Down</color>
+<color:keypress>Space</color>     Same as Page Up
+<color:keypress>-</color>         Same as Page Down
+
+<color:G>Display Options</color>
+<color:keypress>^W</color>        Toggle weights (see <link:option.txt#show_weights>)
+<color:keypress>^G</color>        Toggle graphics (see <link:option.txt#show_item_graph>)
+</indent>
+

@@ -1,0 +1,141 @@
+# File: slay.txt
+
+# code: code for slay to use in object data files
+# name: name of slain creatures for use in object descriptions
+# race-flag: monster race flag which this slay affects
+# base: monster base which this flag affects
+# multiplier: slay multiplier applied to damage dice
+# o-multiplier: slay multiplier applied to damage dice (O-combat)
+# melee-verb: verb used when a susceptible monster is hit in melee
+# range-verb: verb used when a susceptible monster is hit at range
+
+# This file encodes the slays that can appear on object.  Each slay should
+# have exactly one of a race flag or a base.
+
+code:EVIL_2
+name:evil creatures
+race-flag:EVIL
+multiplier:2
+o-multiplier:18
+melee-verb:smite
+range-verb:pierces
+
+code:ANIMAL_2
+name:animals
+race-flag:ANIMAL
+multiplier:2
+o-multiplier:20
+melee-verb:smite
+range-verb:deeply pierces
+
+code:EVIL_3
+name:evil creatures
+race-flag:EVIL
+multiplier:3
+o-multiplier:23
+melee-verb:fiercely smite
+range-verb:deeply pierces
+
+code:ANIMAL_3
+name:animals
+race-flag:ANIMAL
+multiplier:3
+o-multiplier:25
+melee-verb:fiercely smite
+range-verb:pierces
+
+code:ORC_3
+name:orcs
+race-flag:ORC
+multiplier:3
+o-multiplier:25
+melee-verb:smite
+range-verb:pierces
+
+code:TROLL_3
+name:trolls
+race-flag:TROLL
+multiplier:3
+o-multiplier:25
+melee-verb:smite
+range-verb:pierces
+
+code:GIANT_3
+name:giants
+race-flag:GIANT
+multiplier:3
+o-multiplier:25
+melee-verb:smite
+range-verb:pierces
+
+code:DEMON_3
+name:demons
+race-flag:DEMON
+multiplier:3
+o-multiplier:25
+melee-verb:smite
+range-verb:pierces
+
+code:DRAGON_3
+name:dragons
+race-flag:DRAGON
+multiplier:3
+o-multiplier:25
+melee-verb:smite
+range-verb:pierces
+
+code:UNDEAD_3
+name:undead
+race-flag:UNDEAD
+multiplier:3
+o-multiplier:25
+melee-verb:smite
+range-verb:pierces
+
+code:ORC_5
+name:orcs
+race-flag:ORC
+multiplier:5
+o-multiplier:35
+melee-verb:fiercely smite
+range-verb:deeply pierces
+
+code:TROLL_5
+name:trolls
+race-flag:TROLL
+multiplier:5
+o-multiplier:35
+melee-verb:fiercely smite
+range-verb:deeply pierces
+
+code:GIANT_5
+name:giants
+race-flag:GIANT
+multiplier:5
+o-multiplier:35
+melee-verb:fiercely smite
+range-verb:deeply pierces
+
+code:DEMON_5
+name:demons
+race-flag:DEMON
+multiplier:5
+o-multiplier:35
+melee-verb:fiercely smite
+range-verb:deeply pierces
+
+code:DRAGON_5
+name:dragons
+race-flag:DRAGON
+multiplier:5
+o-multiplier:35
+melee-verb:fiercely smite
+range-verb:deeply pierces
+
+code:UNDEAD_5
+name:undead
+race-flag:UNDEAD
+multiplier:5
+o-multiplier:35
+melee-verb:fiercely smite
+range-verb:deeply pierces

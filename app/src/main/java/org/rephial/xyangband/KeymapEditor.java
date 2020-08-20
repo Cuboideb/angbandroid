@@ -64,8 +64,9 @@ public class KeymapEditor extends PopupWindow
     {
         String actionsRow1 = "";
         String actionsRow2 = "";
-        String[] parts = Preferences.getUserKeymaps()
-                .split("#rowsep#");
+        //String raw = Preferences.getUserKeymaps();
+        String raw = Preferences.getActiveProfile().getKeymaps();
+        String[] parts = raw.split("#rowsep#");
         if (parts.length > 0) {
             actionsRow1 = parts[0];
         }
@@ -268,7 +269,9 @@ public class KeymapEditor extends PopupWindow
 
         String keymaps = row1.formatKeymaps() + "#rowsep#" +
                 row2.formatKeymaps();
-        Preferences.setUserKeymaps(keymaps);
+        //Preferences.setUserKeymaps(keymaps);
+        Preferences.getActiveProfile().setKeymaps(keymaps);
+        Preferences.saveProfiles();
 
         ctxt.rebuildViews();
 

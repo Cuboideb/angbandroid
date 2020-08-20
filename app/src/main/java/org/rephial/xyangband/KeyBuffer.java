@@ -99,13 +99,13 @@ public class KeyBuffer {
 			// Translate to better keys
 			switch(key) {
 				case '2':
-					key = ButtonRibbon.KC_ARROW_DOWN; break;
+					key = InputUtils.KC_ARROW_DOWN; break;
 				case '4':
-					key = ButtonRibbon.KC_ARROW_LEFT; break;
+					key = InputUtils.KC_ARROW_LEFT; break;
 				case '6':
-					key = ButtonRibbon.KC_ARROW_RIGHT; break;
+					key = InputUtils.KC_ARROW_RIGHT; break;
 				case '8':
-					key = ButtonRibbon.KC_ARROW_UP; break;
+					key = InputUtils.KC_ARROW_UP; break;
 				default:
 					break;
 			}

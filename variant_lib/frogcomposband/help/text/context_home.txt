@@ -1,0 +1,117 @@
+Home, Sweet Home
+
+Press [a] for the Quick Reference.
+
+Your home is a special building found in all the normal towns on the 
+surface (Outpost, Morivant, Anambar, Thalos, Telmora and Angwil). In 
+your home, you may stash goodies for future use; there are no limits on 
+the amount of objects you may store in your home, but if your house 
+gets too cluttered, finding the item you are looking for can be a 
+chore. Somehow, magically, all of your homes share the same inventory.
+
+Using Your Home
+
+When you first enter your home, you will see an empty inventory. To 
+leave items at your home, simply drop them using the d command and 
+select the item you wish to drop. Similarly, to get items from your 
+home, use the g command and then enter the label of the item you want. 
+After a bit of play, your home might look like this:
+
+                                   Home                                         
+                                                                                
+    Item Description                                               Weight  Score
+ a) { 23 Arrows of Slaying (3d4) (+7,+7) {/pLv}                   0.2 lbs    137
+ b) { 16 Arrows of Slaying (3d4) (+6,+8) {/pZA}                   0.2 lbs    102
+ c) { 9 Sheaf Arrows (4d4) (+4,+2)                                0.4 lbs     28
+ d) { 30 Sheaf Arrows (4d4) (+5,+4)                               0.4 lbs     45
+ e) { 26 Sheaf Arrows (Elemental) (4d4) (+6,+6) {|P}              0.4 lbs     77
+ f) { 31 Sheaf Arrows of Returning (4d4) (+8,+7)                  0.4 lbs    231
+ g) { 23 Sheaf Arrows of Endurance (4d4) (+8,+10)                 0.4 lbs    317
+ h) { 25 Sheaf Arrows of Exploding (4d4) (+9,+9)                  0.4 lbs    157
+ i) { 6 Sheaf Arrows of Endurance (4d4) (+10,+9)                  0.4 lbs    310
+ j) { 18 Mithril Arrows of Slaying (5d4) (+6,+8) {/L}             0.4 lbs    139
+ k) { 23 Mithril Arrows of Slaying (5d4) (+6,+10) {/*A}           0.4 lbs    369
+ l) { 21 Mithril Arrows of Endurance (5d4) (+9,+7)                0.4 lbs    299
+ m) { 35 Mithril Arrows (Elemental) (5d4) (+9,+9) {|ECoP}         0.4 lbs    225
+ n) { 19 Seeker Arrows of Returning (6d4) (+4,+9)                 0.2 lbs    284
+ o) { 15 Seeker Arrows of Slaying (6d4) (+9,+8) {/ULv}            0.2 lbs    399
+ p) { 22 Seeker Arrows of Returning (6d4) (+11,+9)                0.2 lbs    308
+ q) { The Black Arrow of Bard (8d4) (+30,+19) {/XD}               0.2 lbs   1660
+ r) { 30 Rounded Pebbles (2d3) (+0,+0)                            0.4 lbs      1
+ s) { 24 Rounded Pebbles (2d3) (+5,+4)                            0.4 lbs     32
+ t) { 26 Rounded Pebbles (Elemental) (2d3) (+7,+6) {|F}           0.4 lbs     54
+ (Page 33 of 35)                                                                
+ g to get an item. d to drop an item. x to begin examining items.               
+ r to begin removing (destroying) items.                                        
+ Esc to exit. ? for help.                                                       
+
+Once there are more objects than can be displayed on your screen, the 
+inventory will be listed in pages. Use the Page Up and Page Down keys 
+to navigate.
+
+If you find your home too cluttered, you may want to clean up a bit. 
+The simple solution is to get items into your pack, walk outside, and 
+drop them on the town commons; but this is littering, and also a bit of 
+work. There's an alternative way to clean up, with the r command; be 
+careful, though, since using it permanently destroys the selected 
+items, you are not allowed to specify a quantity, and you will stay in 
+item-removal mode until you press ESC. 
+
+Note that you can view your home inventory not just at your home, but 
+also through your Character Sheet (C); although you cannot select (or 
+inspect) individual items this way, it is often the fastest and most 
+convenient way to locate useful items hidden in pages of trash, 
+especially if you are shuffling your equipment. This reduces the need 
+to clean up.
+
+The Museum
+
+The Museum behaves very much like your home, except that you cannot 
+take items from the Museum: all donations to the Museum are final. The 
+Museum is exclusively for keepsakes - which some players seem to have 
+awfully many of!
+
+Another difference between the Museum and your home is that items given 
+to the Museum are automatically *Identified*, as with shops; but there 
+is no advantage to *identifying* items through the Museum compared to 
+doing so through a shop, where you get paid for the item and can 
+potentially buy it back.
+
+Quick Reference
+  Basic Commands
+  d s       Drop an item from your pack to your home
+  g p b     Get an item from your home to your pack
+  x         Examine an item in your home
+  r         Permanently remove items from your home
+  q Esc     Leave your home
+  
+  Extra Commands
+  w         Wear an item
+  t T       Take off an item
+  k ^D      Destroy items in your pack
+  e         Display equipment
+  i         Display inventory
+  I         Inspect objects in your pack
+  Tab       Toggle inventory/equipment subwindows
+  {         Inscribe objects in your pack
+  }         Uninscribe objects in your pack
+  C         Display character sheet
+  
+    Note: These Extra Commands are simply normal game 
+    commands made available for your convenience so you 
+    need not leave your home to use them. However, the 
+    keybindings for these commands are hard-coded, so any 
+    keymaps you may have defined will not apply.
+  
+  Navigation
+  Page Up   Scroll through long object lists
+  Page Down
+  Space     Same as Page Up
+  -         Same as Page Down
+  
+  Display Options
+  ^W        Toggle weights (see [b])
+  ^G        Toggle graphics (see [c])
+  
+
+

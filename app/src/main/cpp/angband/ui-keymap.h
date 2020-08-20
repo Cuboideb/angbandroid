@@ -66,6 +66,7 @@ void keymap_dump(ang_file *fff);
  * ## separates trigger from action
  * ### separates keymaps
  */
+#define HAS_KEYMAP_PACK 1
 void keymap_pack(char buffer[], int n);
 
 #endif /* UI_KEYMAP_H */

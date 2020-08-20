@@ -1,0 +1,254 @@
+Weaponmasters
+
+A Weaponmaster is exceptionally good with a single class of weapons, 
+obtaining special combat bonuses and powers which depend on their 
+chosen speciality. Focus is the key to success; weaponmasters are truly 
+lousy with off-speciality weapons, but few can match the prowess they 
+gain with something more suitable in their hands.
+
+Axes
+The mighty axe! Your blows will cleave with damage unsurpassed. 
+Specializing in axes gives great offensive prowess, especially when 
+your axe is wielded with two hands. However, this speciality offers 
+little in the way of utility. Kill quickly as your life depends on it!
+
+  Stats                   Skills
+  Strength      +3        Disarming   Poor         
+  Intelligence  -3        Device      Bad          
+  Wisdom        -2        Save        Bad          
+  Dexterity     -2        Stealth     Poor         
+  Constitution  +1        Searching   Poor         
+  Charisma      +0        Perception  Bad          
+  Life Rating  105%       Melee       Heroic       
+  Base HP       12        Archery     Poor         
+  Experience   135%
+  
+Bows
+You will shoot to kill! The bowmaster gains techniques to enhance 
+shooting, including more rapid firing, the ability to volley shots over 
+the heads of intervening monsters, reduced ammo destruction, the 
+ability to kill with a single arrow and much more. As a shooter, your 
+missile prowess will be quite formidable, though your melee will be 
+somewhat lacking.
+
+  Stats                   Skills
+  Strength      +0        Disarming   Poor         
+  Intelligence  -1        Device      Poor         
+  Wisdom        -1        Save        Poor         
+  Dexterity     +2        Stealth     Good         
+  Constitution  -1        Searching   Poor         
+  Charisma      +0        Perception  Poor         
+  Life Rating  102%       Melee       Fair         
+  Base HP       12        Archery     Heroic       
+  Experience   135%
+  
+Clubs
+You will seek to club your opponents senseless! This speciality gains 
+passive status effects against monsters, such as confusion, knock out 
+and stunning. Also, you will gain some limited utility techniques. At 
+high levels, your weapons will become more likely to score devastating, 
+crushing blows against your hapless enemies.
+
+  Stats                   Skills
+  Strength      +2        Disarming   Poor         
+  Intelligence  -3        Device      Bad          
+  Wisdom        -2        Save        Bad          
+  Dexterity     -2        Stealth     Poor         
+  Constitution  +1        Searching   Poor         
+  Charisma      +0        Perception  Bad          
+  Life Rating  105%       Melee       Excellent    
+  Base HP       12        Archery     Fair         
+  Experience   135%
+  
+Crossbows
+The crossbowmaster shoots deadly bolts for great damage. Their bolts 
+may explode powerfully damaging nearby monsters. Also, they may shoot 
+so hard as to knock their opponents backwards!
+
+  Stats                   Skills
+  Strength      +1        Disarming   Poor         
+  Intelligence  -2        Device      Poor         
+  Wisdom        -3        Save        Bad          
+  Dexterity     +0        Stealth     Fair         
+  Constitution  +1        Searching   Poor         
+  Charisma      +0        Perception  Bad          
+  Life Rating  102%       Melee       Fair         
+  Base HP       12        Archery     Heroic       
+  Experience   135%
+  
+Daggers
+A knife in the back! This speciality favors dual-wielding and 
+rogue-type behavior. The daggermaster can even assume the posture of 
+The Flying Dagger which greatly enhances their low level dagger toss 
+capability. Indeed, their prowess with the dagger toss is legendary and 
+appears almost magical! At high levels, you will also gain formidable 
+melee prowess with the Frenzy Stance. Finally, daggermasters have very 
+strong short ranged teleport techniques that synergize well with their 
+toss abilities.
+
+  Stats                   Skills
+  Strength      +0        Disarming   Good         
+  Intelligence  +0        Device      Poor         
+  Wisdom        -1        Save        Poor         
+  Dexterity     +3        Stealth     Very Good    
+  Constitution  -1        Searching   Fair         
+  Charisma      +0        Perception  Poor         
+  Life Rating  105%       Melee       Very Good    
+  Base HP       12        Archery     Superb       
+  Experience   135%
+  
+Polearms
+You don a grim face before setting out to reap your harvest of death. 
+You will swing your weapon wide often affecting multiple surrounding 
+opponents.
+
+  Stats                   Skills
+  Strength      +2        Disarming   Poor         
+  Intelligence  -2        Device      Bad          
+  Wisdom        -2        Save        Poor         
+  Dexterity     +0        Stealth     Poor         
+  Constitution  +1        Searching   Poor         
+  Charisma      +0        Perception  Bad          
+  Life Rating  105%       Melee       Superb       
+  Base HP       12        Archery     Poor         
+  Experience   135%
+  
+Shields
+Specializing in shields gives excellent powers of defense and 
+retaliation. In addition, you can even choose to melee with your shield 
+rather than a normal weapon, bashing your opponents senseless. This 
+form of combat is known as Shield Bashing and is unique to this 
+speciality.
+
+  Stats                   Skills
+  Strength      +2        Disarming   Fair         
+  Intelligence  -1        Device      Poor         
+  Wisdom        +0        Save        Very Good    
+  Dexterity     +0        Stealth     Poor         
+  Constitution  +2        Searching   Poor         
+  Charisma      +0        Perception  Bad          
+  Life Rating  105%       Melee       Excellent    
+  Base HP       12        Archery     Poor         
+  Experience   135%
+  
+Slings
+Watch out, Goliath! As a master of slings you will shoot pebbles with 
+uncanny speed. Your shots may even ricochet off other monsters to score 
+multiple hits. As with other archery specializations, your ammo will 
+break less often.
+
+  Stats                   Skills
+  Strength      -1        Disarming   Fair         
+  Intelligence  +0        Device      Poor         
+  Wisdom        +0        Save        Poor         
+  Dexterity     +3        Stealth     Good         
+  Constitution  -1        Searching   Poor         
+  Charisma      +0        Perception  Poor         
+  Life Rating  102%       Melee       Fair         
+  Base HP       12        Archery     Heroic       
+  Experience   135%
+  
+Staves
+Monkey King! You will battle opponents with a flurry of blows from your 
+mighty staff and will be prepared to counter the attacks of your 
+enemies. You can vault into battle and circle kick enemies for stunning 
+effects, attacking them with your boots! You may even eventually clone 
+yourself at great cost.
+
+  Stats                   Skills
+  Strength      +0        Disarming   Poor         
+  Intelligence  -2        Device      Poor         
+  Wisdom        -1        Save        Poor         
+  Dexterity     +2        Stealth     Poor         
+  Constitution  +1        Searching   Poor         
+  Charisma      +0        Perception  Bad          
+  Life Rating  105%       Melee       Excellent    
+  Base HP       12        Archery     Poor         
+  Experience   135%
+  
+Swords
+You will become a true swordmaster! Mastery of the blade will augment 
+your weapon with elemental, vorpal or vampiric powers.
+
+  Stats                   Skills
+  Strength      +1        Disarming   Poor         
+  Intelligence  -2        Device      Bad          
+  Wisdom        -2        Save        Poor         
+  Dexterity     +1        Stealth     Poor         
+  Constitution  +1        Searching   Poor         
+  Charisma      +0        Perception  Bad          
+  Life Rating  105%       Melee       Superb       
+  Base HP       12        Archery     Poor         
+  Experience   135%
+  
+Diggers
+A master of digging. You prefer rocky enclosures and don't mind lugging 
+around a corpse or two, which you can bury in a pinch for a temporary 
+bonus. You can choose one of several postures which allow you to use 
+the digging bonus of your current weapon as an additional bonus, such 
+as increased strength, constitution, or even speed! So keep your eye 
+open for those +8 diggers!
+
+  Stats                   Skills
+  Strength      +2        Disarming   Fair         
+  Intelligence  -2        Device      Poor         
+  Wisdom        -2        Save        Fair         
+  Dexterity     +0        Stealth     Fair         
+  Constitution  +1        Searching   Poor         
+  Charisma      +0        Perception  Bad          
+  Life Rating  105%       Melee       Superb       
+  Base HP       12        Archery     Poor         
+  Experience   135%
+  
+Table 1 - Weaponmaster Statistic Bonus Table
+
+                  STR  INT  WIS  DEX  CON  CHR  Life  BHP  Exp
+Axes               +3   -3   -2   -2   +1   +0  105%  +12  135%
+Bows               +0   -1   -1   +2   -1   +0  102%  +12  135%
+Clubs              +2   -3   -2   -2   +1   +0  105%  +12  135%
+Crossbows          +1   -2   -3   +0   +1   +0  102%  +12  135%
+Daggers            +0   +0   -1   +3   -1   +0  105%  +12  135%
+Polearms           +2   -2   -2   +0   +1   +0  105%  +12  135%
+Shields            +2   -1   +0   +0   +2   +0  105%  +12  135%
+Slings             -1   +0   +0   +3   -1   +0  102%  +12  135%
+Staves             +0   -2   -1   +2   +1   +0  105%  +12  135%
+Swords             +1   -2   -2   +1   +1   +0  105%  +12  135%
+Diggers            +2   -2   -2   +0   +1   +0  105%  +12  135%
+
+
+Table 2 - Weaponmaster Skill Bonus Table I
+
+                  Disarming     Device        Save          Stealth      
+Axes              Poor          Bad           Bad           Poor         
+Bows              Poor          Poor          Poor          Good         
+Clubs             Poor          Bad           Bad           Poor         
+Crossbows         Poor          Poor          Bad           Fair         
+Daggers           Good          Poor          Poor          Very Good    
+Polearms          Poor          Bad           Poor          Poor         
+Shields           Fair          Poor          Very Good     Poor         
+Slings            Fair          Poor          Poor          Good         
+Staves            Poor          Poor          Poor          Poor         
+Swords            Poor          Bad           Poor          Poor         
+Diggers           Fair          Poor          Fair          Fair         
+
+
+Table 3 - Weaponmaster Skill Bonus Table II
+
+                  Searching     Perception    Melee         Archery      
+Axes              Poor          Bad           Heroic        Poor         
+Bows              Poor          Poor          Fair          Heroic       
+Clubs             Poor          Bad           Excellent     Fair         
+Crossbows         Poor          Bad           Fair          Heroic       
+Daggers           Fair          Poor          Very Good     Superb       
+Polearms          Poor          Bad           Superb        Poor         
+Shields           Poor          Bad           Excellent     Poor         
+Slings            Poor          Poor          Fair          Heroic       
+Staves            Poor          Bad           Excellent     Poor         
+Swords            Poor          Bad           Superb        Poor         
+Diggers           Poor          Bad           Superb        Poor         
+
+
+
+
+Automatically generated for FrogComposband 7.1.liquorice.
+

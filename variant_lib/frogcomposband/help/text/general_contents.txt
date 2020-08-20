@@ -1,0 +1,17 @@
+An Introduction and General Information.
+
+Please choose one of the following online help files:
+
+    [a] General Information
+    [b] About the Help Files
+    [c] The Basics of the Game
+    [d] Play Modes
+    [e] First Things to Do
+    [f] Into the Dungeon
+    [g] Wilderness
+    [h] Winning the Game
+    [i] Upon Death and Dying
+    [j] The Newbie Guide
+
+    (?) Help System Commands
+

@@ -1,0 +1,289 @@
+#########################################
+# Consumables
+#########################################
+mushroom of restoring#!E
+~mushroom of hallucination
+
+?:[EQU $RACE Snotling Doppelganger]
+~?unidentified items:mushroom
+~mushroom
+?:1
+
+?:[LEQ $LEVEL 35]
+potions:resist heat and cold#!kq
+?:1
+potions:resistance#!kq
+potions:stone skin#!k
+potions:heroism
+potions:speed#!kq
+potions:giant strength#!k
+
+potions:enlightenment
+
+potions:of strength#!k
+potions:of intelligence#!k
+potions:of wisdom#!k
+potions:of dexterity#!k
+potions:of constitution#!k
+potions:of charisma#!k
+potions:augmentation#!k
+
+potions:experience
+potions:polymorph#!k
+potions:new life#!**
+potions:self knowledge#!k
+
+potions:curing
+potions:of healing#!kq
+potions:of life#!kq
+potions:of *healing*#!kq
+potions:restore mana#!kq
+
+?:[NOT [EQU $CLASS Berserker]]
+scrolls:artifact creation#!*
+scrolls:of destruction#!*
+scrolls:mass genocide#!*
+scrolls:genocide#!*
+scrolls:forest creation
+scrolls:wall of stone
+scrolls:acquirement#!*
+scrolls:banish
+?:1
+
+#########################################
+# Devices
+#########################################
+#identified rings more value than 5000
+#identified amulets more value than 5000
+?unidentified rings
+?unidentified amulets
+#!identified rings
+#!identified amulets
+
+?:[AND [EQU $SELLING Off] [EQU $CLASS Berserker]]
+!nameless shooters
+!scrolls
+!ammo
+!quiver
+?:1
+
+?:[AND [EQU $SELLING Off] [EQU $CLASS Berserker] [NOT [EQU $RACE Skeleton Golem Zombie Spectre]] ]
+!rods
+!wands
+!staves
+?:1
+
+?:[NOT [EQU $CLASS Berserker]]
+rods:angelic healing#@zh!sdk
+rods:heroic speed#@zs!sdk
+?staves:healing#@uh!sdk
+?staves:speed#@us!sdk
+?staves:destruction#@ud!sdk
+?staves:confusing lights#@uz!sdk
+?wands:rocket#@ar!sdk
+?wands:disintegrate#@ad!sdk
+?:1
+
+?:[AND [LEQ $LEVEL 45] [NOT [EQU $CLASS Berserker]] ]
+?staves:cure wounds#@uu!sdk
+?:1
+
+?:[OR [EQU $CLASS Mage High-Mage Sorcerer] [EQU $RACE Beholder Lich] ]
+wizardstaff
+?:1
+
+?unidentified rods
+?unidentified staves
+?unidentified wands
+
+#########################################
+# Artifacts
+#########################################
+
+?unidentified artifact items
+?unidentified ego items
+
+?:[AND [EQU $SELLING Off] [EQU $CLASS Weaponmaster] ]
+!nameless icky weapons
+?:1
+
+#########################################
+# Armor
+#########################################
+
+power dragon
+balance dragon
+t-shirt
+
+dragon gloves
+dragon boots
+dragon shield
+dragon helm
+dragon wings
+dragon fang
+~armors:dragon
+
+?:[EQU $CLASS Politician]
+sexy swimsuit#!sdk
+?:1
+
+~sexy swimsuit
+
+#elven cloak
+shadow cloak
+mirror shield
+
+#########################################
+# Weaponry
+#########################################
+
+weapons:poison needle
+diamond edge
+rune sword
+~blade of chaos
+
+?unidentified dice boosted weapons
+?unidentified dice boosted shooters
+~?unidentified ego items
+
+~dice boosted weapons
+~dice boosted shooters
+
+?:[EQU $CLASS Mauler]
+weapons more weight than 39
+?:1
+
+?:[AND [EQU $CLASS Weaponmaster] [EQU $SPECIALITY Bows] ]
+?unidentified ammo:arrow
+?:1
+
+?:[AND [EQU $CLASS Weaponmaster] [EQU $SPECIALITY Slings] ]
+?unidentified ammo:shot
+?unidentified ammo:pebble
+?:1
+
+?:[AND [EQU $CLASS Weaponmaster] [EQU $SPECIALITY Crossbows] ]
+?unidentified ammo:bolt
+?:1
+
+~^gun
+
+#########################################
+# Corpses
+#########################################
+
+?:[EQU $RACE Possessor]
+~wanted corpses#Wanted!kkk
+wanted skeletons#Wanted!kkk
+~corpses more level than 0
+
+?:[EQU $RACE Balrog Imp Demon]
+wanted human corpses#Wanted!EEEkkk
+?:1
+
+?:[NOT [EQU $RACE Possessor]]
+wanted corpses#Wanted!kkk
+wanted skeletons#Wanted!kkk
+?:1
+
+?:[EQU $RACE Igor]
+wanted ear#Wanted!kkk
+wanted head#Wanted!kkk
+corpses
+?:1
+
+#########################################
+# Spellbooks
+#########################################
+
+?:[AND [EQU $SELLING Off] [NOT [EQU $CLASS Skillmaster]]]
+!unreadable spellbooks
+?:1
+
+?:[EQU $CLASS Sorcerer]
+fourth spellbooks#!sdk
+third spellbooks#!k
+~second spellbooks#!k
+~first spellbooks#!k
+
+?:[EQU $CLASS Sorcerer Red-Mage]
+~second spellbooks#!k
+~first spellbooks#!k
+
+?:[NOT [EQU $CLASS Sorcerer Red-Mage]]
+first realm's fourth spellbooks#@md!sdk
+first realm's third spellbooks#@mc!k
+~first realm's second spellbooks#@mb!k
+~first realm's first spellbooks#@ma!k
+
+second realm's fourth spellbooks#@mh!sdk
+second realm's third spellbooks#@mg!k
+~second realm's second spellbooks#@mf!k
+~second realm's first spellbooks#@me!k
+?:1
+
+#########################################
+# Auto-ID Unaware and Collecting Items
+#########################################
+
+?unaware items
+
+collecting potions
+collecting scrolls
+(collecting items
+
+#########################################
+# Destroy Junk
+#########################################
+
+?:[EQU $CLASS Archer]
+junk:^broken skull
+junk:^broken bone
+skeletons
+
+?:[EQU $CLASS Ninja Ninja-Lawyer]
+ego lights:of darkness
+feanorian
+Iron Spike#@vz
+?:1
+
+~average items:feanorian lamp
+?unidentified items:feanorian lamp
+
+!potions:apple juice
+#!statue
+#!figurine
+
+?:[GEQ $LEVEL 35]
+!nameless common armors
+
+?:[GEQ $LEVEL 30]
+!nameless common weapons
+!nameless common shooters
+
+?:[GEQ $LEVEL 20]
+!average common weapons
+!average common shooters
+!average common armors
+!cursed nameless common items
+?:1
+
+#If you are using the enhanced get command (auto_get_objects)
+#then I recommend the following 3 rules for the *entire* game.
+?:[LEQ $LEVEL 50]
+(unsensed armors
+(unsensed weapons
+(unsensed shooters
+?:1
+
+?:[EQU $CLASS Tourist]
+~photograph
+?:1
+
+?:[EQU $SELLING Off]
+!statue of
+?:1
+
+~special items
+!worthless items
+#!unusable items
