@@ -1435,6 +1435,7 @@ static bool monster_turn_attack_glyph(struct chunk *c, struct monster *mon,
 
 		/* Break the rune */
 		square_destroy_trap(c, new);
+		c->feeling_squares -= (1 << 8);
 
 		return true;
 	}
@@ -1823,9 +1824,12 @@ static void monster_turn(struct chunk *c, struct monster *mon)
 			disturb(player);		
 	}
 
-	/* Hack -- get "bold" if out of options */
-	if (!did_something && mon->m_timed[MON_TMD_FEAR])
-		mon_clear_timed(mon, MON_TMD_FEAR, MON_TMD_FLG_NOTIFY);
+	/* Out of options - monster is paralyzed by fear (unless attacked) */
+	if (!did_something && mon->m_timed[MON_TMD_FEAR]) {
+		int amount = mon->m_timed[MON_TMD_FEAR];
+		mon_clear_timed(mon, MON_TMD_FEAR, MON_TMD_FLG_NOMESSAGE);
+		mon_inc_timed(mon, MON_TMD_HOLD, amount, MON_TMD_FLG_NOTIFY);
+	}
 
 	/* If we see an unaware monster do something, become aware of it */
 	if (did_something && monster_is_camouflaged(mon))

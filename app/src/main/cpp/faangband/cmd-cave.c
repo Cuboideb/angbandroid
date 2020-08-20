@@ -805,6 +805,12 @@ static bool do_cmd_disarm_test(struct loc grid)
 	if (square_ismonstertrap(cave, grid)) {
 		return true;
 	}
+	if (square_iswarded(cave, grid)) {
+		return true;
+	}
+	if (square_isdecoyed(cave, grid)) {
+		return true;
+	}
 
 	/* Nothing */
 	msg("You see nothing there to disarm.");
@@ -893,6 +899,14 @@ static bool do_cmd_disarm_aux(struct loc grid)
 
 			/* Trap is gone */
 			player->num_traps--;
+			square_forget(cave, grid);
+			square_destroy_trap(cave, grid);
+			return false;
+		} else if (trf_has(trap->flags, TRF_GLYPH)) {
+			msgt(MSG_DISARM, "You have removed the %s.", trap->kind->name);
+
+			/* Glyph is gone */
+			cave->feeling_squares -= (1 << 8);
 			square_forget(cave, grid);
 			square_destroy_trap(cave, grid);
 			return false;
@@ -1032,7 +1046,7 @@ void do_cmd_disarm(struct command *cmd)
  */
 void do_cmd_set_trap(struct loc grid)
 {
-	int max_traps =	1 + ((player->lev >= 25) ? 1 : 0);
+	int max_traps =	1 + (player->lev >= 25) ? 1 : 0;
 
 	/* Specialty ability Extra Trap */
 	if (player_has(player, PF_EXTRA_TRAP)) max_traps++;
