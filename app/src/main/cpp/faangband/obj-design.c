@@ -271,7 +271,7 @@ static bool get_property(struct artifact *art, struct object *obj,
 			int pick;
 			for (pick = 1; pick < z_info->brand_max; pick++) {
 				char *s = strstr(prop->name, brands[pick].name);
-				if (s && (brands[pick].o_multiplier == value))
+				if (s && (brands[pick].multiplier == value))
 					break;
 			}
 			assert(pick < z_info->brand_max);
@@ -290,7 +290,7 @@ static bool get_property(struct artifact *art, struct object *obj,
 					for (i = 1; i < z_info->brand_max; i++) {
 						if (obj->brands[i] &&
 							streq(prop->name, brands[i].name)) {
-							cur_value = brands[i].o_multiplier;
+							cur_value = brands[i].multiplier;
 						}
 					}
 				}
@@ -310,7 +310,7 @@ static bool get_property(struct artifact *art, struct object *obj,
 			int pick;
 			for (pick = 1; pick < z_info->slay_max; pick++) {
 				char *s = strstr(prop->name, slays[pick].name);
-				if (s && (slays[pick].o_multiplier == value))
+				if (s && (slays[pick].multiplier == value))
 					break;
 			}
 			assert(pick < z_info->slay_max);
@@ -329,7 +329,7 @@ static bool get_property(struct artifact *art, struct object *obj,
 					for (i = 1; i < z_info->slay_max; i++) {
 						if (obj->slays[i] &&
 							streq(prop->name, slays[i].name)) {
-							cur_value = slays[i].o_multiplier;
+							cur_value = slays[i].multiplier;
 						}
 					}
 				}
@@ -778,7 +778,7 @@ static void choose_melee_weapon_theme(struct artifact *art)
 		}
 
 		/* Brand the weapon with fire. */
-		get_property(art, NULL, "fire brand", 25, true);
+		get_property(art, NULL, "fire brand", 17, true);
 
 		/* Grant either a resist or immunity to fire. */
 		if ((potential >= 4500) && one_in_(3)) {
@@ -815,7 +815,7 @@ static void choose_melee_weapon_theme(struct artifact *art)
 		}
 
 		/* Brand the weapon with frost. */
-		get_property(art, NULL, "cold brand", 25, true);
+		get_property(art, NULL, "cold brand", 17, true);
 
 		/* Grant either a resist or immunity to frost. */
 		if ((potential >= 4500) && one_in_(3)) {
@@ -852,7 +852,7 @@ static void choose_melee_weapon_theme(struct artifact *art)
 		}
 
 		/* Brand the weapon with acid. */
-		get_property(art, NULL, "acid brand", 25, true);
+		get_property(art, NULL, "acid brand", 17, true);
 		/* Grant either a resist or immunity to acid. */
 		if ((potential >= 4500) && one_in_(3)) {
 			get_property(art, NULL, "acid resistance", 100, false);
@@ -877,7 +877,7 @@ static void choose_melee_weapon_theme(struct artifact *art)
 		}
 
 		/* Brand the weapon with lightning. */
-		get_property(art, NULL, "lightning brand", 25, true);
+		get_property(art, NULL, "lightning brand", 17, true);
 		/* Grant either a resist or immunity to acid. */
 		if ((potential >= 4500) && one_in_(3)) {
 			get_property(art, NULL, "electricity resistance", 100, false);
@@ -900,7 +900,7 @@ static void choose_melee_weapon_theme(struct artifact *art)
 		}
 
 		/* Brand the weapon with poison. */
-		get_property(art, NULL, "poison brand", 25, true);
+		get_property(art, NULL, "poison brand", 17, true);
 		/* Grant resistance to poison. */
 		get_property(art, NULL, "poison resistance", 35 + 5 * randint0(5),
 					 true);
@@ -927,7 +927,7 @@ static void choose_melee_weapon_theme(struct artifact *art)
 			get_property(art, NULL, "hold life", 0, false);
 			/* Probably slay evil. */
 			if (one_in_(3)) {
-				get_property(art, NULL, "slay evil creatures", 18, false);
+				get_property(art, NULL, "slay evil creatures", 15, false);
 			}
 			/* Possibly resist nether. */
 			if (one_in_(3)) {
@@ -940,7 +940,7 @@ static void choose_melee_weapon_theme(struct artifact *art)
 			}
 			/* Possibly slay undead. */
 			if (one_in_(3)) {
-				get_property(art, NULL, "slay undead", 25, false);
+				get_property(art, NULL, "slay undead", 20, false);
 			}
 			/* But can leave the user immobile */
 			if (one_in_(4)) {
@@ -1025,42 +1025,42 @@ static void choose_melee_weapon_theme(struct artifact *art)
 
 		/* Load up on the slays. */
 		if (one_in_(6) && (potential >= 2000)) {
-			get_property(art, NULL, "slay evil creatures", one_in_(3) ? 23 : 18,
+			get_property(art, NULL, "slay evil creatures", one_in_(3) ? 17 : 15,
 						 true);
-			get_property(art, NULL, "slay orcs", one_in_(3) ? 35 : 25, true);
-			get_property(art, NULL, "slay trolls", one_in_(3) ? 35 : 25, true);
-			get_property(art, NULL, "slay giants", one_in_(3) ? 35 : 25, true);
+			get_property(art, NULL, "slay orcs", one_in_(3) ? 25 : 20, true);
+			get_property(art, NULL, "slay trolls", one_in_(3) ? 25 : 20, true);
+			get_property(art, NULL, "slay giants", one_in_(3) ? 25 : 20, true);
 		} else if (one_in_(5) && (potential >= 2000)) {
-			get_property(art, NULL, "slay evil creatures", one_in_(3) ? 23 : 18,
+			get_property(art, NULL, "slay evil creatures", one_in_(3) ? 17 : 15,
 						 true);
-			get_property(art, NULL, "slay undead", one_in_(3) ? 35 : 25, true);
-			get_property(art, NULL, "slay demons", one_in_(3) ? 35 : 25, true);
+			get_property(art, NULL, "slay undead", one_in_(3) ? 25 : 20, true);
+			get_property(art, NULL, "slay demons", one_in_(3) ? 25 : 20, true);
 		} else {
 			if (one_in_(2)) {
-				get_property(art, NULL, "slay animals", one_in_(3) ? 25 : 20,
+				get_property(art, NULL, "slay animals", one_in_(3) ? 20 : 17,
 							 true);
 			}
 			if (one_in_(2)) {
-				get_property(art, NULL, "slay demons", one_in_(3) ? 35 : 25,
+				get_property(art, NULL, "slay demons", one_in_(3) ? 25 : 20,
 							 true);
 			}
 			if (one_in_(4)) {
 				get_property(art, NULL, "slay evil creatures",
-							 one_in_(3) ? 23 : 18, true);
+							 one_in_(3) ? 17 : 15, true);
 			}
 			if (one_in_(3)) {
-				get_property(art, NULL, "slay orcs", one_in_(3) ? 35 : 25, true);
+				get_property(art, NULL, "slay orcs", one_in_(3) ? 25 : 20, true);
 			}
 			if (one_in_(3)) {
-				get_property(art, NULL, "slay trolls", one_in_(3) ? 35 : 25,
+				get_property(art, NULL, "slay trolls", one_in_(3) ? 25 : 20,
 							 true);
 			}
 			if (one_in_(3)) {
-				get_property(art, NULL, "slay demons", one_in_(3) ? 35 : 25,
+				get_property(art, NULL, "slay demons", one_in_(3) ? 25 : 20,
 							 true);
 			}
 			if (one_in_(3)) {
-				get_property(art, NULL, "slay giants", one_in_(3) ? 35 : 25,
+				get_property(art, NULL, "slay giants", one_in_(3) ? 25 : 20,
 							 true);
 			}
 		}
@@ -1285,7 +1285,7 @@ static void choose_melee_weapon_theme(struct artifact *art)
 		}
 
 		/* Naturally, the appropriate slay. */
-		get_property(art, NULL, "slay animals", one_in_(2) ? 25 : 20, true);
+		get_property(art, NULL, "slay animals", one_in_(2) ? 20 : 17, true);
 		/* A pair of survival skills. */
 		get_property(art, NULL, "regeneration", 0, false);
 		get_property(art, NULL, "feather falling", 0, false);
@@ -1307,8 +1307,8 @@ static void choose_melee_weapon_theme(struct artifact *art)
 		}
 
 		/* Naturally, the appropriate slays. */
-		get_property(art, NULL, "slay orcs", one_in_(3) ? 35 : 25, true);
-		get_property(art, NULL, "slay trolls", one_in_(3) ? 35 : 25, true);
+		get_property(art, NULL, "slay orcs", one_in_(3) ? 25 : 20, true);
+		get_property(art, NULL, "slay trolls", one_in_(3) ? 25 : 20, true);
 		/* Often, grant a bonus to ac. */
 		if (one_in_(2)) {
 			get_property(art, NULL, "armor bonus",
@@ -1316,7 +1316,7 @@ static void choose_melee_weapon_theme(struct artifact *art)
 		}
 		/* Sometimes, slay giant. */
 		if (one_in_(3)) {
-			get_property(art, NULL, "slay giants", one_in_(3) ? 35 : 25, true);
+			get_property(art, NULL, "slay giants", one_in_(3) ? 25 : 20, true);
 		}
 		/* Bonus to strength. */
 		get_property(art, NULL, "strength", randint1(4), false);
@@ -1335,7 +1335,7 @@ static void choose_melee_weapon_theme(struct artifact *art)
 		}
 
 		/* Grant slay undead and see invisible. */
-		get_property(art, NULL, "slay undead", one_in_(3) ? 35 : 25, true);
+		get_property(art, NULL, "slay undead", one_in_(3) ? 25 : 20, true);
 		get_property(art, NULL, "see invisible", 0, true);
 		/* Sometimes, hold life. */
 		if (one_in_(3)) {
@@ -1369,7 +1369,7 @@ static void choose_melee_weapon_theme(struct artifact *art)
 		}
 
 		/* Naturally, the appropriate slay. */
-		get_property(art, NULL, "slay evil creatures", one_in_(3) ? 23 : 18,
+		get_property(art, NULL, "slay evil creatures", one_in_(3) ? 17 : 15,
 					 true);
 		/* Bless the weapon. */
 		get_property(art, NULL, "blessed melee", 0, false);
@@ -1398,10 +1398,10 @@ static void choose_melee_weapon_theme(struct artifact *art)
 		}
 
 		/* Naturally, the appropriate slay. */
-		get_property(art, NULL, "slay demons", one_in_(3) ? 35 : 25,	true);
+		get_property(art, NULL, "slay demons", one_in_(3) ? 25 : 20,	true);
 		/* Sometimes, nip the spawn of hell with cold as well. */
 		if (one_in_(2)) {
-			get_property(art, NULL, "cold brand", 25, false);
+			get_property(art, NULL, "cold brand", 17, false);
 		}
 		/* Grant resistance to fire. */
 		get_property(art, NULL, "fire resistance", 35 + 5 * randint0(5), false);
@@ -1424,22 +1424,22 @@ static void choose_melee_weapon_theme(struct artifact *art)
 		}
 
 		/* Naturally, the appropriate slay. */
-		get_property(art, NULL, "slay dragons", one_in_(3) ? 35 : 25, true);
+		get_property(art, NULL, "slay dragons", one_in_(3) ? 25 : 20, true);
 		/* And one of the five elemental brands. */
 		if (temp == 1) {
-			get_property(art, NULL, "acid brand", 25, false);
+			get_property(art, NULL, "acid brand", 17, false);
 		}
 		if (temp == 2) {
-			get_property(art, NULL, "lightning brand", 25, false);
+			get_property(art, NULL, "lightning brand", 17, false);
 		}
 		if (temp == 3) {
-			get_property(art, NULL, "fire brand", 25, false);
+			get_property(art, NULL, "fire brand", 17, false);
 		}
 		if (temp == 4) {
-			get_property(art, NULL, "cold brand", 25, false);
+			get_property(art, NULL, "cold brand", 17, false);
 		}
 		if (temp == 5) {
-			get_property(art, NULL, "poison brand", 25, false);
+			get_property(art, NULL, "poison brand", 17, false);
 		}
 		/* Bonus to constitution. */
 		get_property(art, NULL, "constitution", randint1(4), false);
@@ -2927,44 +2927,44 @@ static void haggle_till_done(struct artifact *art, struct object *obj)
 			/* Collect a slay or brand. */
 			choice = randint1(13);
 			if ((choice == 1) && !has_property(art, obj, "slay animals")) {
-				get_property(art, obj, "slay animals", 20, true);
+				get_property(art, obj, "slay animals", 17, true);
 			}
 			if ((choice == 2) && !has_property(art, obj,
 											   "slay evil creatures")) {
-				get_property(art, obj, "slay evil creatures", 18, true);
+				get_property(art, obj, "slay evil creatures", 15, true);
 			}
 			if ((choice == 3) && !has_property(art, obj, "slay undead")) {
-				get_property(art, obj, "slay undead", 25, true);
+				get_property(art, obj, "slay undead", 20, true);
 			}
 			if ((choice == 4) && !has_property(art, obj, "slay demons")) {
-				get_property(art, obj, "slay demons", 25, true);
+				get_property(art, obj, "slay demons", 20, true);
 			}
 			if ((choice == 5) && !has_property(art, obj, "slay orcs")) {
-				get_property(art, obj, "slay orcs", 25, true);
+				get_property(art, obj, "slay orcs", 20, true);
 			}
 			if ((choice == 6) && !has_property(art, obj, "slay trolls")) {
-				get_property(art, obj, "slay trolls", 25, true);
+				get_property(art, obj, "slay trolls", 20, true);
 			}
 			if ((choice == 7) && !has_property(art, obj, "slay giants")) {
-				get_property(art, obj, "slay giants", 25, true);
+				get_property(art, obj, "slay giants", 20, true);
 			}
 			if ((choice == 8) && !has_property(art, obj, "slay dragons")) {
-				get_property(art, obj, "slay dragons", 25, true);
+				get_property(art, obj, "slay dragons", 20, true);
 			}
 			if ((choice == 9) && !has_property(art, obj, "acid brand")) {
-				get_property(art, obj, "acid brand", 25, true);
+				get_property(art, obj, "acid brand", 17, true);
 			}
 			if ((choice == 10) && !has_property(art, obj, "lightning brand")) {
-				get_property(art, obj, "lightning brand", 25, true);
+				get_property(art, obj, "lightning brand", 17, true);
 			}
 			if ((choice == 11) && !has_property(art, obj, "fire brand")) {
-				get_property(art, obj, "fire brand", 25, true);
+				get_property(art, obj, "fire brand", 17, true);
 			}
 			if ((choice == 12) && !has_property(art, obj, "cold brand")) {
-				get_property(art, obj, "cold brand", 25, true);
+				get_property(art, obj, "cold brand", 17, true);
 			}
 			if ((choice == 13) && !has_property(art, obj, "poison brand")) {
-				get_property(art, obj, "poison brand", 25, true);
+				get_property(art, obj, "poison brand", 17, true);
 			}
 			/* Often, collect a miscellaneous quality, if it is affordable. */
 			if (one_in_(2)) {
@@ -3468,8 +3468,8 @@ static void make_terrible(struct artifact *art, struct object *obj)
 				for (j = 0; j < STAT_MAX; j++) {
 					s16b *bonus = art ? &art->modifiers[j] : &obj->modifiers[j];
 					if ((*bonus) > 0) {
-					*bonus = -(*bonus);
-				}
+						*bonus = -(*bonus);
+					}
 				}
 
 				/* Artifact is highly unlikely to have any value. */
@@ -3477,7 +3477,6 @@ static void make_terrible(struct artifact *art, struct object *obj)
 					art->cost = MAX(art->cost - 30000L, 0);
 				}
 			} else {
-
 				/* Iron Crown of Beruthiel, here we come... */
 				penalty = -(randint1(5)) - 3;
 				if (one_in_(3)) {
@@ -3487,7 +3486,7 @@ static void make_terrible(struct artifact *art, struct object *obj)
 					s16b *bonus = art ? &art->modifiers[j] : &obj->modifiers[j];
 					*bonus = 0;
 				}
-					if (one_in_(5)) {
+				if (one_in_(5)) {
 					for (j = 0; j < STAT_MAX; j++) {
 						s16b *bonus = art ? &art->modifiers[j] :
 							&obj->modifiers[j];
@@ -3495,26 +3494,26 @@ static void make_terrible(struct artifact *art, struct object *obj)
 						if (j == OBJ_MOD_DEX) *bonus = penalty;
 						if (j == OBJ_MOD_CON) *bonus = penalty;
 					}
-					} else if (one_in_(4)) {
+				} else if (one_in_(4)) {
 					for (j = 0; j < STAT_MAX; j++) {
 						s16b *bonus = art ? &art->modifiers[j] :
 							&obj->modifiers[j];
 						if (j == OBJ_MOD_WIS) *bonus = penalty;
 						if (j == OBJ_MOD_INT) *bonus = penalty;
 					}
-					} else if (one_in_(6)) {
+				} else if (one_in_(6)) {
 					s16b *bonus = art ? &art->modifiers[OBJ_MOD_SPEED] :
 						&obj->modifiers[OBJ_MOD_SPEED];
 					*bonus = penalty;
-					} else {
+				} else {
 					for (j = 0; j < STAT_MAX; j++) {
 						s16b *bonus = art ? &art->modifiers[j] :
 							&obj->modifiers[j];
-							if (one_in_(4)) {
-								*bonus = penalty;
-							}
+						if (one_in_(4)) {
+							*bonus = penalty;
 						}
 					}
+				}
 
 				/* More curses for good measure... */
 				num_curses += randint1(2);
@@ -3925,8 +3924,8 @@ static void allocate_potential(struct object *obj, int lev)
 {
 	int random;
 
-	/* The total potential of a ring or amulet ranges from 0 to 9000, 
-	 * depending on depth and type. */
+	/* The total potential of a ring or amulet (found by level 100)
+	 * ranges from 0 to 5280, depending on depth and type. */
 	potential = (obj->kind->level * 40) + (lev * 10);
 
 	/* Randomise 10% either way */
@@ -4054,20 +4053,20 @@ static bool choose_type(struct object *obj)
 				if (one_in_(2)) {
 					/* Electricity... */
 					get_property(NULL, obj, "electricity resistance",
-								 45 + 5 * randint0(3), true);
+								 45 + 5 * bonus, true);
 					if (one_in_(3)) {
 						/* and maybe acid */
 						get_property(NULL, obj, "acid resistance",
-									 45 + 5 * randint0(3), true);
+									 45 + 5 * bonus, true);
 					}
 				} else {
 					/* Acid... */
 					get_property(NULL, obj, "acid resistance",
-								 45 + 5 * randint0(3), true);
+								 45 + 5 * bonus, true);
 					if (one_in_(3)) {
 						/* and maybe electricity */
 						get_property(NULL, obj, "electricity resistance",
-									 45 + 5 * randint0(3), true);
+									 45 + 5 * bonus, true);
 					}
 				}
 
@@ -4075,11 +4074,11 @@ static bool choose_type(struct object *obj)
 				if (potential > 1000) {
 					if (one_in_(10)) {
 						get_property(NULL, obj, "cold resistance",
-									 35 + 5 * randint0(3), true);
+									 35 + 5 * bonus, true);
 					}
 					if (one_in_(10)) {
 						get_property(NULL, obj, "fire resistance",
-									 35 + 5 * randint0(3), true);
+									 35 + 5 * bonus, true);
 					}
 				}
 			} else if (tval_is_ring(obj)) {
@@ -4087,20 +4086,20 @@ static bool choose_type(struct object *obj)
 				if (one_in_(2)) {
 					/* Fire... */
 					get_property(NULL, obj, "fire resistance",
-								 45 + 5 * randint0(3), true);
+								 45 + 5 * bonus, true);
 					if (one_in_(3)) {
 						/* and maybe cold */
 						get_property(NULL, obj, "cold resistance",
-									 45 + 5 * randint0(3), true);
+									 45 + 5 * bonus, true);
 					}
 				} else {
 					/* Cold... */
 					get_property(NULL, obj, "cold resistance",
-								 45 + 5 * randint0(3), true);
+								 45 + 5 * bonus, true);
 					if (one_in_(3)) {
 						/* and maybe fire */
 						get_property(NULL, obj, "fire resistance",
-									 45 + 5 * randint0(3), true);
+									 45 + 5 * bonus, true);
 					}
 				}
 
@@ -4108,11 +4107,11 @@ static bool choose_type(struct object *obj)
 				if (potential > 1000) {
 					if (one_in_(10)) {
 						get_property(NULL, obj, "acid resistance",
-									 35 + 5 * randint0(3), true);
+									 35 + 5 * bonus, true);
 					}
 					if (one_in_(10)) {
 						get_property(NULL, obj, "electricity resistance",
-									 35 + 5 * randint0(3), true);
+									 35 + 5 * bonus, true);
 					}
 				}
 			}
@@ -4134,15 +4133,15 @@ static bool choose_type(struct object *obj)
 				/* Protection for the devices */
 				if (one_in_(5)) {
 					get_property(NULL, obj, "electricity resistance",
-								 35 + 5 * randint0(3), true);
+								 35 + 5 * bonus, true);
 				}
 				if (one_in_(5)) {
 					get_property(NULL, obj, "fire resistance",
-								 35 + 5 * randint0(3), true);
+								 35 + 5 * bonus, true);
 				}
 				if (one_in_(5)) {
 					get_property(NULL, obj, "acid resistance",
-								 35 + 5 * randint0(3), true);
+								 35 + 5 * bonus, true);
 				}
 				done = true;
 			}
@@ -4153,18 +4152,18 @@ static bool choose_type(struct object *obj)
 			if (potential > 2000) {
 
 				/* Freedom of action (weaker objects may get a subset) */
-				if (randint1(3500) > initial_potential) {
+				if (randint1(3500) < initial_potential) {
 					get_property(NULL, obj, "protection from blindness", 0,
 								 true);
 				}
-				if (randint1(3500) > initial_potential) {
+				if (randint1(3500) < initial_potential) {
 					get_property(NULL, obj, "protection from confusion", 0,
 								 true);
 				}
-				if (randint1(3500) > initial_potential) {
+				if (randint1(3500) < initial_potential) {
 					get_property(NULL, obj, "free action", 0, true);
 				}
-				if (randint1(3500) > initial_potential) {
+				if (randint1(3500) < initial_potential) {
 					get_property(NULL, obj, "see invisible", 0, true);
 				}
 
@@ -4276,7 +4275,7 @@ static bool choose_type(struct object *obj)
 				/* Safe to get up close */
 				get_property(NULL, obj, "protection from fear", 0, false);
 				get_property(NULL, obj, "disenchantment resistance",
-							 35 + 5 * randint0(5), false);
+							 35 + 5 * bonus, false);
 				get_property(NULL, obj, "hold life", 0, false);
 
 				/* Combat bonuses */
@@ -4340,22 +4339,22 @@ static bool choose_type(struct object *obj)
 				/* Brand, resistance, activation */
 				temp = randint1(4);
 				if (temp == 1) {
-					get_property(NULL, obj, "acid brand", 15, true);
+					get_property(NULL, obj, "acid brand", 14, true);
 					get_property(NULL, obj, "acid resistance",
 								 35 + 5 * bonus, true);
 					obj->activation = lookup_activation("RING_ACID");
 				} else if (temp == 2) {
-					get_property(NULL, obj, "lightning brand", 15, true);
+					get_property(NULL, obj, "lightning brand", 14, true);
 					get_property(NULL, obj, "electricity resistance",
 								 35 + 5 * bonus, true);
 					obj->activation = lookup_activation("RING_ELEC");
 				} else if (temp == 3) {
-					get_property(NULL, obj, "fire brand", 15, true);
+					get_property(NULL, obj, "fire brand", 14, true);
 					get_property(NULL, obj, "fire resistance",
 								 35 + 5 * bonus, true);
 					obj->activation = lookup_activation("RING_FIRE");
 				} else {
-					get_property(NULL, obj, "cold brand", 15, true);
+					get_property(NULL, obj, "cold brand", 14, true);
 					get_property(NULL, obj, "cold resistance",
 								 35 + 5 * bonus, true);
 					obj->activation = lookup_activation("RING_COLD");
@@ -4458,7 +4457,8 @@ static bool choose_type(struct object *obj)
 				/* ... and more nice properties, if affordable */
 				property = select_property(potential, mobility, 5, &max_value,
 										   RANK_RANDOM_CHOICE, obj);
-				get_property(NULL, obj, mobility[property], 0, false);
+				get_property(NULL, obj, mobility[property], 35 + 5 * bonus,
+							 false);
 				done = true;
 			}
 		} else if (streq(ego->name, "of Arcane Resistance")) {
@@ -4469,10 +4469,10 @@ static bool choose_type(struct object *obj)
 				/* Poison or nether resist */
 				if (one_in_(2)) {
 					get_property(NULL, obj, "poison resistance",
-								 40 + 5 * randint0(5), true);
+								 40 + 5 * randint0(bonus), true);
 				} else {
 					get_property(NULL, obj, "nether resistance",
-								 40 + 5 * randint0(5), true);
+								 40 + 5 * randint0(bonus), true);
 				}
 
 				/* Rack 'em up while we're feeling lucky */
@@ -4490,7 +4490,7 @@ static bool choose_type(struct object *obj)
 					if (obj->el_info[ELEM_POIS + choice].res_level ==
 						RES_LEVEL_BASE) {
 						get_property(NULL, obj, resists[choice],
-									 30 + 5 * randint0(5), true);
+									 30 + 5 * randint0(bonus), true);
 					}
 				}
 				done = true;
@@ -4769,6 +4769,10 @@ static bool choose_type(struct object *obj)
 			}
 		}
 	}
+
+	/* Limit off-type features */
+	potential /= 2;
+
 	obj->ego = ego;
 	return (done);
 }

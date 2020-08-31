@@ -1090,7 +1090,7 @@ base:humanoid
 color:M
 speed:110
 hit-points:40
-armor-class:20
+armor-class:60
 hearing:20
 sleepiness:20
 depth:2
@@ -1099,7 +1099,7 @@ experience:30
 blow:HIT:HURT:2d3
 blow:HIT:HURT:2d3
 flags:UNIQUE
-flags:MALE | SMART
+flags:MALE | SMART | SPEAKING
 flags:ONLY_ITEM | DROP_1
 flags:BASH_DOOR
 flags:EVIL
@@ -1851,7 +1851,7 @@ base:humanoid
 color:b
 speed:120
 hit-points:48
-armor-class:20
+armor-class:36
 hearing:12
 sleepiness:10
 depth:5
@@ -1860,7 +1860,7 @@ experience:90
 blow:HIT:HURT:1d6
 blow:TOUCH:EAT_ITEM
 blow:TOUCH:EAT_GOLD
-flags:UNIQUE | MALE | SMART
+flags:UNIQUE | MALE | SMART | SPEAKING
 flags:ONLY_ITEM | DROP_2 | DROP_GOOD
 flags:BASH_DOOR
 desc:He is a sturdy hobbit who is renowned for his unusual strength and
@@ -2019,7 +2019,7 @@ color:D
 speed:120
 hit-points:12
 hearing:40
-armor-class:14
+armor-class:48
 sleepiness:0
 depth:7
 rarity:3
@@ -2239,7 +2239,7 @@ speed:110
 hit-points:150
 hearing:20
 smell:20
-armor-class:30
+armor-class:45
 sleepiness:40
 depth:7
 rarity:3
@@ -2261,7 +2261,7 @@ base:icky thing
 color:U
 speed:110
 hit-points:90
-armor-class:20
+armor-class:36
 hearing:10
 sleepiness:20
 depth:7
@@ -2412,7 +2412,7 @@ base:person
 color:t
 speed:110
 hit-points:190
-armor-class:20
+armor-class:45
 hearing:15
 sleepiness:20
 depth:8
@@ -2421,7 +2421,7 @@ experience:150
 blow:HIT:HURT:1d5
 blow:HIT:HURT:1d5
 blow:TOUCH:EAT_GOLD
-flags:UNIQUE | MALE | SMART
+flags:UNIQUE | MALE | SMART | SPEAKING
 flags:FORCE_SLEEP | MOVE_BODY
 flags:ONLY_ITEM | DROP_60 | DROP_1 | DROP_GOOD | DROP_GREAT
 flags:TAKE_ITEM | EVIL
@@ -2435,7 +2435,7 @@ base:orc
 color:T
 speed:110
 hit-points:140
-armor-class:20
+armor-class:60
 hearing:20
 sleepiness:30
 depth:8
@@ -2445,7 +2445,7 @@ blow:HIT:HURT:1d10
 blow:HIT:HURT:1d10
 blow:HIT:HURT:1d9
 blow:HIT:HURT:1d9
-flags:UNIQUE | SMART
+flags:UNIQUE | SMART | SPEAKING
 flags:ONLY_ITEM | DROP_60 | DROP_1 | DROP_GOOD
 friends-base:100:2d7:orc
 desc:A captain of a regiment of weaker orcs, Balcmeg keeps his troop in order
@@ -2588,7 +2588,7 @@ speed:110
 hit-points:210
 light:2
 hearing:20
-armor-class:37
+armor-class:60
 sleepiness:40
 depth:9
 rarity:2
@@ -2597,7 +2597,7 @@ blow:HIT:HURT:1d12
 blow:HIT:HURT:1d12
 blow:HIT:HURT:1d12
 blow:HIT:HURT:1d12
-flags:UNIQUE | MALE
+flags:UNIQUE | MALE | SPEAKING
 flags:DROP_1 | DROP_GOOD | ONLY_ITEM
 flags:OPEN_DOOR
 desc:A nasty piece of work, Brodda picks on defenseless women and children.
@@ -2701,7 +2701,7 @@ speed:120
 hit-points:120
 hearing:18
 smell:20
-armor-class:24
+armor-class:48
 sleepiness:10
 depth:10
 rarity:3
@@ -2710,7 +2710,7 @@ blow:HIT:HURT:1d9
 blow:HIT:HURT:1d8
 blow:INSULT
 blow:INSULT
-flags:UNIQUE | MALE | EVIL | SMART
+flags:UNIQUE | MALE | EVIL | SMART | SPEAKING
 flags:DROP_1 | DROP_GOOD | ONLY_ITEM
 flags:FORCE_SLEEP
 spell-freq:4
@@ -2973,7 +2973,7 @@ base:orc
 color:m
 speed:110
 hit-points:160
-armor-class:20
+armor-class:60
 hearing:20
 sleepiness:20
 depth:10
@@ -2983,7 +2983,7 @@ blow:HIT:HURT:1d12
 blow:HIT:HURT:1d10
 blow:HIT:HURT:1d12
 blow:HIT:HURT:1d10
-flags:UNIQUE | SMART
+flags:UNIQUE | SMART | SPEAKING
 flags:ONLY_ITEM | DROP_60 | DROP_1 | DROP_GOOD
 flags:IM_POIS
 friends-base:100:2d7:orc
@@ -3444,7 +3444,7 @@ speed:120
 hit-points:180
 hearing:18
 smell:20
-armor-class:28
+armor-class:60
 sleepiness:10
 depth:13
 rarity:3
@@ -3452,7 +3452,7 @@ experience:200
 blow:HIT:HURT:1d9
 blow:HIT:HURT:1d9
 blow:HIT:HURT:1d8
-flags:UNIQUE | MALE | EVIL | SMART
+flags:UNIQUE | MALE | EVIL | SMART | SPEAKING
 flags:DROP_60 | DROP_1 | DROP_GOOD | ONLY_ITEM
 flags:FORCE_SLEEP
 spell-freq:3
@@ -3825,8 +3825,7 @@ friends:50:2d4:Warg
 friends:50:1d2:orc tracker
 friends:100:4d4:Same
 desc:He is a hideous deformed cross-breed with man and orc, combining man's
-desc: strength and cunning with orcish evil.  The traitorous wizard Saruman is
-desc: generally believed to be responsible for this abomination.
+desc: strength and cunning with orcish evil.
 
 name:giant tarantula
 base:spider
@@ -5190,7 +5189,7 @@ base:orc
 color:g
 speed:110
 hit-points:280
-armor-class:20
+armor-class:90
 hearing:30
 sleepiness:20
 depth:21
@@ -5200,7 +5199,7 @@ blow:HIT:HURT:3d8
 blow:HIT:HURT:3d8
 blow:HIT:HURT:3d5
 blow:HIT:HURT:3d5
-flags:UNIQUE | SMART
+flags:UNIQUE | SMART | SPEAKING
 flags:ONLY_ITEM | DROP_60 | DROP_1 | DROP_GOOD
 flags:IM_POIS
 friends-base:100:3d7:orc
@@ -5561,7 +5560,7 @@ base:orc
 color:P
 speed:120
 hit-points:330
-armor-class:20
+armor-class:75
 hearing:25
 sleepiness:20
 depth:23
@@ -5571,7 +5570,7 @@ blow:HIT:HURT:3d5
 blow:HIT:HURT:3d5
 blow:HIT:HURT:3d5
 blow:HIT:HURT:3d5
-flags:UNIQUE | SMART
+flags:UNIQUE | SMART | SPEAKING
 flags:ONLY_ITEM | DROP_2 | DROP_GOOD
 flags:IM_POIS
 friends-base:100:3d9:orc
@@ -5632,7 +5631,7 @@ color:o
 speed:110
 hit-points:820
 hearing:20
-armor-class:96
+armor-class:120
 sleepiness:10
 depth:24
 rarity:2
@@ -5641,7 +5640,7 @@ blow:HIT:HURT:3d6
 blow:HIT:HURT:3d6
 blow:HIT:HURT:3d6
 blow:HIT:DISENCHANT
-flags:UNIQUE | MALE
+flags:UNIQUE | MALE | SPEAKING
 flags:DROP_1 | DROP_GOOD | ONLY_ITEM
 flags:IM_COLD | IM_FIRE | NO_CONF | NO_SLEEP | NO_HOLD
 flags:FORCE_SLEEP
@@ -5657,7 +5656,7 @@ color:o
 speed:110
 hit-points:820
 hearing:20
-armor-class:96
+armor-class:120
 sleepiness:10
 depth:24
 rarity:2
@@ -5666,7 +5665,7 @@ blow:HIT:HURT:3d6
 blow:HIT:HURT:3d6
 blow:HIT:HURT:3d6
 blow:HIT:DISENCHANT
-flags:UNIQUE | MALE
+flags:UNIQUE | MALE | SPEAKING
 flags:DROP_1 | DROP_GOOD | ONLY_ITEM
 flags:IM_COLD | IM_FIRE | NO_CONF | NO_SLEEP | NO_HOLD
 flags:FORCE_SLEEP
@@ -5786,7 +5785,7 @@ color:R
 speed:120
 hit-points:50
 hearing:20
-armor-class:16
+armor-class:48
 sleepiness:8
 depth:25
 rarity:2
@@ -5835,7 +5834,7 @@ base:naga
 color:D
 speed:110
 hit-points:100
-armor-class:60
+armor-class:90
 hearing:32
 sleepiness:60
 depth:25
@@ -6019,7 +6018,7 @@ speed:110
 hit-points:850
 light:2
 hearing:20
-armor-class:48
+armor-class:100
 sleepiness:40
 depth:26
 rarity:4
@@ -6027,7 +6026,7 @@ experience:500
 blow:HIT:HURT:4d6
 blow:HIT:HURT:4d6
 blow:HIT:HURT:4d6
-flags:UNIQUE | MALE | EVIL
+flags:UNIQUE | MALE | EVIL | SPEAKING
 flags:DROP_60 | DROP_GOOD | ONLY_ITEM
 flags:OPEN_DOOR | TAKE_ITEM
 friends:60:2d3:Easterling champion:servant
@@ -6350,7 +6349,7 @@ base:orc
 color:R
 speed:120
 hit-points:630
-armor-class:20
+armor-class:120
 hearing:40
 sleepiness:20
 depth:27
@@ -6359,7 +6358,7 @@ experience:550
 blow:HIT:HURT:5d5
 blow:HIT:HURT:5d5
 blow:HIT:HURT:5d5
-flags:UNIQUE | SMART
+flags:UNIQUE | SMART | SPEAKING
 flags:ONLY_ITEM | DROP_3 | DROP_GOOD
 flags:IM_POIS
 friends-base:100:5d9:orc
@@ -6476,7 +6475,7 @@ speed:110
 hit-points:1000
 light:2
 hearing:20
-armor-class:84
+armor-class:135
 sleepiness:40
 depth:28
 rarity:4
@@ -6485,7 +6484,7 @@ blow:HIT:HURT:4d6
 blow:HIT:HURT:4d6
 blow:HIT:HURT:4d6
 blow:HIT:HURT:4d6
-flags:UNIQUE | MALE | EVIL
+flags:UNIQUE | MALE | EVIL | SPEAKING
 flags:DROP_1 | DROP_GOOD | ONLY_ITEM
 flags:OPEN_DOOR | TAKE_ITEM
 spell-freq:10
@@ -6558,7 +6557,7 @@ blow:HIT:POISON:3d4
 blow:HIT:POISON:3d4
 blow:HIT:HURT:3d4
 blow:INSULT
-flags:UNIQUE | INVISIBLE | SMART
+flags:UNIQUE | INVISIBLE | SMART | SPEAKING
 flags:DROP_4 | DROP_GOOD | ONLY_ITEM
 flags:RAND_25 | BASH_DOOR
 flags:FORCE_SLEEP
@@ -7083,7 +7082,7 @@ color:I
 speed:120
 hit-points:1100
 hearing:20
-armor-class:96
+armor-class:120
 sleepiness:20
 depth:30
 rarity:4
@@ -7092,7 +7091,7 @@ blow:HIT:HURT:3d8
 blow:HIT:HURT:3d8
 blow:HIT:HURT:3d8
 blow:HIT:DISENCHANT
-flags:UNIQUE | MALE | EVIL | AMON_RUDH | FORCE_DEPTH
+flags:UNIQUE | MALE | EVIL | SPEAKING | AMON_RUDH | FORCE_DEPTH
 flags:DROP_2 | DROP_GOOD | DROP_GREAT | ONLY_ITEM
 flags:IM_ACID | IM_COLD | IM_ELEC | IM_FIRE | IM_POIS | NO_CONF
 flags:NO_SLEEP | NO_HOLD
@@ -7152,7 +7151,7 @@ base:giant
 color:w
 speed:110
 hit-points:380
-armor-class:30
+armor-class:120
 hearing:40
 sleepiness:90
 depth:31
@@ -7824,7 +7823,7 @@ blow:HIT:HURT:5d5
 blow:HIT:HURT:5d5
 blow:HIT:HURT:5d5
 blow:HIT:HURT:5d5
-flags:UNIQUE | MALE | EVIL
+flags:UNIQUE | MALE | EVIL | SPEAKING
 flags:DROP_2 | DROP_GOOD | ONLY_ITEM
 flags:OPEN_DOOR | TAKE_ITEM
 spell-freq:10
@@ -7957,7 +7956,7 @@ speed:120
 hit-points:1500
 hearing:20
 smell:20
-armor-class:120
+armor-class:135
 sleepiness:20
 depth:35
 rarity:2
@@ -8463,7 +8462,7 @@ blow:HIT:HURT:6d6
 blow:HIT:HURT:6d6
 blow:HIT:HURT:3d8
 blow:HIT:HURT:3d8
-flags:UNIQUE | MALE | EVIL
+flags:UNIQUE | MALE | EVIL | SPEAKING
 flags:DROP_2 | DROP_GOOD | ONLY_ITEM
 flags:OPEN_DOOR | MOVE_BODY
 flags:IM_ACID | IM_COLD | IM_ELEC | IM_FIRE | IM_POIS | NO_CONF
@@ -8562,7 +8561,7 @@ base:bird
 color:U
 speed:130
 hit-points:120
-armor-class:25
+armor-class:90
 hearing:30
 sleepiness:20
 depth:37
@@ -9671,7 +9670,7 @@ color:D
 speed:120
 hit-points:1300
 hearing:20
-armor-class:102
+armor-class:120
 sleepiness:30
 depth:41
 rarity:3
@@ -9680,7 +9679,7 @@ blow:BITE:HURT:2d12
 blow:BITE:HURT:2d12
 blow:BITE:HURT:2d12
 blow:BITE:HURT:2d12
-flags:UNIQUE | MALE | POWERFUL
+flags:UNIQUE | MALE | POWERFUL | SPEAKING
 flags:DROP_4 | DROP_GOOD | ONLY_ITEM
 flags:OPEN_DOOR | BASH_DOOR
 flags:IM_ACID | IM_COLD | IM_ELEC | IM_FIRE | IM_NEXUS | NO_CONF
@@ -9747,8 +9746,8 @@ base:insect
 color:i
 speed:120
 hit-points:2
-armor-class:20
-hearing:1
+armor-class:3
+hearing:20
 sleepiness:0
 depth:42
 rarity:9
@@ -9767,7 +9766,7 @@ speed:120
 hit-points:1500
 hearing:30
 smell:20
-armor-class:120
+armor-class:135
 sleepiness:10
 depth:42
 rarity:2
@@ -9798,7 +9797,7 @@ speed:120
 hit-points:2000
 hearing:20
 smell:20
-armor-class:105
+armor-class:150
 sleepiness:30
 depth:42
 rarity:3
@@ -9807,7 +9806,7 @@ blow:HIT:HURT:6d7
 blow:HIT:HURT:6d7
 blow:BITE:HURT:4d10
 blow:SPIT:ACID:4d8
-flags:UNIQUE | MALE | REGENERATE
+flags:UNIQUE | MALE | SPEAKING
 flags:DROP_3 | DROP_GOOD | ONLY_ITEM
 flags:MOVE_BODY | TAKE_ITEM
 flags:IM_COLD
@@ -9882,8 +9881,8 @@ glyph:|
 color:R
 speed:130
 hit-points:55
-armor-class:17
-hearing:35
+armor-class:105
+hearing:17
 sleepiness:15
 depth:43
 rarity:4
@@ -9909,8 +9908,8 @@ base:giant
 color:u
 speed:115
 hit-points:550
-armor-class:20
-hearing:30
+armor-class:90
+hearing:20
 sleepiness:50
 depth:44
 rarity:4
@@ -9963,7 +9962,7 @@ speed:120
 hit-points:2400
 light:2
 hearing:12
-armor-class:75
+armor-class:105
 sleepiness:30
 depth:43
 rarity:3
@@ -10058,7 +10057,7 @@ color:Z
 speed:130
 hit-points:2700
 hearing:12
-armor-class:75
+armor-class:180
 sleepiness:30
 depth:43
 rarity:3
@@ -10667,7 +10666,7 @@ experience:25000
 blow:HIT:HURT:3d8
 blow:HIT:HURT:3d8
 blow:HIT:HURT:3d8
-flags:UNIQUE | MALE | EVIL | SMART
+flags:UNIQUE | MALE | EVIL | SMART | SPEAKING
 flags:DROP_4 | DROP_GOOD | ONLY_ITEM
 flags:HURT_LIGHT | IM_COLD | IM_FIRE | IM_POIS | NO_CONF | NO_SLEEP | NO_HOLD
 flags:FORCE_SLEEP
@@ -10688,8 +10687,8 @@ glyph:#
 color:W
 speed:110
 hit-points:500
-armor-class:20
-hearing:48
+armor-class:144
+hearing:20
 sleepiness:100
 depth:49
 rarity:5
@@ -11101,7 +11100,7 @@ base:ghost
 color:v
 speed:120
 hit-points:800
-armor-class:30
+armor-class:36
 hearing:12
 sleepiness:20
 depth:51
@@ -11185,7 +11184,7 @@ speed:120
 hit-points:2200
 light:2
 hearing:30
-armor-class:144
+armor-class:180
 sleepiness:70
 depth:52
 rarity:2
@@ -11194,14 +11193,14 @@ blow:CLAW:HURT:4d11
 blow:CLAW:HURT:4d11
 blow:BITE:FIRE:4d15
 blow:BITE:FIRE:4d15
-flags:UNIQUE | MALE
+flags:UNIQUE | MALE | SPEAKING
 flags:DROP_4 | DROP_GOOD | ONLY_ITEM
 flags:BASH_DOOR
 flags:IM_FIRE
 innate-freq:8
 spell-freq:8
 spells:WOUND | CONF
-spells:BR_FIRE
+spells:BR_FIRE | BR_DFIRE
 desc:A mighty dragon, Itangast's form scorches your flesh.  Wisps of
 desc: smoke curl up from his nostrils as he regards you with disdain.
 
@@ -11212,8 +11211,8 @@ base:troll
 color:Z
 speed:120
 hit-points:900
-armor-class:20
-hearing:50
+armor-class:150
+hearing:20
 sleepiness:100
 depth:53
 rarity:2
@@ -11313,7 +11312,7 @@ color:W
 speed:120
 hit-points:2500
 hearing:30
-armor-class:156
+armor-class:195
 sleepiness:70
 depth:53
 rarity:2
@@ -11322,7 +11321,7 @@ blow:CLAW:HURT:4d11
 blow:CLAW:HURT:4d11
 blow:CLAW:COLD:4d15
 blow:BITE:COLD:4d15
-flags:UNIQUE | MALE
+flags:UNIQUE | MALE | SPEAKING
 flags:DROP_4 | DROP_GOOD | ONLY_ITEM
 flags:BASH_DOOR
 flags:IM_COLD
@@ -11590,8 +11589,8 @@ base:person
 color:D
 speed:120
 hit-points:400
-armor-class:20
-hearing:35
+armor-class:105
+hearing:20
 sleepiness:10
 depth:55
 rarity:3
@@ -11627,14 +11626,14 @@ blow:CLAW:HURT:6d12
 blow:CLAW:HURT:6d12
 blow:BITE:POISON:8d14
 blow:BITE:FIRE:8d14
-flags:UNIQUE | MALE | NARGOTHROND | FORCE_DEPTH
+flags:UNIQUE | MALE | SPEAKING | NARGOTHROND | FORCE_DEPTH
 flags:DROP_4 | DROP_GOOD | DROP_GREAT | ONLY_ITEM
 flags:BASH_DOOR
 flags:IM_FIRE | IM_POIS
 innate-freq:5
 spell-freq:3
 spells:BRAIN_SMASH | FORGET | SCARE
-spells:BR_FIRE | BR_POIS
+spells:BR_FIRE | BR_POIS | BR_DFIRE
 spells:S_DRAGON
 desc:Glaurung is the father of all dragons, and was for a long time the most
 desc: powerful.  Though this is no longer so, he still has full command over his
@@ -12120,8 +12119,8 @@ base:xorn
 color:D
 speed:110
 hit-points:2800
-armor-class:14
-hearing:68
+armor-class:204
+hearing:14
 sleepiness:5
 depth:63
 rarity:2
@@ -12307,8 +12306,8 @@ base:humanoid
 color:B
 speed:140
 hit-points:580
-armor-class:30
-hearing:45
+armor-class:135
+hearing:30
 sleepiness:0
 depth:65
 rarity:3
@@ -12430,7 +12429,7 @@ blow:BITE:EXP_80:6d6
 blow:BITE:EXP_80:6d6
 blow:HIT:CONFUSE:6d6
 blow:HIT:CONFUSE:6d6
-flags:UNIQUE | FEMALE | SMART | FLYING
+flags:UNIQUE | FEMALE | SMART | SPEAKING | FLYING
 flags:DROP_4 | DROP_GOOD | ONLY_ITEM
 flags-off:HURT_FIRE
 spell-freq:3
@@ -12513,7 +12512,7 @@ blow:HIT:HURT:10d10
 blow:HIT:HURT:10d10
 blow:HIT:LOSE_STR:4d6
 blow:HIT:LOSE_STR:4d6
-flags:UNIQUE | MALE
+flags:UNIQUE | MALE | SPEAKING
 flags:DROP_4 | DROP_GOOD | ONLY_ITEM
 flags:FORCE_SLEEP
 spell-freq:3
@@ -12558,7 +12557,7 @@ base:killer beetle
 color:D
 speed:120
 hit-points:3800
-armor-class:20
+armor-class:180
 hearing:60
 sleepiness:70
 depth:68
@@ -12709,7 +12708,7 @@ base:person
 color:w
 speed:120
 hit-points:2300
-armor-class:30
+armor-class:120
 hearing:40
 sleepiness:10
 depth:69
@@ -12718,7 +12717,7 @@ experience:18000
 blow:HIT:HURT:8d5
 blow:HIT:HURT:8d5
 flags:UNIQUE | FEMALE
-flags:FORCE_SLEEP | SMART
+flags:FORCE_SLEEP | SMART | SPEAKING
 flags:ONLY_ITEM | DROP_2 | DROP_4 | DROP_GOOD
 flags:SMART | TAKE_ITEM | MOVE_BODY
 flags:IM_FIRE | IM_ELEC | NO_CONF
@@ -12754,7 +12753,7 @@ blow:CLAW:POISON:8d6
 blow:CLAW:POISON:8d6
 blow:BITE:PARALYZE:8d10
 blow:STING:LOSE_STR:8d4
-flags:UNIQUE | FEMALE | EVIL | ANIMAL | SMART | SPIRIT | DUNGORTHEB
+flags:UNIQUE | FEMALE | EVIL | SPEAKING | ANIMAL | SMART | SPIRIT | DUNGORTHEB
 flags:DROP_4 | DROP_GOOD | ONLY_ITEM
 flags:HURT_LIGHT | IM_ACID | IM_POIS | NO_CONF | NO_SLEEP | NO_HOLD
 flags:FORCE_SLEEP | FORCE_DEPTH
@@ -12993,7 +12992,7 @@ blow:GAZE:DISENCHANT:6d6
 blow:GAZE:DRAIN_CHARGES:6d6
 blow:GAZE:LOSE_INT:6d6
 blow:BITE:EXP_80:8d8
-flags:UNIQUE | MALE | EVIL | SMART
+flags:UNIQUE | MALE | EVIL | SMART | SPEAKING
 flags:BASH_DOOR
 flags:IM_ACID | IM_COLD | IM_FIRE | IM_POIS | NO_CONF | NO_SLEEP | NO_HOLD
 flags:FORCE_SLEEP
@@ -13150,8 +13149,8 @@ base:major demon
 color:D
 speed:130
 hit-points:3200
-armor-class:40
-hearing:70
+armor-class:210
+hearing:40
 sleepiness:10
 depth:75
 rarity:5
@@ -13160,7 +13159,7 @@ blow:TOUCH:EXP_80
 blow:HIT:FIRE:8d10
 blow:HIT:FIRE:8d10
 blow:HIT:HURT:8d10
-flags:UNIQUE | MALE
+flags:UNIQUE | MALE | SPEAKING
 flags:KILL_WALL
 flags:ONLY_ITEM | DROP_3 | DROP_4 | DROP_GOOD
 flags:SMART | TAKE_ITEM | POWERFUL | MOVE_BODY
@@ -13262,7 +13261,7 @@ blow:TOUCH:EXP_80:6d12
 blow:TOUCH:DRAIN_CHARGES:6d12
 blow:TOUCH:LOSE_DEX:6d12
 blow:TOUCH:LOSE_DEX:6d12
-flags:UNIQUE | MALE
+flags:UNIQUE | MALE | SPEAKING
 flags:DROP_4 | DROP_GOOD | DROP_GREAT | ONLY_ITEM
 spell-freq:2
 spells:BLIND | BLINK | WOUND | HOLD | SCARE | BRAIN_SMASH
@@ -13342,7 +13341,7 @@ color:v
 speed:130
 hit-points:5000
 hearing:30
-armor-class:1
+armor-class:3
 sleepiness:0
 depth:79
 rarity:3
@@ -13420,7 +13419,7 @@ color:z
 speed:140
 hit-points:3500
 hearing:50
-armor-class:10
+armor-class:30
 sleepiness:10
 depth:80
 rarity:2
@@ -13457,7 +13456,7 @@ blow:HIT:HURT:8d8
 blow:HIT:HURT:8d8
 blow:HIT:HURT:8d8
 blow:HIT:HURT:8d8
-flags:UNIQUE | MALE | EVIL
+flags:UNIQUE | MALE | EVIL | SPEAKING
 flags:DROP_4 | DROP_GOOD | DROP_GREAT | ONLY_ITEM
 flags:KILL_WALL | MOVE_BODY
 flags:IM_COLD | IM_FIRE | IM_POIS | NO_CONF | NO_SLEEP | NO_HOLD
@@ -13513,7 +13512,7 @@ blow:HIT:ELEC:12d12
 blow:HIT:ELEC:12d12
 blow:HIT:ELEC:12d12
 blow:HIT:ELEC:12d12
-flags:UNIQUE | MALE | INVISIBLE | FLYING
+flags:UNIQUE | MALE | SPEAKING | INVISIBLE | FLYING
 flags:DROP_4 | DROP_GOOD
 flags:IM_ACID | IM_COLD | IM_ELEC | IM_FIRE | IM_POIS
 spell-freq:3
@@ -13534,8 +13533,8 @@ glyph:~
 color:v
 speed:130
 hit-points:1000
-armor-class:30
-hearing:20
+armor-class:60
+hearing:30
 sleepiness:100
 depth:83
 rarity:6
@@ -13570,7 +13569,7 @@ blow:CLAW:HURT:6d8
 blow:CLAW:HURT:6d8
 blow:BITE:POISON:6d6
 blow:BITE:POISON:6d6
-flags:UNIQUE | MALE | EVIL
+flags:UNIQUE | MALE | EVIL | SPEAKING
 flags:DROP_1 | DROP_GOOD | ONLY_ITEM
 flags:RAND_25 | OPEN_DOOR | BASH_DOOR | MOVE_BODY | TAKE_ITEM
 flags:IM_POIS
@@ -13685,7 +13684,7 @@ blow:GAZE:EXP_80:5d5
 blow:GAZE:EXP_80:5d5
 blow:TOUCH:POISON:5d5
 blow:TOUCH:POISON:5d5
-flags:UNIQUE | MALE | SMART | SPIRIT | ATTR_FLICKER
+flags:UNIQUE | MALE | SMART | SPEAKING | SPIRIT | ATTR_FLICKER
 flags:DROP_4 | DROP_GOOD | DROP_GREAT | ONLY_ITEM
 flags:OPEN_DOOR | BASH_DOOR
 flags:IM_FIRE
@@ -13747,7 +13746,7 @@ blow:HIT:DISENCHANT:10d12
 blow:HIT:DISENCHANT:10d12
 blow:HIT:DRAIN_CHARGES:8d12
 blow:HIT:DRAIN_CHARGES:8d12
-flags:UNIQUE | MALE | EVIL | REGENERATE | GAURHOTH | FORCE_DEPTH
+flags:UNIQUE | MALE | EVIL | SPEAKING | REGENERATE | GAURHOTH | FORCE_DEPTH
 flags:DROP_4 | DROP_GOOD | DROP_GREAT
 flags:MOVE_BODY
 flags:IM_ELEC | NO_FEAR
@@ -13779,7 +13778,7 @@ blow:BITE:POISON:8d10
 blow:BITE:POISON:8d10
 blow:CLAW:CONFUSE:6d8
 blow:CLAW:PARALYZE:6d8
-flags:UNIQUE | MALE | EVIL | REGENERATE
+flags:UNIQUE | MALE | EVIL | SPEAKING | REGENERATE
 flags:FORCE_SLEEP
 flags:SMART | OPEN_DOOR | BASH_DOOR | MOVE_BODY
 flags:IM_POIS | IM_ELEC | IM_FIRE | IM_COLD
@@ -13806,7 +13805,7 @@ blow:BITE:POISON:7d12
 blow:BITE:POISON:7d12
 blow:CRUSH:HURT:8d12
 blow:SPIT:ACID:4d12
-flags:UNIQUE | MALE | EVIL
+flags:UNIQUE | MALE | EVIL | SPEAKING
 flags:FORCE_SLEEP
 flags:SMART | OPEN_DOOR | MOVE_BODY | REGENERATE
 flags:IM_POIS | IM_ACID | IM_ELEC | IM_COLD
@@ -13835,7 +13834,7 @@ blow:BITE:EXP_80:6d12
 blow:CLAW:TERRIFY:8d12
 blow:HIT:DRAIN_CHARGES:8d12
 blow:HIT:DRAIN_CHARGES:8d12
-flags:UNIQUE | MALE | FLYING
+flags:UNIQUE | MALE | SPEAKING | FLYING
 flags:MOVE_BODY | IM_ELEC
 flags:NO_FEAR
 spell-freq:2
@@ -13989,7 +13988,7 @@ blow:HIT:FIRE:8d12
 blow:HIT:FIRE:8d12
 blow:CRUSH:HURT:8d12
 blow:TOUCH:DRAIN_CHARGES
-flags:UNIQUE | MALE | POWERFUL
+flags:UNIQUE | MALE | SPEAKING | POWERFUL
 flags:DROP_4 | DROP_GOOD
 flags:MOVE_BODY | KILL_WALL
 flags:IM_FIRE | IM_PLASMA
@@ -14105,7 +14104,7 @@ hit-points:8000
 light:2
 hearing:50
 smell:50
-armor-class:192
+armor-class:132
 sleepiness:10
 depth:90
 rarity:1
@@ -14114,7 +14113,7 @@ blow:CLAW:FIRE:9d12
 blow:CLAW:FIRE:9d12
 blow:BITE:FIRE:9d12
 blow:BITE:FIRE:9d12
-flags:UNIQUE | MALE | EVIL | SMART | ATTR_FLICKER
+flags:UNIQUE | MALE | EVIL | SMART | SPEAKING | ATTR_FLICKER
 flags:DROP_4 | DROP_GOOD | ONLY_ITEM
 flags:OPEN_DOOR | BASH_DOOR | MOVE_BODY
 flags:IM_FIRE | IM_POIS | NO_CONF | NO_SLEEP | NO_HOLD | IM_NETHER
@@ -14134,7 +14133,7 @@ speed:135
 hit-points:4200
 light:2
 hearing:30
-armor-class:195
+armor-class:260
 sleepiness:120
 depth:90
 rarity:2
@@ -14143,7 +14142,7 @@ blow:CLAW:HURT:6d12
 blow:CLAW:HURT:6d12
 blow:BITE:FIRE:7d14
 blow:BITE:FIRE:7d14
-flags:UNIQUE | MALE
+flags:UNIQUE | MALE | SPEAKING
 flags:DROP_4 | DROP_2 | DROP_GOOD | ONLY_ITEM
 flags:BASH_DOOR
 flags:IM_FIRE
@@ -14173,7 +14172,7 @@ blow:HIT:EXP_80:7d12
 blow:HIT:LOSE_DEX:7d12
 blow:HIT:DRAIN_CHARGES:7d12
 blow:HIT:DRAIN_CHARGES:7d12
-flags:UNIQUE | MALE
+flags:UNIQUE | MALE | SPEAKING
 flags:DROP_4 | DROP_GOOD | DROP_GREAT | ONLY_ITEM
 flags:IM_ELEC | IM_FIRE
 spell-freq:2
@@ -14202,8 +14201,8 @@ base:vortex
 color:v
 speed:140
 hit-points:600
-hearing:50
-armor-class:48
+hearing:40
+armor-class:120
 sleepiness:0
 depth:95
 rarity:3
@@ -14236,7 +14235,7 @@ blow:HIT:FIRE:9d12
 blow:HIT:FIRE:9d12
 blow:CRUSH:HURT:8d12
 blow:TOUCH:DRAIN_CHARGES
-flags:UNIQUE | MALE | POWERFUL
+flags:UNIQUE | MALE | SPEAKING | POWERFUL
 flags:DROP_4 | DROP_GOOD | DROP_GREAT
 flags:MOVE_BODY | KILL_WALL
 flags:IM_ELEC | IM_FIRE | IM_PLASMA
@@ -14262,7 +14261,7 @@ color:D
 speed:140
 hit-points:10000
 hearing:40
-armor-class:255
+armor-class:260
 sleepiness:20
 depth:95
 rarity:3
@@ -14271,7 +14270,7 @@ blow:CLAW:HURT:8d12
 blow:CLAW:HURT:8d12
 blow:BITE:HURT:10d14
 blow:BITE:HURT:10d14
-flags:UNIQUE | MALE
+flags:UNIQUE | MALE | SPEAKING
 flags:DROP_4 | DROP_2 | DROP_GOOD | DROP_GREAT | ONLY_ITEM
 flags:BASH_DOOR
 flags:IM_ACID | IM_COLD | IM_ELEC | IM_FIRE | IM_POIS
@@ -14293,8 +14292,8 @@ base:flying dragon
 color:v
 speed:135
 hit-points:7500
-armor-class:30
-hearing:65
+armor-class:255
+hearing:30
 sleepiness:160
 depth:97
 rarity:4
@@ -14338,7 +14337,7 @@ blow:HIT:SHATTER:20d10
 blow:HIT:SHATTER:20d10
 blow:HIT:LOSE_ALL:10d12
 blow:TOUCH:DRAIN_CHARGES
-flags:UNIQUE | MALE | EVIL | SMART | REGENERATE | SPIRIT
+flags:UNIQUE | MALE | EVIL | SPEAKING | SMART | REGENERATE | SPIRIT
 flags:DROP_4 | DROP_GOOD | DROP_GREAT | ONLY_ITEM
 flags:SMASH_WALL | MOVE_BODY | ATTR_FLICKER
 flags:IM_ACID | IM_COLD | IM_ELEC | IM_FIRE | IM_POIS | NO_FEAR

@@ -914,11 +914,18 @@ static void wiz_tweak_item(struct object *obj)
 		struct object *prev = obj->prev;
 		struct object *next = obj->next;
 		struct object *known = obj->known;
+		u16b oidx = obj->oidx;
+		struct loc grid = obj->grid;
+		bitflag notice = obj->notice;
+
 		object_prep(obj, obj->kind, player->depth, RANDOMISE);
 		obj->ego = e;
 		obj->prev = prev;
 		obj->next = next;
 		obj->known = known;
+		obj->oidx = oidx;
+		obj->grid = grid;
+		obj->notice = notice;
 		ego_apply_magic(obj, player->depth);
 	}
 	wiz_display_item(obj, true);
@@ -942,12 +949,19 @@ static void wiz_tweak_item(struct object *obj)
 		struct object *prev = obj->prev;
 		struct object *next = obj->next;
 		struct object *known = obj->known;
+		u16b oidx = obj->oidx;
+		struct loc grid = obj->grid;
+		bitflag notice = obj->notice;
+
 		obj->ego = NULL;
 		object_prep(obj, obj->kind, obj->artifact->alloc_min, RANDOMISE);
 		obj->artifact = a;
 		obj->prev = prev;
 		obj->next = next;
 		obj->known = known;
+		obj->oidx = oidx;
+		obj->grid = grid;
+		obj->notice = notice;
 		copy_artifact_data(obj, obj->artifact);
 	}
 	wiz_display_item(obj, true);
@@ -1030,6 +1044,9 @@ static void wiz_reroll_item(struct object *obj)
 		struct object *prev = obj->prev;
 		struct object *next = obj->next;
 		struct object *known_obj = obj->known;
+		u16b oidx = obj->oidx;
+		struct loc grid = obj->grid;
+		bitflag notice = obj->notice;
 
 		/* Free slays and brands on the old object by hand */
 		mem_free(obj->slays);
@@ -1044,6 +1061,9 @@ static void wiz_reroll_item(struct object *obj)
 		obj->prev = prev;
 		obj->next = next;
 		obj->known = known_obj;
+		obj->oidx = oidx;
+		obj->grid = grid;
+		obj->notice = notice;
 
 		/* Mark as cheat */
 		obj->origin = ORIGIN_CHEAT;
@@ -1140,14 +1160,14 @@ static void wiz_statistics(struct object *obj, int level)
 		for (i = 0; i <= TEST_ROLL; i++) {
 			/* Output every few rolls */
 			if ((i < 100) || (i % 100 == 0)) {
-				struct keypress kp;
+				ui_event e;
 
 				/* Do not wait */
 				inkey_scan = SCAN_INSTANT;
 
 				/* Allow interupt */
-				kp = inkey();
-				if (kp.type != EVT_NONE) {
+				e = inkey_ex();
+				if (e.type != EVT_NONE) {
 					event_signal(EVENT_INPUT_FLUSH);
 					break;
 				}
@@ -1163,9 +1183,15 @@ static void wiz_statistics(struct object *obj, int level)
 			/* Allow multiple artifacts, because breaking the game is OK here */
 			if (obj->artifact) obj->artifact->created = false;
 
+			/* Check for failures to generate an object */
+			if (!test_obj) continue;
+
 			/* Test for the same tval and sval. */
-			if ((obj->tval) != (test_obj->tval)) continue;
-			if ((obj->sval) != (test_obj->sval)) continue;
+			if (obj->tval != test_obj->tval ||
+					obj->sval != test_obj->sval) {
+				object_delete(&test_obj);
+				continue;
+			}
 
 			/* Check modifiers */
 			ismatch = true;

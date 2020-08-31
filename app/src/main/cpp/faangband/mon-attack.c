@@ -409,7 +409,7 @@ bool make_ranged_attack(struct monster *mon)
 		monster_get_target_dist_grid(mon, cave, NULL, &tgrid);
 		if (test_spells(f, RST_BOLT) &&
 			!projectable(cave, mon->grid, tgrid, PROJECT_STOP)) {
-				ignore_spells(f, RST_BOLT);
+			ignore_spells(f, RST_BOLT);
 		}
 
 		/* Check for a possible summon */
@@ -554,7 +554,7 @@ bool check_hit(struct player *p, int power, int level, int accuracy)
 	chance /= 100;
 
 	/* Check if the player was hit */
-	return test_hit(chance, ac, true);
+	return test_hit(chance, (ac * 3) / 4, true);
 }
 
 /**

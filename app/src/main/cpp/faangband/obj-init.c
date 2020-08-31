@@ -300,6 +300,15 @@ static enum parser_error parse_projection_divisor(struct parser *p) {
 	return PARSE_ERROR_NONE;
 }
 
+static enum parser_error parse_projection_terrain_factor(struct parser *p) {
+	struct projection *projection = parser_priv(p);
+	if (!projection)
+		return PARSE_ERROR_MISSING_RECORD_HEADER;
+
+	projection->terrain_factor = parser_getuint(p, "fact");
+	return PARSE_ERROR_NONE;
+}
+
 static enum parser_error parse_projection_damage_cap(struct parser *p) {
 	struct projection *projection = parser_priv(p);
 	if (!projection)
@@ -374,6 +383,7 @@ struct parser *init_parse_projection(void) {
 	parser_reg(p, "numerator uint num", parse_projection_numerator);
 	parser_reg(p, "denominator rand denom", parse_projection_denominator);
 	parser_reg(p, "divisor uint div", parse_projection_divisor);
+	parser_reg(p, "terrain-factor uint fact", parse_projection_terrain_factor);
 	parser_reg(p, "damage-cap uint cap", parse_projection_damage_cap);
 	parser_reg(p, "msgt sym type", parse_projection_message_type);
 	parser_reg(p, "obvious uint answer", parse_projection_obvious);
@@ -712,15 +722,6 @@ static enum parser_error parse_slay_multiplier(struct parser *p) {
 	return PARSE_ERROR_NONE;
 }
 
-static enum parser_error parse_slay_o_multiplier(struct parser *p) {
-	struct slay *slay = parser_priv(p);
-	if (!slay)
-		return PARSE_ERROR_MISSING_RECORD_HEADER;
-
-	slay->o_multiplier = parser_getuint(p, "multiplier");
-	return PARSE_ERROR_NONE;
-}
-
 static enum parser_error parse_slay_melee_verb(struct parser *p) {
 	const char *verb = parser_getstr(p, "verb");
 	struct slay *slay = parser_priv(p);
@@ -749,7 +750,6 @@ struct parser *init_parse_slay(void) {
 	parser_reg(p, "race-flag sym flag", parse_slay_race_flag);
 	parser_reg(p, "base sym base", parse_slay_base);
 	parser_reg(p, "multiplier uint multiplier", parse_slay_multiplier);
-	parser_reg(p, "o-multiplier uint multiplier", parse_slay_o_multiplier);
 	parser_reg(p, "melee-verb str verb", parse_slay_melee_verb);
 	parser_reg(p, "range-verb str verb", parse_slay_range_verb);
 	return p;
@@ -853,15 +853,6 @@ static enum parser_error parse_brand_multiplier(struct parser *p) {
 	return PARSE_ERROR_NONE;
 }
 
-static enum parser_error parse_brand_o_multiplier(struct parser *p) {
-	struct brand *brand = parser_priv(p);
-	if (!brand)
-		return PARSE_ERROR_MISSING_RECORD_HEADER;
-
-	brand->o_multiplier = parser_getuint(p, "multiplier");
-	return PARSE_ERROR_NONE;
-}
-
 static enum parser_error parse_brand_resist_flag(struct parser *p) {
 	int flag;
 	struct brand *brand = parser_priv(p);
@@ -903,7 +894,6 @@ struct parser *init_parse_brand(void) {
 	parser_reg(p, "name str name", parse_brand_name);
 	parser_reg(p, "verb str verb", parse_brand_verb);
 	parser_reg(p, "multiplier uint multiplier", parse_brand_multiplier);
-	parser_reg(p, "o-multiplier uint multiplier", parse_brand_o_multiplier);
 	parser_reg(p, "resist-flag sym flag", parse_brand_resist_flag);
 	parser_reg(p, "vuln-flag sym flag", parse_brand_vuln_flag);
 	return p;

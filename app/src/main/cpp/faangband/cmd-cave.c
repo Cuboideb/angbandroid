@@ -911,6 +911,7 @@ static bool do_cmd_disarm_aux(struct loc grid)
 			square_destroy_trap(cave, grid);
 			return false;
 		}
+
 		trap = trap->next;
 	}
 	if (!trap)
@@ -1046,7 +1047,7 @@ void do_cmd_disarm(struct command *cmd)
  */
 void do_cmd_set_trap(struct loc grid)
 {
-	int max_traps =	1 + (player->lev >= 25) ? 1 : 0;
+	int max_traps =	1 + ((player->lev >= 25) ? 1 : 0);
 
 	/* Specialty ability Extra Trap */
 	if (player_has(player, PF_EXTRA_TRAP)) max_traps++;
@@ -1336,7 +1337,7 @@ void move_player(int dir, bool disarm)
 				  player_has(player, PF_ELVEN))) {
 				player->upkeep->energy_use += z_info->move_energy;
 			}
-		} else if (square_isrock(cave, grid)) {
+		} else if (square_isrubble(cave, grid)) {
 			/* Dwarves, flyers can move easily */
 			if (!(player_has(player, PF_DWARVEN) ||
 				  player_has(player, PF_FLYING))) {

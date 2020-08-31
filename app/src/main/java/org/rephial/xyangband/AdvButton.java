@@ -51,9 +51,8 @@ class AdvButton extends View
 	public AdvKeyboard parent;	
 	public String keymap = "";
 	public boolean alwaysVisible = false;
-	public boolean keymapMode = false;
-	public static int DEFAULT_BG = 0x294a59;
-	public static int KEYMAP_BG = 0x7a3182;
+	public boolean keymapMode = false;	
+	public static int DEFAULT_BG = 0x4a4855;	
 	public static int TOGGLED_BG = 0x86bf36;
 	public GestureDetector gestureManager = null;
 
@@ -117,7 +116,7 @@ class AdvButton extends View
 			//|| defaultValue.equals("run")
 			//|| defaultValue.equals("sym")
 			//|| defaultValue.equals("abc")
-			|| defaultValue.equals("kmp")
+			//|| defaultValue.equals("kmp")
 			//|| defaultValue.equals(InputUtils.Menu)
 			;
 	}
@@ -131,13 +130,13 @@ class AdvButton extends View
 	{
 		String action = activeValue;
 
-		if (action.equals("kmp")) {
-			parent.toggleKeymapMode();
+		if (parent.opacityMode == 1 && !neverHidden()) {
+			parent.setOpacityMode(0);
 			return;
 		}
 
-		if (parent.opacityMode == 1 && !neverHidden()) {
-			parent.setOpacityMode(0);
+		if (action.equals("kmp")) {
+			parent.toggleKeymapMode();
 			return;
 		}
 
@@ -187,26 +186,6 @@ class AdvButton extends View
 			}
 		}
 		parent.setShiftMode(0);	
-	}
-
-	public void setBgColor(Paint back)
-	{
-		if (usingKeymap()) {
-			back.setColor(KEYMAP_BG);
-		}
-		else if (defaultValue.equals(" ")) {
-			back.setColor(TOGGLED_BG);	
-		}
-		else if (defaultValue.equals("kmp") && keymapMode) {
-			back.setColor(TOGGLED_BG);	
-		}
-		else if (defaultValue.equals("run")
-			&& state.getRunningMode()) {
-			back.setColor(TOGGLED_BG);	
-		}
-		else {
-			back.setColor(DEFAULT_BG);
-		}
 	}
 
 	public static void closeSoftKeyboard(Activity ctxt, View v)
@@ -299,33 +278,29 @@ class AdvButton extends View
 
 	public int calculateAlphaBg()
 	{
-		if (parent.opacityMode == 1 && !neverHidden()) {
-			return 10;
-		}
+		int min = 10;
+		int max = 200;
 
-		int max = 220;
+		if (parent.opacityMode == 1 && !neverHidden()) {			
+			return min;
+		}
 
 		if (parent.opacityMode == 2) {
 			return max;
 		}
 
-		int p = Preferences.getKeyboardOpacity();
-		p = (max * p) / 100;
-
-		if (atCenter()) {
-			p = (p * Preferences.getMiddleOpacity()) / 100;
-		}
-
-		return Math.max(p, 10);
+		// Normal
+		return 80;
 	}
 
 	public int calculateAlphaFg()
 	{
-		if (parent.opacityMode == 1 && !neverHidden()) {
-			return 30;
-		}
-
+		int min = 20;
 		int max = 255;
+
+		if (parent.opacityMode == 1 && !neverHidden()) {
+			return min;
+		}
 
 		if (parent.opacityMode == 2) {
 			return max;
@@ -338,7 +313,37 @@ class AdvButton extends View
 			p = (p * Preferences.getMiddleOpacity()) / 100;
 		}
 
-		return Math.max(p, 10);
+		return Math.max(p, min);
+	}
+
+	public void setBgColor(Paint back)
+	{		
+		if (defaultValue.equals(" ")) {
+			back.setColor(TOGGLED_BG);	
+		}		
+		else if (usingKeymap()) {			
+			back.setColor(DEFAULT_BG);
+		}		 
+		else if (defaultValue.equals("kmp") && keymapMode) {
+			back.setColor(TOGGLED_BG);	
+		}
+		else if (defaultValue.equals("run")
+			&& state.getRunningMode()) {
+			back.setColor(TOGGLED_BG);	
+		}		
+		else {
+			back.setColor(DEFAULT_BG);
+		}
+	}
+
+	public void setFgColor(Paint fore)
+	{
+		if (usingKeymap()) {
+			fore.setColor(TOGGLED_BG);
+		}
+		else {
+			fore.setColor(Color.WHITE);
+		}
 	}
 	
 	protected void onDraw(Canvas canvas)
@@ -369,7 +374,6 @@ class AdvButton extends View
 
 		setBgColor(back);
 		back.setAlpha(calculateAlphaBg());
-
 		canvas.drawRect(bounds, back);
 
 		int tw = getWidth() - pad * 2;
@@ -380,7 +384,7 @@ class AdvButton extends View
         float h2 = fore.descent() - fore.ascent();
         float pady = Math.max((th - h2) / 2, 0)	+ fore.descent();        
 
-        fore.setColor(Color.WHITE);
+        setFgColor(fore);
         fore.setShadowLayer(10f, 0, 0, Color.CYAN);
         fore.setAlpha(calculateAlphaFg());
 

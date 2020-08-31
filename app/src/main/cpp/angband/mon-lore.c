@@ -372,14 +372,51 @@ void cheat_monster_lore(const struct monster_race *race, struct monster_lore *lo
  */
 void wipe_monster_lore(const struct monster_race *race, struct monster_lore *lore)
 {
+	struct monster_blow *blows;
+	bool *blow_known;
+	struct monster_drop *d;
+	struct monster_friends *f;
+	struct monster_friends_base *fb;
+	struct monster_mimic *mk;
+
 	assert(race);
 	assert(lore);
 
-	mem_free(lore->drops);
-	mem_free(lore->friends);
-	mem_free(lore->friends_base);
-	mem_free(lore->mimic_kinds);
+	d = lore->drops;
+	while (d) {
+		struct monster_drop *dn = d->next;
+		mem_free(d);
+		d = dn;
+	}
+	f = lore->friends;
+	while (f) {
+		struct monster_friends *fn = f->next;
+		mem_free(f);
+		f = fn;
+	}
+	fb = lore->friends_base;
+	while (fb) {
+		struct monster_friends_base *fbn = fb->next;
+		mem_free(fb);
+		fb = fbn;
+	}
+	mk = lore->mimic_kinds;
+	while (mk) {
+		struct monster_mimic *mkn = mk->next;
+		mem_free(mk);
+		mk = mkn;
+	}
+	/*
+	 * Keep the blows and blow_known pointers - other code assumes they
+	 * are not NULL.  Wipe the pointed to memory.
+	 */
+	blows = lore->blows;
+	memset(blows, 0, z_info->mon_blows_max * sizeof(*blows));
+	blow_known = lore->blow_known;
+	memset(blow_known, 0, z_info->mon_blows_max * sizeof(*blow_known));
 	memset(lore, 0, sizeof(*lore));
+	lore->blows = blows;
+	lore->blow_known = blow_known;
 }
 
 /**
