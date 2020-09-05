@@ -363,13 +363,10 @@ void strdeldup(char *str)
  * returns true if string only contains spaces
  */
 bool contains_only_spaces(const char* s){
-	char spaces[]=" \t";
-	while(*s){
-		if(strchr(spaces,*s)!=NULL)
-			return false;
-		s++;
-	}
-	return true;
+	const char spaces[]=" \t";
+	size_t nsp = strspn(s, spaces);
+
+	return s[nsp] == '\0';
 }
 
 /**

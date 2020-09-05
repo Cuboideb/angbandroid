@@ -7,19 +7,19 @@
       <item>Angband 4.2.1</item>            
       <item>FrogComposband 7.1.salmiak</item>
       <item>NPPAngband 0.4.1</item>
-      <!--<item>FAangband 2.0 (BETA)</item>-->
+      <item>FAangband 2.0 (BETA)</item>
     </string-array>
     <string-array name="gamePluginNames">
       <item>angband</item>      
       <item>frogcomposband</item>
       <item>npp041</item>
-      <!--<item>faangband</item>-->
+      <item>faangband</item>
     </string-array>
     <string-array name="gamePlugins">
       <item>0</item>      
       <item>1</item>
       <item>2</item>
-      <!--<item>3</item>-->
+      <item>3</item>
     </string-array>
 
     <string name="version">0.0.0.1</string>

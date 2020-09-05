@@ -168,6 +168,7 @@ extern struct activation *activations;
  */
 struct object_base {
 	char *name;
+	char *text;
 
 	int tval;
 	struct object_base *next;
@@ -325,6 +326,41 @@ struct artifact {
  * The artifact arrays
  */
 extern struct artifact *a_info;
+
+
+/**
+ * Item sets
+ */
+
+/**
+ * Information about an item in a set -GS-
+ */
+struct set_item {
+	struct set_item *next;
+    u32b aidx;								/**< The artifact index */
+    bitflag flags[OF_SIZE];					/**< New object flags */
+	s16b modifiers[OBJ_MOD_MAX];			/**< New stat and other bonuses */
+	struct element_info el_info[ELEM_MAX];	/**< New percentage resists */
+	bool *brands;							/**< New brands */
+	bool *slays;							/**< New slays */
+};
+
+/**
+ * Information about items sets -GS-
+ */
+struct artifact_set {
+    struct artifact_set *next;
+    char *name;					/**< Name */
+    char *text;					/**< Text */
+
+    byte number;				/**< The number of items in the set */
+    struct set_item *set_item;	/**< The artifacts and extra powers */
+};
+
+/**
+ * The artifact sets
+ */
+extern struct artifact_set *set_info;
 
 
 /**
