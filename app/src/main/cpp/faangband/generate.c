@@ -52,6 +52,7 @@
 
 struct pit_profile *pit_info;
 struct vault *vaults;
+struct vault *themed_levels;
 static struct cave_profile *cave_profiles;
 struct dun_data *dun;
 struct room_template *room_templates;
@@ -605,6 +606,84 @@ static struct file_parser vault_parser = {
 	cleanup_vault
 };
 
+/**
+ * ------------------------------------------------------------------------
+ * Parsing functions for themed.txt
+ * ------------------------------------------------------------------------ */
+static enum parser_error parse_themed_name(struct parser *p) {
+	struct vault *h = parser_priv(p);
+	struct vault *v = mem_zalloc(sizeof *v);
+
+	v->name = string_make(parser_getstr(p, "name"));
+	v->next = h;
+	parser_setpriv(p, v);
+	z_info->themed_max++;
+	return PARSE_ERROR_NONE;
+}
+
+static enum parser_error parse_themed_message(struct parser *p) {
+	struct vault *v = parser_priv(p);
+
+	if (!v)
+		return PARSE_ERROR_MISSING_RECORD_HEADER;
+	v->typ = string_make(parser_getstr(p, "message"));
+	return PARSE_ERROR_NONE;
+}
+
+static enum parser_error parse_themed_d(struct parser *p) {
+	struct vault *v = parser_priv(p);
+	const char *desc;
+
+	if (!v)
+		return PARSE_ERROR_MISSING_RECORD_HEADER;
+	desc = parser_getstr(p, "text");
+	if (strlen(desc) != z_info->dungeon_wid)
+		return PARSE_ERROR_VAULT_DESC_WRONG_LENGTH;
+	else
+		v->text = string_append(v->text, desc);
+	return PARSE_ERROR_NONE;
+}
+
+struct parser *init_parse_themed(void) {
+	struct parser *p = parser_new();
+	parser_setpriv(p, NULL);
+	z_info->themed_max = 0;
+	parser_reg(p, "name str name", parse_themed_name);
+	parser_reg(p, "message str message", parse_themed_message);
+	parser_reg(p, "D str text", parse_themed_d);
+	return p;
+}
+
+static errr run_parse_themed(struct parser *p) {
+	return parse_file_quit_not_found(p, "themed");
+}
+
+static errr finish_parse_themed(struct parser *p) {
+	themed_levels = parser_priv(p);
+	parser_destroy(p);
+	return 0;
+}
+
+static void cleanup_themed(void)
+{
+	struct vault *v, *next;
+	for (v = themed_levels; v; v = next) {
+		next = v->next;
+		mem_free(v->name);
+		mem_free(v->typ);
+		mem_free(v->text);
+		mem_free(v);
+	}
+}
+
+static struct file_parser themed_parser = {
+	"themed",
+	init_parse_themed,
+	run_parse_themed,
+	finish_parse_themed,
+	cleanup_themed
+};
+
 static void run_template_parser(void) {
 	/* Initialize room info */
 	event_signal_message(EVENT_INITSTATUS, 0,
@@ -623,6 +702,12 @@ static void run_template_parser(void) {
 						 "Initializing arrays... (vaults)");
 	if (run_parser(&vault_parser))
 		quit("Cannot initialize vaults");
+
+	/* Initialize themed level info */
+	event_signal_message(EVENT_INITSTATUS, 0,
+						 "Initializing arrays... (themed levels)");
+	if (run_parser(&themed_parser))
+		quit("Cannot initialize themed levels");
 }
 
 
@@ -634,6 +719,7 @@ static void cleanup_template_parser(void)
 	cleanup_parser(&profile_parser);
 	cleanup_parser(&room_parser);
 	cleanup_parser(&vault_parser);
+	cleanup_parser(&themed_parser);
 }
 
 
@@ -785,6 +871,54 @@ static bool labyrinth_check(int depth)
 }
 
 /**
+ * Creation of themed levels.  Use a set of flags to ensure that no level 
+ * is built more than once.  Store the current themed level number for later 
+ * reference.  -LM-
+ */
+bool themed_level_ok(int choice)
+{
+	struct level *current = &world->levels[player->place];
+
+	/* Already appeared */
+	if (player->themed_level_appeared & (1L << (choice - 1)))
+		return false;
+
+	/* Check the location */
+	if (choice == themed_level_index("Elemental")) {
+		if (current->topography != TOP_CAVE) return false;
+		if (player->depth < 35) return false;
+		if (player->depth > 70) return false;
+	} else if (choice == themed_level_index("Dragon")) {
+		if (current->topography != TOP_CAVE) return false;
+		if (player->depth < 40) return false;
+		if (player->depth > 80) return false;
+	} else if (choice == themed_level_index("Wilderness")) {
+		if (current->topography != TOP_DESERT) return false;
+	} else if (choice == themed_level_index("Demon")) {
+		if (current->topography != TOP_CAVE) return false;
+		if (player->depth < 60) return false;
+	} else if (choice == themed_level_index("Mines")) {
+		if (current->topography != TOP_CAVE) return false;
+		if (player->depth < 20) return false;
+		if (player->depth > 45) return false;
+	} else if (choice == themed_level_index("Warlords")) {
+		if ((current->topography != TOP_FOREST) &&
+			(current->topography != TOP_PLAIN)) return false;
+		if (player->depth < 20) return false;
+	} else if (choice == themed_level_index("Tarn Aeluin")) {
+		if (current->locality != LOC_DORTHONION) return false;
+	} else if (choice == themed_level_index("Estolad")) {
+		if (current->locality != LOC_EAST_BELERIAND) return false;
+		if (player->depth < 10) return false;
+	} else if (choice == themed_level_index("Haudh-en-Ndengin")) {
+		if (current->locality != LOC_ANFAUGLITH) return false;
+	}
+
+	/* Must be OK */
+	return true;
+}
+
+/**
  * Choose a cave profile
  * \param p is the player
  */
@@ -793,13 +927,15 @@ static const struct cave_profile *choose_profile(struct player *p)
 	const struct cave_profile *profile = NULL;
 	int moria_cutoff = find_cave_profile("moria")->cutoff;
 	int labyrinth_cutoff = find_cave_profile("labyrinth")->cutoff;
+	int chance = (world->levels[p->place].topography == TOP_CAVE) ?
+		z_info->themed_dun : z_info->themed_wild;
 
 	/* A bit of a hack, but worth it for now NRM */
-	if (player->noscore & NOSCORE_JUMPING) {
+	if (p->noscore & NOSCORE_JUMPING) {
 		char name[30] = "";
 
 		/* Cancel the query */
-		player->noscore &= ~(NOSCORE_JUMPING);
+		p->noscore &= ~(NOSCORE_JUMPING);
 
 		/* Ask debug players for the profile they want */
 		if (get_string("Profile name (eg classic): ", name, sizeof(name)))
@@ -807,6 +943,22 @@ static const struct cave_profile *choose_profile(struct player *p)
 
 		/* If no valid profile name given, fall through */
 		if (profile) return profile;
+	}
+
+	/* Assume level is not themed. */
+	p->themed_level = 0;
+
+	/* Check for themed level */
+	if (!no_vault(p->place) && !find_quest(p->place) && one_in_(chance)) {
+		int i, pick;
+		for (i = 0; i < 40; i++) {
+			pick = randint1(z_info->themed_max);
+			if (themed_level_ok(pick)) {
+				p->themed_level = pick;
+				profile = find_cave_profile("themed");
+				if (profile) return profile;
+			}
+		}
 	}
 
 	/* Make the profile choice */
@@ -1371,6 +1523,11 @@ static struct chunk *cave_generate(struct player *p, int height, int width)
 	if (p->upkeep->light_level) {
 		wiz_light(chunk, p, false);
 		p->upkeep->light_level = false;
+	}
+
+	/* Record themed level */
+	if (p->themed_level) {
+		p->themed_level_appeared |= (1L << (p->themed_level - 1));
 	}
 
 	chunk->turn = turn;

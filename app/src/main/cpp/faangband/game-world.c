@@ -189,6 +189,42 @@ int level_topography(int index)
 }
 
 /**
+ * Return the themed level of the given index
+ */
+struct vault *themed_level(int index)
+{
+	int which = player->themed_level;
+	struct vault *level = themed_levels;
+	assert(index >= 1);
+
+	/* Iterate to the themed level */
+	while (which > 1) {
+		level = level->next;
+		assert(level);
+		which--;
+	}
+	return level;
+}
+
+/**
+ * Return the themed level index of the given named level
+ */
+int themed_level_index(char *name)
+{
+	int which = 1;
+	struct vault *level = themed_levels;
+
+	/* Search for the themed level */
+	while (!streq(name, level->name)) {
+		level = level->next;
+		which++;
+		if (!level) return 0;
+	}
+
+	return which;
+}
+
+/**
  * ------------------------------------------------------------------------
  * Functions for handling turn-based events
  * ------------------------------------------------------------------------ */
@@ -571,8 +607,8 @@ void process_world(struct chunk *c)
 		player->upkeep->update |= PU_BONUS;
 	}
 
-	/* Check for creature generation */
-	if (one_in_(z_info->alloc_monster_chance))
+	/* Check for creature generation, except on themed levels */
+	if (one_in_(z_info->alloc_monster_chance) && (!player->themed_level))
 		(void)pick_and_place_distant_monster(c, player, z_info->max_sight + 5,
 											 true, player->depth);
 
@@ -635,6 +671,8 @@ void process_world(struct chunk *c)
 
 	/*** Check the Food, and Regenerate ***/
 
+	/* Digest */
+	if (!player_timed_grade_eq(player, TMD_FOOD, "Full")) {
 	/* Digest normally */
 	if (!(turn % 100)) {
 		/* Basic digestion rate based on speed */
@@ -662,6 +700,11 @@ void process_world(struct chunk *c)
 		if (player->timed[TMD_FOOD] < PY_FOOD_HUNGRY) {
 			player_set_timed(player, TMD_HEAL, 0, true);
 		}
+		}
+	} else {
+		/* Digest quickly when gorged */
+		player_dec_timed(player, TMD_FOOD, 5000 / z_info->food_value, false);
+		player->upkeep->update |= PU_BONUS;
 	}
 
 	/* Faint or starving */

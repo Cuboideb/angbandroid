@@ -245,6 +245,7 @@ struct room_template {
 
 extern struct dun_data *dun;
 extern struct vault *vaults;
+extern struct vault *themed_levels;
 extern struct room_template *room_templates;
 
 /* gen-cave.c */
@@ -259,6 +260,7 @@ struct chunk *hard_centre_gen(struct player *p, int min_height, int min_width);
 struct chunk *lair_gen(struct player *p, int min_height, int min_width);
 struct chunk *gauntlet_gen(struct player *p, int min_height, int min_width);
 struct chunk *arena_gen(struct player *p, int min_height, int min_width);
+struct chunk *themed_gen(struct player *p, int min_height, int min_width);
 
 /* gen-wilderness.c */
 struct chunk *plain_gen(struct player *p, int height, int width);
@@ -353,9 +355,17 @@ void vault_traps(struct chunk *c, struct loc grid, int yd, int xd, int num);
 void vault_monsters(struct chunk *c, struct loc grid, int depth, int num);
 void alloc_objects(struct chunk *c, int set, int typ, int num, int depth, byte origin);
 bool alloc_object(struct chunk *c, int set, int typ, int depth, byte origin);
+void dump_level_simple(const char *basefilename, const char *title,
+	struct chunk *c);
+void dump_level(ang_file *fo, const char *title, struct chunk *c, int **dist);
+void dump_level_header(ang_file *fo, const char *title);
+void dump_level_body(ang_file *fo, const char *title, struct chunk *c,
+	int **dist);
+void dump_level_footer(ang_file *fo);
 
 /* gen-monster.c */
 bool mon_restrict(const char *monster_type, int depth, bool unique_ok);
+void general_monster_restrictions(void);
 void spread_monsters(struct chunk *c, const char *type, int depth, int num, 
 					 int y0, int x0, int dy, int dx, byte origin);
 void get_vault_monsters(struct chunk *c, char racial_symbol[], char *vault_type,

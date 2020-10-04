@@ -20,6 +20,7 @@
 # pile: chance of being generated in a pile : dice for number of items
 # power: power of the effect for object power evaluations
 # msg: message on using the object
+# vis-msg: message on using the object, only when player is not blind
 # effect: effect when used : parameter (maybe) : paramater (maybe)
 # effect-yx: y value for effect : x value for effect
 # dice:dice string
@@ -2749,7 +2750,7 @@ effect:TIMED_DEC:CUT
 dice:20
 effect:TIMED_DEC:CONFUSED
 dice:20
-effect:NOURISH:DEC_BY
+effect:NOURISH:INC_BY
 dice:1
 
 name:Cure Serious Wounds
@@ -2765,7 +2766,7 @@ dice:40
 effect:CURE:BLIND
 effect:CURE:CUT
 effect:CURE:CONFUSED
-effect:NOURISH:DEC_BY
+effect:NOURISH:INC_BY
 dice:1
 
 name:Cure Critical Wounds
@@ -2784,7 +2785,7 @@ effect:CURE:POISONED
 effect:CURE:STUN
 effect:CURE:AMNESIA
 effect:CURE:CONFUSED
-effect:NOURISH:DEC_BY
+effect:NOURISH:INC_BY
 dice:1
 
 name:Healing
@@ -2803,7 +2804,7 @@ effect:CURE:POISONED
 effect:CURE:STUN
 effect:CURE:AMNESIA
 effect:CURE:CONFUSED
-effect:NOURISH:DEC_BY
+effect:NOURISH:INC_BY
 dice:1
 
 name:*Healing*
@@ -3456,7 +3457,7 @@ alloc:20:3 to 60
 attack:1d1:0:0
 armor:0:0
 charges:6+d10
-msg:A line of shimmering blue light appears.
+vis-msg:A line of shimmering blue light appears.
 effect:LINE:LIGHT_WEAK
 dice:6d8
 
@@ -4354,7 +4355,7 @@ cost:500
 alloc:30:5 to 100
 attack:1d1:0:0
 armor:0:0
-msg:A line of shimmering blue light appears.
+vis-msg:A line of shimmering blue light appears.
 effect:LINE:LIGHT_WEAK
 dice:6d8
 time:9

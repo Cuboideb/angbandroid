@@ -176,6 +176,13 @@ void do_cmd_go_up(struct command *cmd)
 		}
 	}
 
+	/* Make certain the player really wants to leave a themed level. -LM- */
+	if (player->themed_level) {
+		if (!get_check("This level will never appear again.  Really leave?")) {
+			return;
+		}
+	}
+
 	/* Force descend */
 	//if (OPT(player, birth_force_descend)) {
 	//	msg("Nothing happens!");
@@ -238,6 +245,13 @@ void do_cmd_go_down(struct command *cmd)
 	if (player->depth == z_info->max_depth - 1) {
 		msg("The dungeon does not appear to extend deeper");
 		return;
+	}
+
+	/* Make certain the player really wants to leave a themed level. -LM- */
+	if (player->themed_level) {
+		if (!get_check("This level will never appear again.  Really leave?")) {
+			return;
+		}
 	}
 
 	new_place = player_get_next_place(player->place, path_direction(feat), 1);
@@ -1453,7 +1467,7 @@ void do_cmd_walk(struct command *cmd)
 	if (!do_cmd_walk_test(grid))
 		return;
 
-	player->upkeep->energy_use = z_info->move_energy / player->state.num_moves;
+	player->upkeep->energy_use = energy_per_move(player);
 
 	/* Attempt to disarm unless it's a trap and we're trapsafe */
 	move_player(dir, !(square_isdisarmabletrap(cave, grid) && trapsafe));
@@ -1490,7 +1504,7 @@ void do_cmd_jump(struct command *cmd)
 	if (!do_cmd_walk_test(grid))
 		return;
 
-	player->upkeep->energy_use = z_info->move_energy / player->state.num_moves;
+	player->upkeep->energy_use = energy_per_move(player);
 
 	move_player(dir, false);
 }
@@ -1737,6 +1751,13 @@ void display_feeling(bool obj_only)
 	/* No useful feeling in town */
 	if (!player->depth) {
 		msg("Looks like a typical town.");
+		return;
+	}
+
+	/* Special message for themed levels */
+	if (player->themed_level) {
+		struct vault *level = themed_level(player->themed_level);
+		msg("%s", level->typ);
 		return;
 	}
 

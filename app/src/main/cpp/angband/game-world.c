@@ -645,6 +645,8 @@ void process_world(struct chunk *c)
 
 	/*** Check the Food, and Regenerate ***/
 
+	/* Digest */
+	if (!player_timed_grade_eq(player, TMD_FOOD, "Full")) {
 	/* Digest normally */
 	if (!(turn % 100)) {
 		/* Basic digestion rate based on speed */
@@ -672,6 +674,11 @@ void process_world(struct chunk *c)
 		if (player->timed[TMD_FOOD] < PY_FOOD_HUNGRY) {
 			player_set_timed(player, TMD_HEAL, 0, true);
 		}
+	}
+	} else {
+		/* Digest quickly when gorged */
+		player_dec_timed(player, TMD_FOOD, 5000 / z_info->food_value, false);
+		player->upkeep->update |= PU_BONUS;
 	}
 
 	/* Faint or starving */

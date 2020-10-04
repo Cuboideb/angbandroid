@@ -457,7 +457,7 @@ struct player_state {
 
 	int num_blows;		/**< Number of blows x100 */
 	int num_shots;		/**< Number of shots x10 */
-	int num_moves;		/**< Number of movement actions */
+	int num_moves;		/**< Number of extra movement actions */
 
 	int ammo_mult;		/**< Ammo multiplier */
 	int ammo_tval;		/**< Ammo variety */
@@ -614,7 +614,9 @@ struct player {
 	bitflag specialties[PF_SIZE];		/* Learned specialty abilities */
     s16b speed_boost;			/* Short term speed boost (Fury, Phasewalk) */
     s16b heighten_power;		/* Magic Intensity boost (Heightn Magic) */
-	byte num_traps;				/* NUmber of current monster traps set */
+	byte num_traps;				/* Number of current monster traps set */
+    byte themed_level; 			/* Player in a themed level?  Which one? */
+    u16b themed_level_appeared;	/* Which themed levels have already appeared */
 
 	char full_name[PLAYER_NAME_LEN];	/* Full name */
 	char died_from[80];					/* Cause of death */

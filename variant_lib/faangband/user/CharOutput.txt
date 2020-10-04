@@ -1,9 +1,0 @@
-{
-race: "Drúadan",
-class: "Druid",
-mapName: "Brethil",
-dLvl: "20",
-cLvl: "4",
-isDead: "1",
-killedBy: "an energy hound"
-}
