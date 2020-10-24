@@ -885,7 +885,7 @@ static size_t prt_moves(int row, int col)
 	}
 
 	/* Shouldn't be double digits, but be paranoid */
-	return (i != 0) ? (9 + ABS(i)) / 10 : 0;
+	return (i != 0) ? (9 + ABS(i) / 10) : 0;
 }
 
 /**
@@ -1444,6 +1444,16 @@ static void display_missile(game_event_type type, game_event_data *data,
 		Term_fresh();
 		if (player->upkeep->redraw) redraw_stuff(player);
 	}
+}
+
+/**
+ * Pause for effect
+ */
+static void pause_display(game_event_type type, game_event_data *data,
+						  void *user)
+{
+	int msec = data->pause.pause;
+	Term_xtra(TERM_XTRA_DELAY, msec);
 }
 
 /**
@@ -2426,6 +2436,9 @@ static void ui_enter_world(game_event_type type, game_event_data *data,
 	/* Display a physical missile */
 	event_add_handler(EVENT_MISSILE, display_missile, NULL);
 
+	/* Pause for effect */
+	event_add_handler(EVENT_PAUSE, pause_display, NULL);
+
 	/* Check to see if the player has tried to cancel game processing */
 	event_add_handler(EVENT_CHECK_INTERRUPT, check_for_player_interrupt, NULL);
 
@@ -2487,6 +2500,9 @@ static void ui_leave_world(game_event_type type, game_event_data *data,
 
 	/* Display a physical missile */
 	event_remove_handler(EVENT_MISSILE, display_missile, NULL);
+
+	/* Pause for effect */
+	event_remove_handler(EVENT_PAUSE, pause_display, NULL);
 
 	/* Check to see if the player has tried to cancel game processing */
 	event_remove_handler(EVENT_CHECK_INTERRUPT, check_for_player_interrupt, NULL);

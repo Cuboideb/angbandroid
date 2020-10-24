@@ -55,24 +55,6 @@ struct flavor *flavors;
  */
 static char scroll_adj[MAX_TITLES][18];
 
-static void flavor_assign_fixed(void)
-{
-	int i;
-	struct flavor *f;
-
-	for (f = flavors; f; f = f->next) {
-		if (f->sval == SV_UNKNOWN)
-			continue;
-
-		for (i = 0; i < z_info->k_max; i++) {
-			struct object_kind *k = &k_info[i];
-			if (k->tval == f->tval && k->sval == f->sval)
-				k->flavor = f;
-		}
-	}
-}
-
-
 static void flavor_assign_random(byte tval)
 {
 	int i;
@@ -109,21 +91,6 @@ static void flavor_assign_random(byte tval)
 
 			choice--;
 		}
-	}
-}
-
-/**
- * Reset svals on flavors, effectively removing any fixed flavors.
- *
- * Mainly useful for randarts so that fixed flavors for standards aren't
- * predictable.
- */
-void flavor_reset_fixed(void)
-{
-	struct flavor *f;
-
-	for (f = flavors; f; f = f->next) {
-		f->sval = SV_UNKNOWN;
 	}
 }
 
@@ -171,11 +138,6 @@ void flavor_init(void)
 		cleanup_parser(&flavor_parser);
 		run_parser(&flavor_parser);
 	}
-
-	if (OPT(player, birth_randarts))
-		flavor_reset_fixed();
-
-	flavor_assign_fixed();
 
 	flavor_assign_random(TV_STAFF);
 	flavor_assign_random(TV_WAND);
@@ -701,6 +663,17 @@ bool obj_can_fire(const struct object *obj)
 bool obj_is_throwing(const struct object *obj)
 {
 	return of_has(obj->flags, OF_THROWING);
+}
+
+/**
+ * Determine if an object is a known artifact
+ */
+bool obj_is_known_artifact(const struct object *obj)
+{
+	if (!obj->artifact) return false;
+	if (!obj->known) return false;
+	if (!obj->known->artifact) return false;
+	return true;
 }
 
 /* Can has inscrip pls */

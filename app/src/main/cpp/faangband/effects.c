@@ -1712,6 +1712,7 @@ bool effect_handler_MAP_AREA(effect_handler_context_t *context)
  * the width either side of each monster context->x.
  * For player level dependent areas, we use the hack of applying value dice
  * and sides as the height and width.
+ * If context->other is set, detect traps level-wide on success
  */
 bool effect_handler_READ_MINDS(effect_handler_context_t *context)
 {
@@ -1739,6 +1740,10 @@ bool effect_handler_READ_MINDS(effect_handler_context_t *context)
 	if (found) {
 		msg("Images form in your mind!");
 		context->ident = true;
+		if (context->other) {
+			effect_simple(EF_DETECT_TRAPS, source_player(), "0", 0, 0, 0,
+						  cave->height, cave->width, NULL);
+		}
 		return true;
 	}
 
@@ -2307,6 +2312,24 @@ bool effect_handler_DETECT_SOUL(effect_handler_context_t *context)
 		msg("You sense the presence of spirits!");
 	else if (context->aware)
 		msg("You sense no spirits.");
+
+	context->ident = true;
+	return true;
+}
+
+/**
+ * Detect monsters animals around the player.
+ * The height to detect above and below the player is context->value.dice,
+ * the width either side of the player context->value.sides.
+ */
+bool effect_handler_DETECT_ANIMAL(effect_handler_context_t *context)
+{
+	bool monsters = detect_monsters(context->y, context->x, monster_is_natural);
+
+	if (monsters)
+		msg("You sense the presence of animals!");
+	else if (context->aware)
+		msg("You sense no animals.");
 
 	context->ident = true;
 	return true;
@@ -3494,11 +3517,13 @@ bool effect_handler_DESTRUCTION(effect_handler_context_t *context)
 				struct object *obj = square_object(cave, grid);
 				while (obj) {
 					if (obj->artifact) {
-						if (!OPT(player, birth_lose_arts) &&
-							!(obj->known && obj->known->artifact))
-							obj->artifact->created = false;
-						else
+						if (OPT(player, birth_lose_arts) ||
+							obj_is_known_artifact(obj)) {
 							history_lose_artifact(player, obj->artifact);
+							obj->artifact->created = true;
+						} else {
+							obj->artifact->created = false;
+						}
 					}
 					obj = obj->next;
 				}
@@ -4098,12 +4123,13 @@ bool effect_handler_SPHERE(effect_handler_context_t *context)
 }
 
 /**
- * Hit context->other% of grids in the given radius of the player 
+ * Hit context->other% of grids in the given radius of the player or the given
+ * coordinates
  * Affect grids, objects, and monsters
  */
 bool effect_handler_ZONE(effect_handler_context_t *context)
 {
-	struct loc grid, pgrid = player->grid;
+	struct loc grid, centre = player->grid;
 	int dam = effect_calculate_value(context, false);
 	int rad = context->radius;
 	int type = context->subtype;
@@ -4111,16 +4137,21 @@ bool effect_handler_ZONE(effect_handler_context_t *context)
 	int flg = PROJECT_STOP | PROJECT_GRID | PROJECT_ITEM | PROJECT_KILL |
 		PROJECT_JUMP;
 
+	/* Check for coordinates */
+	if (context->x && context->y) {
+		centre = loc(context->x, context->y);
+	}
+
 	/* Everything in range */
-	for (grid.y = pgrid.y - rad; grid.y <= pgrid.y + rad; grid.y++) {
-		for (grid.x = pgrid.x - rad; grid.x <= pgrid.x + rad; grid.x++) {
-			int dist = distance(pgrid, grid);
+	for (grid.y = centre.y - rad; grid.y <= centre.y + rad; grid.y++) {
+		for (grid.x = centre.x - rad; grid.x <= centre.x + rad; grid.x++) {
+			int dist = distance(centre, grid);
 
 			/* Skip distant grids */
 			if (dist > rad) continue;
 
 			/* Percentage chance of hitting */
-			if (randint0(100) < chance) continue;
+			if (randint0(100) >= chance) continue;
 
 			project(source_player(), 1, grid, dam, type, flg, 0, 0, NULL);
 		}
@@ -4190,6 +4221,98 @@ bool effect_handler_BALL(effect_handler_context_t *context)
 			struct trap *trap = context->origin.which.trap;
 			flg |= PROJECT_PLAY;
 			target = trap->grid;
+			break;
+		}
+
+		case SRC_PLAYER:
+			/* Ask for a target if no direction given */
+			if (context->dir == DIR_TARGET && target_okay()) {
+				flg &= ~(PROJECT_STOP | PROJECT_THRU);
+				target_get(&target);
+			} else {
+				target = loc_sum(player->grid, ddgrid[context->dir]);
+			}
+
+			if (context->other) rad += eff_level(player) / context->other;
+			break;
+
+		default:
+			break;
+	}
+
+	/* Aim at the target, explode */
+	if (project(context->origin, rad, target, dam, context->subtype, flg, 0, 0, context->obj))
+		context->ident = true;
+
+	return true;
+}
+
+
+/**
+ * Cast a ball spell
+ * Stop if we hit a monster or the player, act as a ball
+ * Allow target mode to pass over monsters
+ * Affect grids, objects, monsters and the player (even if player cast)
+ */
+bool effect_handler_CLOUD(effect_handler_context_t *context)
+{
+	int dam = effect_calculate_value(context, true);
+	int rad = context->radius ? context->radius : 2;
+	struct loc target = loc(-1, -1);
+
+	int flg = PROJECT_THRU | PROJECT_STOP | PROJECT_GRID | PROJECT_ITEM | PROJECT_KILL | PROJECT_PLAY | PROJECT_SELF;
+
+	/* Player or monster? */
+	switch (context->origin.what) {
+		case SRC_MONSTER: {
+			struct monster *mon = cave_monster(cave, context->origin.which.monster);
+			int conf_level, accuracy = 100;
+			struct monster *t_mon = monster_target_monster(context);
+
+			assert(mon);
+
+			conf_level = monster_effect_level(mon, MON_TMD_CONF);
+			while (conf_level) {
+				accuracy *= (100 - CONF_RANDOM_CHANCE);
+				accuracy /= 100;
+				conf_level--;
+			}
+
+			/* Powerful monster */
+			if (monster_is_powerful(mon)) {
+				rad++;
+			}
+
+			flg &= ~(PROJECT_STOP | PROJECT_THRU);
+
+			if (randint1(100) > accuracy) {
+				/* Confused direction */
+				int dir = randint1(9);
+				target = loc_sum(mon->grid, ddgrid[dir]);
+			} else if (t_mon) {
+				/* Target monster */
+				target = t_mon->grid;
+			} else {
+				/* Target player */
+				struct loc decoy = cave_find_decoy(cave);
+				if (!loc_is_zero(decoy)) {
+					target = decoy;
+				} else {
+					target = player->grid;
+				}
+			}
+
+			break;
+		}
+
+		case SRC_TRAP: {
+			struct trap *trap = context->origin.which.trap;
+			target = trap->grid;
+			break;
+		}
+
+		case SRC_CHEST_TRAP: {
+			target = context->obj->grid;
 			break;
 		}
 
@@ -4624,6 +4747,135 @@ bool effect_handler_STAR_BALL(effect_handler_context_t *context)
 		if (project(source_player(), context->radius, target, dam,
 					context->subtype, flg, 0, 0, context->obj))
 			context->ident = true;
+	}
+	return true;
+}
+
+/**
+ * Special code for staff of starlight and the Staff of Starfire.  Most 
+ * effective against monsters that start out in darkness, and against 
+ * those who hate light. -LM-
+ */
+bool effect_handler_STAR_BURST(effect_handler_context_t *context)
+{
+	int dam = effect_calculate_value(context, true);
+	int i, j, radius = context->radius, burst_number = 7 + randint0(8);
+	struct loc grid = loc(0, 0);
+	int flg = PROJECT_STOP | PROJECT_GRID | PROJECT_ITEM | PROJECT_KILL |
+		PROJECT_JUMP;
+
+	/* Is the player in a square already magically lit? */
+	bool player_lit = square_isglow(cave, player->grid);
+
+	context->ident = true;
+	for (i = 0; i < burst_number; i++) {
+		/* First, we find the spot. */
+		for (j = 0; j < 20; j++) {
+			/* Pick a (scattered) distance. */
+			int d = 2 + randint0(4);
+
+			/* Admit failure.  Switch to Plan B. */
+			if (j == 19) {
+				grid = player->grid;
+				break;
+			}
+
+			/* Pick a location */
+			scatter(cave, &grid, player->grid, d, true);
+
+			/* Not on top of the player. */
+			if (loc_eq(grid, player->grid)) continue;
+
+			/* Require passable terrain */
+			if (!square_ispassable(cave, grid)) continue;
+
+			/* Spot chosen. */
+			break;
+		}
+
+		/* Then we hit the spot. */
+
+		/* Confusing to be suddenly lit up. */
+		if (!square_isglow(cave, grid)) {
+			project(source_player(), radius, grid, dam, PROJ_MON_CONF, flg, 0,
+					0, NULL);
+		}
+
+		/* The actual burst of light. */
+		project(source_player(), radius + 1, grid, dam, PROJ_LIGHT_WEAK, flg, 0,
+				0, NULL);
+		project(source_player(), radius, grid, dam, PROJ_LIGHT, flg, 0,	0,NULL);
+
+		/* Hack - assume that the player's square is typical of the area, and
+		 * only light those squares that weren't already magically lit
+		 * temporarily. */
+		if (!player_lit) {
+			project(source_player(), radius + 1, grid, dam, PROJ_LIGHT_WEAK,
+					flg, 0, 0, NULL);
+		}
+	}
+	return true;
+}
+
+/**
+ * Unleash the wrath of the beings of Air. -LM-
+ */
+bool effect_handler_AIR_SMITE(effect_handler_context_t *context)
+{
+	int dam = effect_calculate_value(context, true);
+	int i, j;
+	struct loc grid = loc(0, 0);
+	int flg = PROJECT_STOP | PROJECT_GRID | PROJECT_ITEM | PROJECT_KILL |
+		PROJECT_JUMP;
+
+	context->ident = true;
+
+	/* Due warning. */
+	msg("The powers of Air rain down destruction!");
+
+	/* Multiple gravity, light, and electricity balls. */
+	for (i = 0; i < 8; i++) {
+		/* First, we find the spot. */
+		for (j = 0; j < 20; j++) {
+			/* Pick a (short) distance. */
+			int d = randint1(3);
+
+			/* Admit failure.  Switch to Plan B. */
+			if (j == 19) {
+				grid = player->grid;
+				break;
+			}
+
+			/* Pick a location */
+			scatter(cave, &grid, player->grid, d, true);
+
+			/* Not on top of the player. */
+			if (loc_eq(grid, player->grid)) continue;
+
+			/* Require passable terrain */
+			if (!square_ispassable(cave, grid)) continue;
+
+			/* Slight preference for actual monsters. */
+			if (square_monster(cave, grid)) {
+				break;
+			} else if (j > 3) {
+				/* Will accept any passable grid after a few tries. */
+				break;
+			}
+		}
+
+		/* Choice of 3 */
+		if (one_in_(3)) {
+			project(source_player(), 1, grid, dam, PROJ_GRAVITY, flg, 0, 0,
+					NULL);
+		} else if (one_in_(2)) {
+			project(source_player(), 1, grid, dam, PROJ_LIGHT, flg, 0, 0, NULL);
+		} else {
+			project(source_player(), 1, grid, dam, PROJ_ELEC, flg, 0, 0, NULL);
+		}
+
+		/* This is a bombardment.  Make it look like one. */
+		event_signal_pause(EVENT_PAUSE, 10);
 	}
 	return true;
 }
@@ -5600,7 +5852,151 @@ bool effect_handler_SWEEP(effect_handler_context_t *context)
 	return true;
 }
 
+/**
+ * Rod of Delving activation
+ */
+bool effect_handler_DELVING(effect_handler_context_t *context)
+{
+	struct loc grid = loc(0, 0);
+	int flg = PROJECT_GRID | PROJECT_ITEM | PROJECT_KILL | PROJECT_THRU;
+	target_get(&grid);
 
+	context->ident = true;
+
+	/* Aimed at oneself, this rod creates a room. */
+	if (loc_eq(grid, player->grid)) {
+		/* Lots of damage to creatures of stone. */
+		(void) project(context->origin, 4, player->grid, 300, PROJ_KILL_WALL,
+					   flg, 0, 2, NULL);
+	} else {
+		/* Otherwise, an extremely powerful destroy wall/stone. */
+		effect_simple(EF_LINE, source_player(), "160 + d240", PROJ_KILL_WALL, 0,
+					  0, 0, 0, NULL);
+	}
+	return true;
+}
+
+/**
+ * "Gleaming black runes" chest trap
+ */
+bool effect_handler_RUNES_OF_EVIL(effect_handler_context_t *context)
+{
+	/* Determine how many nasty tricks can be played. */
+	int nasty_tricks_count = 4 + randint0(3);
+
+	/* This is gonna hurt... */
+	for (; nasty_tricks_count > 0; nasty_tricks_count--) {
+		/* ...but a high saving throw does help a little. */
+		if (2 * context->obj->pval < player->state.skills[SKILL_SAVE]) {
+			if (one_in_(6)) {
+				take_hit(player, damroll(5, 20), "a chest dispel-player trap");
+			} else if (one_in_(5)) {
+				player_inc_timed(player, TMD_CUT, 200, true, true);
+			} else if (one_in_(4)) {
+				if (!player_of_has(player, OF_FREE_ACT)) {
+					player_inc_timed(player, TMD_PARALYZED, 2 + randint0(6),
+									 true, true);
+				} else {
+					player_inc_timed(player, TMD_STUN, 10 + randint0(100),
+									 true, true);
+				}
+			} else if (one_in_(3)) {
+				effect_simple(EF_DISENCHANT, context->origin, "0", 0, 0, 0, 0, 0, NULL);
+			} else if (one_in_(2)) {
+				effect_simple(EF_DRAIN_STAT, context->origin, "0", STAT_STR, 0, 0, 0, 0, NULL);
+				effect_simple(EF_DRAIN_STAT, context->origin, "0", STAT_INT, 0, 0, 0, 0, NULL);
+				effect_simple(EF_DRAIN_STAT, context->origin, "0", STAT_WIS, 0, 0, 0, 0, NULL);
+				effect_simple(EF_DRAIN_STAT, context->origin, "0", STAT_DEX, 0, 0, 0, 0, NULL);
+				effect_simple(EF_DRAIN_STAT, context->origin, "0", STAT_CON, 0, 0, 0, 0, NULL);
+			} else {
+				effect_simple(EF_CLOUD, context->origin, "150", PROJ_NETHER, 1, 0, 0, 0, NULL);
+			}
+		}
+	}
+
+	return false;
+}
+
+/**
+ * Wand of Unmaking activation
+ */
+bool effect_handler_UNMAKE(effect_handler_context_t *context)
+{
+	bool repeat = true;
+
+	context->ident = true;
+
+	while (repeat) {
+		/* Pick an effect. */
+		int chaotic_effect = randint0(18);
+
+		switch (chaotic_effect) {
+			/* Massive chaos bolt. */
+			case 0:
+			case 1:
+			case 2:
+			case 3:
+			case 4:
+			case 5:
+			case 6:
+			case 7:
+			{
+				int flg = PROJECT_STOP | PROJECT_KILL;
+				(void) project_aimed(context->origin, PROJ_CHAOS, context->dir,
+									 randint1(500), flg, NULL);
+				break;
+			}
+			/* Chaos balls in every direction */
+			case 8:
+			case 9:
+			{
+				effect_simple(EF_STAR_BALL, source_player(), "1d400",
+							  PROJ_CHAOS, 2, 0, 0, 0, NULL);
+				break;
+			}
+			/* Tear up the dungeon. */
+			case 10:
+			{
+				effect_simple(EF_DESTRUCTION, source_player(), "0", 0,
+							  5 + randint1(20), 0, 0, 0, NULL);
+				break;
+			}
+			/* Chaos cloud right on top of the poor caster. */
+			case 11:
+			{
+				effect_simple(EF_CLOUD, source_player(), "1d400", PROJ_CHAOS,
+							  6, 0, 0, 0, NULL);
+				break;
+			}
+			/* Chaos spray. */
+			case 12:
+			case 13:
+			case 14:
+			case 15:
+			case 16:
+			{
+				effect_simple(EF_ARC, source_player(), "1d600", PROJ_CHAOS,
+							  6, 0, 0, 0, NULL);
+				break;
+			}
+			/* Unmake the caster. */
+			case 17:
+			{
+				(void) player_stat_dec(player, STAT_STR, one_in_(3));
+				(void) player_stat_dec(player, STAT_INT, one_in_(3));
+				(void) player_stat_dec(player, STAT_WIS, one_in_(3));
+				(void) player_stat_dec(player, STAT_DEX, one_in_(3));
+				(void) player_stat_dec(player, STAT_CON, one_in_(3));
+				break;
+			}
+		}
+
+		/* Chaos, once unleashed, likes to stay... */
+		if (!one_in_(4)) repeat = false;
+	}
+
+	return false;
+}
 
 /**
  * One Ring activation
@@ -5865,6 +6261,15 @@ bool effect_handler_DRAGON(effect_handler_context_t *context)
 }
 
 /**
+ * Special effect for scattering chest contents - actually handled in
+ * obj-chest.c.
+ */
+bool effect_handler_CHEST_SCATTER(effect_handler_context_t *context)
+{
+	return true;
+}
+
+/**
  * ------------------------------------------------------------------------
  * Properties of effects
  * ------------------------------------------------------------------------ */
@@ -6004,6 +6409,7 @@ int effect_subtype(int index, const char *type)
 			case EF_SPHERE:
 			case EF_ZONE:
 			case EF_BALL:
+			case EF_CLOUD:
 			case EF_BREATH:
 			case EF_ARC:
 			case EF_SHORT_BEAM:

@@ -3264,6 +3264,7 @@ armor:0:0
 charges:6+d8
 effect:BEAM:ELEC
 dice:6d6
+flags:IGNORE_ELEC
 
 name:Frost Bolts
 type:wand
@@ -3554,7 +3555,51 @@ effect:WONDER
 dice:$B+1d100
 expr:B:PLAYER_LEVEL:/ 5
 
+### Fancy attack wands ###
 
+name:Striking
+type:wand
+graphics:-:d
+level:65
+weight:10
+cost:3800
+alloc:20:60 to 100
+attack:1d1:0:0
+armor:0:0
+charges:3+d3
+flags:IGNORE_ACID | IGNORE_ELEC | IGNORE_FIRE | IGNORE_COLD
+effect:BOLT:METEOR
+dice:$Dd9
+expr:D:PLAYER_LEVEL:/ 3 + 10
+
+name:Storms
+type:wand
+graphics:-:d
+level:50
+weight:10
+cost:3000
+alloc:10:55 to 100
+attack:1d1:0:0
+armor:0:0
+charges:3+d3
+flags:IGNORE_ACID | IGNORE_ELEC | IGNORE_FIRE | IGNORE_COLD
+effect:BOLT:STORM
+dice:$Dd4
+expr:D:PLAYER_LEVEL:/ 5 + 25
+
+name:Shrapnel
+type:wand
+graphics:-:d
+level:20
+weight:10
+cost:3000
+alloc:20:20 to 70
+attack:1d1:0:0
+armor:0:0
+charges:5+d5
+effect:BOLT:SHARD
+dice:$Dd8
+expr:D:PLAYER_LEVEL:/ 14 + 4
 
 ### Dragons' wands ###
 
@@ -3978,8 +4023,8 @@ alloc:20:20 to 80
 attack:1d2:0:0
 armor:0:0
 charges:6+d5
-effect:STAR:LIGHT
-dice:6d8
+effect:STAR_BURST:NONE:0
+dice:12
 
 name:Teleportation
 type:staff
@@ -4138,6 +4183,7 @@ armor:0:0
 effect:BEAM:ELEC
 dice:6d6
 time:11
+flags:IGNORE_ELEC
 
 name:Acid Bolts
 type:rod
@@ -4207,6 +4253,69 @@ armor:0:0
 effect:BALL:ACID:2
 dice:120
 time:27
+
+
+### Powerful Bolts ###
+
+name:Lightning Strike
+type:rod
+graphics:-:d
+level:74
+weight:15
+cost:12500
+alloc:10:74 to 100
+attack:1d1:0:0
+armor:0:0
+effect:BOLT_OR_BEAM:ELEC
+dice:$Dd8
+expr:D:PLAYER_LEVEL:/ 3 + 18
+time:29
+flags:IGNORE_ELEC
+
+name:Northwinds
+type:rod
+graphics:-:d
+level:78
+weight:15
+cost:15000
+alloc:10:78 to 100
+attack:1d1:0:0
+armor:0:0
+effect:BOLT_OR_BEAM:COLD
+dice:$Dd8
+expr:D:PLAYER_LEVEL:/ 3 + 21
+time:32
+flags:IGNORE_ELEC
+
+name:Dragonfire
+type:rod
+graphics:-:d
+level:82
+weight:15
+cost:17500
+alloc:10:82 to 100
+attack:1d1:0:0
+armor:0:0
+effect:BOLT_OR_BEAM:FIRE
+dice:$Dd8
+expr:D:PLAYER_LEVEL:/ 3 + 24
+time:35
+flags:IGNORE_ELEC
+
+name:Glaurung's Blood
+type:rod
+graphics:-:d
+level:86
+weight:15
+cost:20000
+alloc:10:86 to 100
+attack:1d1:0:0
+armor:0:0
+effect:BOLT_OR_BEAM:ACID
+dice:$Dd8
+expr:D:PLAYER_LEVEL:/ 3 + 27
+time:38
+flags:IGNORE_ELEC
 
 
 ### Status-affecting ###

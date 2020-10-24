@@ -845,7 +845,7 @@ bool square_isdiggable(struct chunk *c, struct loc grid) {
  */
 bool square_iswebbable(struct chunk *c, struct loc grid) {
 	if (square_trap(c, grid)) return false;
-	return square_isfloor(c, grid);
+	return square_istrappable(c, grid);
 }
 
 /**
@@ -1400,6 +1400,11 @@ void square_set_feat(struct chunk *c, struct loc grid, int feat)
 	assert(square_in_bounds(c, grid));
 	current_feat = square(c, grid)->feat;
 
+	/* Floor and road have only cosmetic differences; use road when outside */
+	if ((feat == FEAT_FLOOR) && (level_topography(player->place) != TOP_CAVE)) {
+		feat = FEAT_ROAD;
+	}
+
 	/* Track changes */
 	if (current_feat) c->feat_count[current_feat]--;
 	if (feat) c->feat_count[feat]++;
@@ -1605,6 +1610,9 @@ void square_smash_wall(struct chunk *c, struct loc grid)
 
 		/* Ignore permanent grids */
 		if (square_ispermanent(c, adj_grid)) continue;
+
+		/* Ignore floors */
+		if (square_isfloor(c, adj_grid)) continue;
 
 		/* Give this grid a chance to survive */
 		if ((square_isgranite(c, adj_grid) && one_in_(4)) ||

@@ -580,12 +580,10 @@ static struct object *make_artifact_special(int level, int tval)
 	struct object *new_obj;
 
 	/* No artifacts, do nothing */
-	if (OPT(player, birth_no_artifacts))
-		return NULL;
+	if (OPT(player, birth_no_artifacts)) return NULL;
 
 	/* No artifacts in the town */
-	if (!player->depth)
-		return NULL;
+	if (!player->depth) return NULL;
 
 	/* Check the special artifacts */
 	for (i = 0; i < z_info->a_max; ++i) {
@@ -665,18 +663,15 @@ static struct object *make_artifact_special(int level, int tval)
 static bool make_artifact(struct object *obj)
 {
 	int i;
-	bool art_ok = true;
 
 	/* Make sure birth no artifacts isn't set */
-	if (OPT(player, birth_no_artifacts)) art_ok = false;
-
-	if (!art_ok) return (false);
+	if (!OPT(player, birth_no_artifacts)) return false;
 
 	/* No artifacts in the town */
-	if (!player->depth) return (false);
+	if (!player->depth) return false;
 
 	/* Paranoia -- no "plural" artifacts */
-	if (obj->number != 1) return (false);
+	if (obj->number != 1) return false;
 
 	/* Check the artifact list (skip the "specials") */
 	for (i = 0; !obj->artifact && i < z_info->a_max; i++) {
@@ -1269,11 +1264,6 @@ struct object_kind *money_kind(const char *name, int value)
 	 * near enough */
 	int max_gold_drop = 3 * z_info->max_depth + 30;
 
-	/* If we're playing with no_selling, increase the value */
-	if (OPT(player, birth_no_selling) && player->depth)	{
-		max_gold_drop *= 5;
-	}
-
 	/* Check for specified treasure variety */
 	for (rank = 0; rank < num_money_types; rank++)
 		if (streq(name, money_type[rank].name))
@@ -1308,13 +1298,13 @@ struct object *make_gold(int lev, char *coin_type)
 	while (one_in_(100) && value * 10 <= SHRT_MAX)
 		value *= 10;
 
+	/* Prepare a gold object */
+	object_prep(new_gold, money_kind(coin_type, value), lev, RANDOMISE);
+
 	/* If we're playing with no_selling, increase the value */
 	if (OPT(player, birth_no_selling) && player->depth)	{
 		value *= 5;
 	}
-
-	/* Prepare a gold object */
-	object_prep(new_gold, money_kind(coin_type, value), lev, RANDOMISE);
 
 	/* Cap gold at max short (or alternatively make pvals s32b) */
 	if (value >= SHRT_MAX) {
