@@ -50,7 +50,8 @@ public class StateManager {
 	public LruCache<String, Bitmap> tileCache = null;
     public static int CACHE_MAX = 5;
 
-    public static int MAX_WINDOWS = 4;
+    public static int MAX_WINDOWS = 5;
+    public static int TOP_BAR_WIN = 4;
 
     public boolean showSubWindows = true;
 
@@ -84,7 +85,7 @@ public class StateManager {
 
 		grafmodes = new ArrayList<>();
 
-		coreCommands = new ArrayList<>();		
+		coreCommands = new ArrayList<>();
 
 		createBitmapCache();
 	}
@@ -120,7 +121,7 @@ public class StateManager {
         String buf = nativew.queryString("get_tilesets");
 
         if (buf == null) return;
-        
+
         for (String reg: buf.split("#")) {
 
             String parts[] = reg.split(":");
@@ -142,9 +143,9 @@ public class StateManager {
             gm.pageSize = (gm.idx != 5 && gm.idx != 6) ? 0: 8;
 
             grafmodes.add(gm);
-            
+
             //game_context.infoAlert(gm.fullPath);
-            
+
             //if (gm.idx == useGraphics) currentGraf = gm;
         }
 
@@ -183,12 +184,12 @@ public class StateManager {
     public CoreCommand findCommand(int key)
     {
     	int mode = 0;
-    	if (isRoguelikeKeyboard()) mode = 1;    	
+    	if (isRoguelikeKeyboard()) mode = 1;
     	return findCommand(key, mode);
     }
 
     public CoreCommand findCommand(int key, int mode)
-    {    	
+    {
     	for (CoreCommand cmd: coreCommands) {
     		if (cmd.keys[mode] == key) {
     			return cmd;
@@ -212,13 +213,13 @@ public class StateManager {
 	public boolean characterPlaying()
 	{
 		if (!gameThread.gameRunning()) return false;
-		return (nativew.gameQueryInt(1,new String[]{"playing"})==1);		
+		return (nativew.gameQueryInt(1,new String[]{"playing"})==1);
 	}
 
 	public boolean inTheDungeon()
 	{
 		if (!gameThread.gameRunning()) return false;
-		return (nativew.gameQueryInt(1,new String[]{"in_the_dungeon"})==1);		
+		return (nativew.gameQueryInt(1,new String[]{"in_the_dungeon"})==1);
 	}
 
 	public void link(TermView t, Handler h) {
@@ -230,7 +231,7 @@ public class StateManager {
 		termWinNext = -1;
 		termwins = new HashMap<Integer, TermWindow>();
 
-		// Initialize virtual screen (virtscr) and curses stdscr 
+		// Initialize virtual screen (virtscr) and curses stdscr
 		int h = newWin(0,0,0,0);
 		virtscr = getWin(h);
 		h = newWin(0,0,0,0);
@@ -249,11 +250,26 @@ public class StateManager {
 
 	public boolean windowIsVisible(TermWindow w)
 	{
+		int pref = Preferences.getNumberSubWindows();
+
 		for (int i = -1; i <= MAX_WINDOWS; i++) {
 			TermWindow w2 = getWin(i);
-			if (w2 != null && w2 == w
-				&& i <= Preferences.getNumberSubWindows()) {
-				return true;
+			if (w2 != null && w2 == w) {
+				if (i <= 0) {
+					return true;
+				}
+
+				if (!Preferences.getActivePlugin().enableSubWindows()) {
+					return false;
+				}
+
+				if (i == TOP_BAR_WIN && Preferences.getTopBar()) {
+					return true;
+				}
+
+				if (i <= pref) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -390,14 +406,14 @@ public class StateManager {
 
         // Mouse bit
         int ch = set_bit(30);
-        // Encode mods.         
+        // Encode mods.
         ch |= ((mods & make_mask(3)) << 22); // 3 bits [24-22]
         // Encode button
         ch |= ((button & make_mask(2)) << 20); // 2 bits [21-20]
-        // Encode coordinates                 
+        // Encode coordinates
         ch |= ((x & make_mask(10)) << 10); // 10 bits [19-10]
         ch |= (y & make_mask(10)); // 10 bits [9-0]
-        
+
         //Log.d("Angband", "mouse " + ch);
 
         this.keyBuffer.add(ch);

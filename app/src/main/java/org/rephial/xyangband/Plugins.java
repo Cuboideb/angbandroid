@@ -8,7 +8,7 @@ import java.util.zip.ZipInputStream;
 
 final public class Plugins {
 	public enum Plugin {
-		angband(0),		
+		angband(0),
 		frogcomposband(1),
 		npp041(2),
 		faangband(3);
@@ -30,11 +30,15 @@ final public class Plugins {
 		}
 		public boolean only1x1()
 		{
-			return (id > 1) && (id != 3);
+			return (id > 0) && (id != 3);
 		}
 		public boolean noMouse()
 		{
-			return (id > 1) && (id != 3);
+			return (id > 0) && (id != 3);
+		}
+		public boolean enableSubWindows()
+		{
+			return (id == 0);
 		}
 	}
 

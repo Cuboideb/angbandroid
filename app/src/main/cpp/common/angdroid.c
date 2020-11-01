@@ -47,6 +47,7 @@ static int initial_tile_wid = 1;
 static int initial_tile_hgt = 1;
 static int initial_graphics = 0;
 static int initial_pseudo_ascii = 0;
+static int initial_top_bar = 0;
 
 /*
  * Android's terms are boring
@@ -75,7 +76,7 @@ static int make_mask(int n) {
 typedef struct {
 	int y;
 	int x;
-	int button;	
+	int button;
 } mouse_data_t;
 
 #define PLAYER_PLAYING (player && player->upkeep && player->upkeep->playing)
@@ -98,7 +99,7 @@ static mouse_data_t mouse_data;
  * the things that would normally go into a "term_data" structure
  * could be made into global variables instead.
  */
-#define MAX_AND_TERM 4
+#define MAX_AND_TERM 5
 
 /*
  * An array of "term_data" structures, one for each "sub-window"
@@ -177,20 +178,20 @@ static int get_input_from_ui(int wait)
 	if ((key > 0) && ((key & MOUSE_TAG) != 0)) {
 
 		// Get data, 3 bits for mods, 2 bits for button
-		// and 10 bits for each coordinate		
+		// and 10 bits for each coordinate
 		int mods = ((key >> 22) & make_mask(3));
 		// Just two buttons
 		mouse_data.button = ((key >> 20) & make_mask(2));
 		mouse_data.x = ((key >> 10) & make_mask(10));
-		mouse_data.y = (key & make_mask(10));		
+		mouse_data.y = (key & make_mask(10));
 
 		/*
 		plog_fmt("Mouse - key:%X y:%d x:%d button:%d mods:%d",
-			key, mouse_data.y, mouse_data.x,						
+			key, mouse_data.y, mouse_data.x,
 			mouse_data.button, mods);
 		*/
 
-		// Encode mods in the button		
+		// Encode mods in the button
 		mouse_data.button |= (mods << 4);
 
 		// Get rid of anything except the mouse bit
@@ -212,20 +213,20 @@ void send_key_to_term(int key) {
 int process_special_command(int key)
 {
 	char buf[2048] = "";
-	char *pbuf = buf;		
-	int graf, pseudo, trows, tcols;	
+	char *pbuf = buf;
+	int graf, pseudo, trows, tcols, top_bar;
 
 	key = 0;
 
 	while (true) {
 		key = angdroid_getch(0);
-		if (key == 0 || key == SPECIAL_CMD) break;		
+		if (key == 0 || key == SPECIAL_CMD) break;
 		*pbuf++ = key;
 	}
 	pbuf = 0;
 
-	if (sscanf(buf, "graphics:%d:%d:%d:%d",
-		&graf, &trows, &tcols, &pseudo) == 4) {
+	if (sscanf(buf, "graphics:%d:%d:%d:%d:%d",
+		&graf, &trows, &tcols, &pseudo, &top_bar) == 5) {
 
 		if (!PLAYER_PLAYING) return 0;
 
@@ -233,11 +234,15 @@ int process_special_command(int key)
 
 		use_graphics = graf;
 		current_graphics_mode = get_graphics_mode(use_graphics);
-#if defined(USE_PSEUDO_ASCII)			
+#if defined(USE_PSEUDO_ASCII)
 		pseudo_ascii = pseudo;
 #endif
 		tile_width = tcols;
 		tile_height = trows;
+#if defined(SIDEBAR_TOP)
+		angband_term[0]->sidebar_mode = (top_bar ? SIDEBAR_NONE: SIDEBAR_LEFT);
+#endif
+
 		reset_visuals(true);
 		return KTRL('R');
 		//return 0;
@@ -245,17 +250,21 @@ int process_special_command(int key)
 
 	if (sscanf(buf, "resize:%d:%d", &tcols, &trows) == 2) {
 
-		if (!PLAYER_PLAYING) return 0;
+		//if (!PLAYER_PLAYING) return 0;
 
-		Term_resize(tcols, trows);		
+		LOGD("TERM RESIZE trying to save %d %d", tcols, trows);
+
+		Term_resize(tcols, trows);
 		//return KTRL('R');
 		return 0;
 	}
 
 	if (strcmp(buf, "redraw") == 0) {
 
-		if (!PLAYER_PLAYING) return 0;
-		
+		//if (!PLAYER_PLAYING) return 0;
+
+		LOGD("TERM REDRAW");
+
 		Term_redraw();
 		return 0;
 	}
@@ -281,7 +290,7 @@ int process_special_command(int key)
 static errr Term_xtra_android(int n, int v)
 {
 	term_data *td = (term_data*)(Term->data);
-	jint ret;	
+	jint ret;
 
 	switch (n)
 	{
@@ -364,7 +373,7 @@ static errr Term_xtra_android(int n, int v)
 
 		case TERM_XTRA_REACT:
 		case TERM_XTRA_FROSH:
-		case TERM_XTRA_BORED:		
+		case TERM_XTRA_BORED:
 		case TERM_XTRA_ALIVE:
 		case TERM_XTRA_LEVEL:
 		{
@@ -399,7 +408,7 @@ static errr Term_control_android(int what, const char *msg)
 		pbuf = buf;
 	}
 
-	if (what == TERM_CONTROL_CONTEXT && IN_THE_DUNGEON) {		
+	if (what == TERM_CONTROL_CONTEXT && IN_THE_DUNGEON) {
 		strnfmt(buf, sizeof(buf), "in_dungeon:1");
 
 #if defined(HAS_KEYMAP_PACK)
@@ -424,8 +433,8 @@ static errr Term_control_android(int what, const char *msg)
  * thing and not as a "hardware" cursor.
  */
 static errr Term_curs_android(int x, int y)
-{	
-	move(y, x);	
+{
+	move(y, x);
 
 	Term_control_android(TERM_CONTROL_SHOW_CURSOR, "small");
 
@@ -508,7 +517,7 @@ static errr Term_pict_android(int x, int y, int n,
 
 	term_data *td = (term_data*)(Term->data);
 
-	for (i = 0; i < n; i++) {	
+	for (i = 0; i < n; i++) {
 		resu = waddtile(td->win, x, y, ap[i], (byte)cp[i],
 			tap[i], (byte)tcp[i]);
 		if (resu) break;
@@ -553,7 +562,7 @@ static void term_data_link(int i)
 	term_init(t, tw, th, 256);
 
 	tile_width = initial_tile_wid;
-	tile_height = initial_tile_hgt;	
+	tile_height = initial_tile_hgt;
 #if defined(USE_PSEUDO_ASCII)
 	pseudo_ascii = initial_pseudo_ascii;
 #endif
@@ -601,13 +610,17 @@ static void term_data_link(int i)
 	t->pict_hook = Term_pict_android;
 	t->control_hook = Term_control_android;
 
+#if defined(SIDEBAR_TOP)
+	t->sidebar_mode = (initial_top_bar ? SIDEBAR_NONE: SIDEBAR_LEFT);
+#endif
+
 	/* Remember where we came from */
 	t->data = td;
 
 	/* Create record for window */
 	td->win = getwin(i);
 
-	/* Activate it */			
+	/* Activate it */
 	Term_activate(t);
 
 	/* Global pointer */
@@ -816,7 +829,7 @@ static char *get_tilesets(void)
 		my_strcat(buf, str, sizeof(buf));
 	}
 
-	return strdup(buf);	
+	return strdup(buf);
 }
 
 char* queryString(const char* argv0)
@@ -855,7 +868,7 @@ int queryInt(const char* argv0) {
 		result = player->grid.x;
 	}
 	else if (strcmp(argv0, "playing") == 0) {
-		result = 0;		
+		result = 0;
 		if (PLAYER_PLAYING) result = 1;
 	}
 	else if (strcmp(argv0, "in_the_dungeon") == 0) {
@@ -916,8 +929,8 @@ void angdroid_process_argv(int i, const char* argv)
     		}
     		break;
 		case 4:
-			sscanf(argv, "%d:%d:%d:%d", &initial_graphics, &initial_tile_hgt,
-				&initial_tile_wid, &initial_pseudo_ascii);
+			sscanf(argv, "%d:%d:%d:%d:%d", &initial_graphics, &initial_tile_hgt,
+				&initial_tile_wid, &initial_pseudo_ascii, &initial_top_bar);
 			break;
 		case 5:
 			my_strcpy(variant_name, argv, sizeof(variant_name));
@@ -949,7 +962,7 @@ void angdroid_main()
 	init_graphics_modes();
 
 	use_graphics = initial_graphics;
-	current_graphics_mode = get_graphics_mode(use_graphics);	
+	current_graphics_mode = get_graphics_mode(use_graphics);
 
 	cmd_get_hook = textui_get_cmd;
 

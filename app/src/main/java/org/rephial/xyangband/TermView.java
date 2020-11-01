@@ -59,27 +59,33 @@ public class TermView extends View implements OnGestureListener {
 	Canvas canvas;
 	Paint fore;
     Paint fore_subw;
+    Paint fore_topbar;
 	Paint back;
 	Paint cursor;
 	Paint dirZoneFill;
-	Paint dirZoneStroke;    
+	Paint dirZoneStroke;
 	Display fullDisplay;
 	Display windowDisplay;
 
-    Bitmap atlas = null;    
+    Bitmap atlas = null;
     //BitmapRegionDecoder tiles = null;
 
 	private int color1 = Color.parseColor("#4a4855");
 	private int color2 = Color.parseColor("#807c93");
+    private int color3 = Color.parseColor("#4d7ed6");
     private int color_drag = Color.parseColor("#B2FB49");
 	private int alpha = 70;
+
+    private int color1_stroke = Color.parseColor("#DDDDDD");
+    private int color2_stroke = Color.parseColor("#4d7ed6");
+    private int alpha_stroke = 200;
 
 	Handler timerHandler;
 	Runnable timerRunnable;
 	private int lastDirection = 0;
 	private int longDelay = 350;
 	private int shortDelay = 80;
-    private int dragDelay = 200;
+    private int dragDelay = 500;
 	private long savedTime = 0;
     private boolean dragEnabled = false;
     private Point lastLocation = null;
@@ -98,14 +104,12 @@ public class TermView extends View implements OnGestureListener {
 	private int char_width = 0;
 	private int font_text_size = 0;
 
-	public static int ROW_MAP = 1;
-	public static int COL_MAP = 13;
     public static char BIG_PAD = 0x1E00;
 
     public int tile_wid = 1;
     public int tile_hgt = 1;
     public int useGraphics = 0;
-    public boolean pseudoAscii = false;    
+    public boolean pseudoAscii = false;
 
     public int tile_wid_pix = 0;
     public int tile_hgt_pix = 0;
@@ -116,6 +120,8 @@ public class TermView extends View implements OnGestureListener {
     public RectF mouseToggle = null;
     public Bitmap iconMouse1 = null;
     public Bitmap iconMouse2 = null;
+
+    public boolean topBar = true;
 
     public static class Assert {
         public static void that(boolean condition, String message) {
@@ -184,17 +190,17 @@ public class TermView extends View implements OnGestureListener {
             }
 
             page = new Point(0, 0);
-            ptInPage = new Point(srcPoint);            
+            ptInPage = new Point(srcPoint);
 
             if (gm.havePages()) {
                 ptInPage.x %= gm.pageSize;
-                ptInPage.y %= gm.pageSize;                
+                ptInPage.y %= gm.pageSize;
 
                 page.x = srcPoint.x / gm.pageSize;
                 page.y = srcPoint.y / gm.pageSize;
             }
         }
-        
+
         public Rect locateSource()
         {
             int x = ptInPage.x * gm.cell_width;
@@ -214,7 +220,7 @@ public class TermView extends View implements OnGestureListener {
         public String createKey()
         {
             if (key == "") {
-                key = "" + gm.idx + "-" + srcPoint.x + "@" + srcPoint.y + 
+                key = "" + gm.idx + "-" + srcPoint.x + "@" + srcPoint.y +
                     "-" + dstSize.width + "x" + dstSize.height;
             }
             return key;
@@ -252,7 +258,7 @@ public class TermView extends View implements OnGestureListener {
             return result;
         }
     }
-    
+
     public GraphicsMode currentGraf = null;
     public String currentAtlas = "";
 
@@ -306,7 +312,12 @@ public class TermView extends View implements OnGestureListener {
         fore_subw = new Paint();
         fore_subw.setTextAlign(Paint.Align.LEFT);
         if ( isHighRes() ) fore_subw.setAntiAlias(true);
-        fore_subw.setColor(Color.WHITE);        
+        fore_subw.setColor(Color.WHITE);
+
+        fore_topbar = new Paint();
+        fore_topbar.setTextAlign(Paint.Align.LEFT);
+        if ( isHighRes() ) fore_topbar.setAntiAlias(true);
+        fore_topbar.setColor(Color.WHITE);
 
 		back = new Paint();
 		setBackColor(Color.BLACK);
@@ -322,7 +333,7 @@ public class TermView extends View implements OnGestureListener {
 		dirZoneFill.setAlpha(alpha);
 
 		dirZoneStroke = new Paint();
-		dirZoneStroke.setColor(0xDDDDDD);
+		dirZoneStroke.setColor(color1_stroke);
 		dirZoneStroke.setStyle(Paint.Style.STROKE);
 		dirZoneStroke.setAlpha(alpha);
 		dirZoneStroke.setStrokeWidth(2);
@@ -346,6 +357,7 @@ public class TermView extends View implements OnGestureListener {
         tile_hgt = Preferences.getTileHeight();
         tile_wid = Preferences.getTileWidth();
         pseudoAscii = Preferences.getPseudoAscii();
+        topBar = Preferences.getTopBar();
 
         iconMouse1 = BitmapFactory.decodeResource(game_context.getResources(),
                 R.drawable.mouse1);
@@ -355,7 +367,7 @@ public class TermView extends View implements OnGestureListener {
         createTimers();
 
         reloadGraphics();
-       
+
         //Log.d("Angband", "Init TERM");
 
         //state.addKey(' ');
@@ -376,6 +388,16 @@ public class TermView extends View implements OnGestureListener {
         return (tw > 0 && th > 0);
     }
 
+    public int ROW_MAP()
+    {
+        return 1;
+    }
+
+    public int COL_MAP()
+    {
+        return Preferences.getTopBar() ? 1: 13;
+    }
+
     public void createTimers()
     {
         timerHandler = new Handler();
@@ -390,7 +412,7 @@ public class TermView extends View implements OnGestureListener {
                     timerHandler.removeCallbacks(this);
 
                     // Special case
-                    if (lastDirection == '5') {                        
+                    if (lastDirection == '5') {
                         dragEnabled = true;
                         invalidate();
                         return;
@@ -411,17 +433,17 @@ public class TermView extends View implements OnGestureListener {
                 }
             }
         };
-    }    
+    }
 
     public boolean reloadGraphics()
-    {       
+    {
         boolean refresh = false;
         int gidx = Preferences.getGraphicsMode();
         if (gidx > 0 && gidx == useGraphics && currentGraf == null
             && !state.grafmodes.isEmpty()) {
             refresh = true;
         }
-        setGraphicsMode(gidx);        
+        setGraphicsMode(gidx);
         return refresh;
     }
 
@@ -448,7 +470,8 @@ public class TermView extends View implements OnGestureListener {
     {
         String txt = "graphics:" + useGraphics +
             ":" + tile_hgt + ":" + tile_wid +
-            ":" + (pseudoAscii ? 1: 0);
+            ":" + (pseudoAscii ? 1: 0) +
+            ":" + (topBar ? 1: 0);
 
         Log.d("Angband", "Visual State: " + txt);
 
@@ -458,7 +481,7 @@ public class TermView extends View implements OnGestureListener {
     public void sendVisuals(String oldVisuals)
     {
         if (!state.gameThread.gameRunning()) return;
-        
+
         String newVisuals = serializeVisualState();
 
         if (!newVisuals.equals(oldVisuals)) {
@@ -466,9 +489,9 @@ public class TermView extends View implements OnGestureListener {
             //Log.d("Angband", "Old visuals: " + oldVisuals);
 
             //Log.d("Angband", "Visuals to Core: " + newVisuals);
-            
+
             state.addSpecialCommand(newVisuals);
-            
+
             if (state.characterPlaying()) {
 
                 clearFull();
@@ -479,7 +502,7 @@ public class TermView extends View implements OnGestureListener {
 
     public GraphicsMode findGraphicsMode(int gidx)
     {
-        GraphicsMode gm = null;        
+        GraphicsMode gm = null;
 
         if (gidx > 0) {
             for (GraphicsMode gx: state.grafmodes) {
@@ -492,7 +515,7 @@ public class TermView extends View implements OnGestureListener {
 
         return gm;
     }
-   
+
     public void setGraphicsMode(int gidx)
     {
         if (state.grafmodes.isEmpty()) {
@@ -514,11 +537,11 @@ public class TermView extends View implements OnGestureListener {
             else {
                 image = BitmapFactory.decodeFile(path);
                 image.prepareToDraw();
-            }            
+            }
         }
 
         useGraphics = gidx;
-        currentGraf = gm;        
+        currentGraf = gm;
         atlas = image;
         currentAtlas = path;
     }
@@ -530,17 +553,18 @@ public class TermView extends View implements OnGestureListener {
 
 	public void configureVisuals(int rows, int cols, int graf)
     {
-        //Log.d("Angband", "Configure visuals! REACT");        
+        //Log.d("Angband", "Configure visuals! REACT");
         tile_hgt = rows;
         tile_wid = cols;
-        setGraphicsMode(graf);        
+        setGraphicsMode(graf);
     }
 
-	Point mouseToGrid(int y, int x)
-	{
-		Point p = new Point();
-		p.x = (char_width > 0) ? (x / char_width): 0;
-		p.y = (char_height > 0) ? (y / char_height): 0;
+    Point mouseToGrid(int y, int x)
+    {
+        Point p = new Point();
+        y -= getTopBarHeight();
+        p.x = (char_width > 0) ? (x / char_width): 0;
+        p.y = (char_height > 0 && y > 0) ? (y / char_height): 0;
 
         /*
 		if (state.stdscr != null) {
@@ -551,7 +575,7 @@ public class TermView extends View implements OnGestureListener {
 					u.fgColor + " " + (int)u.ch + " " +
 					u.bgColor + " " + (int)u.bgChar);
 			//this.postInvalidate();
-		} 
+		}
         */
 
 		return p;
@@ -566,7 +590,7 @@ public class TermView extends View implements OnGestureListener {
 
         lastDirection = 0;
         savedTime = 0;
-        
+
         timerHandler.removeCallbacks(timerRunnable);
 
         invalidate();
@@ -608,6 +632,12 @@ public class TermView extends View implements OnGestureListener {
                 // Remember for single tap
                 this.zones.add(r);
 
+                dirZoneFill.setColor(color1);
+                dirZoneFill.setAlpha(alpha);
+
+                dirZoneStroke.setColor(color1_stroke);
+                dirZoneStroke.setAlpha(alpha);
+
 				p_canvas.drawRoundRect(r, 10, 10, dirZoneFill);
 				p_canvas.drawRoundRect(r, 10, 10, dirZoneStroke);
 			}
@@ -643,7 +673,7 @@ public class TermView extends View implements OnGestureListener {
 			for (int px = 1; px <= 3; px++) {
 
 				int x = this.getScrollX() + dragOffset.x;
-				x += totalw - w * (3 - px + 1);				
+				x += totalw - w * (3 - px + 1);
 
                 int y = this.getScrollY() + dragOffset.y;
                 y += totalh - h * (3 - py + 1);
@@ -652,6 +682,9 @@ public class TermView extends View implements OnGestureListener {
 
                 // Remember for single tap
                 this.zones.add(r);
+
+                dirZoneStroke.setColor(color1_stroke);
+                dirZoneStroke.setAlpha(alpha_stroke);
 
                 if (dragEnabled && px == 2 && py == 2) {
                     dirZoneFill.setColor(color_drag);
@@ -666,7 +699,7 @@ public class TermView extends View implements OnGestureListener {
 
                 RectF rdraw = new RectF(r);
                 rdraw.bottom -= pady;
-                rdraw.right -= padx;				
+                rdraw.right -= padx;
 
 				p_canvas.drawRoundRect(rdraw, 10, 10, dirZoneFill);
 				p_canvas.drawRoundRect(rdraw, 10, 10, dirZoneStroke);
@@ -679,7 +712,7 @@ public class TermView extends View implements OnGestureListener {
 	}
 
     public TSize getCharDimensions(Paint p)
-    {                
+    {
         int h = (int)Math.ceil(p.getFontSpacing());
         int w = (int)p.measureText("X", 0, 1);
         return new TSize(w, h);
@@ -695,7 +728,17 @@ public class TermView extends View implements OnGestureListener {
         return columns;
     }
 
-    public int countSubWindowRows(TermWindow w) 
+    public int calculateRows()
+    {
+        int pct = Preferences.getRowsSubWindows();
+        if (pct == 0) {
+            return 0;
+        }
+        int rows = pct * Preferences.rows / 100;
+        return rows;
+    }
+
+    public int countSubWindowRows(TermWindow w)
     {
         int columns = calculateColumns();
         if (columns == 0) {
@@ -726,16 +769,14 @@ public class TermView extends View implements OnGestureListener {
     }
 
     public void drawSubWindow(Canvas p_canvas, TermWindow w,
-        int startX, int startY)
+        int startX, int startY, int maxWidth, int maxHeight, Paint paint)
     {
-        TSize s = getCharDimensions(fore_subw);
+        TSize s = getCharDimensions(paint);
         int th = s.height;
         int tw = s.width;
 
         int currentRow = -1;
         int lastRow = -1;
-
-        int columns = calculateColumns();        
 
         for(int r = 0; r < w.rows; r++) {
             for(int c = 0; c < w.cols; c++) {
@@ -744,30 +785,20 @@ public class TermView extends View implements OnGestureListener {
 
                 char ch = p.ch;
 
-                if (c >= columns) continue;
-
                 if (ch == ' ') continue;
 
-                if (r != lastRow) {
-                    lastRow = r;                        
-                    ++currentRow;  
+                int x = startX + c * tw;
 
-                    // Draw a shadow in text-mode
-                    if (useGraphics == 0) {
-                        int x2 = startX;
-                        int y2 = startY + currentRow * th;
-                        Rect rect = new Rect(x2, y2,
-                            x2 + columns * tw, y2 + th);
-                        //fore_subw.setColor(Color.BLACK);
-                        //fore_subw.setAlpha(200);
-                        fore_subw.setColor(0x0e093d);
-                        fore_subw.setAlpha(255);
-                        p_canvas.drawRect(rect, fore_subw);
-                    }
+                if (x + tw > maxWidth) continue;
+
+                if (r != lastRow) {
+                    lastRow = r;
+                    ++currentRow;
                 }
 
-                int x = startX + c * tw;
                 int y = startY + currentRow * th;
+
+                if (y + th > maxHeight) return;
 
                 String str = ch + "";
 
@@ -777,65 +808,87 @@ public class TermView extends View implements OnGestureListener {
                     color = pair.fColor;
                 }
 
-                fore_subw.setColor(color);
-                fore_subw.setAlpha(255);
+                paint.setColor(color);
+                paint.setAlpha(255);
 
-                int w2 = (int)fore_subw.measureText(str, 0, 1);
+                int w2 = (int)paint.measureText(str, 0, 1);
                 int pad = Math.max((tw - w2) / 2, 0);
 
                 p_canvas.drawText(str,
                     x + pad,
-                    y + th - fore_subw.descent(),
-                    fore_subw);                
+                    y + th - paint.descent(),
+                    paint);
             }
         }
     }
 
     public void drawAllSubWindows(Canvas p_canvas)
     {
-        if (!state.inTheDungeon() || !state.showSubWindows) return;
+        if (!state.characterPlaying()
+            || !Preferences.getActivePlugin().enableSubWindows()
+            || Preferences.getNumberSubWindows() == 0) return;
 
-        int columns = calculateColumns();        
+        int columns = calculateColumns();
         if (columns == 0) return;
 
         TSize s = getCharDimensions(fore_subw);
         int th = s.height;
         int tw = s.width;
 
-        int startY = this.getScrollY() + th*2;        
-        int subWinWidth = (columns+2) * tw;
-        int startX = this.getScrollX() + this.getWidth() - subWinWidth;
+        int subWinWidth = columns*tw;
+        int subWinHeight = getSubWindowsHeight();
+
+        int startX = canvas_width - subWinWidth;
+        int startY = 0;
+        Rect re = new Rect(startX, startY, canvas_width, canvas_height);
 
         boolean vertical = !Preferences.getHorizontalSubWindows();
 
-        for (int i = 1; i < state.MAX_WINDOWS; i++) {
+        if (!vertical) {
+            if (subWinHeight <= 0) return;
+            startX = 0;
+            startY = canvas_height - subWinHeight;
+            re = new Rect(startX, startY, canvas_width, canvas_height);
+        }
+
+        // Clear all
+        fore_subw.setColor(Color.BLACK);
+        p_canvas.drawRect(re, fore_subw);
+
+        // One window is reserved
+        for (int i = 1; i < state.MAX_WINDOWS-1; i++) {
             int idx = i;
-            if (!vertical) {
-                idx = state.MAX_WINDOWS - i;
-            }
             TermWindow w = state.getWin(idx);
-            if (w != null && state.windowIsVisible(w)) {                
+            if (w != null && state.windowIsVisible(w)) {
 
                 int rows = countSubWindowRows(w);
 
                 if (rows > 0) {
-
-                    int subWinHeight = (rows+2)*th;
-
                     if (vertical) {
-                        drawSubWindow(p_canvas, w, startX, startY);
-                        startY += subWinHeight;
+                        drawSubWindow(p_canvas, w, startX, startY,
+                            canvas_width, canvas_height, fore_subw);
+                        startY += ((rows+1)*th); // Plus one row
                     }
                     else {
-                        startY =
-                            this.getScrollY() + this.getHeight()
-                            - getVerticalGap()
-                            - subWinHeight;
-                        drawSubWindow(p_canvas, w, startX, startY);
-                        startX -= subWinWidth;
-                    }                
+                        startY = re.top;
+                        drawSubWindow(p_canvas, w, startX, startY,
+                            startX+subWinWidth, canvas_height, fore_subw);
+                        startX += ((columns+1)*tw); // Plus one col
+                    }
                 }
             }
+        }
+
+        dirZoneStroke.setColor(color1_stroke);
+        dirZoneStroke.setAlpha(alpha);
+
+        if (vertical) {
+            p_canvas.drawLine(re.left, re.top, re.left, re.bottom-1,
+                dirZoneStroke);
+        }
+        else {
+            p_canvas.drawLine(re.left, re.top, re.right-1, re.top,
+                dirZoneStroke);
         }
     }
 
@@ -857,7 +910,11 @@ public class TermView extends View implements OnGestureListener {
     {
         Bitmap icon = mouseSpecial ? iconMouse2: iconMouse1;
 
-        if (icon == null) return;
+        if (icon == null || !Preferences.getShowMouseIcon()) {
+            mouseSpecial = false;
+            mouseToggle = null;
+            return;
+        }
 
         Point winSize = new Point();
         windowDisplay.getSize(winSize);
@@ -865,7 +922,7 @@ public class TermView extends View implements OnGestureListener {
         int x = (int)(getWidth() * 0.6f) + getScrollX();
         int y = 15 + getScrollY();
         //TSize size = calculateButtonSize();
-        
+
         int size = (int)(Math.min(winSize.x, winSize.y) * 0.1f);
         size = Math.min(icon.getWidth(), size);
 
@@ -876,13 +933,39 @@ public class TermView extends View implements OnGestureListener {
         p_canvas.drawBitmap(icon, null, mouseToggle, null);
     }
 
+    public void drawTopBar(Canvas p_canvas)
+    {
+        int maxHeight = getTopBarHeight();
+
+        if (maxHeight == 0) return;
+
+        Rect re = new Rect(0, 0, canvas_width, maxHeight);
+
+        // Clear all
+        fore_topbar.setColor(Color.BLACK);
+        p_canvas.drawRect(re, fore_topbar);
+
+        TermWindow win = state.getWin(StateManager.TOP_BAR_WIN);
+
+        if (win == null) return;
+
+        drawSubWindow(p_canvas, win, 0, 0, canvas_width, maxHeight,
+            fore_topbar);
+    }
+
 	protected void onDraw(Canvas p_canvas) {
 		if (this.zones != null) this.zones.clear();
 
 		if (bitmap != null && state.stdscr != null) {
 
-			p_canvas.drawBitmap(bitmap, 0, 0, null); 
-            
+            int origin_y = getTopBarHeight();
+
+            if (origin_y > 0 && state.characterPlaying()) {
+                drawTopBar(p_canvas);
+            }
+
+			p_canvas.drawBitmap(bitmap, 0, origin_y, null);
+
             drawAllSubWindows(p_canvas);
 
 			int tw = char_width;
@@ -892,7 +975,7 @@ public class TermView extends View implements OnGestureListener {
 			int row = state.stdscr.row;
 
 			int x = col * tw;
-			int y = row * th;
+			int y = origin_y + row * th;
 
 			if (this.bigTileActive()) {
 
@@ -902,7 +985,7 @@ public class TermView extends View implements OnGestureListener {
 				if (state.virtscr != null) {
 					 p = state.virtscr.buffer[row][col];
 				}
-                
+
 			    if (p != null && (p.isGraphicTile() || p.isBigText())) {
 
                     tw = tile_wid_pix;
@@ -923,7 +1006,7 @@ public class TermView extends View implements OnGestureListener {
 			int cb = Math.min(y+th,canvas_height);
 
 			// Dont draw the cursor if we are using the timer
-			if (state.stdscr.cursor_visible && savedTime == 0) {            
+			if (state.stdscr.cursor_visible && savedTime == 0) {
 				p_canvas.drawRect(cl, ct, cr, cb, cursor);
 			}
 
@@ -938,11 +1021,16 @@ public class TermView extends View implements OnGestureListener {
 
 			drawMouseToggle(p_canvas);
 		}
+        else {
+            p_canvas.drawColor(Color.BLACK);
+        }
 	}
 
 	public void computeCanvasSize() {
-		canvas_width = Preferences.getTermWidth()*char_width;
-	    canvas_height = Preferences.getTermHeight()*char_height;
+		canvas_width = Preferences.getTermWidth()*char_width
+            + getSubWindowsWidth();
+	    canvas_height = Preferences.getTermHeight()*char_height
+            + getSubWindowsHeight() + getTopBarHeight();
 	}
 
 	protected void setForeColor(int a) {
@@ -952,7 +1040,63 @@ public class TermView extends View implements OnGestureListener {
 		back.setColor(a);
 	}
 
+    public int getSubWindowsRows()
+    {
+        if (Preferences.getActivePlugin().enableSubWindows() &&
+            Preferences.getHorizontalSubWindows() &&
+            Preferences.getNumberSubWindows() > 0) {
+
+            int nr = calculateRows();
+            return Math.max(0, nr);
+        }
+        return 0;
+    }
+
+    public int getTopBarHeight()
+    {
+        if (Preferences.getActivePlugin().enableSubWindows()
+            && Preferences.getTopBar()) {
+
+            TSize size = getCharDimensions(fore_topbar);
+            return (2 * size.height);
+        }
+        return 0;
+    }
+
+    public int getSubWindowsHeight()
+    {
+        int nr = getSubWindowsRows();
+        if (nr > 0) {
+            TSize size = getCharDimensions(fore_subw);
+            return (nr * size.height);
+        }
+        return 0;
+    }
+
+    public int getSubWindowsColumns()
+    {
+        if (Preferences.getActivePlugin().enableSubWindows() &&
+            !Preferences.getHorizontalSubWindows() &&
+            Preferences.getNumberSubWindows() > 0) {
+
+            int nc = calculateColumns();
+            return Math.max(0, nc);
+        }
+        return 0;
+    }
+
+    public int getSubWindowsWidth()
+    {
+        int nc = getSubWindowsColumns();
+        if (nc > 0) {
+            TSize size = getCharDimensions(fore_subw);
+            return nc * size.width;
+        }
+        return 0;
+    }
+
 	public void autoSizeFontByHeight(int maxWidth, int maxHeight) {
+
 		if (maxWidth == 0) maxWidth = getMeasuredWidth();
 		if (maxHeight == 0) maxHeight = getMeasuredHeight();
 
@@ -974,18 +1118,22 @@ public class TermView extends View implements OnGestureListener {
 		}
 		else {
 			font_text_size = 6;
+            boolean success = false;
 			do {
 				font_text_size += 1;
-				setFontSize(font_text_size, false);
-			} while (char_height * Preferences.rows <= maxHeight);
+				success = setFontSize(font_text_size, false);
+			} while (success && (char_height * Preferences.rows) <=
+                (maxHeight - getTopBarHeight() - getSubWindowsHeight()));
 
 			font_text_size -= 1;
 			setFontSize(font_text_size);
 		}
-		//Log.d("Angband","autoSizeFontHeight "+font_text_size);
+
+		Log.d("Angband","autoSizeFontHeight "+font_text_size);
 	}
 
 	public void autoSizeFontByWidth(int maxWidth, int maxHeight) {
+
 		if (maxWidth == 0) maxWidth = getMeasuredWidth();
 		if (maxHeight == 0) maxHeight = getMeasuredHeight();
 
@@ -1011,12 +1159,14 @@ public class TermView extends View implements OnGestureListener {
 			do {
 				font_text_size += 1;
 				success = setFontSize(font_text_size, false);
-			} while (success && char_width* Preferences.cols <= maxWidth);
+			} while (success && (char_width * Preferences.cols) <=
+                (maxWidth - getSubWindowsWidth()));
 
 			font_text_size -= 1;
 			setFontSize(font_text_size);
 		}
-		//Log.d("Angband","autoSizeFontWidth "+font_text_size);
+
+		Log.d("Angband","autoSizeFontWidth "+font_text_size);
 	}
 
 	public int getHorizontalGap()
@@ -1033,9 +1183,7 @@ public class TermView extends View implements OnGestureListener {
 
 	public void adjustTermSize(int maxWidth, int maxHeight)
 	{
-        if (!this.state.gameThread.gameRunning()) {
-            return;
-        }
+        Log.d("Angband", "Adjust term size");
 
         this.rows = Preferences.rows;
         this.cols = Preferences.cols;
@@ -1052,6 +1200,9 @@ public class TermView extends View implements OnGestureListener {
             maxWidth -= game_context.getKeyboardWidth();
         }
 		*/
+
+        maxHeight = maxHeight - getTopBarHeight() - getSubWindowsHeight();
+        maxWidth = maxWidth - getSubWindowsWidth();
 
 		while ((maxHeight > 0) && ((this.rows+1) * this.char_height < maxHeight)) {
 			++this.rows;
@@ -1070,15 +1221,17 @@ public class TermView extends View implements OnGestureListener {
 		//		+" rows "+this.rows+" cols "+this.cols);
 
 		// Do nothing
-		if (this.rows == Preferences.getTermHeight() && this.cols == Preferences.getTermWidth()) {
+		if (this.rows == Preferences.getTermHeight()
+            && this.cols == Preferences.getTermWidth()) {
+            Log.d("Angband", "Size unchanged");
 			return;
 		}
 
         // Remember for later
         Preferences.setSize(this.cols, this.rows);
 
-        // Tell the core
-		state.nativew.resizeToCore(this.cols, this.rows);
+        // Tell the core, or the termwindows
+        state.nativew.resizeToCore(this.cols, this.rows);
 	}
 
 	public boolean isHighRes() {
@@ -1145,17 +1298,24 @@ public class TermView extends View implements OnGestureListener {
 		char_height = (int)Math.ceil(fore.getFontSpacing());
 		char_width = (int)fore.measureText("X", 0, 1);
 		//Log.d("Angband","setSizeFont "+fore.measureText("X", 0, 1));
-    
+
         int pct = Preferences.getFontSizeSubWindows();
-        int subw_font_size = Math.max(pct * font_text_size / 100, 5);
+        int subw_font_size = font_text_size / 2;
+        subw_font_size += (pct * font_text_size / 100);
+        Math.max(subw_font_size, 5);
         fore_subw.setTextSize(subw_font_size);
         fore_subw.setTypeface(fore.getTypeface());
-                
-        float tile_font_mult = Preferences.getTileFontMult();        
+
+        pct = Preferences.getTopBarFontMultiplier();
+        int topbar_font_size = font_text_size + (pct * font_text_size / 100);
+        fore_topbar.setTextSize(topbar_font_size);
+        fore_topbar.setTypeface(fore.getTypeface());
+
+        float tile_font_mult = Preferences.getTileFontMult();
         tile_font_size = (int)(font_text_size * tile_font_mult);
 		tile_fore.setTypeface(fore.getTypeface());
 		tile_fore.setTextSize(tile_font_size);
-        
+
         tile_wid_pix = (int)(char_width * tile_wid);
         tile_hgt_pix = (int)(char_height * tile_hgt);
 
@@ -1167,21 +1327,30 @@ public class TermView extends View implements OnGestureListener {
 	@Override
 	protected void onMeasure(int widthmeasurespec, int heightmeasurespec) {
 
-        //Log.d("Angband", "onMeasure!");
-
 		int height = MeasureSpec.getSize(heightmeasurespec);
 		int width = MeasureSpec.getSize(widthmeasurespec);
 
         //Log.d("Angband", "System size " + width + "x" + height);
 
-		int fs = 0;
-		if(Preferences.isScreenPortraitOrientation())
-			fs = Preferences.getPortraitFontSize();
-		else
-			fs = Preferences.getLandscapeFontSize();
+        boolean vertical = Preferences.isScreenPortraitOrientation();
+
+		int fs = (vertical ?
+            Preferences.getPortraitFontSize():
+            Preferences.getLandscapeFontSize());
+
+        // Testing
+        // fs = 0;
+
+        Log.d("Angband", "onMeasure. Font size: " + fs);
 
 		if (fs == 0) {
-            autoSizeFontByWidth(width, height);
+            if (game_context.shouldAdjustByWidth()) {
+                autoSizeFontByWidth(width, height);
+            }
+            else {
+                autoSizeFontByHeight(width, height);
+            }
+            adjustTermSize(width, height);
         }
 		else {
 			setFontSize(fs, false);
@@ -1191,7 +1360,7 @@ public class TermView extends View implements OnGestureListener {
 
 		//int minheight = getSuggestedMinimumHeight();
 		//int minwidth = getSuggestedMinimumWidth();
-        
+
         //computeCanvasSize();
 
         //Log.d("Angband","onMeasure - Canvas: "+canvas_width+","+canvas_height+
@@ -1246,7 +1415,7 @@ public class TermView extends View implements OnGestureListener {
                 me.getAction() == MotionEvent.ACTION_DOWN) {
             this.stopTimer();
             lastDirection = tempDirection;
-        }        
+        }
 
         // Disable special behavior sometimes
         if (lastDirection == '5' && !(Preferences.getEnableTouch() &&
@@ -1338,11 +1507,11 @@ public class TermView extends View implements OnGestureListener {
 		if (Preferences.getEnableTouch() &&
 			Preferences.getTouchRight() &&
 			(this.zones.size() == 9)) {
-           
+
             RectF first = this.zones.get(0);
             RectF last = this.zones.get(8);
             float side = first.bottom - first.top;
-            float pad = side * padPct;           
+            float pad = side * padPct;
 
             RectF bigZone = new RectF(first.left - pad, first.top - pad,
                 last.right + pad, last.bottom + pad);
@@ -1446,14 +1615,39 @@ public class TermView extends View implements OnGestureListener {
         win.showAtLocation(this, gravity, realX, realY);
     }
 
+    public boolean ignoreMouse(int y, int x) {
+
+        x += getScrollX();
+
+        if (x >= canvas_width - getSubWindowsWidth()) {
+            return true;
+        }
+
+        y += getScrollY();
+
+        if (y < getTopBarHeight()) {
+            return true;
+        }
+
+        if (y >= canvas_height - getSubWindowsHeight()) {
+            return true;
+        }
+
+        return false;
+    }
+
     public void sendMousePress(int y, int x) {
+
+        if (Preferences.getActivePlugin().noMouse() || ignoreMouse(y, x)) {
+            state.addKey(InputUtils.KC_ESCAPE);
+            return;
+        }
+
         Point p = mouseToGrid(y, x);
         //Log.d("Angband", "y x " + p.y + " " + p.x);
+
         if (mouseSpecial) {
             popupMouseOptions(p.y, p.x, y, x);
-        }
-        else if (Preferences.getActivePlugin().noMouse()) {
-            state.addKey(InputUtils.KC_ESCAPE);
         }
         else {
             state.addMousePress(p.y, p.x, 1, 0);
@@ -1509,26 +1703,29 @@ public class TermView extends View implements OnGestureListener {
 
 		computeCanvasSize();
 
+        int bmp_w = Preferences.getTermWidth() * char_width;
+        int bmp_h = Preferences.getTermHeight() * char_height;
+
 		// sanity
-		if (canvas_width == 0 || canvas_height == 0) {
+		if (bmp_w == 0 || bmp_h == 0) {
             state.saveTheDungeon(null);
-            return false;        
+            return false;
         }
-        
+
         // Try to load a stored bitmap of that size
-        bitmap = state.restoreTheDungeon(canvas_width, canvas_height);        
-                
+        bitmap = state.restoreTheDungeon(bmp_w, bmp_h);
+
         if (bitmap != null) {
             //Log.d("Angband","Reuse Bitmap!!!");
-            ; // nothing            
+            ; // nothing
         }
-        else {                        
+        else {
             //Log.d("Angband","createBitmap "+canvas_width+","+canvas_height);
-            bitmap = Bitmap.createBitmap(canvas_width, canvas_height, Bitmap.Config.RGB_565);
-            //bitmap = Bitmap.createBitmap(canvas_width, canvas_height, Bitmap.Config.ARGB_8888);            
+            bitmap = Bitmap.createBitmap(bmp_w, bmp_h, Bitmap.Config.RGB_565);
+            //bitmap = Bitmap.createBitmap(canvas_width, canvas_height, Bitmap.Config.ARGB_8888);
             state.saveTheDungeon(bitmap);
         }
-		
+
 		canvas = new Canvas(bitmap);
 
 		/*
@@ -1555,14 +1752,14 @@ public class TermView extends View implements OnGestureListener {
 		}
 
         char ch = p.ch;
-        
+
         if (ch == BIG_PAD) return;
 
 		Paint fore_temp = fore;
 		int tw = char_width;
 		int th = char_height;
         int x = c * tw;
-        int y = r * th;		
+        int y = r * th;
 
 		if (p.isBigText() && this.bigTileActive()) {
 
@@ -1621,21 +1818,21 @@ public class TermView extends View implements OnGestureListener {
             tw = tile_wid_pix;
             th = tile_hgt_pix;
         }
-     
+
         String str = Character.toString((char)c);
-        
+
         Rect bg = new Rect(x, y, x+tw, y+th);
         setBackColor(Color.BLACK);
-        canvas.drawRect(bg, back);        
+        canvas.drawRect(bg, back);
 
         fore_temp.setColor(pair.fColor);
 
         float w2 = fore_temp.measureText(str, 0, 1);
-        float padx = Math.max((tw - w2) / 2, 0);       
+        float padx = Math.max((tw - w2) / 2, 0);
         float h2 = fore_temp.descent() - fore_temp.ascent();
         float pady = Math.max((th - h2) / 2, 0) + fore_temp.descent();
 
-        canvas.drawText(str, x + padx, y + th - pady, fore_temp);        
+        canvas.drawText(str, x + padx, y + th - pady, fore_temp);
     }
 
     public void markTile(TermWindow t, int r, int c, int th, int tw)
@@ -1643,7 +1840,7 @@ public class TermView extends View implements OnGestureListener {
         int x, y;
 
         for (y = r - th; y <= r; y++) {
-            for (x = c; x < c + tw; x++) {         
+            for (x = c; x < c + tw; x++) {
 
                 if (y < t.begin_y || y >= t.rows ||
                     x < t.begin_x || x >= t.cols) continue;
@@ -1666,8 +1863,8 @@ public class TermView extends View implements OnGestureListener {
                 if (!p.isGraphicTile()) continue;
                 if (p.bgColor < 0) continue;
 
-                g = new TileGrid(gm, p.fgColor, p.ch, row, col);                
-                key = g.createKey();                
+                g = new TileGrid(gm, p.fgColor, p.ch, row, col);
+                key = g.createKey();
                 if (state.tileCache.get(key) == null) {
                     grids.add(g);
                 }
@@ -1675,7 +1872,7 @@ public class TermView extends View implements OnGestureListener {
                     //Log.d("Angband", "Cache hit (preload): " + key);
                 }
 
-                g = new TileGrid(gm, p.bgColor, p.bgChar, row, col);                
+                g = new TileGrid(gm, p.bgColor, p.bgChar, row, col);
                 key = g.createKey();
                 if (state.tileCache.get(key) == null) {
                     grids.add(g);
@@ -1693,12 +1890,12 @@ public class TermView extends View implements OnGestureListener {
     {
         GraphicsMode gm = currentGraf;
         if (gm == null || !gm.havePages() || !canDraw()) return;
-        
+
         int i;
         HashSet<Point> pages = new HashSet<>();
         ArrayList<TileGrid> grids = collectTileGrids(gm, t);
 
-        for (TileGrid tile: grids) {            
+        for (TileGrid tile: grids) {
             pages.add(tile.page);
         }
 
@@ -1710,7 +1907,7 @@ public class TermView extends View implements OnGestureListener {
             while (iter.hasNext()) {
 
                 TileGrid tile = iter.next();
-                                
+
                 if (!tile.page.equals(curPage)) continue;
 
                 String key = tile.createKey();
@@ -1727,7 +1924,7 @@ public class TermView extends View implements OnGestureListener {
                     map.prepareToDraw();
                     //Log.d("Angband", "Loading page: " + mapPath);
                 }
-               
+
                 Bitmap result = tile.loadBitmap(map);
 
                 if (result != null) {
@@ -1762,22 +1959,22 @@ public class TermView extends View implements OnGestureListener {
             atlas.prepareToDraw();
 
             //Log.d("Angband", "Loading page: " + path);
-            
+
             result = tile.loadBitmap(atlas);
 
             atlas.recycle();
             atlas = null;
         }
-        else {        
+        else {
             if (atlas == null) return null;
             result = tile.loadBitmap(atlas);
-        }        
+        }
 
         if (result != null) {
             state.tileCache.put(key, result);
         }
 
-        return result;        
+        return result;
     }
 
     public void drawLifeColor(int a, Rect dst)
@@ -1785,7 +1982,7 @@ public class TermView extends View implements OnGestureListener {
         // Mask is 0x02000
         int pct = (a >> 8) & 0x0F;
         int color;
-        
+
         if (pct <= 2) color = Color.RED;
         else if (pct <= 4) color = 0x0FF4040; // Light red
         else if (pct <= 6) color = 0x0FF8000; // Orange
@@ -1835,18 +2032,18 @@ public class TermView extends View implements OnGestureListener {
         if (!currentGraf.havePages() && atlas == null) return;
 
         TileGrid tile = new TileGrid(currentGraf, a, c, row, col);
-		
+
         if (tile.isLargeTile) {
 
             //game_context.infoAlert("Big tile! " + row + " " + col);
-            
+
             markTile(state.virtscr, row, col, tile_hgt, tile_wid);
         }
 
         Rect dst = tile.locateDest();
 
         // Optimization: just clear grids with alpha
-        if (fill && tileHasAlpha(tile)) {            
+        if (fill && tileHasAlpha(tile)) {
             setBackColor(Color.BLACK);
             canvas.drawRect(dst, back);
         }
@@ -1858,14 +2055,14 @@ public class TermView extends View implements OnGestureListener {
         canvas.drawBitmap(bm, dst.left, dst.top, null);
 
         // Special mark for life color
-        if ((a & 0x02000) != 0) drawLifeColor(a, dst);        
+        if ((a & 0x02000) != 0) drawLifeColor(a, dst);
 	}
 
     public void drawTile(int row, int col, int a, char c,
         int ta, char tc) {
 
         // Not initialized
-        if (canvas == null) {            
+        if (canvas == null) {
             return;
         }
 
@@ -1881,7 +2078,7 @@ public class TermView extends View implements OnGestureListener {
         }
 
         drawTileAux(row, col, ta, tc, true);
-        
+
         if (a == ta && c == tc) return;
 
         drawTileAux(row, col, a, c, false);
@@ -1900,13 +2097,13 @@ public class TermView extends View implements OnGestureListener {
 	}
 
 	public void onResume() {
-		//Log.d("Angband","Termview.onResume()");
-		vibrate = Preferences.getVibrate();
+		Log.d("Angband", "Termview.onResume()");
+		//vibrate = Preferences.getVibrate();
 	}
 
 	public void onPause() {
 		//Log.d("Angband","Termview.onPause()");
-		// this is the only guaranteed safe place to save state 
+		// this is the only guaranteed safe place to save state
 		// according to SDK docs
 		state.gameThread.send(GameThread.Request.SaveGame);
 

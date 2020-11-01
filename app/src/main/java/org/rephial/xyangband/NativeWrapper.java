@@ -172,7 +172,7 @@ public class NativeWrapper {
         if (term == null) return;
 
 		synchronized (display_lock) {
-			term.onGameStart(); // recalculate TermView canvas dimension			
+			term.onGameStart(); // recalculate TermView canvas dimension
 			frosh(null);
 		}
 	}
@@ -181,6 +181,9 @@ public class NativeWrapper {
 	{
 		synchronized (display_lock) {
 
+			Log.d("Angband", "RESIZE in NativeWrapper: "
+				+ cols + " x " + rows);
+
 			if (state.stdscr != null) {
             	state.stdscr.resize(cols, rows);
         	}
@@ -188,11 +191,12 @@ public class NativeWrapper {
             	state.virtscr.resize(cols, rows);
         	}
 
-        	Log.d("Angband", "RESIZE TO CORE");
-
-        	String cmd = "resize:" + cols + ":" + rows;
-        	state.addSpecialCommand(cmd);
-        	state.addKey(' ');
+        	if (true || state.gameThread.gameRunning()) {
+        		//Log.d("Angband", "RESIZE TO CORE");
+        		String cmd = "resize:" + cols + ":" + rows;
+        		state.addSpecialCommand(cmd);
+        		state.addKey(' ');
+        	}
 		}
 	}
 
@@ -206,7 +210,7 @@ public class NativeWrapper {
 	public void reloadGraphics()
 	{
 		synchronized (display_lock) {
-			if (term != null && term.reloadGraphics()) {				
+			if (term != null && term.reloadGraphics()) {
 				updateNow();
 			}
 		}
@@ -214,7 +218,7 @@ public class NativeWrapper {
 
 	public void wrefresh(int w) {
 		//Log.d("Angband", "Native wrefresh");
-		
+
 		if (term == null) return;
 
 		synchronized (display_lock) {
@@ -224,8 +228,8 @@ public class NativeWrapper {
 	}
 
 	private void frosh(TermWindow w) {
-		
-		if (w != null) {			
+
+		if (w != null) {
 			if (w != state.virtscr && w != state.stdscr) {
 				//Log.d("Angband", "Frosh win > 0");
 
@@ -275,12 +279,12 @@ public class NativeWrapper {
 						if (c<v.cols-1 && r<v.rows-1) {
 							TermWindow.TermPoint u = v.buffer[r+1][c+1];
 							u.isUgly = !u.isDirty;
-						}						
+						}
 					}
-										
+
 					if (p.isDirty && p.isBigPad()) {
 						v.touchBigTile(r, c, term.tile_wid, term.tile_hgt);
-					}					
+					}
 				}
 			}
 
@@ -299,16 +303,16 @@ public class NativeWrapper {
 					if (p.isDirty || p.isUgly || w == null) {
 						if (p.isGraphicTile()) {
 							drawTile(r, c, p);
-						}			
+						}
 						else {
 							drawPoint(r, c, p, p.isDirty || w == null);
-						}						
+						}
 					}
 				}
 			}
 
 			term.postInvalidate();
-		
+
 			if (w == null)
 				term.onScroll(null,null,0,0);  // sanitize scroll position
 		}
@@ -318,7 +322,7 @@ public class NativeWrapper {
 	{
 		if (p.bgColor < 0) return;
 
-		term.drawTile(r, c, p.fgColor, p.ch, p.bgColor, p.bgChar);		
+		term.drawTile(r, c, p.fgColor, p.ch, p.bgColor, p.bgChar);
 
 		p.isDirty = false;
 		p.isUgly = false;
@@ -326,11 +330,11 @@ public class NativeWrapper {
 
 	private void drawPoint(int r, int c, TermWindow.TermPoint p,
 		boolean extendErase)
-	{	
-		if (p.bgColor < 0) return;	
+	{
+		if (p.bgColor < 0) return;
 
 		int fgColorIdx = p.fgColor;
-		int bgColorIdx = p.bgColor;		
+		int bgColorIdx = p.bgColor;
 
 		/*
 		 * This is a bit hacky.  Angband doesn't actually use colour pairs -
@@ -399,7 +403,7 @@ public class NativeWrapper {
 	public int mvwinch(final int w, final int r, final int c) {
 		synchronized (display_lock) {
 			TermWindow t = state.getWin(w);
-			if (t != null) 
+			if (t != null)
 				return t.mvinch(r, c);
 			else
 				return 0;
@@ -428,9 +432,9 @@ public class NativeWrapper {
 	public int wattrget(final int w, final int r, final int c) {
 		synchronized (display_lock) {
 			TermWindow t = state.getWin(w);
-			if (t != null) 
+			if (t != null)
 				return t.attrget(r, c);
-			else 
+			else
 				return 0;
 		}
 	}
@@ -459,7 +463,7 @@ public class NativeWrapper {
 	public void wclear(final int w) {
 		//Log.d("Angband", "Native wclear");
 		synchronized (display_lock) {
-			TermWindow t = state.getWin(w);			
+			TermWindow t = state.getWin(w);
 			if (t != null) t.clear();
 		}
 	}
@@ -488,7 +492,7 @@ public class NativeWrapper {
 		synchronized (display_lock) {
 			TermWindow t = state.getWin(w);
 			if (t != null) t.move(y,x);
-		}		
+		}
 	}
 
 	public void curs_set(final int v) {
@@ -506,26 +510,26 @@ public class NativeWrapper {
 		synchronized (display_lock) {
 			TermWindow t = state.getWin(w);
 			if (t != null) t.touch();
-		}		
+		}
 	}
 
-	public int newwin (final int rows, final int cols, 
+	public int newwin (final int rows, final int cols,
 						final int begin_y, final int begin_x) {
 		synchronized (display_lock) {
 			int w = state.newWin(rows,cols,begin_y,begin_x);
 			return w;
-		}		
+		}
 	}
 
 	public void delwin (final int w) {
 		synchronized (display_lock) {
 			state.delWin(w);
-		}		
+		}
 	}
 
 	public void initscr () {
 		synchronized (display_lock) {
-		}		
+		}
 	}
 
 	public void overwrite (final int wsrc, final int wdst) {
@@ -533,12 +537,12 @@ public class NativeWrapper {
 			TermWindow td = state.getWin(wdst);
 			TermWindow ts = state.getWin(wsrc);
 			if (td != null && ts != null) td.overwrite(ts);
-		}		
+		}
 	}
 
 	int getcury(final int w) {
 		TermWindow t = state.getWin(w);
-		if (t != null) 
+		if (t != null)
 			return t.getcury();
 		else
 			return 0;
@@ -546,7 +550,7 @@ public class NativeWrapper {
 
 	int getcurx(final int w) {
 		TermWindow t = state.getWin(w);
-		if (t != null) 
+		if (t != null)
 			return t.getcurx();
 		else
 			return 0;

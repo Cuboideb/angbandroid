@@ -7,6 +7,9 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 
+import java.util.Map;
+import java.util.HashMap;
+import java.util.ArrayList;
 import java.io.File;
 import java.lang.reflect.Array;
 
@@ -26,7 +29,7 @@ final public class Preferences {
 	static final String KEY_MIDDLEOPACITY = "angband.middleOpacity";
 	static final String KEY_ENABLETOUCH = "angband.enabletouch";
 
-	static final String KEY_TOUCHRIGHT = "angband.touchright";	
+	static final String KEY_TOUCHRIGHT = "angband.touchright";
 	static final String KEY_TOUCHMULTIPLIER = "angband.touchmultiplier";
 	static final String KEY_TOUCHDRAG = "angband.enable_touch_drag";
 	static final String KEY_TOUCH_DRAG_OFFSET = "angband.touch_drag_offset";
@@ -36,6 +39,15 @@ final public class Preferences {
 	static final String KEY_RIBBON_ROWS = "angband.ribbon_rows";
 
 	static final String KEY_USERKEYMAPS = "angband.userkeymaps";
+
+	static final String KEY_NUM_SUBW = "angband.n_subwindows";
+	static final String KEY_FONT_SUBW = "angband.font_size_subwindows";
+	static final String KEY_ROWS_SUBW = "angband.rows_subwindows";
+	static final String KEY_COLS_SUBW = "angband.cols_subwindows";
+	static final String KEY_HORIZ_SUBW = "angband.horiz_subwindows";
+
+	static final String KEY_TOP_BAR = "angband.top_bar";
+	static final String KEY_MULT_TOP_BAR = "angband.mult_top_bar";
 
 	static final String KEY_CENTERTAP = "angband.centerscreentap";
 	static final String KEY_PORTRAITKB = "angband.portraitkb";
@@ -47,6 +59,7 @@ final public class Preferences {
 	static final String KEY_TERMHEIGHT = "angband.termheight";
 
 	static final String KEY_USE_ADV_KBD = "angband.use_adv_keyboard";
+	static final String KEY_SHOW_ADV_KEYMAP = "angband.show_adv_keymaps";
 	static final String KEY_USE_VERT_KBD = "angband.use_vert_keyboard";
 	static final String KEY_KBD_HEIGHT = "angband.keyboard_height";
 	static final String KEY_KBD_WIDTH = "angband.keyboard_width";
@@ -62,7 +75,7 @@ final public class Preferences {
 	static final String KEY_GAMEPLUGIN = "angband.gameplugin";
 	static final String KEY_GAMEPROFILE = "angband.gameprofile";
 	static final String KEY_SKIPWELCOME = "angband.skipwelcome";
-	
+
 	static final String KEY_GRAPHICS = "angband.graphics";
 	static final String KEY_PSEUDOASCII = "angband.pseudoascii";
 
@@ -86,6 +99,8 @@ final public class Preferences {
 
 	public static Context context;
 
+	public static ArrayList<String> changed = null;
+
 	Preferences() {}
 
 	public static void init(Context p_context, File filesDir,
@@ -108,6 +123,55 @@ final public class Preferences {
 
 		keymapper = new KeyMapper(pref);
 	}
+
+	public static HashMap<String,String> getAllPrefs()
+	{
+		HashMap<String,String> snap = new HashMap<>();
+		Map<String,?> keys = pref.getAll();
+		for(Map.Entry<String,?> entry : keys.entrySet()){
+    		snap.put(entry.getKey(), entry.getValue().toString());
+		}
+		return snap;
+	}
+
+	public static void addChanged(String key)
+	{
+		if (changed == null) changed = new ArrayList<>();
+
+		changed.add(key);
+	}
+
+	public static void clearChanged()
+	{
+		changed = null;
+	}
+
+	/*
+	public static void saveSnapshot()
+	{
+		oldValues = getAllPrefs();
+	}
+
+	public HashMap<String,String> getChangesPrefs()
+	{
+		if (oldValues == null) return null;
+
+		HashMap<String,String> changed = new HashMap<>();
+
+		for (Map.Entry<String,String> entry: getAllPrefs().entrySet()) {
+			String key = entry.getKey();
+			String value = entry.getValue();
+			if (!oldValues.containsKey(key)
+				|| !oldValues.get(key).equals(value)) {
+				changed.put(key, value);
+			}
+		}
+
+		oldValues = null;
+
+		return changed;
+	}
+	*/
 
 	public static boolean getQwertyNumPad()
 	{
@@ -148,7 +212,7 @@ final public class Preferences {
 	public static boolean isScreenPortraitOrientation() {
 		Configuration config = resources.getConfiguration();
 		return (config.orientation == Configuration.ORIENTATION_PORTRAIT);
-	}	
+	}
 
 	public static int getOrientation() {
 		return Integer.parseInt(pref.getString(Preferences.KEY_ORIENTATION, "0"));
@@ -162,6 +226,12 @@ final public class Preferences {
 		return pref.getBoolean(Preferences.KEY_KEYBOARDOVERLAP, true);
 	}
 
+	public static void setKeyboardOverlap(boolean value) {
+		SharedPreferences.Editor ed = pref.edit();
+		ed.putBoolean(Preferences.KEY_KEYBOARDOVERLAP, value);
+		ed.commit();
+	}
+
 	public static boolean getShowAutoList() {
 		return pref.getBoolean(Preferences.KEY_SHOWAUTOLIST, false);
 	}
@@ -172,7 +242,19 @@ final public class Preferences {
 
 	public static boolean getUseAdvKeyboard()
 	{
-		return pref.getBoolean(Preferences.KEY_USE_ADV_KBD, false);
+		return pref.getBoolean(Preferences.KEY_USE_ADV_KBD, true);
+	}
+
+	public static boolean getShowAdvKeymaps()
+	{
+		return pref.getBoolean(Preferences.KEY_SHOW_ADV_KEYMAP, true);
+	}
+
+	public static void setUseAdvKeyboard(boolean value)
+	{
+		SharedPreferences.Editor ed = pref.edit();
+		ed.putBoolean(Preferences.KEY_USE_ADV_KBD, value);
+		ed.commit();
 	}
 
 	public static boolean getVerticalKeyboard()
@@ -180,12 +262,31 @@ final public class Preferences {
 		return pref.getBoolean(Preferences.KEY_USE_VERT_KBD, false);
 	}
 
+	public static void setVerticalKeyboard(boolean value)
+	{
+		SharedPreferences.Editor ed = pref.edit();
+		ed.putBoolean(Preferences.KEY_USE_VERT_KBD, value);
+		ed.commit();
+	}
+
 	public static int getKeyboardHeight() {
 		return pref.getInt(Preferences.KEY_KBD_HEIGHT, 100);
 	}
 
+	public static void setKeyboardHeight(int value) {
+		SharedPreferences.Editor ed = pref.edit();
+		ed.putInt(Preferences.KEY_KBD_HEIGHT, value);
+		ed.commit();
+	}
+
 	public static int getKeyboardWidth() {
 		return pref.getInt(Preferences.KEY_KBD_WIDTH, 100);
+	}
+
+	public static void setKeyboardWidth(int value) {
+		SharedPreferences.Editor ed = pref.edit();
+		ed.putInt(Preferences.KEY_KBD_WIDTH, value);
+		ed.commit();
 	}
 
 	public static int getTouchMultiplier() {
@@ -201,8 +302,8 @@ final public class Preferences {
 		SharedPreferences.Editor ed = pref.edit();
 		ed.putString(Preferences.KEY_TOUCH_DRAG_OFFSET,
 			"" + px + "x" + py);
-		ed.commit();	
-	}	
+		ed.commit();
+	}
 
 	public static String getTouchDragOffset() {
 		return pref.getString(Preferences.KEY_TOUCH_DRAG_OFFSET, "0x0");
@@ -246,13 +347,13 @@ final public class Preferences {
 	}
 
 	public static float getTileFontMult()
-	{		
-		String mult = getTileMultiplier();		
+	{
+		String mult = getTileMultiplier();
 		if (mult.equals("2x2") || mult.equals("3x2") || mult.equals("4x2")) {
 			return 2;
 		}
 		if (mult.equals("3x3")) {
-			return 2.5f;			
+			return 2.5f;
 		}
 		if (mult.equals("6x3")) {
 			return 3;
@@ -264,9 +365,9 @@ final public class Preferences {
 	}
 
 	public static int getGraphicsMode()
-	{		
+	{
 		String val = pref.getString(Preferences.KEY_GRAPHICS, "6");
-		int num = Integer.parseInt(val);		
+		int num = Integer.parseInt(val);
 		if (getActivePlugin().onlyText()) {
 			num = 0;
 		}
@@ -279,9 +380,9 @@ final public class Preferences {
 		//return Integer.valueOf(s);
 		return 0;
 	}
-	
+
 	public static boolean getPseudoAscii()
-	{		
+	{
 		return pref.getBoolean(Preferences.KEY_PSEUDOASCII, false);
 	}
 
@@ -344,23 +445,67 @@ final public class Preferences {
 
 	public static int getNumberSubWindows()
 	{
-		String str = pref.getString("angband.n_subwindows", "1");
+		String str = pref.getString(KEY_NUM_SUBW,
+			resources.getString(R.string.def_number_subwindows));
 		return Integer.parseInt(str);
+	}
+
+	public static void setNumberSubWindows(int value)
+	{
+		SharedPreferences.Editor ed = pref.edit();
+		ed.putString(KEY_NUM_SUBW, ""+value);
+		ed.commit();
 	}
 
 	public static int getFontSizeSubWindows()
 	{
-		return pref.getInt("angband.font_size_subwindows", 50);
+		String s = resources.getString(R.string.def_font_subwindows);
+		return pref.getInt(KEY_FONT_SUBW, Integer.parseInt(s));
+	}
+
+	public static void setFontSizeSubWindows(int value)
+	{
+		SharedPreferences.Editor ed = pref.edit();
+		ed.putInt(KEY_FONT_SUBW, value);
+		ed.commit();
 	}
 
 	public static int getColumnsSubWindows()
 	{
-		return pref.getInt("angband.cols_subwindows", 50);
+		String s = resources.getString(R.string.def_cols_subwindows);
+		return pref.getInt(KEY_COLS_SUBW, Integer.parseInt(s));
+	}
+
+	public static void setColumnsSubWindows(int value)
+	{
+		SharedPreferences.Editor ed = pref.edit();
+		ed.putInt(KEY_COLS_SUBW, value);
+		ed.commit();
+	}
+
+	public static int getRowsSubWindows()
+	{
+		String s = resources.getString(R.string.def_rows_subwindows);
+		return pref.getInt(KEY_ROWS_SUBW, Integer.parseInt(s));
+	}
+
+	public static void setRowsSubWindows(int value)
+	{
+		SharedPreferences.Editor ed = pref.edit();
+		ed.putInt(KEY_ROWS_SUBW, value);
+		ed.commit();
 	}
 
 	public static boolean getHorizontalSubWindows()
 	{
-		return pref.getBoolean("angband.horiz_subwindows", false);
+		return pref.getBoolean(KEY_HORIZ_SUBW, true);
+	}
+
+	public static void setHorizontalSubWindows(boolean value)
+	{
+		SharedPreferences.Editor ed = pref.edit();
+		ed.putBoolean(KEY_HORIZ_SUBW, value);
+		ed.commit();
 	}
 
 	public static int getTermWidth()
@@ -445,8 +590,38 @@ final public class Preferences {
 		return pref.getBoolean(Preferences.KEY_ENABLETOUCH, true);
 	}
 
+	public static void setEnableTouch(boolean value) {
+		SharedPreferences.Editor ed = pref.edit();
+		ed.putBoolean(Preferences.KEY_ENABLETOUCH, value);
+		ed.commit();
+	}
+
 	public static boolean getTouchRight() {
 		return pref.getBoolean(Preferences.KEY_TOUCHRIGHT, true);
+	}
+
+	public static void setTouchRight(boolean value) {
+		SharedPreferences.Editor ed = pref.edit();
+		ed.putBoolean(Preferences.KEY_TOUCHRIGHT, value);
+		ed.commit();
+	}
+
+	public static boolean getTopBar() {
+		return pref.getBoolean(KEY_TOP_BAR, true);
+	}
+
+	public static void setTopBar(boolean value) {
+		SharedPreferences.Editor ed = pref.edit();
+		ed.putBoolean(KEY_TOP_BAR, value);
+		ed.commit();
+	}
+
+	public static int getTopBarFontMultiplier() {
+		return pref.getInt(KEY_MULT_TOP_BAR, 0);
+	}
+
+	public static boolean getShowMouseIcon() {
+		return pref.getBoolean("angband.show_mouse_icon", true);
 	}
 
 	public static boolean isKeyboardVisible()
@@ -580,8 +755,8 @@ final public class Preferences {
 	public static boolean saveFileExists(String filename) {
 		for(int i = 0; i < getInstalledPlugins().length; i++) {
 			File f = new File(
-				getAngbandFilesDirectory(getInstalledPlugins()[i]) 
-				+ "/save/" 
+				getAngbandFilesDirectory(getInstalledPlugins()[i])
+				+ "/save/"
 				+ filename
 			);
 			if (f.exists()) return true;
@@ -595,16 +770,16 @@ final public class Preferences {
 		for(int i = 2; i < 100; i++) {
 			saveFile = "PLAYER"+i;
 			if (pl.findBySaveFile(saveFile,0) == null
-				&& !saveFileExists(saveFile)) 
+				&& !saveFileExists(saveFile))
 				break;
 		}
 		return saveFile;
-	}		
+	}
 
 	public static int alert(Context ctx, String title, String msg) {
-		new AlertDialog.Builder(ctx) 
-			.setTitle(title) 
-			.setMessage(msg) 
+		new AlertDialog.Builder(ctx)
+			.setTitle(title)
+			.setMessage(msg)
 			.setNegativeButton("OK", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {}
 			}

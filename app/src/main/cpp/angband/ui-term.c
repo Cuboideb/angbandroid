@@ -292,6 +292,9 @@ char angband_term_name[ANGBAND_TERM_MAX][16] =
 
 u32b window_flag[ANGBAND_TERM_MAX];
 
+int row_map[SIDEBAR_MAX] = {1, 3, 1};
+int col_map[SIDEBAR_MAX] = {13, 1, 1};
+
 /**
  * The current "term"
  */
@@ -553,7 +556,7 @@ void Term_big_queue_char(term *t, int x, int y, int a, wchar_t c, int a1,
 	/* Leave space on bottom for status */
 	int vmax = (y + tile_height < t->hgt - 1) ?
 	    tile_height : t->hgt - 1 - y;
-        int hor, vert;        
+        int hor, vert;
 
 	/* Avoid warning */
 	(void)c;
@@ -563,36 +566,36 @@ void Term_big_queue_char(term *t, int x, int y, int a, wchar_t c, int a1,
         /* Horizontal first; skip already marked upper left corner */
         for (hor = 1; hor < tile_width; hor++) {
         	/* Queue dummy character */
-        	
-        	if (t->char_pad) 
+
+        	if (t->char_pad)
         		Term_queue_char(t, x + hor, y, t->attr_pad, t->char_pad, 0, 0);
 	        else if (a & 0x80)
-		    	Term_queue_char(t, x + hor, y, 255, -1, 0, 0);			    	
+		    	Term_queue_char(t, x + hor, y, 255, -1, 0, 0);
 			else
-		        Term_queue_char(t, x + hor, y, COLOUR_WHITE, ' ', a1, c1);			
+		        Term_queue_char(t, x + hor, y, COLOUR_WHITE, ' ', a1, c1);
 		}
 
 		/* Now vertical */
 		for (vert = 1; vert < vmax; vert++) {
 			for (hor = 0; hor < tile_width; hor++) {
 				/* Queue dummy character */
-				if (t->char_pad) 
+				if (t->char_pad)
         			Term_queue_char(t, x + hor, y + vert, t->attr_pad, t->char_pad, 0, 0);
 	        	else if (a & 0x80)
 					Term_queue_char(t, x + hor, y + vert, 255, -1, 0, 0);
 				else
-					Term_queue_char(t, x + hor, y + vert, COLOUR_WHITE, ' ', a1, c1);				
+					Term_queue_char(t, x + hor, y + vert, COLOUR_WHITE, ' ', a1, c1);
 			}
 		}
 	} else {
 		/* Only vertical */
 		for (vert = 1; vert < vmax; vert++) {
 			/* Queue dummy character */
-			
+
 			if (t->char_pad)
 				Term_queue_char(t, x, y + vert, t->attr_pad, t->char_pad, 0, 0);
 			else if (a & 0x80)
-				Term_queue_char(t, x, y + vert, 255, -1, 0, 0);				
+				Term_queue_char(t, x, y + vert, 255, -1, 0, 0);
 			else
 				Term_queue_char(t, x, y + vert, COLOUR_WHITE, ' ', a1, c1);
 		}
@@ -1006,7 +1009,7 @@ errr Term_mark(int x, int y)
 	 * functions, but ideally there should be a test to use the blank text
 	 * attr/char pair
 	 */
-	old_aa[x] = 0x80; 
+	old_aa[x] = 0x80;
 	old_cc[x] = 0;
 	old_taa[x] = 0x80;
 	old_tcc[x] = 0;
@@ -1989,7 +1992,7 @@ errr Term_mousepress(int x, int y, char button)/*, byte mods);*/
 
 	/* Success (unless overflow) */
 	if (Term->key_head != Term->key_tail) return (0);
-  
+
 	/* Problem */
 	return (1);
 }
@@ -2519,6 +2522,8 @@ errr term_init(term *t, int w, int h, int k)
 	/* No saves yet */
 	t->saved = 0;
 
+	t->sidebar_mode = SIDEBAR_LEFT;
+
 	/* Success */
 	return (0);
 }
@@ -2537,7 +2542,7 @@ int big_pad(int col, int row, byte a, wchar_t c)
 }
 
 errr Term_control(int what, const char *msg)
-{	
+{
 	if (strlen(msg) == 0) {
 		return (-1);
 	}

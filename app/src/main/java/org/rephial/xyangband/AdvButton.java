@@ -45,14 +45,14 @@ import java.util.Arrays;
 class AdvButton extends View
 {
 	final public GameActivity context;
-	public StateManager state;	
+	public StateManager state;
 	public String defaultValue;
-	public String activeValue;	
-	public AdvKeyboard parent;	
+	public String activeValue;
+	public AdvKeyboard parent;
 	public String keymap = "";
 	public boolean alwaysVisible = false;
-	public boolean keymapMode = false;	
-	public static int DEFAULT_BG = 0x4a4855;	
+	public boolean keymapMode = false;
+	public static int DEFAULT_BG = 0x4a4855;
 	public static int TOGGLED_BG = 0x86bf36;
 	public GestureDetector gestureManager = null;
 
@@ -111,7 +111,7 @@ class AdvButton extends View
 		return defaultValue.equals(InputUtils.Visibility)
 			|| defaultValue.equals(InputUtils.Enter)
 			|| defaultValue.equals(InputUtils.Escape)
-			|| defaultValue.equals(" ")			
+			|| defaultValue.equals(" ")
 			//|| defaultValue.equals(".")
 			//|| defaultValue.equals("run")
 			//|| defaultValue.equals("sym")
@@ -182,17 +182,17 @@ class AdvButton extends View
 		List<Integer> list = InputUtils.parseCodeKeys(action);
 		for (Integer keycode: list) {
 			if (keycode > 0) {
-				state.addKey(keycode);			
+				state.addKey(keycode);
 			}
 		}
-		parent.setShiftMode(0);	
+		parent.setShiftMode(0);
 	}
 
 	public static void closeSoftKeyboard(Activity ctxt, View v)
-    {        
+    {
         InputMethodManager imm = (InputMethodManager)ctxt
-            .getSystemService(Activity.INPUT_METHOD_SERVICE);        
-        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);        
+            .getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
     }
 
     public void configure(String action, boolean visible)
@@ -242,7 +242,7 @@ class AdvButton extends View
     	{
     		String action = etext.getText().toString().trim();
 
-    		closeSoftKeyboard(context, etext);        		
+    		closeSoftKeyboard(context, etext);
 
     		configure(action, ckAlwaysVisible.isChecked());
 
@@ -252,7 +252,7 @@ class AdvButton extends View
 
 	public void showOptions()
 	{
-		OptionPopup win = new OptionPopup();        
+		OptionPopup win = new OptionPopup();
 
         int gravity = Gravity.TOP
         	| Gravity.CENTER_HORIZONTAL;
@@ -272,7 +272,7 @@ class AdvButton extends View
 		if (pct > pad_pct && pct < (1.0f - pad_pct)) {
 			at_center = true;
 		}
-		
+
 		return at_center;
 	}
 
@@ -281,7 +281,7 @@ class AdvButton extends View
 		int min = 10;
 		int max = 200;
 
-		if (parent.opacityMode == 1 && !neverHidden()) {			
+		if (parent.opacityMode == 1 && !neverHidden()) {
 			return min;
 		}
 
@@ -317,20 +317,20 @@ class AdvButton extends View
 	}
 
 	public void setBgColor(Paint back)
-	{		
+	{
 		if (defaultValue.equals(" ")) {
-			back.setColor(TOGGLED_BG);	
-		}		
-		else if (usingKeymap()) {			
+			back.setColor(TOGGLED_BG);
+		}
+		else if (usingKeymap()) {
 			back.setColor(DEFAULT_BG);
-		}		 
+		}
 		else if (defaultValue.equals("kmp") && keymapMode) {
-			back.setColor(TOGGLED_BG);	
+			back.setColor(TOGGLED_BG);
 		}
 		else if (defaultValue.equals("run")
 			&& state.getRunningMode()) {
-			back.setColor(TOGGLED_BG);	
-		}		
+			back.setColor(TOGGLED_BG);
+		}
 		else {
 			back.setColor(DEFAULT_BG);
 		}
@@ -345,7 +345,7 @@ class AdvButton extends View
 			fore.setColor(Color.WHITE);
 		}
 	}
-	
+
 	protected void onDraw(Canvas canvas)
 	{
 		Rect bounds = new Rect();
@@ -367,7 +367,7 @@ class AdvButton extends View
 		bounds.right -= pad;
 
 		String label = activeValue;
-		if (usingKeymap()) label = keymap;
+		if (usingKeymap() && Preferences.getShowAdvKeymaps()) label = keymap;
 		if (label.length() > 3) label = label.substring(0, 3);
 
 		if (label.length() == 1) fore = parent.foreBold;
@@ -382,7 +382,7 @@ class AdvButton extends View
 		float w2 = fore.measureText(label);
         float padx = Math.max((tw - w2) / 2, 0);
         float h2 = fore.descent() - fore.ascent();
-        float pady = Math.max((th - h2) / 2, 0)	+ fore.descent();        
+        float pady = Math.max((th - h2) / 2, 0)	+ fore.descent();
 
         setFgColor(fore);
         fore.setShadowLayer(10f, 0, 0, Color.CYAN);
@@ -409,7 +409,7 @@ class AdvButton extends View
 		if (gestureManager != null) return gestureManager;
 
 		gestureManager = new GestureDetector(
-			new GestureDetector.SimpleOnGestureListener() 
+			new GestureDetector.SimpleOnGestureListener()
 		{
 			@Override
 			public boolean onDown(MotionEvent event) {
@@ -436,7 +436,7 @@ class AdvButton extends View
 			}
 		});
 
-		return gestureManager;		
+		return gestureManager;
 	}
 
 	@Override

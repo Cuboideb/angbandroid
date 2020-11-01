@@ -1,10 +1,19 @@
+Version 1.26 - 2020-11-01
+- From now on, subwindows do not overlap the dungeon, this is useful for
+text mode.
+- New quick settings option: Reset layout (Portrait or Landscape). It gives you a tool to restore recommended parameters after experimenting with the settings.
+- The sidebar of Angband can be displayed in vertical fashion, becoming the topbar. It is shown in a different subwindow so it has its own font multiplier (check out Preferences). IMPORTANT: the term #4 in the in-game option screen is by default set to "Display player (topbar)" to make this work.
+- The port now tries to adjust the layout after modifiyng certain preferences (subwindows, topbar). You can use the "Fit Width", "Fit Height" and the volume keys to finetune the layout.
+- The mouse icon at the top can be hidden.
+- Advanced keyboard is the default keyboard for portrait mode. If you want, set the classic keyboard in Preferences.
+
 Version 1.25 - 2020-08-20
--Added an advanced soft keyboard. It has only 2 pages, supports key resizing and custom keymaps actions. Includes an option for vertical layout. Ctrl sequences are activated by pressing the shift key for a second time..
--Added 2 variants, FrogComposband 7.1-salmiak and NPPAngband 0.4.1. Toggle is in Preferences. In a near future we will have FAangband 2.0.
--Each game Profile now has its own keymaps.
--Changed a couple of buttons in the ribbon. (Merged the shift and control modifiers into one button).
--Added a toogle in the Quick Setting to activate Running mode.
--Plenty of fixes and code refactoring.
+- Added an advanced soft keyboard. It has only 2 pages, supports key resizing and custom keymaps actions. Includes an option for vertical layout. Ctrl sequences are activated by pressing the shift key for a second time..
+- Added 2 variants, FrogComposband 7.1-salmiak and NPPAngband 0.4.1. Toggle is in Preferences. In a near future we will have FAangband 2.0.
+- Each game Profile now has its own keymaps.
+- Changed a couple of buttons in the ribbon. (Merged the shift and control modifiers into one button).
+- Added a toogle in the Quick Setting to activate Running mode.
+- Plenty of fixes and code refactoring.
 
 Version 1.24 - 2020-07-22:
 - Added a mouse toggle. Turn it on to access useful commands when pressing

@@ -58,7 +58,7 @@ public class ButtonRibbon implements OnClickListener,
     ArrayList<ButtonRibbon> clones = null;
 
     PopupWindow autoListWin = null;
-    TableLayout autoListTable = null;    
+    TableLayout autoListTable = null;
     boolean autoListSolid = false;
 
     public static int popupBackAlpha = 255;
@@ -128,7 +128,7 @@ public class ButtonRibbon implements OnClickListener,
 
             userKeymaps = userActions[1];
 
-            if (state.inTheDungeon()) { 
+            if (state.inTheDungeon()) {
                 restoreCommandMode();
             }
             else {
@@ -168,8 +168,8 @@ public class ButtonRibbon implements OnClickListener,
         int x0 = 0;
         int i = 0;
         for (Command aux: from.commands) {
-            if (aux.location != loc) continue;            
-            makeCommand(aux.label, aux.action, loc);                        
+            if (aux.location != loc) continue;
+            makeCommand(aux.label, aux.action, loc);
             if (i < first) {
                 if (aux.btn.getWidth() > 0) {
                     x0 += aux.btn.getWidth();
@@ -179,10 +179,10 @@ public class ButtonRibbon implements OnClickListener,
                 }
             }
             ++i;
-        }    
-        final int x = x0;        
+        }
+        final int x = x0;
         final HorizontalScrollView hsv =
-            rootView.findViewById(R.id.scrollv);                
+            rootView.findViewById(R.id.scrollv);
         hsv.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -207,7 +207,7 @@ public class ButtonRibbon implements OnClickListener,
         int first = page_size - fixed;
 
         for (i = 0; i < clones.size(); i++) {
-            clones.get(i).clonify(this, CmdLocation.Dynamic, first);            
+            clones.get(i).clonify(this, CmdLocation.Dynamic, first);
             first += page_size;
         }
     }
@@ -286,7 +286,7 @@ public class ButtonRibbon implements OnClickListener,
             btn.setMinimumWidth(w);
             btn.setMinWidth(w);
 
-            float fw = btn.getTextSize();        
+            float fw = btn.getTextSize();
             btn.setTextSize(TypedValue.COMPLEX_UNIT_PX, fw * pct);
         }
     }
@@ -296,18 +296,18 @@ public class ButtonRibbon implements OnClickListener,
                 (R.layout.aribbonbutton, null);
 
         btn.setText(text);
-        btn.setOnClickListener(this);  
+        btn.setOnClickListener(this);
 
         resizeButton(btn);
 
-        if (action.equals("Ret")) {            
+        if (action.equals("Ret")) {
             int w = btn.getMinWidth();
             w = (int)(w * 1.5f);
             btn.setWidth(w);
         }
 
         if (action.equals("PageRight")
-            || action.equals("PageLeft")) {            
+            || action.equals("PageLeft")) {
             int w = btn.getMinWidth();
             w = (int)(w * 0.75f);
             btn.setMinimumWidth(w);
@@ -349,7 +349,7 @@ public class ButtonRibbon implements OnClickListener,
 
         for (ButtonRibbon _clone: clones) {
             _clone.setShiftAux(set);
-        }        
+        }
     }
 
     public void setShift(boolean set)
@@ -399,7 +399,7 @@ public class ButtonRibbon implements OnClickListener,
         if (!set) {
             shifted = false;
             controlDown = false;
-        }        
+        }
         else if (shifted) {
             controlDown = true;
             shifted = false;
@@ -409,7 +409,7 @@ public class ButtonRibbon implements OnClickListener,
         }
         else {
             shifted = true;
-        }        
+        }
 
         for (Command cmd: commands) {
             if (controlDown) {
@@ -418,11 +418,11 @@ public class ButtonRibbon implements OnClickListener,
             else {
                 cmd.setShift(shifted);
             }
-        }  
+        }
 
         for (ButtonRibbon _clone: clones) {
             _clone.setTriStateShiftAux(set);
-        }      
+        }
     }
 
     public void setTriStateShift(boolean set)
@@ -441,12 +441,12 @@ public class ButtonRibbon implements OnClickListener,
         Command cmd = new Command(label, action, loc, btn);
         commands.add(cmd);
         updateAlphaCmd(cmd);
-        getGroup(loc).addView(btn);        
+        getGroup(loc).addView(btn);
     }
 
     public void removeAutoList()
     {
-        Log.d("Angband", "Remove Auto List");
+        //Log.d("Angband", "Remove Auto List");
 
         if (autoListWin != null) {
             autoListWin.dismiss();
@@ -461,7 +461,7 @@ public class ButtonRibbon implements OnClickListener,
         if (fastMode) {
             removeCommands(atCenter);
 
-            removeAutoList();       
+            removeAutoList();
         }
     }
 
@@ -510,7 +510,7 @@ public class ButtonRibbon implements OnClickListener,
                 String action = "KEYMAP_" + parts[1];
                 makeCommand(label, action, loc);
             }
-        }        
+        }
     }
 
     public void addFKeys(CmdLocation loc)
@@ -545,9 +545,9 @@ public class ButtonRibbon implements OnClickListener,
                     keys = keys.replace(pattern, "");
                 }
             }
-            else {                
+            else {
                 rebuildKeymaps();
-            }            
+            }
         }
 
         for (char c: keys.toCharArray()) {
@@ -599,7 +599,7 @@ public class ButtonRibbon implements OnClickListener,
 
         if (alphaLevel == 1) {
             alphaFg = 30;
-            alphaBg = 10;            
+            alphaBg = 10;
         }
         if (alphaLevel == 2 && (cmd.action.equals("PageRight")
             || cmd.action.equals("PageLeft"))) {
@@ -771,9 +771,9 @@ public class ButtonRibbon implements OnClickListener,
 
     public void showDynamicKeys(View parentView) {
         CmdLocation loc = CmdLocation.Dynamic;
-        
-        final PopupWindow win = new PopupWindow(context);        
-        win.setFocusable(true);  
+
+        final PopupWindow win = new PopupWindow(context);
+        win.setFocusable(true);
         win.setWidth(LayoutParams.WRAP_CONTENT);
         win.setHeight(LayoutParams.WRAP_CONTENT);
 
@@ -797,7 +797,7 @@ public class ButtonRibbon implements OnClickListener,
 
         int maxRowItems = 3;
         if (context.landscapeNow()) {
-            maxRowItems = 6;            
+            maxRowItems = 6;
         }
 
         OnClickListener clickListener =
@@ -808,8 +808,8 @@ public class ButtonRibbon implements OnClickListener,
                     int savedIdx = tag.intValue();
                     // Indirection
                     Command cmd = commands.get(savedIdx);
-                    if (cmd != null) cmd.btn.performClick();                    
-                    win.dismiss();                    
+                    if (cmd != null) cmd.btn.performClick();
+                    win.dismiss();
                 }
             };
 
@@ -836,11 +836,11 @@ public class ButtonRibbon implements OnClickListener,
             Button btn = (Button)context.getLayoutInflater().inflate
                 (R.layout.keypopupbutton, null);
             btn.getBackground().setAlpha(popupBackAlpha);
-            btn.setTextColor(popupButtonColor);            
+            btn.setTextColor(popupButtonColor);
             //Button btn = new Button(context);
             btn.setText(cmd.btn.getText());
             btn.setTag(new Integer(idx));
-            btn.setOnClickListener(clickListener);            
+            btn.setOnClickListener(clickListener);
             btn.setTypeface(cmd.btn.getTypeface());
             trow.addView(btn);
         }
@@ -858,7 +858,7 @@ public class ButtonRibbon implements OnClickListener,
 
     public void toggleAutoListOpacity()
     {
-        if (autoListWin == null || autoListTable == null) return; 
+        if (autoListWin == null || autoListTable == null) return;
 
         autoListSolid = !autoListSolid;
 
@@ -880,12 +880,12 @@ public class ButtonRibbon implements OnClickListener,
 
                 if (autoListSolid) {
                     alphaFg = 255;
-                    alphaBg = 255;                    
+                    alphaBg = 255;
                     color = 0x000044;
                 }
-                
+
                 color = ColorUtils.setAlphaComponent(color, alphaFg);
-                btn.setTextColor(color);                
+                btn.setTextColor(color);
                 btn.getBackground().setAlpha(alphaBg);
             }
         }
@@ -903,11 +903,11 @@ public class ButtonRibbon implements OnClickListener,
 
         removeAutoList();
 
-        CmdLocation loc = CmdLocation.Dynamic; 
+        CmdLocation loc = CmdLocation.Dynamic;
 
         int minRowItems = 3;
         float screenPct = 0.5f;
-        if (context.landscapeNow()) {            
+        if (context.landscapeNow()) {
             screenPct = 0.65f;
         }
 
@@ -930,10 +930,10 @@ public class ButtonRibbon implements OnClickListener,
             i++;
         }
 
-        if (the_list.isEmpty()) return;   
+        if (the_list.isEmpty()) return;
 
         // Add the fixed keys at the left
-        int listW = btnSize * (the_list.size() + 5);        
+        int listW = btnSize * (the_list.size() + 5);
         // There is plenty of space
         if (listW < winSize.x) {
             return;
@@ -966,27 +966,27 @@ public class ButtonRibbon implements OnClickListener,
         }
 
         final PopupWindow win = new PopupWindow(context);
-                
+
         win.setOutsideTouchable(false);
         win.setTouchModal(false);
-        win.getBackground().setAlpha(0);        
+        win.getBackground().setAlpha(0);
 
         win.setWidth(LayoutParams.WRAP_CONTENT);
-        win.setHeight(winH);        
+        win.setHeight(winH);
 
         ScrollView scroll = new ScrollView(context);
         scroll.setLayoutParams(new LayoutParams(
             LayoutParams.WRAP_CONTENT,
             LayoutParams.MATCH_PARENT
-        ));        
+        ));
 
         win.setContentView(scroll);
 
-        TableLayout table = new TableLayout(context);        
+        TableLayout table = new TableLayout(context);
         table.setLayoutParams(new LayoutParams(
             LayoutParams.WRAP_CONTENT,
             LayoutParams.MATCH_PARENT));
-        scroll.addView(table);                
+        scroll.addView(table);
 
         TableRow trow = null;
 
@@ -1009,16 +1009,16 @@ public class ButtonRibbon implements OnClickListener,
                 }
             };
 
-        int idx = -1;        
+        int idx = -1;
 
         for (Command cmd: the_list) {
             ++idx;
 
             if (trow == null || trow.getChildCount() == maxRowItems) {
-                trow = new TableRow(context);                
+                trow = new TableRow(context);
                 trow.setLayoutParams(new LayoutParams(
                     LayoutParams.WRAP_CONTENT,
-                    LayoutParams.WRAP_CONTENT));                
+                    LayoutParams.WRAP_CONTENT));
                 trow.setGravity(Gravity.CENTER_VERTICAL);
                 table.addView(trow);
             }
@@ -1029,14 +1029,14 @@ public class ButtonRibbon implements OnClickListener,
             int alphaFg = 30;
             int alphaBg = 30;
             int color = Color.WHITE;
-            
+
             //Button btn = new Button(context);
             if (idx == lastIdx) {
                 alphaFg = 120;
                 alphaBg = 60;
                 if (fontCmd != null) {
                     btn.setTypeface(fontCmd);
-                }                
+                }
                 btn.setText("l");
                 btn.setTag(new Integer(-1));
             }
@@ -1049,8 +1049,8 @@ public class ButtonRibbon implements OnClickListener,
             btn.setOnClickListener(clickListener);
             btn.setGravity(Gravity.CENTER);
 
-            color = ColorUtils.setAlphaComponent(color, alphaFg);            
-            btn.setTextColor(color);            
+            color = ColorUtils.setAlphaComponent(color, alphaFg);
+            btn.setTextColor(color);
             btn.getBackground().setAlpha(alphaBg);
 
             resizeButton(btn);
@@ -1062,7 +1062,7 @@ public class ButtonRibbon implements OnClickListener,
             table.removeView(trow);
         }
 
-        if (table.getChildCount() == 0) {            
+        if (table.getChildCount() == 0) {
             return;
         }
 
@@ -1072,7 +1072,7 @@ public class ButtonRibbon implements OnClickListener,
         if (winH == LayoutParams.WRAP_CONTENT && kbdH > 0) {
             gravity = Gravity.LEFT | Gravity.BOTTOM;
             y = kbdH;
-        }         
+        }
 
         autoListWin = win;
         autoListTable = table;
@@ -1086,11 +1086,11 @@ public class ButtonRibbon implements OnClickListener,
     {
         String action = cmd.action.replace("USER_", "");
         Iterator<Integer> iter = InputUtils.parseCodeKeys(action)
-            .iterator();        
+            .iterator();
         while (iter.hasNext()) {
             Integer num = iter.next();
-            state.addKey(num.intValue());            
-        }        
+            state.addKey(num.intValue());
+        }
     }
 
     @Override

@@ -80,7 +80,7 @@ static int make_mask(int n) {
 typedef struct {
 	int y;
 	int x;
-	int button;	
+	int button;
 } mouse_data_t;
 
 #define PLAYER_PLAYING (character_generated && p_ptr && p_ptr->playing)
@@ -180,20 +180,20 @@ static int get_input_from_ui(int wait)
 	if ((key > 0) && ((key & MOUSE_TAG) != 0)) {
 
 		// Get data, 3 bits for mods, 2 bits for button
-		// and 10 bits for each coordinate		
+		// and 10 bits for each coordinate
 		int mods = ((key >> 22) & make_mask(3));
 		// Just two buttons
 		mouse_data.button = ((key >> 20) & make_mask(2));
 		mouse_data.x = ((key >> 10) & make_mask(10));
-		mouse_data.y = (key & make_mask(10));		
+		mouse_data.y = (key & make_mask(10));
 
 		/*
 		plog_fmt("Mouse - key:%X y:%d x:%d button:%d mods:%d",
-			key, mouse_data.y, mouse_data.x,						
+			key, mouse_data.y, mouse_data.x,
 			mouse_data.button, mods);
 		*/
 
-		// Encode mods in the button		
+		// Encode mods in the button
 		mouse_data.button |= (mods << 4);
 
 		// Get rid of anything except the mouse bit
@@ -217,22 +217,22 @@ void send_key_to_term(int key) {
 		if (key == 0x9c) key = '\r';
 		else if (key == 0x9d) key = '\t';
 		else if (key == 0x9f) key = '\b';
-		else if (key == 0xE000) key = '\033';		
+		else if (key == 0xE000) key = '\033';
 		else if (key == 0x80) key = '2';
 		else if (key == 0x81) key = '4';
 		else if (key == 0x82) key = '6';
 		else if (key == 0x83) key = '8';
-		else if (key == 0x94) key = '7';		
-		else if (key == 0x95) key = '9';		
+		else if (key == 0x94) key = '7';
+		else if (key == 0x95) key = '9';
 		else if (key == 0x96) key = '1';
 		else if (key == 0x97) key = '3';
 		/*
 		else if (key == 0x80) key = SKEY_DOWN;
 		else if (key == 0x81) key = SKEY_LEFT;
 		else if (key == 0x82) key = SKEY_RIGHT;
-		else if (key == 0x83) key = SKEY_UP;		
-		else if (key == 0x94) key = SKEY_TOP;		
-		else if (key == 0x95) key = SKEY_PGUP;		
+		else if (key == 0x83) key = SKEY_UP;
+		else if (key == 0x94) key = SKEY_TOP;
+		else if (key == 0x95) key = SKEY_PGUP;
 		else if (key == 0x96) key = SKEY_BOTTOM;
 		else if (key == 0x97) key = SKEY_PGDOWN;
 		*/
@@ -244,31 +244,31 @@ void send_key_to_term(int key) {
 int process_special_command(int key)
 {
 	char buf[2048] = "";
-	char *pbuf = buf;		
-	int graf, pseudo, trows, tcols;	
+	char *pbuf = buf;
+	int graf, pseudo, trows, tcols;
 
 	key = 0;
 
 	while (true) {
 		key = angdroid_getch(0);
-		if (key == 0 || key == SPECIAL_CMD) break;		
+		if (key == 0 || key == SPECIAL_CMD) break;
 		*pbuf++ = key;
 	}
 	pbuf = 0;
 
 	if (sscanf(buf, "resize:%d:%d", &tcols, &trows) == 2) {
 
-		if (!PLAYER_PLAYING) return 0;
+		//if (!PLAYER_PLAYING) return 0;
 
-		Term_resize(tcols, trows);		
+		Term_resize(tcols, trows);
 		//return KTRL('R');
 		return 0;
 	}
 
 	if (strcmp(buf, "redraw") == 0) {
 
-		if (!PLAYER_PLAYING) return 0;
-		
+		//if (!PLAYER_PLAYING) return 0;
+
 		Term_redraw();
 		return 0;
 	}
@@ -294,7 +294,7 @@ int process_special_command(int key)
 static errr Term_xtra_android(int n, int v)
 {
 	term_data *td = (term_data*)(Term->data);
-	jint ret;	
+	jint ret;
 
 	switch (n)
 	{
@@ -377,7 +377,7 @@ static errr Term_xtra_android(int n, int v)
 
 		case TERM_XTRA_REACT:
 		case TERM_XTRA_FROSH:
-		case TERM_XTRA_BORED:		
+		case TERM_XTRA_BORED:
 		case TERM_XTRA_ALIVE:
 		case TERM_XTRA_LEVEL:
 		{
@@ -406,7 +406,7 @@ static errr Term_control_android(int what, const char *msg)
 	char buf[2048] = "";
 	int n;
 
-	if (what == TERM_CONTROL_CONTEXT && IN_THE_DUNGEON) {		
+	if (what == TERM_CONTROL_CONTEXT && IN_THE_DUNGEON) {
 		strnfmt(buf, sizeof(buf), "in_dungeon:1");
 
 #if defined(HAS_KEYMAP_PACK)
@@ -431,8 +431,8 @@ static errr Term_control_android(int what, const char *msg)
  * thing and not as a "hardware" cursor.
  */
 static errr Term_curs_android(int x, int y)
-{	
-	move(y, x);	
+{
+	move(y, x);
 
 	Term_control_android(TERM_CONTROL_SHOW_CURSOR, "small");
 
@@ -548,7 +548,7 @@ static void term_data_link(int i)
 
 	/* Use "Term_text()" even for "black" text XXX XXX XXX */
 	/* See the "Term_text_android()" function above. */
-	t->always_text = true;	
+	t->always_text = true;
 
 	/* Ignore the "TERM_XTRA_BORED" action XXX XXX XXX */
 	/* This may make things slightly more efficient. */
@@ -571,7 +571,7 @@ static void term_data_link(int i)
 	t->curs_hook = Term_curs_android;
 	t->bigcurs_hook = Term_bigcurs_android;
 	t->wipe_hook = Term_wipe_android;
-	t->text_hook = Term_text_android;	
+	t->text_hook = Term_text_android;
 	//t->control_hook = Term_control_android;
 
 	/* Remember where we came from */
@@ -580,7 +580,7 @@ static void term_data_link(int i)
 	/* Create record for window */
 	td->win = getwin(i);
 
-	/* Activate it */			
+	/* Activate it */
 	Term_activate(t);
 
 	/* Global pointer */
@@ -630,7 +630,7 @@ errr init_android(void)
  * Initialise colors
  */
 void init_colors(void)
-{	
+{
 	int i;
 	uint32_t color_data[MAX_BASE_COLORS];
 
@@ -647,7 +647,7 @@ void init_colors(void)
 	}
 	for (i = 0; i < MAX_BASE_COLORS; i++) {
 		init_pair(i, i, 0);
-	}	
+	}
 }
 
 /*
@@ -679,13 +679,13 @@ void init_android_stuff(void)
 
 	/* Prepare the filepaths */
 	init_file_paths(temp);
-	
+
 	if (!file_exists(android_files_path)) {
 		/* Warning */
 		plog_fmt("Unable to open the '%s' file.", android_files_path);
 		quit("The Angband 'lib' folder is probably missing or misplaced.");
 	}
-	
+
 	my_strcpy(op_ptr->full_name, android_savefile, sizeof(op_ptr->full_name));
 }
 
@@ -745,7 +745,7 @@ static char *get_command_list()
 {
 	char buf[4096] = "";
 
-#if 0	
+#if 0
 	//TODO
 	char temp[50];
 
@@ -782,7 +782,7 @@ static char *get_command_list()
 static char *get_tilesets(void)
 {
 	char buf[2048] = "";
-	return strdup(buf);	
+	return strdup(buf);
 }
 
 char* queryString(const char* argv0)
@@ -822,7 +822,7 @@ int queryInt(const char* argv0) {
 		result = p_ptr->px;
 	}
 	else if (strcmp(argv0, "playing") == 0) {
-		result = 0;		
+		result = 0;
 		if (PLAYER_PLAYING) result = 1;
 	}
 	else if (strcmp(argv0, "in_the_dungeon") == 0) {
@@ -885,7 +885,7 @@ void angdroid_process_argv(int i, const char* argv)
 		case 4:
 			break;
 		case 5:
-			my_strcpy(variant_name, argv, sizeof(variant_name));			
+			my_strcpy(variant_name, argv, sizeof(variant_name));
 			break;
 		default:
 			break;
@@ -898,7 +898,7 @@ void angdroid_main()
 
 	plog_aux = hook_plog;
 	quit_aux = hook_quit;
-	
+
 	#ifdef SET_UID
 		/* Default permissions on files */
 		(void)umask(022);

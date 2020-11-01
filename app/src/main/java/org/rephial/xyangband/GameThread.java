@@ -16,7 +16,7 @@ public class GameThread implements Runnable {
 		}
     };
 
-	/* game thread state */	
+	/* game thread state */
 	private Thread thread = null;
 	private boolean game_thread_running = false;
 	private boolean game_fully_initialized = false;
@@ -86,7 +86,7 @@ public class GameThread implements Runnable {
 			}
 			else {
 				Log.d("Angband","startBand.redrawing");
-				state.nativew.resize();				
+				state.nativew.resize();
 			}
 		}
 		else {
@@ -177,7 +177,7 @@ public class GameThread implements Runnable {
 	public void setFullyInitialized() {
 
 		if (!game_fully_initialized) {
-			
+
 			Log.d("Angband","Game is fully initialized");
 
 			game_fully_initialized = true;
@@ -222,7 +222,8 @@ public class GameThread implements Runnable {
 		String visuals = "" + Preferences.getGraphicsMode()
 			+ ":" + Preferences.getTileHeight()
 			+ ":" + Preferences.getTileWidth()
-			+ ":" + (Preferences.getPseudoAscii() ? 1: 0);
+			+ ":" + (Preferences.getPseudoAscii() ? 1: 0)
+			+ ":" + (Preferences.getTopBar() ? 1: 0);
 
 		String pluginName = Preferences.getActivePluginName();
 

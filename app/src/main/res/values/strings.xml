@@ -4,22 +4,22 @@
     <string name="app_name">Angband</string>
 
     <string-array name="gamePluginDescriptions">
-      <item>Angband 4.2.1</item>            
+      <item>Angband 4.2.1</item>
       <item>FrogComposband 7.1.salmiak</item>
       <item>NPPAngband 0.4.1</item>
-      <item>FAangband 2.0 (BETA)</item>
+      <!--<item>FAangband 2.0 (BETA)</item>-->
     </string-array>
     <string-array name="gamePluginNames">
-      <item>angband</item>      
+      <item>angband</item>
       <item>frogcomposband</item>
       <item>npp041</item>
-      <item>faangband</item>
+      <!--<item>faangband</item>-->
     </string-array>
     <string-array name="gamePlugins">
-      <item>0</item>      
+      <item>0</item>
       <item>1</item>
       <item>2</item>
-      <item>3</item>
+      <!--<item>3</item>-->
     </string-array>
 
     <string name="version">0.0.0.1</string>
@@ -69,6 +69,11 @@
 
     <string name="preferences_skipwelcome_title">Skip welcome screen</string>
     <string name="preferences_skipwelcome_summary">Automatically skip the Angband welcome screen at startup</string>
+
+    <string name="def_number_subwindows">2</string>
+    <string name="def_rows_subwindows">40</string>
+    <string name="def_cols_subwindows">48</string>
+    <string name="def_font_subwindows">50</string>
 
     <string-array name="orientationDescriptions">
       <item>Sensor</item>
@@ -152,7 +157,7 @@
         <item>2x2</item>
         <item>3x2</item>
         <item>3x3</item>
-        <item>4x2</item>        
+        <item>4x2</item>
         <item>4x4</item>
         <item>6x3</item>
     </string-array>

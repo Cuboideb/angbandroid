@@ -3,88 +3,112 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:seekBar="http://schemas.android.com/apk/res-auto">
   <PreferenceCategory android:title="@string/game_category">
-	<Preference android:title="Game Profile" 
+	<Preference android:title="Game Profile"
 		android:key="angband.gameprofile">
 	  	<intent android:action="org.rephial.xyangband.PROFILES" />
-	</Preference>		
+	</Preference>
 		<org.rephial.xyangband.ProfileListPreference
 		   android:title="@string/preferences_gameplugin_title"
 		   android:key="angband.gameplugin"
 		   android:summary="@string/preferences_gameplugin_summary"
 		   android:entries="@array/gamePluginDescriptions"
-		   android:entryValues="@array/gamePlugins" />		
+		   android:entryValues="@array/gamePlugins" />
 		<org.rephial.xyangband.ProfileCheckBoxPreference
 		   android:title="@string/preferences_skipwelcome_title"
 		   android:key="angband.skipwelcome"
-		   android:defaultValue="false" 
+		   android:defaultValue="false"
 		   android:summary="@string/preferences_skipwelcome_summary" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/display_category">
-		<CheckBoxPreference 
+		<CheckBoxPreference
 		   android:key="angband.vibrate"
-		   android:defaultValue="false" 
+		   android:defaultValue="false"
 		   android:title="@string/preferences_vibrate_title"
 		   android:summary="@string/preferences_vibrate_summary" />
-		<CheckBoxPreference 
+		<CheckBoxPreference
 		   android:key="angband.fullscreen"
-		   android:defaultValue="true" 
+		   android:defaultValue="true"
 		   android:title="@string/preferences_fullscreen_title"
 		   android:summary="@string/preferences_fullscreen_summary" />
-		<ListPreference 
+		<ListPreference
 		   android:key="angband.orientation"
-		   android:defaultValue="0" 
+		   android:defaultValue="0"
 		   android:title="@string/preferences_orientation_title"
-		   android:summary="@string/preferences_orientation_summary" 
+		   android:summary="@string/preferences_orientation_summary"
 		   android:entries="@array/orientationDescriptions"
 		   android:entryValues="@array/orientations" />
 		<ListPreference
 			android:title="Graphics"
 			android:summary="Select the tileset"
 			android:key="angband.graphics"
-			android:defaultValue="6"		   
+			android:defaultValue="6"
 			android:entries="@array/graphicsModesDesc"
-			android:entryValues="@array/graphicsModesKeys"/>		
+			android:entryValues="@array/graphicsModesKeys"/>
 		<ListPreference
 			android:title="Tile Multiplier"
 			android:summary="Columns x Rows"
 			android:key="angband.tile_multiplier"
 			android:defaultValue="4x2"
 			android:entries="@array/tileMultValues"
-			android:entryValues="@array/tileMultValues"/>	
+			android:entryValues="@array/tileMultValues"/>
 	    <CheckBoxPreference
 			android:key="angband.pseudoascii"
 			android:defaultValue="false"
 			android:title="Pseudo Ascii"
 			android:summary="Use ascii for monsters and tiles for everything else" />
+		<CheckBoxPreference
+			android:key="angband.top_bar"
+			android:defaultValue="true"
+			android:title="Angband Top Bar"
+			android:summary="Stats and other indicators go to top instead of left" />
+		<org.rephial.xyangband.SeekBarPreference
+			android:key="angband.mult_top_bar"
+			android:title="Font Multiplier for Top Bar (100% to 200%)"
+			android:dependency="angband.top_bar"
+			seekBar:min="0"
+			seekBar:max="100"
+			seekBar:defaultVal="0" />
+		<CheckBoxPreference
+			android:key="angband.show_mouse_icon"
+			android:defaultValue="true"
+			android:title="Show Mouse Icon"
+			android:summary="It allows you to execute actions on a grid" />
 		<PreferenceScreen
 	   		android:title="Sub-Windows settings"
 	   		android:summary="(Map views in graphics mode are not supported)">
 			<ListPreference
 				android:key="angband.n_subwindows"
-				android:title="Number of sub-windows"	
-				android:summary="Issue a redraw (Ctrl-R) after modifying this"	
-				android:defaultValue="1"			   
+				android:title="Number of sub-windows"
+				android:summary="Issue a redraw (Ctrl-R) after modifying this"
+				android:defaultValue="@string/def_number_subwindows"
 				android:entries="@array/subWindowValues"
 				android:entryValues="@array/subWindowValues"/>
 			<org.rephial.xyangband.SeekBarPreference
 				android:key="angband.cols_subwindows"
-				android:title="Number of columns"				
+				android:title="Number of columns (Max: 80)"
 				seekBar:min="0"
 				seekBar:max="100"
-				seekBar:defaultVal="50" />
+				seekBar:defaultVal="@string/def_cols_subwindows" />
+			<org.rephial.xyangband.SeekBarPreference
+				android:key="angband.rows_subwindows"
+				android:title="Number of rows (Max: 24)"
+				android:dependency="angband.horiz_subwindows"
+				seekBar:min="0"
+				seekBar:max="100"
+				seekBar:defaultVal="@string/def_rows_subwindows" />
 			<org.rephial.xyangband.SeekBarPreference
 				android:key="angband.font_size_subwindows"
-				android:title="Font multiplier"				
+				android:title="Font multiplier (50% to 150%)"
 				seekBar:min="0"
 				seekBar:max="100"
-				seekBar:defaultVal="50" />
+				seekBar:defaultVal="@string/def_font_subwindows" />
 			<CheckBoxPreference
-				android:key="angband.horiz_subwindows"				
-				android:defaultValue="false"
-				android:title="Layout sub-windows horizontally" />				
+				android:key="angband.horiz_subwindows"
+				android:defaultValue="true"
+				android:title="Layout sub-windows horizontally" />
 	   	</PreferenceScreen>
   	</PreferenceCategory>
-    <PreferenceCategory android:title="@string/control_category">	    
+    <PreferenceCategory android:title="@string/control_category">
 	  <CheckBoxPreference
 			android:key="angband.allowKeyboardOverlap"
 			android:defaultValue="true"
@@ -111,8 +135,14 @@
 
 		<CheckBoxPreference
 			android:key="angband.use_adv_keyboard"
-			android:defaultValue="false"
+			android:defaultValue="true"
 			android:title="Use Advanced Keyboard" />
+
+		<CheckBoxPreference
+			android:key="angband.show_adv_keymaps"
+			android:defaultValue="true"
+			android:dependency="angband.use_adv_keyboard"
+			android:title="Show keymaps if keymap mode is ON" />
 
 		<CheckBoxPreference
 			android:key="angband.use_vert_keyboard"
@@ -143,19 +173,19 @@
 		  seekBar:defaultVal="50" />
 	  <CheckBoxPreference
 		  android:key="angband.showautolist"
-		  android:defaultValue="false"		  
+		  android:defaultValue="false"
 		  android:title="Auto display long lists"
 		  android:summary="When you are prompted for selection" />
-		
+
 		<!--
 		<ListPreference
 			android:key="angband.ribbon_rows"
-			android:title="Number of extra rows in ribbon"	
+			android:title="Number of extra rows in ribbon"
 			android:defaultValue="0"
 			android:entries="@array/extraRibbonRows"
 			android:entryValues="@array/extraRibbonRows"/>
 		-->
-			
+
       <CheckBoxPreference
 		  android:key="angband.useicons"
 		  android:defaultValue="true"
@@ -163,10 +193,10 @@
 		  android:summary="Use Icons for ribbon buttons" />
 	<PreferenceScreen
 	   android:title="Hardware Key Mapping"
-	   android:summary="Configure hardware buttons on your device to perform various functions">	  
+	   android:summary="Configure hardware buttons on your device to perform various functions">
 	  <PreferenceScreen
 		 android:title="Display Functions"
-		 android:summary="Change display, font size, virtual keyboard">	  
+		 android:summary="Change display, font size, virtual keyboard">
 		<org.rephial.xyangband.KeyMapPreference android:key="angband.virtkeykey" android:title="Toggle Virtual Keyboard"/>
 		<org.rephial.xyangband.KeyMapPreference android:key="angband.zoominkey" android:title="Zoom In"/>
 		<org.rephial.xyangband.KeyMapPreference android:key="angband.zoomoutkey" android:title="Zoom Out"/>
@@ -213,7 +243,7 @@
 	  </PreferenceScreen>
 	  <PreferenceScreen
 		 android:title="Modifiers and Movers"
-		 android:summary="Esc, Ctrl, Shift, Alt, Space, Enter, Directions">	  
+		 android:summary="Esc, Ctrl, Shift, Alt, Space, Enter, Directions">
 		<org.rephial.xyangband.KeyMapPreference android:key="angband.downkey" android:title="Arrow Down"/>
 		<org.rephial.xyangband.KeyMapPreference android:key="angband.leftkey" android:title="Arrow Left"/>
 		<org.rephial.xyangband.KeyMapPreference android:key="angband.rightkey" android:title="Arrow Right"/>
@@ -231,7 +261,7 @@
 	  </PreferenceScreen>
 	  <PreferenceScreen
 		 android:title="Symbols"
-		 android:summary="Punctuation and other non-alpha numeric keys">	  
+		 android:summary="Punctuation and other non-alpha numeric keys">
 		<org.rephial.xyangband.KeyMapPreference android:key="angband.ampkey" android:title="Ampersand &amp;"/>
 		<org.rephial.xyangband.KeyMapPreference android:key="angband.astkey" android:title="Asterisk *"/>
 		<org.rephial.xyangband.KeyMapPreference android:key="angband.atkey" android:title="At @"/>
@@ -272,23 +302,23 @@
 		 android:entries="@array/virtKeyActionDescriptions"
 		 android:entryValues="@array/virtKeyActions"/>
 	  <org.rephial.xyangband.KeyMapResetPreference
-		 android:key="angband.resetallkeys" 
+		 android:key="angband.resetallkeys"
 		 android:title="Reset all hardware keys"
-		 android:summary="Restores all key mappings back to the default configuration"/> 
+		 android:summary="Restores all key mappings back to the default configuration"/>
 	</PreferenceScreen>
-	<CheckBoxPreference 
+	<CheckBoxPreference
 	   android:key="angband.portraitkb"
 	   android:title="@string/preferences_portraitkb_title"
 	   android:summary="@string/preferences_portraitkb_summary"
 	   android:defaultValue="true"/>
-	<CheckBoxPreference 
+	<CheckBoxPreference
 	   android:key="angband.landscapekb"
 	   android:title="@string/preferences_landscapekb_title"
 	   android:summary="@string/preferences_landscapekb_summary"
 	   android:defaultValue="false"/>
-	<CheckBoxPreference 
+	<CheckBoxPreference
 	   android:key="angband.enabletouch"
-	   android:defaultValue="true" 
+	   android:defaultValue="true"
 	   android:title="@string/preferences_enabletouch_title"
 	   android:summary="@string/preferences_enabletouch_summary" />
 	<CheckBoxPreference
@@ -300,15 +330,15 @@
 	<org.rephial.xyangband.SeekBarPreference
 		  android:key="angband.touchmultiplier"
 		  android:title="Touch directional size multiplier"
-		  android:dependency="angband.enabletouch"
+		  android:dependency="angband.touchright"
 		  seekBar:min="0"
 		  seekBar:max="100"
 		  seekBar:defaultVal="40" />
 	<CheckBoxPreference
 		  android:key="angband.enable_touch_drag"
 		  android:defaultValue="true"
-		  android:dependency="angband.enabletouch"
-		  android:title="Allow drag-and-drop of the touch directionals"	/>	  
+		  android:dependency="angband.touchright"
+		  android:title="Allow drag-and-drop of the touch directionals"	/>
 	<ListPreference
 	   android:title="Center screen tap action"
 	   android:summary="Select functionality for center screen tap"

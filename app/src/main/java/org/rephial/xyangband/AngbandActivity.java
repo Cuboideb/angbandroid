@@ -3,7 +3,7 @@
  * Purpose: Splash & installer
  *
  * Copyright (c) 2010 David Barr, Sergey Belinsky
- * 
+ *
  * This work is free software; you can redistribute it and/or modify it
  * under the terms of either:
  *
@@ -64,6 +64,17 @@ public class AngbandActivity extends Activity
 			getSharedPreferences(Preferences.NAME, MODE_PRIVATE),
 			version
 		);
+
+	    // Simulate fresh install
+	    /*
+		Preferences.setTermWidth(80);
+		Preferences.setTermHeight(24);
+		Preferences.setPortraitFontSize(0);
+		Preferences.setLandscapeFontSize(0);
+		Preferences.setTopBar(true);
+		Preferences.setNumberSubWindows(2);
+		Preferences.setHorizontalSubWindows(true);
+		*/
 
 		final Activity splash = this;
 		handler = new Handler() {
@@ -131,18 +142,18 @@ public class AngbandActivity extends Activity
 		Thread splashTread = new Thread() {
 		    @Override
 			public void run() {
-				Log.d("Angband", "splashThread.run");	
+				Log.d("Angband", "splashThread.run");
 				installer = new Installer(splash);
 				try {
 					int waited = 0;
-					Log.d("Angband", "splashThread.installer.needsInstall");	
+					Log.d("Angband", "splashThread.installer.needsInstall");
 					if (installer.needsInstall()) {
 						handler.sendEmptyMessage(0); //show progress
-						Log.d("Angband", "splashThread.startinstall");	
+						Log.d("Angband", "splashThread.startinstall");
 						installer.startInstall();
-						Log.d("Angband", "splashThread.wait");	
+						Log.d("Angband", "splashThread.wait");
 						installer.waitForInstall();
-						Log.d("Angband", "finished waiting");	
+						Log.d("Angband", "finished waiting");
 						handler.sendEmptyMessage(1); //dismiss progress
 
 						splashTime = 200;
@@ -161,7 +172,7 @@ public class AngbandActivity extends Activity
 						handler.sendMessage(Message.obtain(handler,2,installer.errorMessage()));
 						return;
 					}
-					else { 
+					else {
 						finish();
 						Intent intent = new Intent(splash, GameActivity.class);
 						startActivity(intent);

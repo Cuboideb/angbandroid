@@ -59,7 +59,7 @@ public class PreferencesActivity
 		setSummaryAll(getPreferenceScreen());
 		getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
-		SharedPreferences pref = getSharedPreferences(Preferences. NAME,MODE_PRIVATE);
+		SharedPreferences pref = getSharedPreferences(Preferences.NAME,MODE_PRIVATE);
 
 		if (pref.getBoolean(Preferences.KEY_FULLSCREEN, true)) {
 			getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -130,14 +130,12 @@ public class PreferencesActivity
 		else {
 			Preference pref = findPreference(key);
 			setSummaryPref(pref);
+
+			Preferences.addChanged(key);
 		}
 	}
 
 	public boolean onPreferenceChange(Preference preference, Object newValue) {
-		boolean shouldBeEnabled = (Boolean)newValue;
-		//findPreference(Preferences.KEY_KEYBOARDOPACITY).setEnabled(shouldBeEnabled);
-		//findPreference(Preferences.KEY_MIDDLEOPACITY).setEnabled(shouldBeEnabled);
-
 		return true;
 	}
 }

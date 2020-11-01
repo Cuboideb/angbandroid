@@ -3,7 +3,7 @@
  * Purpose: Generic ui functions in Android application
  *
  * Copyright (c) 2010 David Barr, Sergey Belinsky
- * 
+ *
  * This work is free software; you can redistribute it and/or modify it
  * under the terms of either:
  *
@@ -77,7 +77,7 @@ public class GameActivity extends Activity {
 	protected final int CONTEXTMENU_PREFERENCES_ITEM = 3;
 	protected final int CONTEXTMENU_PROFILES_ITEM = 4;
 	protected final int CONTEXTMENU_HELP_ITEM = 5;
-	protected final int CONTEXTMENU_QUIT_ITEM = 6;	
+	protected final int CONTEXTMENU_QUIT_ITEM = 6;
 	protected final int CONTEXTMENU_RIBBON_STYLE = 8;
 	protected final int CONTEXTMENU_RAISE_RIBBON = 9;
 	protected final int CONTEXTMENU_LOWER_RIBBON = 10;
@@ -85,6 +85,7 @@ public class GameActivity extends Activity {
 	protected final int CONTEXTMENU_TOGGLE_SUBW = 12;
 	protected final int CONTEXTMENU_RUNNING = 13;
 	protected final int CONTEXTMENU_RESET_DPAD = 14;
+	protected final int CONTEXTMENU_RESET_LAYOUT = 15;
 
 	public static final int TERM_CONTROL_LIST_KEYS = 1;
 	public static final int TERM_CONTROL_CONTEXT = 2;
@@ -119,6 +120,9 @@ public class GameActivity extends Activity {
 
 		//Log.d("Angband", "onCreate");
 
+	   	// Testing
+		//Preferences.setSize(80,24);
+
 		if (state == null) {
 			state = new StateManager(this);
 		}
@@ -144,11 +148,47 @@ public class GameActivity extends Activity {
 
 				@Override
 				public void run() {
-					Log.d("Angband", "Clear fast keys!");
+					//Log.d("Angband", "Clear fast keys!");
 					clearKeyTimer();
 					setFastKeysAux("");
 				}
 			};
+		}
+	}
+
+	public boolean shouldAdjustByWidth()
+	{
+		boolean byWidth = true;
+
+		if (!Preferences.getActivePlugin().enableSubWindows() ||
+			Preferences.getNumberSubWindows() == 0 ||
+			Preferences.getHorizontalSubWindows()) {
+			byWidth = !landscapeNow();
+		}
+
+		return byWidth;
+	}
+
+	public void processPrefChanges()
+	{
+		boolean adjust = false;
+
+		for (String key: Preferences.changed) {
+			Log.d("Angband", "Changed: " + key);
+
+			if (key.equals(Preferences.KEY_NUM_SUBW) ||
+				key.equals(Preferences.KEY_FONT_SUBW) ||
+				key.equals(Preferences.KEY_COLS_SUBW) ||
+				key.equals(Preferences.KEY_ROWS_SUBW) ||
+				key.equals(Preferences.KEY_HORIZ_SUBW) ||
+				key.equals(Preferences.KEY_TOP_BAR) ||
+				key.equals(Preferences.KEY_MULT_TOP_BAR)) {
+				adjust = true;
+			}
+		}
+
+		if (adjust && state.characterPlaying()) {
+			adjustSize(shouldAdjustByWidth());
 		}
 	}
 
@@ -167,6 +207,13 @@ public class GameActivity extends Activity {
 		};
 
 		StatPublisher.start(this);
+
+		if (Preferences.changed != null) {
+
+			processPrefChanges();
+
+			Preferences.clearChanged();
+		}
 
 		rebuildViews();
 	}
@@ -245,7 +292,7 @@ public class GameActivity extends Activity {
 
 			//Log.d("Angband", "Refresh: " + msg);
 
-			// Save keymaps for later	
+			// Save keymaps for later
 			String pattern = "keymaps:";
 			int pos = msg.indexOf(pattern);
 			if (pos > -1) {
@@ -339,7 +386,7 @@ public class GameActivity extends Activity {
 
 	public void rebuildButtonRibbon()
 	{
-		if (ribbonZone != null) {			
+		if (ribbonZone != null) {
 
 			ribbonZone.removeAllViews();
 
@@ -351,7 +398,7 @@ public class GameActivity extends Activity {
 				false, false);
 			ribbonZone.addView(bottomRibbon.rootView);
 			bottomRibbon.addSibling(topRibbon);
-			
+
 			for (int i = 0; i < Preferences.getExtraRibbonRows(); i++) {
 				ButtonRibbon another = new ButtonRibbon(this, state,
 					false, true);
@@ -360,7 +407,7 @@ public class GameActivity extends Activity {
 				bottomRibbon.addClone(another);
 			}
 
-			bottomRibbon.notifyClones();			
+			bottomRibbon.notifyClones();
 		}
 	}
 
@@ -386,7 +433,7 @@ public class GameActivity extends Activity {
 			String oldVisuals = "";
 
 			if (term != null) {
-				
+
 				term.unloadTiles();
 
 				oldVisuals = term.serializeVisualState();
@@ -508,15 +555,115 @@ public class GameActivity extends Activity {
 				== Configuration.ORIENTATION_LANDSCAPE;
 	}
 
+	public boolean adjustSize(boolean byWidth)
+	{
+		if (term == null) return false;
+
+		if (byWidth) {
+			term.autoSizeFontByWidth(0, 0);
+		}
+		else {
+			term.autoSizeFontByHeight(0, 0);
+		}
+
+		term.adjustTermSize(0, 0);
+
+		state.nativew.resize();
+
+		return true;
+	}
+
+	public void resetAdvKeyboardHeight()
+	{
+		// Estimate keyboard height
+		Point size = getMySize();
+		float pct = 0f;
+		if (size.x > 0 && size.y > 0) {
+			pct = (size.x / 10.0f) * (5.0f / size.y) * 100.0f;
+		}
+		pct = Math.max(20f, pct);
+		Preferences.setKeyboardHeight((int)pct);
+	}
+
+	public void resetGameLayout()
+	{
+		int n;
+
+		if (Preferences.getActivePlugin().enableSubWindows()) {
+			n = Integer.valueOf(getString(R.string.def_number_subwindows));
+			Preferences.setNumberSubWindows(n);
+		}
+		else {
+			Preferences.setNumberSubWindows(0);
+		}
+		Preferences.setKeyboardOverlap(true);
+
+		n = Integer.valueOf(getString(R.string.def_rows_subwindows));
+		Preferences.setRowsSubWindows(n);
+
+		Preferences.setUseAdvKeyboard(true);
+		Preferences.setVerticalKeyboard(false);
+		Preferences.setKeyboardWidth(100);
+		Preferences.setKeyboardHeight(40);
+		//Preferences.setMiddleOpacity(100);
+
+		Preferences.setEnableTouch(true);
+		Preferences.setTouchRight(true);
+
+		Preferences.setCommandMode(false);
+		Preferences.setRibbonAlpha(2);
+
+		term.resetDragOffset();
+
+		boolean horizontal = landscapeNow();
+		boolean toggle = false;
+
+		if (horizontal) {
+			n = Integer.valueOf(getString(R.string.def_font_subwindows));
+			Preferences.setFontSizeSubWindows(n);
+
+			Preferences.setColumnsSubWindows(25);
+			toggle = (ribbonZone == null);
+		}
+		else {
+			n = Integer.valueOf(getString(R.string.def_font_subwindows));
+			Preferences.setFontSizeSubWindows(n);
+
+			n = Integer.valueOf(getString(R.string.def_cols_subwindows));
+			Preferences.setColumnsSubWindows(n);
+
+			toggle = (ribbonZone != null);
+
+			resetAdvKeyboardHeight();
+		}
+
+		Preferences.setHorizontalSubWindows(!horizontal);
+		Preferences.setTopBar(!horizontal);
+
+		if (term != null) adjustSize(shouldAdjustByWidth());
+
+		if (toggle) toggleKeyboard();
+		else rebuildViews();
+
+		//state.addKey(' ');
+	}
+
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 									ContextMenuInfo menuInfo) {
+
 		menu.setHeaderTitle("Quick Settings");
 		menu.add(0, CONTEXTMENU_FITWIDTH_ITEM, 0, "Fit Width");
-		menu.add(0, CONTEXTMENU_FITHEIGHT_ITEM, 0, "Fit Height");		
+		menu.add(0, CONTEXTMENU_FITHEIGHT_ITEM, 0, "Fit Height");
+
+		if (state.characterPlaying()) {
+			menu.add(0, CONTEXTMENU_RESET_LAYOUT, 0, "Reset Layout " +
+				(landscapeNow() ? "(Landscape)": "(Portrait)"));
+		}
+
 		if (topRibbon != null) {
 			menu.add(0, CONTEXTMENU_VKEY_ITEM, 0, "Show Full Keyboard");
-			menu.add(0, CONTEXTMENU_TOGGLE_SUBW, 0, "Toggle Sub-Windows");
+			//menu.add(0, CONTEXTMENU_TOGGLE_SUBW, 0, "Toggle Sub-Windows");
 			menu.add(0, CONTEXTMENU_RIBBON_STYLE, 0, "Change Ribbon Style");
 			menu.add(0, CONTEXTMENU_KEYMAPS, 0, "Manage Keymaps");
 			menu.add(0, CONTEXTMENU_LOWER_RIBBON, 0, "Lower Ribbon Opacity");
@@ -524,7 +671,7 @@ public class GameActivity extends Activity {
 		}
 		else {
 			menu.add(0, CONTEXTMENU_VKEY_ITEM, 0, "Show Button Ribbon");
-			menu.add(0, CONTEXTMENU_TOGGLE_SUBW, 0, "Toggle Sub-Windows");
+			//menu.add(0, CONTEXTMENU_TOGGLE_SUBW, 0, "Toggle Sub-Windows");
 			//menu.add(0, CONTEXTMENU_KEYMAPS, 0, "Manage Keymaps");
 		}
 		if (state != null) {
@@ -543,18 +690,14 @@ public class GameActivity extends Activity {
 		Intent intent;
 		switch (aItem.getItemId()) {
 		case CONTEXTMENU_FITWIDTH_ITEM:
-            if (state.nativew.lockWithTimer.reserveLock()) {
-			    term.autoSizeFontByWidth(0, 0);
-			    term.adjustTermSize(0, 0);
-				state.nativew.resize();
+            if (term != null && state.nativew.lockWithTimer.reserveLock()) {
+			    adjustSize(true);
                 state.nativew.lockWithTimer.waitAndRelease();
 			}
 			return true;
 		case CONTEXTMENU_FITHEIGHT_ITEM:
-            if (state.nativew.lockWithTimer.reserveLock()) {
-				term.autoSizeFontByHeight(0, 0);
-				term.adjustTermSize(0, 0);
-				state.nativew.resize();
+            if (term != null && state.nativew.lockWithTimer.reserveLock()) {
+				adjustSize(false);
                 state.nativew.lockWithTimer.waitAndRelease();
 			}
 			return true;
@@ -565,8 +708,11 @@ public class GameActivity extends Activity {
 	    	KeymapEditor editor = new KeymapEditor(this, screenLayout);
 	    	editor.show();
 	    	return true;
-	    case CONTEXTMENU_RESET_DPAD:	    	
-	    	if (term != null) term.resetDragOffset();	    	
+	    case CONTEXTMENU_RESET_DPAD:
+	    	if (term != null) term.resetDragOffset();
+	    	return true;
+	    case CONTEXTMENU_RESET_LAYOUT:
+	    	this.resetGameLayout();
 	    	return true;
 	    case CONTEXTMENU_TOGGLE_SUBW:
 	    	state.showSubWindows = !state.showSubWindows;
@@ -574,7 +720,7 @@ public class GameActivity extends Activity {
 	    	return true;
 		case CONTEXTMENU_VKEY_ITEM:
 			toggleKeyboard();
-			return true;		
+			return true;
 		case CONTEXTMENU_RIBBON_STYLE:
 			if (bottomRibbon != null) bottomRibbon.toggleCommandMode();
 			return true;
@@ -635,7 +781,7 @@ public class GameActivity extends Activity {
 
 		// Reset position of the touch directionals
 		Preferences.setTouchDragOffset(0,0);
-		
+
 		rebuildViews();
 	}
 
@@ -655,7 +801,7 @@ public class GameActivity extends Activity {
 	@Override
 	protected void onPause() {
 		Log.d("Angband", "PAUSE");
-		
+
 		super.onPause();
 
 		clearKeyTimer();

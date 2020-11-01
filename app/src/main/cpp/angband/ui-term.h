@@ -14,7 +14,6 @@
 #include "h-basic.h"
 #include "ui-event.h"
 
-
 /**
  * A term_win is a "window" for a Term
  *
@@ -181,6 +180,7 @@ struct term
 	bool unused_flag;
 	bool never_bored;
 	bool never_frosh;
+	int sidebar_mode;
 
 	int attr_blank;
 	wchar_t char_blank;
@@ -251,10 +251,21 @@ struct term
  */
 #define ANGBAND_TERM_MAX 8
 
+#define SIDEBAR_LEFT 0
+#define SIDEBAR_TOP  1
+#define SIDEBAR_NONE 2
+#define SIDEBAR_MAX  (SIDEBAR_NONE+1)
+
+extern int row_map[SIDEBAR_MAX];
+extern int col_map[SIDEBAR_MAX];
+
+#define ROW_MAP	(row_map[Term->sidebar_mode])
+#define COL_MAP	(col_map[Term->sidebar_mode])
+
 /**
  * Number of text rows in each map screen, regardless of tile size
  */
-#define SCREEN_ROWS	(Term->hgt - ROW_MAP - 1) 
+#define SCREEN_ROWS	(Term->hgt - ROW_MAP - 1)
 
 /**
  * Number of grids in each screen (vertically)
@@ -265,9 +276,6 @@ struct term
  * Number of grids in each screen (horizontally)
  */
 #define SCREEN_WID	((int)((Term->wid - COL_MAP - 1) / tile_width))
-
-#define ROW_MAP			1
-#define COL_MAP			13
 
 
 /**
@@ -320,6 +328,7 @@ struct term
 #define PW_MONLIST          0x00000400L /* Display monster list */
 #define PW_STATUS           0x00000800L /* Display status */
 #define PW_ITEMLIST         0x00001000L /* Display item list */
+#define PW_PLAYER_3         0x00002000L /* Display player (topbar) */
 
 #define PW_MAPS (PW_MAP | PW_OVERHEAD)
 
