@@ -239,8 +239,8 @@ int process_special_command(int key)
 #endif
 		tile_width = tcols;
 		tile_height = trows;
-#if defined(SIDEBAR_TOP)
-		angband_term[0]->sidebar_mode = (top_bar ? SIDEBAR_NONE: SIDEBAR_LEFT);
+#if defined(SIDEBAR_MODE)
+		SIDEBAR_MODE = (top_bar ? SIDEBAR_NONE: SIDEBAR_LEFT);
 #endif
 
 		reset_visuals(true);
@@ -610,7 +610,7 @@ static void term_data_link(int i)
 	t->pict_hook = Term_pict_android;
 	t->control_hook = Term_control_android;
 
-#if defined(SIDEBAR_TOP)
+#if defined(SIDEBAR_MODE)
 	t->sidebar_mode = (initial_top_bar ? SIDEBAR_NONE: SIDEBAR_LEFT);
 #endif
 

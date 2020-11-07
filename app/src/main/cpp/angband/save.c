@@ -40,6 +40,7 @@
 #include "player-history.h"
 #include "player-timed.h"
 #include "trap.h"
+#include "ui-term.h"
 
 
 /**
@@ -177,7 +178,7 @@ static void wr_item(const struct object *obj)
 
 	/* Held by monster index */
 	wr_s16b(obj->held_m_idx);
-	
+
 	wr_s16b(obj->mimicking_m_idx);
 
 	/* Activation and effects*/
@@ -203,7 +204,7 @@ static void wr_item(const struct object *obj)
 static void wr_monster(const struct monster *mon)
 {
 	size_t j;
-	struct object *obj = mon->held_obj; 
+	struct object *obj = mon->held_obj;
 	struct object *dummy = object_new();
 
 	wr_u16b(mon->midx);
@@ -317,7 +318,8 @@ void wr_options(void)
 	/* Special Options */
 	wr_byte(player->opts.delay_factor);
 	wr_byte(player->opts.hitpoint_warn);
-	wr_u16b(player->opts.lazymove_delay);
+	wr_byte(player->opts.lazymove_delay);
+	wr_byte(SIDEBAR_MODE);
 
 	/* Normal options */
 	for (i = 0; i < OPT_MAX; i++) {
@@ -868,7 +870,7 @@ static void wr_objects_aux(struct chunk *c)
 
 	if (player->is_dead)
 		return;
-	
+
 	/* Write the objects */
 	wr_u16b(c->obj_max);
 	for (y = 0; y < c->height; y++) {

@@ -251,6 +251,8 @@ struct term
  */
 #define ANGBAND_TERM_MAX 8
 
+#define SIDEBAR_MODE (angband_term[0]->sidebar_mode)
+
 #define SIDEBAR_LEFT 0
 #define SIDEBAR_TOP  1
 #define SIDEBAR_NONE 2

@@ -313,8 +313,10 @@ public class NativeWrapper {
 
 			term.postInvalidate();
 
-			if (w == null)
+			if (false && w == null) {
+				Log.d("Angband", "Scroll reset");
 				term.onScroll(null,null,0,0);  // sanitize scroll position
+			}
 		}
 	}
 
@@ -491,7 +493,10 @@ public class NativeWrapper {
 	public void wmove(int w, final int y, final int x) {
 		synchronized (display_lock) {
 			TermWindow t = state.getWin(w);
-			if (t != null) t.move(y,x);
+			if (t != null) {
+				//Log.d("Angband", "MoveTo " + x + " " + y);
+				t.move(y,x);
+			}
 		}
 	}
 

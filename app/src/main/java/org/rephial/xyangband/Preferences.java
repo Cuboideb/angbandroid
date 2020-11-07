@@ -18,6 +18,9 @@ final public class Preferences {
 	public static final int rows = 24;
 	public static final int cols = 80;
 
+	public static final int max_rows = 255;
+	public static final int max_cols = 255;
+
 	static final String NAME = "angband";
 
 	static final String KEY_VIBRATE = "angband.vibrate";
@@ -326,6 +329,11 @@ final public class Preferences {
 		ed.commit();
 	}
 
+	public static boolean lockSubWindowsOnScroll()
+	{
+		return true;
+	}
+
 	public static String getTileMultiplier()
 	{
 		if (Preferences.getActivePlugin().only1x1()) {
@@ -337,13 +345,13 @@ final public class Preferences {
 	public static int getTileWidth()
 	{
 		String[] parts = getTileMultiplier().split("x");
-		return parts.length == 2 ? Integer.valueOf (parts[0]) : 1;
+		return parts.length == 2 ? Integer.valueOf(parts[0]) : 1;
 	}
 
 	public static int getTileHeight()
 	{
 		String[] parts = getTileMultiplier().split("x");
-		return parts.length == 2 ? Integer.valueOf (parts[1]) : 1;
+		return parts.length == 2 ? Integer.valueOf(parts[1]) : 1;
 	}
 
 	public static float getTileFontMult()

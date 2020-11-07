@@ -49,9 +49,10 @@
 #include "savefile.h"
 #include "store.h"
 #include "trap.h"
+#include "ui-term.h"
 
 /**
- * Setting this to 1 and recompiling gives a chance to recover a savefile 
+ * Setting this to 1 and recompiling gives a chance to recover a savefile
  * where the object list has become corrupted.  Don't forget to reset to 0
  * and recompile again as soon as the savefile is viable again.
  */
@@ -400,12 +401,12 @@ int rd_randomizer(void)
 
 	/* for safety, make sure state_i < RAND_DEG */
 	state_i = state_i % RAND_DEG;
-    
+
 	/* RNG variables */
 	rd_u32b(&z0);
 	rd_u32b(&z1);
 	rd_u32b(&z2);
-    
+
 	/* RNG state */
 	for (i = 0; i < RAND_DEG; i++)
 		rd_u32b(&STATE[i]);
@@ -427,8 +428,6 @@ int rd_options(void)
 {
 	byte b;
 
-	u16b tmp16u;
-
 	/*** Special info */
 
 	/* Read "delay_factor" */
@@ -440,8 +439,13 @@ int rd_options(void)
 	player->opts.hitpoint_warn = b;
 
 	/* Read lazy movement delay */
-	rd_u16b(&tmp16u);
-	player->opts.lazymove_delay = (tmp16u < 1000) ? tmp16u : 0;
+	rd_byte(&b);
+	player->opts.lazymove_delay = b;
+
+	/* Read sidebar mode */
+	rd_byte(&b);
+	if (b >= SIDEBAR_MAX) b = SIDEBAR_LEFT;
+	SIDEBAR_MODE = b;
 
 
 	/* Read options */
@@ -863,7 +867,7 @@ int rd_ignore(void)
 	for (i = 0; i < file_e_max; i++) {
 		if (i < z_info->e_max) {
 			bitflag flags, itypes[ITYPE_SIZE];
-			
+
 			/* Read and extract the everseen flag */
 			rd_byte(&flags);
 			e_info[i].everseen = (flags & 0x02) ? true : false;
@@ -942,7 +946,7 @@ int rd_misc(void)
 {
 	size_t i;
 	byte tmp8u;
-	
+
 	/* Read the randart seed */
 	rd_u32b(&seed_randart);
 
@@ -1074,9 +1078,9 @@ int rd_player_spells(void)
 {
 	int i;
 	u16b tmp16u;
-	
+
 	int cnt;
-	
+
 	/* Read the number of spells */
 	rd_u16b(&tmp16u);
 	if (tmp16u > player->class->magic.total_spells) {
@@ -1086,15 +1090,15 @@ int rd_player_spells(void)
 
 	/* Initialise */
 	player_spells_init(player);
-	
+
 	/* Read the spell flags */
 	for (i = 0; i < tmp16u; i++)
 		rd_byte(&player->spell_flags[i]);
-	
+
 	/* Read the spell order */
 	for (i = 0, cnt = 0; i < tmp16u; i++, cnt++)
 		rd_byte(&player->spell_order[cnt]);
-	
+
 	/* Success */
 	return (0);
 }
@@ -1666,7 +1670,7 @@ int rd_history(void)
 {
 	u32b tmp32u;
 	size_t i, j;
-	
+
 	history_clear(player);
 
 	/* History type flags */
@@ -1686,7 +1690,7 @@ int rd_history(void)
 		char name[80];
 		char text[80];
 
-		for (j = 0; j < hist_size; j++)		
+		for (j = 0; j < hist_size; j++)
 			rd_byte(&type[j]);
 		rd_s32b(&turnno);
 		rd_s16b(&dlev);

@@ -948,7 +948,7 @@ static enum parser_error parse_prefs_keymap_action(struct parser *p)
 {
 	const char *act = "";
 
-	struct prefs_data *d = parser_priv(p);	
+	struct prefs_data *d = parser_priv(p);
 	assert(d != NULL);
 	if (d->bypass) return PARSE_ERROR_NONE;
 
@@ -1058,6 +1058,11 @@ static enum parser_error parse_prefs_window(struct parser *p)
 		else
 			d->window_flags[window] &= ~(1L << flag);
 	}
+
+#if defined(ANGBAND_ANDROID)
+	// Hack for android, the 4th window must have the topbar
+	if (window == 4) d->window_flags[window] = (PW_PLAYER_3);
+#endif
 
 	d->loaded_window_flag[window] = true;
 

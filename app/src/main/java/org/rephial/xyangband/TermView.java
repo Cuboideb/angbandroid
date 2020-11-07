@@ -29,6 +29,8 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.Handler;
+import android.os.Message;
+import android.os.Looper;
 import android.os.Vibrator;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -81,15 +83,23 @@ public class TermView extends View implements OnGestureListener {
     private int alpha_stroke = 200;
 
 	Handler timerHandler;
-	Runnable timerRunnable;
 	private int lastDirection = 0;
-	private int longDelay = 350;
-	private int shortDelay = 80;
-    private int dragDelay = 500;
+
+	private static int longRepeatDelay = 350;
+	private static int shortRepeatDelay = 80;
+    private static int dragDelay = 250;
+    private static int longPressDelay = 700;
 	private long savedTime = 0;
     private boolean dragEnabled = false;
     private Point lastLocation = null;
     private Point dragOffset = new Point(0, 0);
+
+    public static int LONG_PRESS = 1;
+    public static int DRAGGING = 2;
+    public static int REPEAT_DIR = 3;
+
+    private int lastEvent = -1000;
+    private int curEvent = -1000;
 
 	//	int row = 0;
 	//  int col = 0;
@@ -106,6 +116,9 @@ public class TermView extends View implements OnGestureListener {
 
     public static char BIG_PAD = 0x1E00;
 
+    public static int MIN_FONT = 6;
+    public static int MAX_FONT = 64;
+
     public int tile_wid = 1;
     public int tile_hgt = 1;
     public int useGraphics = 0;
@@ -113,7 +126,6 @@ public class TermView extends View implements OnGestureListener {
 
     public int tile_wid_pix = 0;
     public int tile_hgt_pix = 0;
-    public int tile_font_size = 0;
     public Paint tile_fore;
 
     public boolean mouseSpecial = false;
@@ -400,35 +412,41 @@ public class TermView extends View implements OnGestureListener {
 
     public void createTimers()
     {
-        timerHandler = new Handler();
-        timerRunnable = new Runnable() {
-            @Override
-            public void run() {
-                //Log.d("Angband", "CLICK!");
-                if (lastDirection == 0) {
-                    stopTimer();
+        timerHandler = new Handler(Looper.myLooper()) {
+            public void handleMessage(Message msg)
+            {
+                long currTime = System.currentTimeMillis();
+                long delta = 0;
+                if (savedTime > 0 && currTime > savedTime) {
+                    delta = currTime - savedTime;
                 }
-                else {
-                    timerHandler.removeCallbacks(this);
+                savedTime = currTime;
 
-                    // Special case
-                    if (lastDirection == '5') {
-                        dragEnabled = true;
-                        invalidate();
-                        return;
-                    }
+                if (msg.what == LONG_PRESS) {
 
-                    long currTime = System.currentTimeMillis();
-                    long delta = 0;
-                    if (savedTime > 0 && currTime > savedTime) {
-                        delta = currTime - savedTime;
-                    }
-                    savedTime = currTime;
-                    delta = Math.min(delta, longDelay);
-                    int effectiveDelay = (int)Math.max(delta, shortDelay);
+                    onLongPress(null);
+                }
+
+                if (msg.what == DRAGGING) {
+
+                    dragEnabled = true;
+
+                    invalidate();
+                }
+
+                if (msg.what == REPEAT_DIR) {
+
+                    // Keep repeating
+
+                    // Set bounds
+                    delta = Math.min(delta, longRepeatDelay);
+                    int effectiveDelay = (int)Math.max(delta, shortRepeatDelay);
+
                     //Log.d("Angband", "Delay: " + effectiveDelay);
-                    timerHandler.postDelayed(this, effectiveDelay);
 
+                    timerHandler.sendEmptyMessageDelayed(REPEAT_DIR, effectiveDelay);
+
+                    // Send action
                     state.addKey(lastDirection);
                 }
             }
@@ -581,7 +599,7 @@ public class TermView extends View implements OnGestureListener {
 		return p;
 	}
 
-	public void stopTimer()
+	public void stopTimers()
     {
         dragEnabled = false;
         //dragOffset.x = 0;
@@ -591,7 +609,9 @@ public class TermView extends View implements OnGestureListener {
         lastDirection = 0;
         savedTime = 0;
 
-        timerHandler.removeCallbacks(timerRunnable);
+        timerHandler.removeMessages(REPEAT_DIR);
+        timerHandler.removeMessages(LONG_PRESS);
+        timerHandler.removeMessages(DRAGGING);
 
         invalidate();
     }
@@ -686,7 +706,8 @@ public class TermView extends View implements OnGestureListener {
                 dirZoneStroke.setColor(color1_stroke);
                 dirZoneStroke.setAlpha(alpha_stroke);
 
-                if (dragEnabled && px == 2 && py == 2) {
+                if (dragEnabled && lastDirection == '5'
+                    && px == 2 && py == 2) {
                     dirZoneFill.setColor(color_drag);
                 }
                 else if (px == 2 || py == 2) {
@@ -840,15 +861,33 @@ public class TermView extends View implements OnGestureListener {
 
         int startX = canvas_width - subWinWidth;
         int startY = 0;
-        Rect re = new Rect(startX, startY, canvas_width, canvas_height);
+        int maxWidth = canvas_width;
+        int maxHeight = canvas_height;
+
+        if (Preferences.lockSubWindowsOnScroll()) {
+            startX = getScrollX() + getWidth() - subWinWidth;
+            startY = getScrollY();
+            maxWidth = startX + subWinWidth;
+            maxHeight = startY + getHeight();
+        }
+
+        Rect re = new Rect(startX, startY, maxWidth, maxHeight);
 
         boolean vertical = !Preferences.getHorizontalSubWindows();
 
         if (!vertical) {
             if (subWinHeight <= 0) return;
             startX = 0;
-            startY = canvas_height - subWinHeight;
-            re = new Rect(startX, startY, canvas_width, canvas_height);
+            startY = maxHeight - subWinHeight;
+
+            if (Preferences.lockSubWindowsOnScroll()) {
+                startX = getScrollX();
+                startY = getScrollY() + getHeight() - subWinHeight;
+                maxWidth = startX + getWidth();
+                maxHeight = startY + subWinHeight;
+            }
+
+            re = new Rect(startX, startY, maxWidth, maxHeight);
         }
 
         // Clear all
@@ -866,13 +905,13 @@ public class TermView extends View implements OnGestureListener {
                 if (rows > 0) {
                     if (vertical) {
                         drawSubWindow(p_canvas, w, startX, startY,
-                            canvas_width, canvas_height, fore_subw);
+                            maxWidth, maxHeight, fore_subw);
                         startY += ((rows+1)*th); // Plus one row
                     }
                     else {
                         startY = re.top;
                         drawSubWindow(p_canvas, w, startX, startY,
-                            startX+subWinWidth, canvas_height, fore_subw);
+                            startX+subWinWidth, maxHeight, fore_subw);
                         startX += ((columns+1)*tw); // Plus one col
                     }
                 }
@@ -939,7 +978,19 @@ public class TermView extends View implements OnGestureListener {
 
         if (maxHeight == 0) return;
 
-        Rect re = new Rect(0, 0, canvas_width, maxHeight);
+        int x = 0;
+        int y = 0;
+        int w = canvas_width;
+        int h = maxHeight;
+
+        if (Preferences.lockSubWindowsOnScroll()) {
+            x = getScrollX();
+            y = getScrollY();
+            w = x + getWidth();
+            h = y + maxHeight;
+        }
+
+        Rect re = new Rect(x, y, w, h);
 
         // Clear all
         fore_topbar.setColor(Color.BLACK);
@@ -949,8 +1000,7 @@ public class TermView extends View implements OnGestureListener {
 
         if (win == null) return;
 
-        drawSubWindow(p_canvas, win, 0, 0, canvas_width, maxHeight,
-            fore_topbar);
+        drawSubWindow(p_canvas, win, x, y, w, h, fore_topbar);
     }
 
 	protected void onDraw(Canvas p_canvas) {
@@ -960,13 +1010,7 @@ public class TermView extends View implements OnGestureListener {
 
             int origin_y = getTopBarHeight();
 
-            if (origin_y > 0 && state.characterPlaying()) {
-                drawTopBar(p_canvas);
-            }
-
 			p_canvas.drawBitmap(bitmap, 0, origin_y, null);
-
-            drawAllSubWindows(p_canvas);
 
 			int tw = char_width;
 			int th = char_height;
@@ -1009,6 +1053,12 @@ public class TermView extends View implements OnGestureListener {
 			if (state.stdscr.cursor_visible && savedTime == 0) {
 				p_canvas.drawRect(cl, ct, cr, cb, cursor);
 			}
+
+            if (origin_y > 0 && state.characterPlaying()) {
+                drawTopBar(p_canvas);
+            }
+
+            drawAllSubWindows(p_canvas);
 
 			if (Preferences.getEnableTouch()) {
 				if (Preferences.getTouchRight()) {
@@ -1117,7 +1167,7 @@ public class TermView extends View implements OnGestureListener {
 			setFontSizeLegacy();
 		}
 		else {
-			font_text_size = 6;
+			font_text_size = MIN_FONT;
             boolean success = false;
 			do {
 				font_text_size += 1;
@@ -1154,7 +1204,7 @@ public class TermView extends View implements OnGestureListener {
 			setFontSizeLegacy();
 		}
 		else {
-			font_text_size = 6;
+			font_text_size = MIN_FONT;
 			boolean success = false;
 			do {
 				font_text_size += 1;
@@ -1204,17 +1254,24 @@ public class TermView extends View implements OnGestureListener {
         maxHeight = maxHeight - getTopBarHeight() - getSubWindowsHeight();
         maxWidth = maxWidth - getSubWindowsWidth();
 
-		while ((maxHeight > 0) && ((this.rows+1) * this.char_height < maxHeight)) {
+		while ((maxHeight > 0) &&
+            ((this.rows+1) * this.char_height < maxHeight)) {
+
 			++this.rows;
 		}
 
-		while ((maxWidth > 0) && ((this.cols+1) * this.char_width < maxWidth)) {
+		while ((maxWidth > 0) &&
+            ((this.cols+1) * this.char_width < maxWidth)) {
+
 			++this.cols;
 		}
 
 		// Check values
 		this.rows = Math.max(this.rows, Preferences.rows);
 		this.cols = Math.max(this.cols, Preferences.cols);
+
+        this.rows = Math.min(this.rows, Preferences.max_rows);
+        this.cols = Math.min(this.cols, Preferences.max_cols);
 
 		//Log.d("Angband", "Resize. maxWidth "+maxWidth
 		//		+" maxHeight "+maxHeight
@@ -1281,8 +1338,8 @@ public class TermView extends View implements OnGestureListener {
 
 		setFontFace();
 
-		if (size < 6) {size = 6; return false;}
-		else if (size > 64) {size = 64; return false;}
+		size = Math.max(size, MIN_FONT);
+        size = Math.min(size, MAX_FONT);
 
 		font_text_size = size;
 
@@ -1302,19 +1359,24 @@ public class TermView extends View implements OnGestureListener {
         int pct = Preferences.getFontSizeSubWindows();
         int subw_font_size = font_text_size / 2;
         subw_font_size += (pct * font_text_size / 100);
-        Math.max(subw_font_size, 5);
+        subw_font_size = Math.max(subw_font_size, MIN_FONT);
+        subw_font_size = Math.min(subw_font_size, MAX_FONT);
         fore_subw.setTextSize(subw_font_size);
         fore_subw.setTypeface(fore.getTypeface());
 
         pct = Preferences.getTopBarFontMultiplier();
         int topbar_font_size = font_text_size + (pct * font_text_size / 100);
+        topbar_font_size = Math.max(topbar_font_size, MIN_FONT);
+        topbar_font_size = Math.min(topbar_font_size, MAX_FONT);
         fore_topbar.setTextSize(topbar_font_size);
         fore_topbar.setTypeface(fore.getTypeface());
 
         float tile_font_mult = Preferences.getTileFontMult();
-        tile_font_size = (int)(font_text_size * tile_font_mult);
+        int tile_font_size = (int)(font_text_size * tile_font_mult);
+        tile_font_size = Math.max(tile_font_size, MIN_FONT);
+        tile_font_size = Math.min(tile_font_size, MAX_FONT);
+        tile_fore.setTextSize(tile_font_size);
 		tile_fore.setTypeface(fore.getTypeface());
-		tile_fore.setTextSize(tile_font_size);
 
         tile_wid_pix = (int)(char_width * tile_wid);
         tile_hgt_pix = (int)(char_height * tile_hgt);
@@ -1384,91 +1446,138 @@ public class TermView extends View implements OnGestureListener {
             return;
         }
 
-        Point newLocation = new Point(px, py);
+        if (!dragEnabled) return;
 
-        if (newLocation.equals(lastLocation)) return;
+        Point newLocation = new Point(px, py);
 
         int dy = newLocation.y - lastLocation.y;
         int dx = newLocation.x - lastLocation.x;
 
-        dragOffset.x += dx;
-        dragOffset.y += dy;
-
         //Log.d("Angband", "Delta: " + dx + "@" + dy);
 
-        lastLocation = newLocation;
+        int maxDist = 4;
 
-        if (!dragEnabled) return;
+        // Finetune the movement if we are already moving
+        if (!timerHandler.hasMessages(LONG_PRESS)) maxDist = 2;
 
-        invalidate();
+        // To disable long press, measure distance
+        if ((dx * dx) + (dy * dy) > (maxDist * maxDist)) {
+
+            // Save new location
+            lastLocation = newLocation;
+
+            // Disable Long Press Message
+            timerHandler.removeMessages(LONG_PRESS);
+
+            if (lastDirection == 0) {
+                onScroll(null, null, dx, dy);
+            }
+            else if (lastDirection == '5') {
+                dragOffset.x += dx;
+                dragOffset.y += dy;
+            }
+
+            invalidate();
+        }
     }
 
 	@Override
 	public boolean onTouchEvent(MotionEvent me) {
 		float x = me.getX() + this.getScrollX();
 		float y = me.getY() + this.getScrollY();
+
         int tempDirection = this.getDirFromZone(y, x);
 
-        // If we are dragging, continue
-        if ((tempDirection != lastDirection && !dragEnabled) ||
-                // Except if it's a reentrant event
-                me.getAction() == MotionEvent.ACTION_DOWN) {
-            this.stopTimer();
+        boolean canDrag = true;
+
+        lastEvent = curEvent;
+        curEvent = me.getAction();
+
+        // Restore state if:
+        // 1. Reentrant event
+        // 2. Different dir (unless dragging)
+        if (me.getAction() == MotionEvent.ACTION_DOWN
+            || (!dragEnabled && tempDirection != lastDirection)) {
+
+            stopTimers();
+
             lastDirection = tempDirection;
+
+            lastLocation = new Point((int)x, (int)y);
         }
 
         // Disable special behavior sometimes
-        if (lastDirection == '5' && !(Preferences.getEnableTouch() &&
-            Preferences.getTouchRight() &&
-            Preferences.getTouchDragEnabled())) {
-            lastDirection = 0;
+        if (lastDirection == '5' &&
+            !(Preferences.getEnableTouch() &&
+                Preferences.getTouchRight() &&
+                Preferences.getTouchDragEnabled())
+            ) {
+
+            canDrag = false;
         }
 
-        if (me.getAction() == MotionEvent.ACTION_DOWN && lastDirection > 0) {
+        if (curEvent == MotionEvent.ACTION_DOWN) {
             //Log.d("Angband", "DOWN!");
 
+            // Start dragging
+            if (lastDirection == 0)  {
+                timerHandler.sendEmptyMessageDelayed(DRAGGING, dragDelay);
+                timerHandler.sendEmptyMessageDelayed(LONG_PRESS, longPressDelay);
+
+            }
+            // Delay execution
+            else if (lastDirection == '5' && canDrag) {
+                timerHandler.sendEmptyMessageDelayed(DRAGGING, dragDelay);
+            }
             // Send the action now
-            if (lastDirection != '5') {
-                timerHandler.postDelayed(timerRunnable, longDelay);
+            else if (lastDirection != '5') {
                 state.addDirectionKey(lastDirection);
+                // And remember for repetition
+                timerHandler.sendEmptyMessageDelayed(REPEAT_DIR, longRepeatDelay);
             }
-            else {
-                timerHandler.postDelayed(timerRunnable, dragDelay);
-            }
-            return true;
         }
 
         // Drag the buttons
-        if (me.getAction() == MotionEvent.ACTION_MOVE && lastDirection == '5') {
+        if (curEvent == MotionEvent.ACTION_MOVE) {
+
+            //Log.d("Angband", "MOVE!");
 
             updateDrag(x, y);
-
-            return true;
         }
-        if (me.getAction() == MotionEvent.ACTION_CANCEL && lastDirection > 0) {
 
-            this.stopTimer();
-            return true;
+        if (curEvent == MotionEvent.ACTION_CANCEL) {
+
+            //Log.d("Angband", "CANCEL!");
+
+            stopTimers();
         }
-	    if (me.getAction() == MotionEvent.ACTION_UP && lastDirection > 0) {
+
+	    if (curEvent == MotionEvent.ACTION_UP) {
+
+            //Log.d("Angband", "UP!");
+
+            timerHandler.removeMessages(REPEAT_DIR);
+            timerHandler.removeMessages(LONG_PRESS);
+            timerHandler.removeMessages(DRAGGING);
 
             // It was just a single click
-            if (lastDirection == '5' && !dragEnabled) {
-                //Log.d("Angband", "Adding delayed '5'");
-                state.addDirectionKey('5');
+            if (!dragEnabled && lastDirection == 0) {
+                onSingleTapUp(me);
+            }
+            if (!dragEnabled && lastDirection == '5')  {
+                state.addKey(lastDirection);
             }
 
             // Save offset for later
-            if (lastDirection == '5' && dragEnabled) {
+            if (lastEvent == MotionEvent.ACTION_MOVE
+                && lastDirection == '5' && dragEnabled) {
                 Preferences.setTouchDragOffset(dragOffset.x, dragOffset.y);
             }
 
-	        this.stopTimer();
-
-	        //Log.d("Angband", "UP!");
-	        return true;
+            stopTimers();
         }
-	    return gesture.onTouchEvent(me);
+
+        return true;
 	}
 
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
@@ -1486,6 +1595,9 @@ public class TermView extends View implements OnGestureListener {
 
 		if (canvas_width <= getWidth()) newscrollx = 0; //this.getScrollX();
 		if (canvas_height <= getHeight()) newscrolly = 0; //this.getScrollY();
+
+        //Log.d("Angband", "Scroll to " + newscrollx + " " + newscrolly
+        //    + " distance " + distanceX + " " + distanceY);
 
 		scrollTo(newscrollx, newscrolly);
 
@@ -1528,8 +1640,16 @@ public class TermView extends View implements OnGestureListener {
 	        return;
         }
 
-	    float y = e.getY() + this.getScrollY();
-	    float x = e.getX() + this.getScrollX();
+	    //float y = e.getY() + this.getScrollY();
+	    //float x = e.getX() + this.getScrollX();
+
+        float x = 0;
+        float y = 0;
+
+        if (lastLocation != null) {
+            x = lastLocation.x;
+            y = lastLocation.y;
+        }
 
 		// Too close to directionals
 		if (this.inZoneOfDirectionals(y, x)) {
@@ -2107,6 +2227,6 @@ public class TermView extends View implements OnGestureListener {
 		// according to SDK docs
 		state.gameThread.send(GameThread.Request.SaveGame);
 
-		this.stopTimer();
+		stopTimers();
 	}
 }
