@@ -1017,8 +1017,10 @@ static void do_cmd_lazymove_delay(const char *name, int row)
 	res = askfor_aux(tmp, sizeof(tmp), askfor_aux_numbers);
 
 	/* Process input */
-	if (res)
-		player->opts.lazymove_delay = (u16b) strtoul(tmp, NULL, 0);
+	if (res) {
+		u16b delay = (u16b)strtoul(tmp, NULL, 0);
+		player->opts.lazymove_delay = MIN(delay, 255);
+	}
 
 	screen_load();
 }
