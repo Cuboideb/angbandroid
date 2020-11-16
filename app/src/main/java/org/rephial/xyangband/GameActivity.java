@@ -59,7 +59,7 @@ public class GameActivity extends Activity {
 	private AngbandDialog dialog = null;
 
 	private RelativeLayout screenLayout = null;
-	private TermView term = null;
+	public TermView term = null;
 	AngbandKeyboard virtualKeyboard = null;
 	AngbandKeyboardView virtualKeyboardView = null;
 
@@ -771,6 +771,16 @@ public class GameActivity extends Activity {
 				.setMessage(msg)
 				.setCancelable(true)
 				.show();
+	}
+
+	public void setFixedRibbonOpacity(int value)
+	{
+		if (bottomRibbon != null) {
+			if (value > 3) value = 1;
+			if (value < 1) value = 3;
+			bottomRibbon.alphaLevel = value;
+			bottomRibbon.updateAlpha();
+		}
 	}
 
 	public void toggleKeyboard() {

@@ -611,6 +611,16 @@ public class ButtonRibbon implements OnClickListener,
             alphaBg = 200;
         }
 
+        if (cmd.action.toUpperCase().equals("USER_RUN") &&
+            state.getRunningMode()) {
+            if (alphaLevel == 3) {
+                color = 0x006400;
+            }
+            else {
+                color = AdvButton.TOGGLED_BG;
+            }
+        }
+
         color = ColorUtils.setAlphaComponent(color, alphaFg);
         cmd.btn.setTextColor(color);
         cmd.btn.getBackground().setAlpha(alphaBg);
@@ -1107,7 +1117,17 @@ public class ButtonRibbon implements OnClickListener,
         }
 
         if (cmd.isUserCommand()) {
-            procUserCommand(cmd);
+
+            if (action.toUpperCase().equals("USER_RUN")) {
+                state.setRunningMode(!state.getRunningMode());
+                updateAlphaCmd(cmd);
+            }
+            else if (action.toUpperCase().equals("USER_OPA")) {
+                context.setFixedRibbonOpacity(alphaLevel+1);
+            }
+            else {
+                procUserCommand(cmd);
+            }
             return;
         }
 

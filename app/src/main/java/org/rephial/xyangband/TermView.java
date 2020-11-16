@@ -134,6 +134,7 @@ public class TermView extends View implements OnGestureListener {
     public Bitmap iconMouse2 = null;
 
     public boolean topBar = true;
+    public String flashText = "";
 
     public static class Assert {
         public static void that(boolean condition, String message) {
@@ -616,6 +617,7 @@ public class TermView extends View implements OnGestureListener {
         invalidate();
     }
 
+    /*
 	protected void drawDirZonesFull(Canvas p_canvas)
 	{
 	    this.zones.clear();
@@ -663,6 +665,84 @@ public class TermView extends View implements OnGestureListener {
 			}
 		}
 	}
+    */
+
+    public boolean largeCanvas()
+    {
+        return canvas_width > getWidth() || canvas_height > getHeight();
+    }
+
+    protected void drawDirZonesFull(Canvas p_canvas)
+    {
+        this.zones.clear();
+
+        float pctw[] = {0.2f, 0.6f, 0.2f};
+        float pcth[] = {0.33f, 0.33f, 0.34f};
+        int totalw = getWidth() - game_context.getKeyboardWidth();
+        int totalh = getHeight() - game_context.getKeyboardHeight();
+
+        for (int i = 0; i < 3; i++) {
+            pctw[i] *= totalw;
+            pcth[i] *= totalh;
+        }
+
+        int x0 = getScrollX() + game_context.getKeyboardWidth();
+        int y0 = getScrollY();
+
+        int y = y0;
+
+        for (int py = 0; py < 3; py++) {
+
+            int x = x0;
+
+            for (int px = 0; px < 3; px++) {
+
+                RectF r = new RectF(x, y, x + pctw[px], y + pcth[py]);
+
+                // Remember for single tap
+                this.zones.add(r);
+
+                x += pctw[px];
+            }
+
+            y += pcth[py];
+        }
+
+        dirZoneStroke.setColor(color1_stroke);
+        dirZoneStroke.setAlpha(alpha);
+
+        p_canvas.drawLine(x0, y0 + pcth[0],
+            x0 + totalw - 1, y0 + pcth[0],
+            dirZoneStroke);
+
+        p_canvas.drawLine(x0, y0 + pcth[0] +pcth[1],
+            x0 + totalw - 1, y0 + pcth[0] + pcth[1],
+            dirZoneStroke);
+
+        p_canvas.drawLine(x0, y0 + totalh - 1,
+            x0 + totalw - 1, y0 + totalh - 1,
+            dirZoneStroke);
+
+        p_canvas.drawLine(x0, y0, x0, y0 + totalh - 1,
+            dirZoneStroke);
+
+        p_canvas.drawLine(x0 + pctw[0], y0,
+            x0 + pctw[0], y0 + totalh - 1,
+            dirZoneStroke);
+
+        p_canvas.drawLine(x0 + pctw[0] + pctw[1], y0,
+            x0 + pctw[0] + pctw[1], y0 + totalh - 1,
+            dirZoneStroke);
+
+        if (dragEnabled && largeCanvas()) {
+            dirZoneFill.setColor(color_drag);
+            dirZoneFill.setAlpha(alpha);
+            float cx = x0 + pctw[0];
+            float cy = y0 + pcth[0];
+            RectF re = new RectF(cx, cy, cx + pctw[1], cy + pcth[1]);
+            p_canvas.drawRect(re, dirZoneFill);
+        }
+    }
 
 	protected void drawDirZonesRight(Canvas p_canvas)
 	{
@@ -706,8 +786,9 @@ public class TermView extends View implements OnGestureListener {
                 dirZoneStroke.setColor(color1_stroke);
                 dirZoneStroke.setAlpha(alpha_stroke);
 
-                if (dragEnabled && lastDirection == '5'
-                    && px == 2 && py == 2) {
+                boolean centerButton = (lastDirection == '5');
+
+                if (dragEnabled && centerButton && px == 2 && py == 2) {
                     dirZoneFill.setColor(color_drag);
                 }
                 else if (px == 2 || py == 2) {
@@ -921,13 +1002,15 @@ public class TermView extends View implements OnGestureListener {
         dirZoneStroke.setColor(color1_stroke);
         dirZoneStroke.setAlpha(alpha);
 
-        if (vertical) {
-            p_canvas.drawLine(re.left, re.top, re.left, re.bottom-1,
-                dirZoneStroke);
-        }
-        else {
-            p_canvas.drawLine(re.left, re.top, re.right-1, re.top,
-                dirZoneStroke);
+        if (!useFullDPad()) {
+            if (vertical) {
+                p_canvas.drawLine(re.left, re.top, re.left, re.bottom-1,
+                    dirZoneStroke);
+            }
+            else {
+                p_canvas.drawLine(re.left, re.top, re.right-1, re.top,
+                    dirZoneStroke);
+            }
         }
     }
 
@@ -949,7 +1032,9 @@ public class TermView extends View implements OnGestureListener {
     {
         Bitmap icon = mouseSpecial ? iconMouse2: iconMouse1;
 
-        if (icon == null || !Preferences.getShowMouseIcon()) {
+        if (icon == null || !Preferences.getShowMouseIcon() ||
+            useFullDPad()) {
+
             mouseSpecial = false;
             mouseToggle = null;
             return;
@@ -1001,6 +1086,49 @@ public class TermView extends View implements OnGestureListener {
         if (win == null) return;
 
         drawSubWindow(p_canvas, win, x, y, w, h, fore_topbar);
+    }
+
+    public void setFlashText(String value)
+    {
+        if (!value.equals(flashText)) {
+            flashText = value;
+            invalidate();
+        }
+    }
+
+    public void drawFlashText(Canvas p_canvas)
+    {
+        Paint paint = fore_topbar;
+
+        if (flashText.length() == 0 || paint == null) return;
+
+        float old = paint.getTextSize();
+
+        float new_size = Math.min(old * 4, MAX_FONT);
+        new_size = Math.max(new_size, MIN_FONT);
+
+        paint.setTextSize(new_size);
+        paint.setColor(AdvButton.TOGGLED_BG);
+        paint.setShadowLayer(10f, 0, 0, Color.CYAN);
+        paint.setAlpha(200);
+
+        TSize s = getCharDimensions(paint);
+        int th = s.height;
+        int tw = s.width;
+
+        String str = flashText;
+
+        int w2 = (int)paint.measureText(str, 0, str.length());
+
+        float x = getScrollX() + (getWidth() - w2) / 2;
+        float y = getScrollY() + (getHeight() * 0.1f)
+            + th - paint.descent();
+
+        p_canvas.drawText(str, x, y, paint);
+
+        paint.setTextSize(old);
+        paint.setShadowLayer(0, 0, 0, 0);
+        paint.setAlpha(255);
     }
 
 	protected void onDraw(Canvas p_canvas) {
@@ -1060,16 +1188,16 @@ public class TermView extends View implements OnGestureListener {
 
             drawAllSubWindows(p_canvas);
 
-			if (Preferences.getEnableTouch()) {
-				if (Preferences.getTouchRight()) {
-					this.drawDirZonesRight(p_canvas);
-				}
-				else {
-					this.drawDirZonesFull(p_canvas);
-				}
+			if (useSmallDPad()) {
+				this.drawDirZonesRight(p_canvas);
+			}
+			else {
+				this.drawDirZonesFull(p_canvas);
 			}
 
 			drawMouseToggle(p_canvas);
+
+            drawFlashText(p_canvas);
 		}
         else {
             p_canvas.drawColor(Color.BLACK);
@@ -1481,14 +1609,31 @@ public class TermView extends View implements OnGestureListener {
         }
     }
 
+    public boolean useFullDPad()
+    {
+        return Preferences.getEnableTouch() &&
+            !Preferences.getTouchRight();
+    }
+
+    public boolean useSmallDPad()
+    {
+        return Preferences.getEnableTouch() &&
+            Preferences.getTouchRight();
+    }
+
+    public boolean canMoveDPad()
+    {
+        return Preferences.getEnableTouch() &&
+            Preferences.getTouchRight() &&
+            Preferences.getTouchDragEnabled();
+    }
+
 	@Override
 	public boolean onTouchEvent(MotionEvent me) {
 		float x = me.getX() + this.getScrollX();
 		float y = me.getY() + this.getScrollY();
 
         int tempDirection = this.getDirFromZone(y, x);
-
-        boolean canDrag = true;
 
         lastEvent = curEvent;
         curEvent = me.getAction();
@@ -1506,16 +1651,6 @@ public class TermView extends View implements OnGestureListener {
             lastLocation = new Point((int)x, (int)y);
         }
 
-        // Disable special behavior sometimes
-        if (lastDirection == '5' &&
-            !(Preferences.getEnableTouch() &&
-                Preferences.getTouchRight() &&
-                Preferences.getTouchDragEnabled())
-            ) {
-
-            canDrag = false;
-        }
-
         if (curEvent == MotionEvent.ACTION_DOWN) {
             //Log.d("Angband", "DOWN!");
 
@@ -1526,7 +1661,7 @@ public class TermView extends View implements OnGestureListener {
 
             }
             // Delay execution
-            else if (lastDirection == '5' && canDrag) {
+            else if (lastDirection == '5' && canMoveDPad()) {
                 timerHandler.sendEmptyMessageDelayed(DRAGGING, dragDelay);
             }
             // Send the action now
@@ -1562,7 +1697,13 @@ public class TermView extends View implements OnGestureListener {
 
             // It was just a single click
             if (!dragEnabled && lastDirection == 0) {
-                onSingleTapUp(me);
+                if (useSmallDPad()) {
+                    onSingleTapUp(me);
+                }
+                // On full dpad, simulate the center key
+                else {
+                    state.addKey('5');
+                }
             }
             if (!dragEnabled && lastDirection == '5')  {
                 state.addKey(lastDirection);
@@ -1616,9 +1757,7 @@ public class TermView extends View implements OnGestureListener {
 	{
 		float padPct = 0.2f;
 
-		if (Preferences.getEnableTouch() &&
-			Preferences.getTouchRight() &&
-			(this.zones.size() == 9)) {
+		if (useSmallDPad() && (this.zones.size() == 9)) {
 
             RectF first = this.zones.get(0);
             RectF last = this.zones.get(8);
@@ -1681,6 +1820,10 @@ public class TermView extends View implements OnGestureListener {
         r = i / 3;
         c = i % 3;
         int key = (2 - r) * 3 + c + '1';
+
+        // Special case. Transform to "term" zone
+        if (key == '5' && useFullDPad()) return 0;
+
         return key;
     }
 
@@ -2226,6 +2369,8 @@ public class TermView extends View implements OnGestureListener {
 		// this is the only guaranteed safe place to save state
 		// according to SDK docs
 		state.gameThread.send(GameThread.Request.SaveGame);
+
+        flashText = "";
 
 		stopTimers();
 	}

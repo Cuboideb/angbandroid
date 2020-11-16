@@ -11,6 +11,8 @@ import android.util.Log;
 //import android.view.MenuItem;
 import android.view.View;
 //import android.view.View.OnClickListener;
+import android.view.MotionEvent;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 //import android.widget.Button;
 //import android.widget.FrameLayout;
@@ -23,7 +25,9 @@ import android.view.ViewGroup.LayoutParams;
 //import android.widget.TableRow;
 //import android.widget.TextView;
 //import android.widget.HorizontalScrollView;
-//import android.os.Handler;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Looper;
 
 import androidx.core.graphics.ColorUtils;
 
@@ -33,10 +37,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-class AdvKeyboard
+class AdvKeyboard implements OnTouchListener
 {
 	public GameActivity context;
-	public StateManager state;	
+	public StateManager state;
 	public LinearLayout mainView;
 	public LinearLayout[] rows;
 	public int btnWidth;
@@ -49,8 +53,13 @@ class AdvKeyboard
 	public Paint foreBold;
 	public Point winSize;
 	public int opacityMode = 0;
+	public Handler handler;
 
 	public boolean vertical = false;
+
+	public AdvButton lastButton = null;
+	public boolean skipInput = false;
+	public static int LONG_PRESS = 1;
 
 	public class KeyInfo
 	{
@@ -69,7 +78,7 @@ class AdvKeyboard
 
 		foreBold = new Paint();
 		foreBold.setTextAlign(Paint.Align.LEFT);
-		foreBold.setAntiAlias(true);				
+		foreBold.setAntiAlias(true);
 		foreBold.setTypeface(context.monoBoldFont);
 
 		fore = new Paint();
@@ -79,6 +88,7 @@ class AdvKeyboard
 
 		mainView = new LinearLayout(context);
 		mainView.setOrientation(LinearLayout.VERTICAL);
+		mainView.setOnTouchListener(this);
 
 		vertical = Preferences.getVerticalKeyboard();
 
@@ -100,7 +110,94 @@ class AdvKeyboard
 
 		reloadKeymaps();
 
+		createHandler();
+
 		showCurrentPage();
+	}
+
+	public void createHandler()
+	{
+		handler = new Handler(Looper.myLooper()) {
+        	public void handleMessage(Message msg)
+        	{
+        		if (msg.what == LONG_PRESS && lastButton != null) {
+        			lastButton.longPress();
+        			lastButton = null;
+        			setFlashText(null);
+        			// Discard input until new down or cancel events
+        			skipInput = true;
+        		}
+        	}
+        };
+	}
+
+	public void unpressAll()
+	{
+		for (AdvButton btn: collectButtons()) {
+			btn.setPressed(false);
+		}
+	}
+
+	public AdvButton getButtonAt(float x, float y)
+	{
+		int row = (int)(y / Math.max(btnHeight, 1));
+		int col = (int)(x / Math.max(btnWidth, 1));
+
+		if (row >= 0 && col >= 0 &&
+			row < rows.length && col < rows[row].getChildCount()) {
+
+			return (AdvButton)rows[row].getChildAt(col);
+		}
+
+		return null;
+	}
+
+	public boolean onTouch(View v, MotionEvent event)
+	{
+		unpressAll();
+
+		AdvButton btn = getButtonAt(event.getX(), event.getY());
+
+		if (event.getAction() == MotionEvent.ACTION_DOWN) {
+			handler.removeMessages(LONG_PRESS);
+			lastButton = btn;
+			setFlashText(btn);
+			skipInput = false;
+			if (btn != null) {
+				handler.sendEmptyMessageDelayed(LONG_PRESS, 1000);
+				btn.setPressed(true);
+			}
+		}
+
+		if (event.getAction() == MotionEvent.ACTION_UP && !skipInput) {
+			handler.removeMessages(LONG_PRESS);
+			// Long press clears lastButton
+			setFlashText(null);
+			if (btn != null && btn == lastButton) {
+				btn.execute();
+			}
+			lastButton = null;
+		}
+
+		if (event.getAction() == MotionEvent.ACTION_MOVE && !skipInput) {
+			if (btn == null || btn != lastButton) {
+				handler.removeMessages(LONG_PRESS);
+			}
+			lastButton = btn;
+			setFlashText(btn);
+			if (btn != null) {
+				btn.setPressed(true);
+			}
+		}
+
+		if (event.getAction() == MotionEvent.ACTION_CANCEL) {
+			handler.removeMessages(LONG_PRESS);
+			lastButton = null;
+			skipInput = false;
+			setFlashText(null);
+		}
+
+		return true;
 	}
 
 	public void toggleKeymapMode()
@@ -118,7 +215,7 @@ class AdvKeyboard
 			opacityMode = value;
 
 			for (AdvButton btn: collectButtons()) {
-				btn.invalidate();				
+				btn.invalidate();
 			}
 		}
 	}
@@ -129,7 +226,7 @@ class AdvKeyboard
 			setOpacityMode(0);
 			return;
 		}
-		setOpacityMode((opacityMode+1)%2);	
+		setOpacityMode((opacityMode+1)%2);
 	}
 
 	public void showCurrentPage()
@@ -145,7 +242,7 @@ class AdvKeyboard
 	}
 
 	public void changePage()
-	{				
+	{
 		shiftMode = 0;
 
 		page = (page+1)%2;
@@ -165,13 +262,24 @@ class AdvKeyboard
 		return lst;
 	}
 
+	public void setFlashText(AdvButton btn)
+	{
+		if (context.term != null) {
+			String str = "";
+			if (btn != null) {
+				str = btn.getLabel();
+			}
+			context.term.setFlashText(str);
+		}
+	}
+
 	public void setShiftMode(int mode)
 	{
 		if (mode != shiftMode) {
 			shiftMode = mode;
 			for (AdvButton btn: collectButtons()) {
-				btn.setShiftMode(mode);				
-			}			
+				btn.setShiftMode(mode);
+			}
 		}
 	}
 
@@ -185,7 +293,7 @@ class AdvKeyboard
 	{
 		int p = Preferences.getKeyboardWidth();
 		p = fixedPart + ((varPart * modPct) / 100);
-		if (p > 100) p = 100;		
+		if (p > 100) p = 100;
 		return p / 100f;
 	}
 
@@ -193,7 +301,7 @@ class AdvKeyboard
 	{
 		if (vertical) {
 
-			int cols = 5;			
+			int cols = 5;
 
 			float pctW = calcPercentage(20, 20,
 				Preferences.getKeyboardWidth());
@@ -223,7 +331,7 @@ class AdvKeyboard
 			btnHeight = (int)(winSize.y * pctH) / rows.length;
 			btnHeight = Math.max(btnHeight, 16);
 		}
-        
+
         int fs = (int)Math.min(btnHeight * 0.75f,
         	btnWidth * 0.45f);
         fs = Math.max(fs, 10);
@@ -233,6 +341,11 @@ class AdvKeyboard
 
 	public void clearRows()
 	{
+		handler.removeMessages(LONG_PRESS);
+		lastButton = null;
+		setFlashText(null);
+		skipInput = false;
+
 		for (int i = 0; i < rows.length; i++) {
 			rows[i].removeAllViews();
 		}
@@ -240,10 +353,10 @@ class AdvKeyboard
 
 	public AdvButton createButton(LinearLayout row, String label)
 	{
-		AdvButton btn = new AdvButton(context, this, label);		
+		AdvButton btn = new AdvButton(context, this, label);
 		row.addView(btn);
-		btn.keymapMode = keymapMode;		
-		
+		btn.keymapMode = keymapMode;
+
 		KeyInfo info = keys.get(label);
 		if (info != null) {
 			btn.keymap = info.action;
@@ -255,10 +368,10 @@ class AdvKeyboard
 
 	public void populate(ArrayList<String> items, String str)
 	{
-		List<String> lst = Arrays.asList(str.split(""));		
+		List<String> lst = Arrays.asList(str.split(""));
 		for (String s: lst) {
 			if (s.length() > 0) items.add(s);
-		}		
+		}
 	}
 
 	public void createPage0()
@@ -305,7 +418,7 @@ class AdvKeyboard
 			list.add(InputUtils.Enter);
 		}
 
-		int i = 0;				
+		int i = 0;
 		for (String str: list) {
 			if (i >= 50) break;
 			int r = i / (50/rows.length);
@@ -319,7 +432,7 @@ class AdvKeyboard
 		clearRows();
 
 		ArrayList<String> list = new ArrayList<>();
-		
+
 		populate(list, "~!#$&<>|,=");
 		populate(list, "/\\[](){}`^");
 		populate(list, "@+-_:;\"?*");
@@ -353,8 +466,8 @@ class AdvKeyboard
 			list.add(InputUtils.Escape);
 			list.add(InputUtils.Enter);
 		}
-		
-		int i = 0;		
+
+		int i = 0;
 		for (String str: list) {
 			if (i >= 50) break;
 			int r = i / (50/rows.length);
@@ -368,7 +481,7 @@ class AdvKeyboard
 		String txt = Preferences.getActiveProfile()
 			.getAdvButtonKeymaps();
 
-		keys.clear();		
+		keys.clear();
 
 		//Log.d("Angband", "Decoding: " + txt);
 

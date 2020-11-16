@@ -54,7 +54,7 @@ class AdvButton extends View
 	public boolean keymapMode = false;
 	public static int DEFAULT_BG = 0x4a4855;
 	public static int TOGGLED_BG = 0x86bf36;
-	public GestureDetector gestureManager = null;
+	public boolean pressed = false;
 
 	public AdvButton(GameActivity p_context, AdvKeyboard p_parent,
 		String p_txt)
@@ -318,7 +318,11 @@ class AdvButton extends View
 
 	public void setBgColor(Paint back)
 	{
-		if (defaultValue.equals(" ")) {
+		if (pressed) {
+			back.setColor(TOGGLED_BG);
+			//back.setColor(DEFAULT_BG);
+		}
+		else if (defaultValue.equals(" ")) {
 			back.setColor(TOGGLED_BG);
 		}
 		else if (usingKeymap()) {
@@ -346,6 +350,23 @@ class AdvButton extends View
 		}
 	}
 
+	public void setPressed(boolean value)
+	{
+		if (value != pressed) {
+			pressed = value;
+			invalidate();
+		}
+	}
+
+	public String getLabel()
+	{
+		String label = activeValue;
+		if (usingKeymap() && Preferences.getShowAdvKeymaps()) {
+			label = keymap;
+		}
+		return label;
+	}
+
 	protected void onDraw(Canvas canvas)
 	{
 		Rect bounds = new Rect();
@@ -366,10 +387,8 @@ class AdvButton extends View
 		bounds.bottom -= pad;
 		bounds.right -= pad;
 
-		String label = activeValue;
-		if (usingKeymap() && Preferences.getShowAdvKeymaps()) label = keymap;
+		String label = getLabel();
 		if (label.length() > 3) label = label.substring(0, 3);
-
 		if (label.length() == 1) fore = parent.foreBold;
 
 		setBgColor(back);
@@ -383,6 +402,12 @@ class AdvButton extends View
         float padx = Math.max((tw - w2) / 2, 0);
         float h2 = fore.descent() - fore.ascent();
         float pady = Math.max((th - h2) / 2, 0)	+ fore.descent();
+
+        // Move the label to the top
+        if (pressed) {
+        	// ascent is negative
+        	pady = th + fore.ascent();
+        }
 
         setFgColor(fore);
         fore.setShadowLayer(10f, 0, 0, Color.CYAN);
@@ -404,44 +429,20 @@ class AdvButton extends View
 		setMeasuredDimension(w, h);
 	}
 
-	public GestureDetector getGestureManager()
+	public void longPress()
 	{
-		if (gestureManager != null) return gestureManager;
+		if (defaultValue.equals(InputUtils.Visibility)) {
+			parent.setOpacityMode(2);
+			return;
+		}
 
-		gestureManager = new GestureDetector(
-			new GestureDetector.SimpleOnGestureListener()
-		{
-			@Override
-			public boolean onDown(MotionEvent event) {
-				return true;
-			}
-
-			@Override
-			public boolean onSingleTapUp(MotionEvent event) {
-				execute();
-				return true;
-			}
-
-			@Override
-			public void onLongPress(MotionEvent event) {
-
-				if (defaultValue.equals(InputUtils.Visibility)) {
-					parent.setOpacityMode(2);
-					return;
-				}
-
-				if (!neverKeymap()) {
-					showOptions();
-				}
-			}
-		});
-
-		return gestureManager;
+		if (!neverKeymap()) {
+			showOptions();
+		}
 	}
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-
-		return getGestureManager().onTouchEvent(event);
+		return false;
 	}
 }
