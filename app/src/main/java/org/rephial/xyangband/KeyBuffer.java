@@ -207,7 +207,7 @@ public class KeyBuffer {
 			}
 			keyspecial.offer(mark);
 			//wakeUp();
-		}	
+		}
 	}
 
 	public void wakeUp() {
@@ -270,6 +270,8 @@ public class KeyBuffer {
 	private boolean performActionKeyDown(KeyAction act, int character, KeyEvent event) {
 		boolean res = true;
 
+		//Log.d("Angband", "performActionKeyDown: " + act.name() + " " + character);
+
 		if (act == KeyAction.CtrlKey) {
 			if (event != null && event.getRepeatCount()>0) return true; // ignore repeat from modifiers
 			ctrl_mod = !ctrl_mod;
@@ -283,6 +285,17 @@ public class KeyBuffer {
 
    		switch(act){
 		case CharacterKey:
+			//Log.d("Angband", "Meta: " + event.getMetaState());
+
+			// Hack - Control modifier from external keyboard
+			if (!ctrl_mod && (!shift_mod || eat_shift)
+				&& event.isCtrlPressed()
+				&& ((character >= 'a' && character <= 'z')
+					|| (character >= 'A' && character <= 'Z'))) {
+
+				Log.d("Angband", "Control!");
+				character = InputUtils.KTRL((char)character);
+			}
 			add(character);
 			break;
 		case BackKey:
@@ -358,6 +371,8 @@ public class KeyBuffer {
 	private boolean performActionKeyUp(KeyAction act) {
 		boolean res = true; // handled the key
 
+		//Log.d("Angband", "performActionKeyUp: " + act.name());
+
 		switch(act){
 		case AltKey:
 			alt_down = false;
@@ -396,7 +411,7 @@ public class KeyBuffer {
 		KeyMap map = getKeyMapFromKeyCode(keyCode, event);
 		if (map == null)
 			return false;
-		else 
+		else
 			return performActionKeyDown(map.getKeyAction(), map.getCharacter(), event);
 	}
 
@@ -406,7 +421,7 @@ public class KeyBuffer {
 		KeyMap map =  getKeyMapFromKeyCode(keyCode, event);
 		if (map == null)
 			return false;
-		else 
+		else
 			return performActionKeyUp(map.getKeyAction());
 	}
 }

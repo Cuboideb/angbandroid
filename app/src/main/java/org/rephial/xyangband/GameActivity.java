@@ -492,6 +492,8 @@ public class GameActivity extends Activity {
 
 			term = new TermView(this);
 			term.setFocusable(false);
+			//term.requestFocus();
+			//term.setFocusableInTouchMode(true);
 			registerForContextMenu(term);
 			state.link(term, handler);
 
@@ -823,6 +825,10 @@ public class GameActivity extends Activity {
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+		//Log.d("Angband", "KeyDown: " + keyCode);
+		//return true;
+
 		if (!state.onKeyDown(keyCode,event)) {
 			return super.onKeyDown(keyCode,event);
 		}
@@ -833,6 +839,10 @@ public class GameActivity extends Activity {
 
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
+
+		//Log.d("Angband", "KeyUp: " + keyCode);
+		//return true;
+
 		if (!state.onKeyUp(keyCode,event)) {
 			return super.onKeyUp(keyCode,event);
 		}
