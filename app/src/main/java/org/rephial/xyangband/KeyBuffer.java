@@ -49,6 +49,7 @@ public class KeyBuffer {
         //state.controlMsg(GameActivity.TERM_CONTROL_LIST_KEYS, "");
 
 		//Log.d("Angband", "KebBuffer.add:"+key);
+
 		synchronized (keybuffer) {
 			ctrl_key_overload = false;
 
@@ -74,6 +75,16 @@ public class KeyBuffer {
 			keybuffer.offer(key);
 			wakeUp();
 		}
+	}
+
+	public void performCenterTap()
+	{
+		KeyAction act = Preferences.getKeyMapper().getCenterScreenTapAction();
+
+		//Log.d("Angband", "Action " + act.name());
+
+		performActionKeyDown(act, 0, null);
+		performActionKeyUp(act);
 	}
 
 	public void addDirection(int key) {
@@ -111,11 +122,9 @@ public class KeyBuffer {
 			}
 		}
 
-		if (key == '5') { // center tap
-			KeyAction act = Preferences.getKeyMapper().getCenterScreenTapAction();
-
-			performActionKeyDown(act, 0, null);
-			performActionKeyUp(act);
+		// center tap
+		if (key == '5') {
+			performCenterTap();
 		}
 		else { // directional tap
 			if (runningMode && !ctrl_mod) { // let ctrl influence directionals, even with running mode
@@ -243,6 +252,13 @@ public class KeyBuffer {
 	private KeyMap getKeyMapFromKeyCode(int keyCode, KeyEvent event)
 	{
 		int meta=0, event_modifiers=0;
+
+		// Disable alt_mod management for external keyboards. 2020-11-25
+		if (keyCode == KeyEvent.KEYCODE_ALT_LEFT
+			|| keyCode == KeyEvent.KEYCODE_ALT_RIGHT) {
+			return null;
+		}
+
 		if(alt_mod) {
 			meta |= KeyEvent.META_ALT_ON;
 			meta |= KeyEvent.META_ALT_LEFT_ON;
@@ -262,8 +278,8 @@ public class KeyBuffer {
 		int key_code = char_mod ? ch : keyCode;
 
 		String keyAssign = KeyMap.stringValue(key_code, alt_mod, char_mod);
-		//Log.d("Angband", "keyAssign="+keyAssign);
 		KeyMap map = Preferences.getKeyMapper().findKeyMapByAssign(keyAssign);
+		//Log.d("Angband", "keyAssign="+keyAssign + " found: " + (map != null ? map.getPrefValue(): ""));
 		return map;
 	}
 
@@ -285,17 +301,6 @@ public class KeyBuffer {
 
    		switch(act){
 		case CharacterKey:
-			//Log.d("Angband", "Meta: " + event.getMetaState());
-
-			// Hack - Control modifier from external keyboard
-			if (!ctrl_mod && (!shift_mod || eat_shift)
-				&& event.isCtrlPressed()
-				&& ((character >= 'a' && character <= 'z')
-					|| (character >= 'A' && character <= 'Z'))) {
-
-				Log.d("Angband", "Control!");
-				character = InputUtils.KTRL((char)character);
-			}
 			add(character);
 			break;
 		case BackKey:

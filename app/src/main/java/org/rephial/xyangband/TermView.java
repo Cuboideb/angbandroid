@@ -356,6 +356,7 @@ public class TermView extends View implements OnGestureListener {
 				.getSystemService(Context.VIBRATOR_SERVICE);
 
 		setFocusableInTouchMode(true);
+
 		gesture = new GestureDetector(context, this);
 
         String[] offset = Preferences.getTouchDragOffset().split("x");
@@ -448,7 +449,7 @@ public class TermView extends View implements OnGestureListener {
                     timerHandler.sendEmptyMessageDelayed(REPEAT_DIR, effectiveDelay);
 
                     // Send action
-                    state.addKey(lastDirection);
+                    state.addDirectionKey(lastDirection);
                 }
             }
         };
@@ -1583,7 +1584,7 @@ public class TermView extends View implements OnGestureListener {
 
         //Log.d("Angband", "Delta: " + dx + "@" + dy);
 
-        int maxDist = 4;
+        int maxDist = 10;
 
         // Finetune the movement if we are already moving
         if (!timerHandler.hasMessages(LONG_PRESS)) maxDist = 2;
@@ -1702,11 +1703,11 @@ public class TermView extends View implements OnGestureListener {
                 }
                 // On full dpad, simulate the center key
                 else {
-                    state.addKey('5');
+                    state.addDirectionKey('5');
                 }
             }
             if (!dragEnabled && lastDirection == '5')  {
-                state.addKey(lastDirection);
+                state.addDirectionKey(lastDirection);
             }
 
             // Save offset for later

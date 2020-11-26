@@ -81,6 +81,8 @@ public class ButtonRibbon implements OnClickListener,
 
         rootView = context.getLayoutInflater().inflate(R.layout.buttonribbon, null);
 
+        rootView.findViewById(R.id.scrollv).setFocusable(false);
+
         atLeft = rootView.findViewById(R.id.at_left);
         atCenter = rootView.findViewById(R.id.at_center);
         atRight = rootView.findViewById(R.id.at_right);
@@ -297,6 +299,7 @@ public class ButtonRibbon implements OnClickListener,
 
         btn.setText(text);
         btn.setOnClickListener(this);
+        btn.setFocusable(false);
 
         resizeButton(btn);
 

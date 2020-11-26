@@ -492,8 +492,6 @@ public class GameActivity extends Activity {
 
 			term = new TermView(this);
 			term.setFocusable(false);
-			//term.requestFocus();
-			//term.setFocusableInTouchMode(true);
 			registerForContextMenu(term);
 			state.link(term, handler);
 

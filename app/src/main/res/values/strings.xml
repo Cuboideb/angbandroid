@@ -90,10 +90,9 @@
 		<item>None</item>
 		<item>Ctrl Key</item>
 		<item>Enter Key</item>
-		<item>Back</item>
-        <item>Esc Key</item>
-		<item>Period</item>
-        <item>Comma</item>
+		<item>Back (Esc)</item>
+		<item>Period (.)</item>
+        <item>Comma (,)</item>
 		<item>Shift Key</item>
 		<item>Space</item>
 		<item>Virtual Keyboard</item>
@@ -106,7 +105,6 @@
 		<item>CtrlKey</item>
 		<item>EnterKey</item>
 		<item>BackKey</item>
-        <item>EscKey</item>
 		<item>Period</item>
         <item>Comma</item>
 		<item>ShiftKey</item>

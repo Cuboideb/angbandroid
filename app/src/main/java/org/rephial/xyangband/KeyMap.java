@@ -75,7 +75,7 @@ public class KeyMap {
 	}
 
 	public static String stringValue(int key_code, boolean alt_mod, boolean char_mod) {
-		if (key_code == 0) 
+		if (key_code == 0)
 			return "";
 
 		else if (char_mod) {
@@ -85,8 +85,11 @@ public class KeyMap {
 		}
 
 		// ignore alt modifier for these...
-		else if (key_code == KeyEvent.KEYCODE_ALT_LEFT 
+		else if (key_code == KeyEvent.KEYCODE_ALT_LEFT
 				 || key_code == KeyEvent.KEYCODE_ALT_RIGHT
+				 || key_code == KeyEvent.KEYCODE_CTRL_LEFT
+				 || key_code == KeyEvent.KEYCODE_CTRL_RIGHT
+				 || key_code == KeyEvent.KEYCODE_ESCAPE
 				 || key_code == KeyEvent.KEYCODE_BACK)
 			return ""+key_code;
 

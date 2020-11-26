@@ -15,6 +15,8 @@ public class KeyMapper {
 	String KEY_ZOOMOUTKEY = "angband.zoomoutkey";
 
 	String KEY_CTRLKEY = "angband.ctrlkey";
+	String KEY_LCTRLKEY = "angband.lctrlkey";
+	String KEY_RCTRLKEY = "angband.rctrlkey";
 	String KEY_BACKKEY = "angband.backkey";
 	String KEY_ESCKEY = "angband.esckey";
 	String KEY_LALTKEY = "angband.laltkey";
@@ -28,6 +30,11 @@ public class KeyMapper {
 	String KEY_DOWNKEY = "angband.downkey";
 	String KEY_LEFTKEY = "angband.leftkey";
 	String KEY_RIGHTKEY = "angband.rightkey";
+
+	String KEY_DOWNLEFTKEY = "angband.downleftkey";
+	String KEY_DOWNRIGHTKEY = "angband.downrightkey";
+	String KEY_UPLEFTKEY = "angband.upleftkey";
+	String KEY_UPRIGHTKEY = "angband.uprightkey";
 
 	String KEY_AMPKEY = "angband.ampkey";
 	String KEY_ASTKEY = "angband.astkey";
@@ -60,6 +67,20 @@ public class KeyMapper {
 	String KEY_SQUOTEKEY = "angband.squotekey";
 	String KEY_TILDEKEY = "angband.tildekey";
 	String KEY_UNDERKEY = "angband.underkey";
+
+	String KEY_TAB = "angband.tabkey";
+	String KEY_F1 = "angband.f1key";
+	String KEY_F2 = "angband.f2key";
+	String KEY_F3 = "angband.f3key";
+	String KEY_F4 = "angband.f4key";
+	String KEY_F5 = "angband.f5key";
+	String KEY_F6 = "angband.f6key";
+	String KEY_F7 = "angband.f7key";
+	String KEY_F8 = "angband.f8key";
+	String KEY_F9 = "angband.f9key";
+	String KEY_F10 = "angband.f10key";
+	String KEY_F11 = "angband.f11key";
+	String KEY_F12 = "angband.f12key";
 
 	String KEY_AKEY = "angband.akey";
 	String KEY_BKEY = "angband.bkey";
@@ -204,6 +225,8 @@ public class KeyMapper {
 			initKeyMap(KEY_ZOOMOUTKEY, KeyAction.ZoomOut);
 			initKeyMap(KEY_BKSPACEKEY, KeyAction.BackspaceKey);
 			initKeyMap(KEY_CTRLKEY, KeyAction.CtrlKey);
+			initKeyMap(KEY_LCTRLKEY, KeyAction.CtrlKey);
+			initKeyMap(KEY_RCTRLKEY, KeyAction.CtrlKey);
 			initKeyMap(KEY_ENTERKEY, KeyAction.EnterKey);
 			initKeyMap(KEY_BACKKEY, KeyAction.BackKey);
 			initKeyMap(KEY_ESCKEY, KeyAction.EscKey);
@@ -216,6 +239,11 @@ public class KeyMapper {
 			initKeyMap(KEY_LSHIFTKEY, KeyAction.ShiftKey);
 			initKeyMap(KEY_RSHIFTKEY, KeyAction.ShiftKey);
 			initKeyMap(KEY_SPACEKEY, KeyAction.Space);
+
+			initKeyMap(KEY_DOWNRIGHTKEY, '3');
+			initKeyMap(KEY_DOWNLEFTKEY, '1');
+			initKeyMap(KEY_UPRIGHTKEY, '9');
+			initKeyMap(KEY_UPLEFTKEY, '7');
 
 			initKeyMap(KEY_AMPKEY, '&');
 			initKeyMap(KEY_ASTKEY, '*');
@@ -248,6 +276,20 @@ public class KeyMapper {
 			initKeyMap(KEY_BQUOTEKEY, '`');
 			initKeyMap(KEY_TILDEKEY, '~');
 			initKeyMap(KEY_UNDERKEY, '_');
+
+			initKeyMap(KEY_TAB, InputUtils.KC_TAB);
+			initKeyMap(KEY_F1, InputUtils.KC_F1);
+			initKeyMap(KEY_F2, InputUtils.KC_F2);
+			initKeyMap(KEY_F3, InputUtils.KC_F3);
+			initKeyMap(KEY_F4, InputUtils.KC_F4);
+			initKeyMap(KEY_F5, InputUtils.KC_F5);
+			initKeyMap(KEY_F6, InputUtils.KC_F6);
+			initKeyMap(KEY_F7, InputUtils.KC_F7);
+			initKeyMap(KEY_F8, InputUtils.KC_F8);
+			initKeyMap(KEY_F9, InputUtils.KC_F9);
+			initKeyMap(KEY_F10, InputUtils.KC_F10);
+			initKeyMap(KEY_F11, InputUtils.KC_F11);
+			initKeyMap(KEY_F12, InputUtils.KC_F12);
 
 			initKeyMap(KEY_AKEY, 'a');
 			initKeyMap(KEY_BKEY, 'b');
@@ -307,6 +349,8 @@ public class KeyMapper {
 
 			assignKeyMap(KEY_BKSPACEKEY, KeyEvent.KEYCODE_DEL);
 			assignKeyMap(KEY_CTRLKEY, KeyEvent.KEYCODE_DPAD_CENTER);
+			assignKeyMap(KEY_LCTRLKEY, KeyEvent.KEYCODE_CTRL_LEFT);
+			assignKeyMap(KEY_RCTRLKEY, KeyEvent.KEYCODE_CTRL_RIGHT);
 			assignKeyMap(KEY_LSHIFTKEY, KeyEvent.KEYCODE_SHIFT_LEFT);
 			assignKeyMap(KEY_RSHIFTKEY, KeyEvent.KEYCODE_SHIFT_RIGHT);
 			assignKeyMap(KEY_LALTKEY, KeyEvent.KEYCODE_ALT_LEFT);
@@ -319,6 +363,28 @@ public class KeyMapper {
 			assignKeyMap(KEY_LEFTKEY, KeyEvent.KEYCODE_DPAD_LEFT);
 			assignKeyMap(KEY_RIGHTKEY, KeyEvent.KEYCODE_DPAD_RIGHT);
 			assignKeyMap(KEY_UPKEY, KeyEvent.KEYCODE_DPAD_UP);
+
+			/*
+			// These dont work
+			assignKeyMap(KEY_DOWNLEFTKEY, KeyEvent.KEYCODE_NUMPAD_1);
+			assignKeyMap(KEY_DOWNRIGHTKEY, KeyEvent.KEYCODE_NUMPAD_3);
+			assignKeyMap(KEY_UPLEFTKEY, KeyEvent.KEYCODE_NUMPAD_7);
+			assignKeyMap(KEY_UPRIGHTKEY, KeyEvent.KEYCODE_NUMPAD_9);
+			*/
+
+			assignKeyMap(KEY_TAB, KeyEvent.KEYCODE_TAB);
+			assignKeyMap(KEY_F1, KeyEvent.KEYCODE_F1);
+			assignKeyMap(KEY_F2, KeyEvent.KEYCODE_F2);
+			assignKeyMap(KEY_F3, KeyEvent.KEYCODE_F3);
+			assignKeyMap(KEY_F4, KeyEvent.KEYCODE_F4);
+			assignKeyMap(KEY_F5, KeyEvent.KEYCODE_F5);
+			assignKeyMap(KEY_F6, KeyEvent.KEYCODE_F6);
+			assignKeyMap(KEY_F7, KeyEvent.KEYCODE_F7);
+			assignKeyMap(KEY_F8, KeyEvent.KEYCODE_F8);
+			assignKeyMap(KEY_F9, KeyEvent.KEYCODE_F9);
+			assignKeyMap(KEY_F10, KeyEvent.KEYCODE_F10);
+			assignKeyMap(KEY_F11, KeyEvent.KEYCODE_F11);
+			assignKeyMap(KEY_F12, KeyEvent.KEYCODE_F12);
 
 			assignKeyMap(KEY_AMPKEY, '&');
 			assignKeyMap(KEY_ASTKEY, '*');
@@ -402,7 +468,7 @@ public class KeyMapper {
 			for (Iterator iter = keymapAll.values().iterator(); iter.hasNext();) {
 				map = (KeyMap) iter.next();
 				map.loadFromPref();
-				if (map.isAssigned()) keymapAssign.put(map.getPrefValue(), map);				
+				if (map.isAssigned()) keymapAssign.put(map.getPrefValue(), map);
 			}
 		}
 	}
