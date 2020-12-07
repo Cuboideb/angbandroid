@@ -111,11 +111,8 @@ public class ButtonRibbon implements OnClickListener,
 
         // Fixed keys
         if (fastMode) {
-            makeCommand("⎋", "Esc", CmdLocation.FixedL);
-            makeCommand("⏎", "Ret", CmdLocation.FixedL);
-            //makeCommand(" ", " ", CmdLocation.FixedL);
-            makeCommand("⌫", "BackSpace", CmdLocation.FixedL);
-            //makeCommand("⎘", "show_keys", CmdLocation.FixedL);
+
+            rebuildTopFixed("default");
 
             userKeymaps = userActions[0];
 
@@ -136,6 +133,25 @@ public class ButtonRibbon implements OnClickListener,
             else {
                 setCommandMode(false);
             }
+        }
+    }
+
+    // modes: default, yes_no
+    public void rebuildTopFixed(String mode)
+    {
+        CmdLocation loc = CmdLocation.FixedL;
+
+        removeCommands(atLeft);
+
+        makeCommand("⎋", "Esc", loc);
+
+        if (mode.equals("yes_no")) {
+            makeCommand("n", "n", loc);
+            makeCommand("y", "y", loc);
+        }
+        else {
+            makeCommand("⏎", "Ret", loc);
+            makeCommand("⌫", "BackSpace", loc);
         }
     }
 
@@ -462,6 +478,18 @@ public class ButtonRibbon implements OnClickListener,
 
     public void clearFastKeys() {
         if (fastMode) {
+
+            ViewGroup grp = atLeft;
+            for (int i = 0; i < grp.getChildCount(); i++) {
+                Button btn = (Button)grp.getChildAt(i);
+                Command cmd = findCommand(btn);
+                if (cmd == null) continue;
+                if (cmd.charValue == 'n' || cmd.charValue == 'y') {
+                    rebuildTopFixed("default");
+                    break;
+                }
+            }
+
             removeCommands(atCenter);
 
             removeAutoList();
@@ -544,6 +572,15 @@ public class ButtonRibbon implements OnClickListener,
                 String pattern = "[^fkeys$]";
                 if (keys.contains(pattern)) {
                     addFKeys(loc);
+                    // Remove the pattern
+                    keys = keys.replace(pattern, "");
+                    // Request auto_show
+                    showList = true;
+                }
+
+                pattern = "[^yes_no$]";
+                if (keys.contains(pattern)) {
+                    rebuildTopFixed("yes_no");
                     // Remove the pattern
                     keys = keys.replace(pattern, "");
                 }
