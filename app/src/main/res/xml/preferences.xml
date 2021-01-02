@@ -70,7 +70,7 @@
 			seekBar:defaultVal="0" />
 		<CheckBoxPreference
 			android:key="angband.show_mouse_icon"
-			android:defaultValue="true"
+			android:defaultValue="false"
 			android:title="Show Mouse Icon"
 			android:summary="It allows you to execute actions on a grid" />
 		<PreferenceScreen
@@ -150,6 +150,12 @@
 			android:dependency="angband.use_adv_keyboard"
 			android:title="Use Vertical Layout for Advanced Keyboard" />
 
+		<CheckBoxPreference
+			android:key="angband.auto_hide_adv_kbd"
+			android:defaultValue="false"
+			android:dependency="angband.use_adv_keyboard"
+			android:title="Hide keys after 5 seconds" />
+
       <org.rephial.xyangband.SeekBarPreference
 		  android:key="angband.keyboard_width"
 		  android:title="Keyboard Width"
@@ -163,7 +169,7 @@
 		  android:dependency="angband.use_adv_keyboard"
 		  seekBar:min="0"
 		  seekBar:max="100"
-		  seekBar:defaultVal="100" />
+		  seekBar:defaultVal="0" />
 
 	  <org.rephial.xyangband.SeekBarPreference
 		  android:key="angband.ribbonbuttonmult"

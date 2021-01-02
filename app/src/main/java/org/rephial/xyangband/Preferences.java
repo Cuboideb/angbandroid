@@ -273,7 +273,7 @@ final public class Preferences {
 	}
 
 	public static int getKeyboardHeight() {
-		return pref.getInt(Preferences.KEY_KBD_HEIGHT, 100);
+		return pref.getInt(Preferences.KEY_KBD_HEIGHT, 0);
 	}
 
 	public static void setKeyboardHeight(int value) {
@@ -298,6 +298,10 @@ final public class Preferences {
 
 	public static boolean getTouchDragEnabled() {
 		return pref.getBoolean(Preferences.KEY_TOUCHDRAG, true);
+	}
+
+	public static boolean getAutoHideKeys() {
+		return pref.getBoolean("angband.auto_hide_adv_kbd", false);
 	}
 
 	public static void setTouchDragOffset(int px, int py)
@@ -629,7 +633,7 @@ final public class Preferences {
 	}
 
 	public static boolean getShowMouseIcon() {
-		return pref.getBoolean("angband.show_mouse_icon", true);
+		return pref.getBoolean("angband.show_mouse_icon", false);
 	}
 
 	public static boolean isKeyboardVisible()

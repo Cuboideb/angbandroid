@@ -35,6 +35,7 @@
 #include "ui-prefs.h"
 #include "ui-command.h"
 #include "ui-game.h" // save_game()
+#include "player-timed.h"
 
 static char variant_name[100];
 static char android_files_path[1024];
@@ -878,6 +879,14 @@ int queryInt(const char* argv0) {
 	else if (strcmp(argv0, "rl") == 0) {
 		result = 0;
 		if (player && OPT(player, rogue_like_commands)) result = 1;
+	}
+	else if (strcmp(argv0, "cant_run") == 0) {
+		result = 0;
+		if (IN_THE_DUNGEON && (
+			player->timed[TMD_CONFUSED] ||
+			player->timed[TMD_PARALYZED])) {
+		 	result = 1;
+		}
 	}
 	else if (strcmp(argv0, "life_pct") == 0 && player) {
 		result = player->chp * 10 / MAX(player->mhp, 1);

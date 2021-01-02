@@ -502,6 +502,11 @@ public class GameActivity extends Activity {
 			frameTerm.addView(term);
 
 			if (makeAdvKeyboard) {
+
+				if (Preferences.getKeyboardHeight() == 0) {
+					resetAdvKeyboardHeight();
+				}
+
 				advKeyboard = new AdvKeyboard(this);
 				if (vertical) {
 					advKeyboard.mainView.setLayoutParams

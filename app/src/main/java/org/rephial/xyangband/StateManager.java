@@ -210,6 +210,12 @@ public class StateManager {
 		return rogueLike;
 	}
 
+	public boolean cantRun()
+	{
+		if (!gameThread.gameRunning()) return false;
+		return (nativew.gameQueryInt(1, new String[]{"cant_run"})==1);
+	}
+
 	public boolean characterPlaying()
 	{
 		if (!gameThread.gameRunning()) return false;

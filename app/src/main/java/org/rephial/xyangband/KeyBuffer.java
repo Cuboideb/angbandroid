@@ -91,6 +91,8 @@ public class KeyBuffer {
 		boolean rogueLike = state.isRoguelikeKeyboard();
 		boolean runningMode = state.getRunningMode();
 
+		if (runningMode && state.cantRun()) runningMode = false;
+
 		// Translate numbers when running
 		if (rogueLike && runningMode) {
 			switch(key) {

@@ -1088,6 +1088,7 @@ static void player_kill_monster(struct monster *mon, const char *note)
 	/* When the player kills a Unique, it stays dead */
 	if (rf_has(mon->race->flags, RF_UNIQUE)) {
 		char unique_name[80];
+		assert(mon->original_race == NULL);
 		mon->race->max_num = 0;
 
 		/*
@@ -1395,39 +1396,21 @@ bool monster_carry(struct chunk *c, struct monster *mon, struct object *obj)
  */
 struct object *get_random_monster_object(struct monster *mon)
 {
-	struct object *obj = mon->held_obj;
-	int count = 0;
-	bool valid = false;
+    struct object *obj, *pick = NULL;
+    int i = 1;
 
-	if (!obj) return NULL;
+    /* Pick a random object */
+    for (obj = mon->held_obj; obj; obj = obj->next)
+    {
+        /* Check it isn't a quest artifact */
+        if (obj->artifact && kf_has(obj->kind->kind_flags, KF_QUEST_ART))
+            continue;
 
-	/* Count the objects */
-	while (obj) {
-		count++;
-		obj = obj->next;
+        if (one_in_(i)) pick = obj;
+        i++;
 	}
 
-	/* Now pick one... */
-	obj = mon->held_obj;
-	while (!valid) {
-	count -= randint1(count);
-	while (count) {
-		obj = obj->next;
-		count--;
-		}
-		/* Check it isn't a quest artifact */
-		if (obj->artifact) {
-			struct artifact *art = obj->artifact;
-			struct object_kind *kind = lookup_kind(art->tval, art->sval);
-			if (!kf_has(kind->kind_flags, KF_QUEST_ART)) {
-				valid = true;
-			}
-		} else {
-			valid = true;
-		}
-	}
-
-	return obj;
+    return pick;
 }
 
 /**
@@ -1670,7 +1653,7 @@ bool monster_change_shape(struct monster *mon)
 
 	/* Set the race */
 	if (race) {
-		mon->original_race = mon->race;
+		if (!mon->original_race) mon->original_race = mon->race;
 		mon->race = race;
 		mon->mspeed += mon->race->speed - mon->original_race->speed;
 	}

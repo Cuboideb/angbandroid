@@ -1,3 +1,7 @@
+Version 1.26.6 - 2021-01-02
+- Blackguard changes (nightly V)
+- Keyboard: more margin between keys and option for hidding them 5 seconds after using them.
+
 Version 1.26 - 2020-11-01
 - From now on, subwindows do not overlap the dungeon, this is useful for
 text mode.

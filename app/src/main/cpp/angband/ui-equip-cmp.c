@@ -1196,7 +1196,7 @@ static void append_to_file(ang_file *fff)
 		s_for_file->maxpage : s_for_file->nfilt;
 
 	Term_get_size(&wid, &hgt);
-	buf = mem_alloc(5 * wid);
+	buf = mem_alloc(text_wcsz() * wid + 1);
 
 	(void) display_page(s_for_file, player, false);
 
@@ -1205,13 +1205,18 @@ static void append_to_file(ang_file *fff)
 		y < s_for_file->irow_combined_equip + 1 + s_for_file->npage;
 		++y) {
 		char *p = buf;
-		int x, a;
+		int x, a, n;
 		wchar_t c;
 
 		/* Dump a row. */
 		for (x = 0; x < wid; ++x) {
 			(void) Term_what(x, y, &a, &c);
-			p += wctomb(p, c);
+			n = text_wctomb(p, c);
+			if (n > 0) {
+				p += n;
+			} else {
+				*p++ = ' ';
+			}
 		}
 		/* Back up over spaces */
 		while ((p > buf) && (p[-1] == ' ')) {
@@ -1253,13 +1258,18 @@ static void append_to_file(ang_file *fff)
 			y < s_for_file->irow_combined_equip + 1 +
 			s_for_file->npage; ++y) {
 			char *p = buf;
-			int x, a;
+			int x, a, n;
 			wchar_t c;
 
 			/* Dump a row. */
 			for (x = 0; x < wid; ++x) {
 				(void) Term_what(x, y, &a, &c);
-				p += wctomb(p, c);
+				n = text_wctomb(p, c);
+				if (n > 0) {
+					p += n;
+				} else {
+					*p++ = ' ';
+				}
 			}
 			/* Back up over spaces */
 			while ((p > buf) && (p[-1] == ' ')) {
@@ -2393,7 +2403,7 @@ static int display_page(struct equipable_summary *s, const struct player *p,
 	rdetails.vertical_label = true;
 	rdetails.alternate_color_first = false;
 	rdetails.show_combined = false;
-	Term_putch(s->icol_name - 4, rdetails.value_position.y, color, '@');
+	Term_putch(s->icol_name - 4, rdetails.value_position.y, color, L'@');
 	for (i = 0; i < (int)N_ELEMENTS(s->propcats); ++i) {
 		int j;
 

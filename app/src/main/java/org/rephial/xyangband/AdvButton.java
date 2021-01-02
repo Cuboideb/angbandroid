@@ -126,11 +126,16 @@ class AdvButton extends View
 		return (keymapMode && keymap.length() > 0);
 	}
 
+	public boolean isVisible()
+	{
+		return parent.opacityMode != 1 || neverHidden();
+	}
+
 	public void execute()
 	{
 		String action = activeValue;
 
-		if (parent.opacityMode == 1 && !neverHidden()) {
+		if (!isVisible()) {
 			parent.setOpacityMode(0);
 			return;
 		}
@@ -380,7 +385,7 @@ class AdvButton extends View
 		back.setAlpha(10);
 		canvas.drawRect(bounds, back);
 
-		int pad = 2;
+		int pad = parent.getPad();
 
 		bounds.top += pad;
 		bounds.left += pad;
@@ -395,6 +400,12 @@ class AdvButton extends View
 		back.setAlpha(calculateAlphaBg());
 		canvas.drawRect(bounds, back);
 
+		/*
+		back.setColor(0xAAAAAA);
+		back.setAlpha(calculateAlphaBg());
+		canvas.drawLine(bounds.left, bounds.top, bounds.right, bounds.top, back);
+		*/
+
 		int tw = getWidth() - pad * 2;
 		int th = getHeight() - pad * 2;
 
@@ -403,11 +414,13 @@ class AdvButton extends View
         float h2 = fore.descent() - fore.ascent();
         float pady = Math.max((th - h2) / 2, 0)	+ fore.descent();
 
+        /*
         // Move the label to the top
         if (pressed) {
         	// ascent is negative
         	pady = th + fore.ascent();
         }
+        */
 
         setFgColor(fore);
         fore.setShadowLayer(10f, 0, 0, Color.CYAN);

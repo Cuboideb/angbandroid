@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Typeface;
+import android.graphics.RectF;
 import android.util.Log;
 //import android.util.TypedValue;
 //import android.view.Gravity;
@@ -60,6 +61,16 @@ class AdvKeyboard implements OnTouchListener
 	public AdvButton lastButton = null;
 	public boolean skipInput = false;
 	public static int LONG_PRESS = 1;
+	public static int AUTO_HIDE = 2;
+
+	public static int TIMER_LONG_PRESS = 1000;
+	public static int TIMER_AUTO_HIDE = 5000;
+
+	public float PADDING = 0.1f;
+	public int MAX_PAGES = 2;
+
+	public int numRows = 5;
+	public int numCols = 10;
 
 	public class KeyInfo
 	{
@@ -92,10 +103,12 @@ class AdvKeyboard implements OnTouchListener
 
 		vertical = Preferences.getVerticalKeyboard();
 
-		int nRows = 5;
-		if (vertical) nRows = 10;
+		if (vertical) {
+			numRows = 10;
+			numCols = 5;
+		}
 
-		rows = new LinearLayout[nRows];
+		rows = new LinearLayout[numRows];
 		for (int i = 0; i < rows.length; i++) {
 			LinearLayout ll = new LinearLayout(context);
 			ll.setLayoutParams(new LayoutParams
@@ -115,6 +128,13 @@ class AdvKeyboard implements OnTouchListener
 		showCurrentPage();
 	}
 
+	public int getPad()
+	{
+		int pad = Math.min(btnWidth, btnHeight);
+		pad = (int)(pad * PADDING);
+		return Math.max(pad, 2);
+	}
+
 	public void createHandler()
 	{
 		handler = new Handler(Looper.myLooper()) {
@@ -126,6 +146,10 @@ class AdvKeyboard implements OnTouchListener
         			setFlashText(null);
         			// Discard input until new down or cancel events
         			skipInput = true;
+        		}
+
+        		if (msg.what == AUTO_HIDE && opacityMode != 2) {
+        			setOpacityMode(1);
         		}
         	}
         };
@@ -143,10 +167,23 @@ class AdvKeyboard implements OnTouchListener
 		int row = (int)(y / Math.max(btnHeight, 1));
 		int col = (int)(x / Math.max(btnWidth, 1));
 
+		int pad = getPad();
+
+		RectF bounds = new RectF(col * btnWidth + pad,
+			row * btnHeight + pad,
+			(col+1) * btnWidth - pad,
+			(row+1) * btnHeight - pad);
+
 		if (row >= 0 && col >= 0 &&
 			row < rows.length && col < rows[row].getChildCount()) {
 
-			return (AdvButton)rows[row].getChildAt(col);
+			AdvButton btn = (AdvButton)rows[row].getChildAt(col);
+
+			if (btn.isVisible() && !bounds.contains(x, y)) {
+				return null;
+			}
+
+			return btn;
 		}
 
 		return null;
@@ -160,12 +197,20 @@ class AdvKeyboard implements OnTouchListener
 
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
 			handler.removeMessages(LONG_PRESS);
+			handler.removeMessages(AUTO_HIDE);
 			lastButton = btn;
 			setFlashText(btn);
 			skipInput = false;
 			if (btn != null) {
-				handler.sendEmptyMessageDelayed(LONG_PRESS, 1000);
+				handler.sendEmptyMessageDelayed(LONG_PRESS, TIMER_LONG_PRESS);
 				btn.setPressed(true);
+			}
+		}
+
+		if (event.getAction() == MotionEvent.ACTION_UP) {
+			handler.removeMessages(AUTO_HIDE);
+			if (Preferences.getAutoHideKeys()) {
+				handler.sendEmptyMessageDelayed(AUTO_HIDE, TIMER_AUTO_HIDE);
 			}
 		}
 
@@ -192,6 +237,7 @@ class AdvKeyboard implements OnTouchListener
 
 		if (event.getAction() == MotionEvent.ACTION_CANCEL) {
 			handler.removeMessages(LONG_PRESS);
+			handler.removeMessages(AUTO_HIDE);
 			lastButton = null;
 			skipInput = false;
 			setFlashText(null);
@@ -234,9 +280,14 @@ class AdvKeyboard implements OnTouchListener
 		if (page == 0) {
 			createPage0();
 		}
-		else {
+		else if (page == 1) {
 			createPage1();
 		}
+		/*
+		else {
+			createPage2();
+		}
+		*/
 		computeButtonSize();
 		mainView.requestLayout();
 	}
@@ -245,7 +296,8 @@ class AdvKeyboard implements OnTouchListener
 	{
 		shiftMode = 0;
 
-		page = (page+1)%2;
+		page = (page+1)%MAX_PAGES;
+
 		showCurrentPage();
 	}
 
@@ -264,6 +316,7 @@ class AdvKeyboard implements OnTouchListener
 
 	public void setFlashText(AdvButton btn)
 	{
+		/*
 		if (context.term != null) {
 			String str = "";
 			if (btn != null) {
@@ -271,6 +324,7 @@ class AdvKeyboard implements OnTouchListener
 			}
 			context.term.setFlashText(str);
 		}
+		*/
 	}
 
 	public void setShiftMode(int mode)
@@ -301,12 +355,10 @@ class AdvKeyboard implements OnTouchListener
 	{
 		if (vertical) {
 
-			int cols = 5;
-
 			float pctW = calcPercentage(20, 20,
 				Preferences.getKeyboardWidth());
 
-			btnWidth = (int)(winSize.x * pctW) / cols;
+			btnWidth = (int)(winSize.x * pctW) / numCols;
 			btnWidth = Math.max(btnWidth, 30);
 
 			float pctH = calcPercentage(50, 50,
@@ -317,12 +369,10 @@ class AdvKeyboard implements OnTouchListener
 		}
 		else {
 
-			int cols = 10;
-
 			float pctW = calcPercentage(50, 50,
 				Preferences.getKeyboardWidth());
 
-			btnWidth = (int)(winSize.x * pctW) / cols;
+			btnWidth = (int)(winSize.x * pctW) / numCols;
 			btnWidth = Math.max(btnWidth, 30);
 
 			float pctH = calcPercentage(30, 20,
@@ -332,16 +382,21 @@ class AdvKeyboard implements OnTouchListener
 			btnHeight = Math.max(btnHeight, 16);
 		}
 
-        int fs = (int)Math.min(btnHeight * 0.75f,
-        	btnWidth * 0.45f);
+        int fs = (int)Math.min(btnHeight * 0.65f,
+        	btnWidth * 0.40f);
         fs = Math.max(fs, 10);
 		fore.setTextSize(fs);
-		foreBold.setTextSize(fs);
+
+		int fs2 = (int)Math.min(btnHeight * 0.65f,
+        	btnWidth * 0.5f);
+        fs2 = Math.max(fs2, 10);
+		foreBold.setTextSize(fs2);
 	}
 
 	public void clearRows()
 	{
 		handler.removeMessages(LONG_PRESS);
+		//handler.removeMessages(AUTO_HIDE);
 		lastButton = null;
 		setFlashText(null);
 		skipInput = false;
@@ -387,17 +442,6 @@ class AdvKeyboard implements OnTouchListener
 			populate(list, "uvwxyz");
 			populate(list, InputUtils.Shift +
 					InputUtils.BackSpace + "'*");
-
-			list.add(InputUtils.Visibility);
-			list.add(InputUtils.Menu);
-			list.add("sym");
-			list.add("run");
-			list.add(".");
-			list.add(InputUtils.Escape);
-			list.add(InputUtils.Enter);
-			list.add("kmp");
-			list.add(" ");
-			list.add(" ");
 		}
 		else {
 			populate(list, "1234567890");
@@ -405,26 +449,9 @@ class AdvKeyboard implements OnTouchListener
 			populate(list, "asdfghjkl*");
 			populate(list, InputUtils.Shift + "zxcvbnm'" +
 					InputUtils.BackSpace);
-
-			list.add(InputUtils.Visibility);
-			list.add(InputUtils.Menu);
-			list.add("sym");
-			list.add("kmp");
-			list.add("run");
-			list.add(".");
-			list.add(" ");
-			list.add(" ");
-			list.add(InputUtils.Escape);
-			list.add(InputUtils.Enter);
 		}
 
-		int i = 0;
-		for (String str: list) {
-			if (i >= 50) break;
-			int r = i / (50/rows.length);
-			createButton(rows[r], str);
-			++i;
-		}
+		finishPage(list);
 	}
 
 	public void createPage1()
@@ -442,17 +469,22 @@ class AdvKeyboard implements OnTouchListener
 			list.add("F" + i);
 		}
 
+		finishPage(list);
+	}
+
+	public void finishPage(ArrayList<String> list)
+	{
 		if (vertical) {
+			list.add(InputUtils.Escape);
+			list.add(InputUtils.Enter);
+			list.add(".");
+			list.add(" ");
+			list.add(" ");
 			list.add(InputUtils.Visibility);
 			list.add(InputUtils.Menu);
 			list.add("sym");
-			list.add("run");
-			list.add(".");
-			list.add(InputUtils.Escape);
-			list.add(InputUtils.Enter);
 			list.add("kmp");
-			list.add(" ");
-			list.add(" ");
+			list.add("run");
 		}
 		else {
 			list.add(InputUtils.Visibility);
@@ -468,13 +500,61 @@ class AdvKeyboard implements OnTouchListener
 		}
 
 		int i = 0;
+		int max = numCols * numRows;
 		for (String str: list) {
-			if (i >= 50) break;
-			int r = i / (50/rows.length);
+			if (i >= max) break;
+			int r = i / (max/rows.length);
 			createButton(rows[r], str);
 			++i;
 		}
 	}
+
+	/*
+	public void createPage0()
+	{
+		clearRows();
+
+		ArrayList<String> list = new ArrayList<>();
+
+		populate(list, "qwertyuiop");
+		populate(list, "asdfghjkl*");
+		populate(list, InputUtils.Shift + "zxcvbnm'" +
+			InputUtils.BackSpace);
+
+		finishPage(list);
+	}
+
+	public void createPage1()
+	{
+		clearRows();
+
+		ArrayList<String> list = new ArrayList<>();
+
+		populate(list, "1234567890");
+		populate(list, "<>wdgil'*" +
+			InputUtils.BackSpace);
+
+		for (int i = 1; i <= 10; i++) {
+			list.add("F" + i);
+		}
+
+		finishPage(list);
+	}
+
+	public void createPage2()
+	{
+		clearRows();
+
+		ArrayList<String> list = new ArrayList<>();
+
+		populate(list, "~!#$&<>|,=");
+		populate(list, "/\\[](){}`^");
+		populate(list, "@+-_:;\"?*");
+		list.add("tab");
+
+		finishPage(list);
+	}
+	*/
 
 	public void reloadKeymaps()
 	{
