@@ -409,7 +409,7 @@ public class TermView extends View implements OnGestureListener {
 
     public int COL_MAP()
     {
-        return Preferences.getTopBar() ? 1: 13;
+        return Preferences.getTopBar() ? 0: 13;
     }
 
     public void createTimers()
@@ -1237,7 +1237,7 @@ public class TermView extends View implements OnGestureListener {
             && Preferences.getTopBar()) {
 
             TSize size = getCharDimensions(fore_topbar);
-            return (2 * size.height);
+            return (3 * size.height); // amount of rows for topbar
         }
         return 0;
     }
