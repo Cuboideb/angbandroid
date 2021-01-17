@@ -2021,6 +2021,9 @@ static void update_topbar_subwindow(game_event_type type,
 	term *old = Term;
 	term *inv_term = user;
 
+	// Check sanity
+	if (!(player && player->race && player->class && cave)) return;
+
 	/* Activate */
 	Term_activate(inv_term);
 
