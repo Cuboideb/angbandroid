@@ -773,7 +773,7 @@ static void update_topbar(game_event_type type, game_event_data *data,
 
 	col += prt_gold_short(row, col);
 
-	//col += prt_race_class_short(row, col);
+	col += prt_race_class_short(row, col);
 
 	++row;
 	col = 0;

@@ -446,7 +446,25 @@ public class GameActivity extends Activity {
 			if (screenLayout != null) screenLayout.removeAllViews();
 			screenLayout = null;
 
-			Boolean makeOldKbd = Preferences.isKeyboardVisible();
+			boolean makeOldKbd = false;
+			boolean makeAdvKeyboard = false;
+			boolean makeRibbon = false;
+			boolean vertical = false;
+
+			if (Preferences.getEnableSoftInput()) {
+				if (Preferences.isKeyboardVisible()) {
+
+					makeAdvKeyboard = Preferences.getUseAdvKeyboard();
+					makeOldKbd = !makeAdvKeyboard;
+
+					if (makeAdvKeyboard) {
+						vertical = Preferences.getVerticalKeyboard();
+					}
+				}
+				else {
+					makeRibbon = true;
+				}
+			}
 
 			virtualKeyboard = null;
             virtualKeyboardView = null;
@@ -456,15 +474,6 @@ public class GameActivity extends Activity {
 			topRibbon = null;
 
 			advKeyboard = null;
-
-			boolean makeAdvKeyboard = false;
-			boolean vertical = false;
-
-			if (makeOldKbd && Preferences.getUseAdvKeyboard()) {
-				makeAdvKeyboard = true;
-				makeOldKbd = false;
-				vertical = Preferences.getVerticalKeyboard();
-			}
 
 			if (Preferences.getKeyboardOverlap()) {
 				if (vertical) {
@@ -531,7 +540,7 @@ public class GameActivity extends Activity {
 								FrameLayout.LayoutParams.WRAP_CONTENT));
 				frameInput.addView(virtualKeyboardView);
 			}
-			else {
+			else if (makeRibbon) {
 				ribbonZone = new LinearLayout(this);
 				ribbonZone.setOrientation(LinearLayout.VERTICAL);
 				ribbonZone.setLayoutParams
@@ -606,6 +615,8 @@ public class GameActivity extends Activity {
 		n = Integer.valueOf(getString(R.string.def_rows_subwindows));
 		Preferences.setRowsSubWindows(n);
 
+		Preferences.setEnableSoftInput(true);
+
 		Preferences.setUseAdvKeyboard(true);
 		Preferences.setVerticalKeyboard(false);
 		Preferences.setKeyboardWidth(100);
@@ -668,17 +679,18 @@ public class GameActivity extends Activity {
 
 		if (topRibbon != null) {
 			menu.add(0, CONTEXTMENU_VKEY_ITEM, 0, "Show Full Keyboard");
-			//menu.add(0, CONTEXTMENU_TOGGLE_SUBW, 0, "Toggle Sub-Windows");
 			menu.add(0, CONTEXTMENU_RIBBON_STYLE, 0, "Change Ribbon Style");
 			menu.add(0, CONTEXTMENU_KEYMAPS, 0, "Manage Keymaps");
 			menu.add(0, CONTEXTMENU_LOWER_RIBBON, 0, "Lower Ribbon Opacity");
 			menu.add(0, CONTEXTMENU_RAISE_RIBBON, 0, "Raise Ribbon Opacity");
 		}
-		else {
+		else if (Preferences.getEnableSoftInput()) {
 			menu.add(0, CONTEXTMENU_VKEY_ITEM, 0, "Show Button Ribbon");
-			//menu.add(0, CONTEXTMENU_TOGGLE_SUBW, 0, "Toggle Sub-Windows");
-			//menu.add(0, CONTEXTMENU_KEYMAPS, 0, "Manage Keymaps");
 		}
+		else {
+			menu.add(0, CONTEXTMENU_VKEY_ITEM, 0, "Enable Software Input");
+		}
+
 		if (state != null) {
 			menu.add(0, CONTEXTMENU_RUNNING, 0, "Toggle Running " +
 				(state.getRunningMode() ? "OFF": "ON"));
@@ -789,7 +801,10 @@ public class GameActivity extends Activity {
 	}
 
 	public void toggleKeyboard() {
-		if(Preferences.isScreenPortraitOrientation())
+		// Show soft input if hidden
+		if (!Preferences.getEnableSoftInput())
+			Preferences.setEnableSoftInput(true);
+		else if (Preferences.isScreenPortraitOrientation())
 			Preferences.setPortraitKeyboard(!Preferences.getPortraitKeyboard());
 		else
 			Preferences.setLandscapeKeyboard(!Preferences.getLandscapeKeyboard());

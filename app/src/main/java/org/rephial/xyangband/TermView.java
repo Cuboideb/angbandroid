@@ -1952,6 +1952,15 @@ public class TermView extends View implements OnGestureListener {
 			return true;
 		}
 
+        // Turn on software input (bottom left corner)
+        if (!Preferences.getEnableSoftInput() &&
+            event.getX() < (getWidth() * 0.1f) &&
+            event.getY() >= (getHeight() * 0.9f)) {
+
+            game_context.toggleKeyboard();
+            return true;
+        }
+
         sendMousePress(y, x);
         return true;
 	}

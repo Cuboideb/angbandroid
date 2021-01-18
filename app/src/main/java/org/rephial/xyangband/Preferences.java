@@ -320,6 +320,18 @@ final public class Preferences {
 		return pref.getInt(Preferences.KEY_RIBBONBUTTONMULT, 50);
 	}
 
+	public static boolean getEnableSoftInput()
+	{
+		return pref.getBoolean("angband.enable_soft_input", true);
+	}
+
+	public static void setEnableSoftInput(boolean value)
+	{
+		SharedPreferences.Editor ed = pref.edit();
+		ed.putBoolean("angband.enable_soft_input", value);
+		ed.commit();
+	}
+
 	public static void setMiddleOpacity(int value)
 	{
 		if (value < 0) {

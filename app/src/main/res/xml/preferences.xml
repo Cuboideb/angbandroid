@@ -109,6 +109,11 @@
 	   	</PreferenceScreen>
   	</PreferenceCategory>
     <PreferenceCategory android:title="@string/control_category">
+      <CheckBoxPreference
+			android:key="angband.enable_soft_input"
+			android:defaultValue="true"
+			android:title="Enable Software Input"
+			android:summary="Keyboard or Button Ribbon" />
 	  <CheckBoxPreference
 			android:key="angband.allowKeyboardOverlap"
 			android:defaultValue="true"
@@ -312,6 +317,7 @@
 		 android:title="Reset all hardware keys"
 		 android:summary="Restores all key mappings back to the default configuration"/>
 	</PreferenceScreen>
+	<!--
 	<CheckBoxPreference
 	   android:key="angband.portraitkb"
 	   android:title="@string/preferences_portraitkb_title"
@@ -322,6 +328,7 @@
 	   android:title="@string/preferences_landscapekb_title"
 	   android:summary="@string/preferences_landscapekb_summary"
 	   android:defaultValue="false"/>
+	-->
 	<CheckBoxPreference
 	   android:key="angband.enabletouch"
 	   android:defaultValue="true"
