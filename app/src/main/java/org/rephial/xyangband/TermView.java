@@ -1957,7 +1957,8 @@ public class TermView extends View implements OnGestureListener {
             event.getX() < (getWidth() * 0.1f) &&
             event.getY() >= (getHeight() * 0.9f)) {
 
-            game_context.toggleKeyboard();
+            // Show Quick Settings
+            handler.sendEmptyMessage(AngbandDialog.Action.OpenContextMenu.ordinal());
             return true;
         }
 
