@@ -97,6 +97,7 @@ public class TermView extends View implements OnGestureListener {
     public static int LONG_PRESS = 1;
     public static int DRAGGING = 2;
     public static int REPEAT_DIR = 3;
+    public static int FLASH_TEXT = 4;
 
     private int lastEvent = -1000;
     private int curEvent = -1000;
@@ -417,6 +418,14 @@ public class TermView extends View implements OnGestureListener {
         timerHandler = new Handler(Looper.myLooper()) {
             public void handleMessage(Message msg)
             {
+                // Clear flash text
+                if (msg.what == FLASH_TEXT) {
+                    Log.d("Angband", "Timeout!");
+                    flashText = "";
+                    invalidate();
+                    return;
+                }
+
                 long currTime = System.currentTimeMillis();
                 long delta = 0;
                 if (savedTime > 0 && currTime > savedTime) {
@@ -1092,6 +1101,16 @@ public class TermView extends View implements OnGestureListener {
     public void setFlashText(String value)
     {
         if (!value.equals(flashText)) {
+            flashText = value;
+            invalidate();
+        }
+    }
+
+    public void flashAndClear(String value, int timeout)
+    {
+        if (!value.equals(flashText)) {
+            timerHandler.removeMessages(FLASH_TEXT);
+            timerHandler.sendEmptyMessageDelayed(FLASH_TEXT, timeout);
             flashText = value;
             invalidate();
         }
@@ -1933,6 +1952,16 @@ public class TermView extends View implements OnGestureListener {
 		    return true;
         }
 
+        // Display quick settings (bottom left corner)
+        if (!Preferences.getEnableSoftInput() &&
+                event.getX() < (getWidth() * 0.1f) &&
+                event.getY() >= (getHeight() * 0.9f)) {
+
+            // Show Quick Settings
+            handler.sendEmptyMessage(AngbandDialog.Action.OpenContextMenu.ordinal());
+            return true;
+        }
+
 		int key = 0;
 
 		if (Preferences.getEnableTouch() &&
@@ -1951,16 +1980,6 @@ public class TermView extends View implements OnGestureListener {
 			// Do nothing
 			return true;
 		}
-
-        // Turn on software input (bottom left corner)
-        if (!Preferences.getEnableSoftInput() &&
-            event.getX() < (getWidth() * 0.1f) &&
-            event.getY() >= (getHeight() * 0.9f)) {
-
-            // Show Quick Settings
-            handler.sendEmptyMessage(AngbandDialog.Action.OpenContextMenu.ordinal());
-            return true;
-        }
 
         sendMousePress(y, x);
         return true;

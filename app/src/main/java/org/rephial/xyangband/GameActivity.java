@@ -847,6 +847,10 @@ public class GameActivity extends Activity {
 		//Log.d("Angband", "KeyDown: " + keyCode);
 		//return true;
 
+		if (term != null && Preferences.getDebugKeycodes()) {
+			term.flashAndClear(Integer.toString(keyCode), 700);
+		}
+
 		if (!state.onKeyDown(keyCode,event)) {
 			return super.onKeyDown(keyCode,event);
 		}

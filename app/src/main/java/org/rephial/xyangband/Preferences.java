@@ -320,6 +320,11 @@ final public class Preferences {
 		return pref.getInt(Preferences.KEY_RIBBONBUTTONMULT, 50);
 	}
 
+	public static boolean getDebugKeycodes()
+	{
+		return pref.getBoolean("angband.debug_keycodes", false);
+	}
+
 	public static boolean getEnableSoftInput()
 	{
 		return pref.getBoolean("angband.enable_soft_input", true);
