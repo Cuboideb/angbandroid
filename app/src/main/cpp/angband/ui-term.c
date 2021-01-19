@@ -555,8 +555,8 @@ void Term_big_queue_char(term *t, int x, int y, int a, wchar_t c, int a1,
 						 wchar_t c1)
 {
 	/* Leave space on bottom for status */
-	int vmax = (y + tile_height < t->hgt - 1) ?
-	    tile_height : t->hgt - 1 - y;
+	int vmax = (y + tile_height < t->hgt - ROW_BOTTOM_MAP) ?
+	    tile_height : t->hgt - ROW_BOTTOM_MAP - y;
         int hor, vert;
 
 	/* Avoid warning */
