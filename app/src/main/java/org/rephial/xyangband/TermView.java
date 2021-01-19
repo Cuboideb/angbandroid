@@ -1211,7 +1211,7 @@ public class TermView extends View implements OnGestureListener {
 			if (useSmallDPad()) {
 				this.drawDirZonesRight(p_canvas);
 			}
-			else {
+			else if (useFullDPad()) {
 				this.drawDirZonesFull(p_canvas);
 			}
 
@@ -1648,10 +1648,27 @@ public class TermView extends View implements OnGestureListener {
             Preferences.getTouchDragEnabled();
     }
 
+    public void displayContextMenu()
+    {
+        handler.sendEmptyMessage(AngbandDialog.Action.OpenContextMenu.ordinal());
+    }
+
 	@Override
 	public boolean onTouchEvent(MotionEvent me) {
-		float x = me.getX() + this.getScrollX();
-		float y = me.getY() + this.getScrollY();
+
+        // Display quick settings (bottom left corner)
+        if (me.getAction() == MotionEvent.ACTION_UP &&
+            !Preferences.getEnableSoftInput() &&
+            me.getX() < (getWidth() * 0.1f) &&
+            me.getY() >= (getHeight() * 0.9f)) {
+
+            stopTimers();
+            displayContextMenu();
+            return true;
+        }
+
+        float x = me.getX() + this.getScrollX();
+        float y = me.getY() + this.getScrollY();
 
         int tempDirection = this.getDirFromZone(y, x);
 
@@ -1661,7 +1678,7 @@ public class TermView extends View implements OnGestureListener {
         // Restore state if:
         // 1. Reentrant event
         // 2. Different dir (unless dragging)
-        if (me.getAction() == MotionEvent.ACTION_DOWN
+        if (curEvent == MotionEvent.ACTION_DOWN
             || (!dragEnabled && tempDirection != lastDirection)) {
 
             stopTimers();
@@ -1717,14 +1734,16 @@ public class TermView extends View implements OnGestureListener {
 
             // It was just a single click
             if (!dragEnabled && lastDirection == 0) {
-                if (useSmallDPad()) {
-                    onSingleTapUp(me);
-                }
                 // On full dpad, simulate the center key
-                else {
+                if (useFullDPad()) {
                     state.addDirectionKey('5');
                 }
+                // Just single click
+                else {
+                    onSingleTapUp(me);
+                }
             }
+
             if (!dragEnabled && lastDirection == '5')  {
                 state.addDirectionKey(lastDirection);
             }
@@ -1810,22 +1829,28 @@ public class TermView extends View implements OnGestureListener {
             y = lastLocation.y;
         }
 
-		// Too close to directionals
-		if (this.inZoneOfDirectionals(y, x)) {
-			return;
-		}
+        // Have DPad ?
+        if (Preferences.getEnableTouch()) {
+    		// Too close to directionals
+    		if (this.inZoneOfDirectionals(y, x)) {
+    			return;
+    		}
 
-	    // Directional button, do nothing
-	    if (this.getDirFromZone(y, x) > 0) {
-	        return;
+    	    // Directional button, do nothing
+    	    if (this.getDirFromZone(y, x) > 0) {
+    	        return;
+            }
         }
 
-		handler.sendEmptyMessage(AngbandDialog.Action.OpenContextMenu.ordinal());
+		displayContextMenu();
 	}
 	public void onShowPress(MotionEvent e) {
 	}
 
 	public int getDirFromZone(float y, float x) {
+
+        if (!Preferences.getEnableTouch()) return 0;
+
 	    int r, c;
         // Find the rectangle
         int i = 0;
@@ -1952,16 +1977,6 @@ public class TermView extends View implements OnGestureListener {
 		    return true;
         }
 
-        // Display quick settings (bottom left corner)
-        if (!Preferences.getEnableSoftInput() &&
-                event.getX() < (getWidth() * 0.1f) &&
-                event.getY() >= (getHeight() * 0.9f)) {
-
-            // Show Quick Settings
-            handler.sendEmptyMessage(AngbandDialog.Action.OpenContextMenu.ordinal());
-            return true;
-        }
-
 		int key = 0;
 
 		if (Preferences.getEnableTouch() &&
@@ -1973,12 +1988,12 @@ public class TermView extends View implements OnGestureListener {
 				state.addDirectionKey(key);
 				return true;
 			}
-		}
 
-		// Too close to directionals
-		if (this.inZoneOfDirectionals(y, x)) {
-			// Do nothing
-			return true;
+            // Too close to directionals
+            if (this.inZoneOfDirectionals(y, x)) {
+                // Do nothing
+                return true;
+            }
 		}
 
         sendMousePress(y, x);
