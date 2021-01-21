@@ -256,10 +256,12 @@ public class KeyBuffer {
 		int meta=0, event_modifiers=0;
 
 		// Disable alt_mod management for external keyboards. 2020-11-25
+		/*
 		if (keyCode == KeyEvent.KEYCODE_ALT_LEFT
 			|| keyCode == KeyEvent.KEYCODE_ALT_RIGHT) {
 			return null;
 		}
+		*/
 
 		if(alt_mod) {
 			meta |= KeyEvent.META_ALT_ON;

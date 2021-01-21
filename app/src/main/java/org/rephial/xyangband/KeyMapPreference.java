@@ -26,7 +26,7 @@ public class KeyMapPreference
 	}
 	@Override
     protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
-		super.onPrepareDialogBuilder(builder);    
+		super.onPrepareDialogBuilder(builder);
 
 		alt_mod = false;
 		char_mod = false;
@@ -36,7 +36,7 @@ public class KeyMapPreference
 			public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
 
 				if (event.getAction() != KeyEvent.ACTION_DOWN
-					|| event.getRepeatCount()>0) 
+					|| event.getRepeatCount()>0)
 					return true;
 
 				if (handleModifier(keyCode))
@@ -79,9 +79,9 @@ public class KeyMapPreference
 		key_code = char_mod ? ch : keyCode;
 
 		if (key_code == KeyEvent.KEYCODE_BACK){
-			new AlertDialog.Builder(context) 
-				.setTitle("Angband") 
-				.setMessage("Really assign the Back key?") 
+			new AlertDialog.Builder(context)
+				.setTitle("Angband")
+				.setMessage("Really assign the Back key?")
 				.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int whichButton) {
 						}
@@ -92,7 +92,7 @@ public class KeyMapPreference
 						}
 					})
 				.show();
-		} else {			
+		} else {
 			saveMap();
 		}
 	}
@@ -116,16 +116,16 @@ public class KeyMapPreference
 	}
 
 	public String getDescription() {
-		SharedPreferences settings =  getSharedPreferences(); 
+		SharedPreferences settings =  getSharedPreferences();
 		String val = settings.getString(getKey(),"");
 
 		String desc = "<none>";
-		
-		if (val != null && val.length()>0) {			
-			if (val.startsWith("C")) 
+
+		if (val != null && val.length()>0) {
+			if (val.startsWith("C"))
 				desc = val.substring(1).toUpperCase();
-			else 
-				desc = keyCodeDescription(Integer.parseInt(val),val.startsWith("0"));		
+			else
+				desc = keyCodeDescription(Integer.parseInt(val),val.startsWith("0"));
 		}
 
 		return desc;
@@ -157,6 +157,10 @@ public class KeyMapPreference
 			return "Volume Up";
 		case KeyEvent.KEYCODE_VOLUME_DOWN:
 			return "Volume Down";
+		case KeyEvent.KEYCODE_MOVE_END:
+			return "End";
+		case KeyEvent.KEYCODE_MOVE_HOME:
+			return "Home";
 		case KeyEvent.KEYCODE_DPAD_CENTER:
 			return "D-Pad Center";
 		case KeyEvent.KEYCODE_DPAD_LEFT:
@@ -193,7 +197,7 @@ public class KeyMapPreference
 			return "L1";
 		case KeyEvent.KEYCODE_BUTTON_L2:
 			return "L2";
-		case KeyEvent.KEYCODE_BUTTON_MODE:			
+		case KeyEvent.KEYCODE_BUTTON_MODE:
 			return "Mode";
 		case KeyEvent.KEYCODE_BUTTON_R1:
 			return "R1";
@@ -230,7 +234,7 @@ public class KeyMapPreference
 		else {
 			//Toast.makeText(context, "Cancel was clicked", Toast.LENGTH_SHORT).show();
 		}
-	} 
+	}
 
 	@Override
 	protected Parcelable onSaveInstanceState() {

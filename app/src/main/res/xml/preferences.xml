@@ -259,6 +259,16 @@
 		<org.rephial.xyangband.KeyMapPreference android:key="angband.leftkey" android:title="Arrow Left"/>
 		<org.rephial.xyangband.KeyMapPreference android:key="angband.rightkey" android:title="Arrow Right"/>
 		<org.rephial.xyangband.KeyMapPreference android:key="angband.upkey" android:title="Arrow Up"/>
+		<org.rephial.xyangband.KeyMapPreference
+			android:key="angband.dpadcenterkey" android:title="DPad Center"/>
+		<org.rephial.xyangband.KeyMapPreference
+			android:key="angband.homekey" android:title="Home"/>
+		<org.rephial.xyangband.KeyMapPreference
+			android:key="angband.endkey" android:title="End"/>
+		<org.rephial.xyangband.KeyMapPreference
+			android:key="angband.pageupkey" android:title="Page Up"/>
+		<org.rephial.xyangband.KeyMapPreference
+			android:key="angband.pagedownkey" android:title="Page Down"/>
 		<org.rephial.xyangband.KeyMapPreference android:key="angband.bkspacekey" android:title="Backspace"/>
 		<org.rephial.xyangband.KeyMapModPreference android:key="angband.ctrlkey" android:title="Control Key"/>
 		<org.rephial.xyangband.KeyMapPreference android:key="angband.enterkey" android:title="Enter Key"/>

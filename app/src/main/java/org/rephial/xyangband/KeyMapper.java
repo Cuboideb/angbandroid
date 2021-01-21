@@ -68,6 +68,12 @@ public class KeyMapper {
 	String KEY_TILDEKEY = "angband.tildekey";
 	String KEY_UNDERKEY = "angband.underkey";
 
+	String KEY_END = "angband.endkey";
+	String KEY_HOME = "angband.homekey";
+	String KEY_PAGE_UP = "angband.pageupkey";
+	String KEY_PAGE_DOWN = "angband.pagedownkey";
+	String KEY_DPAD_CENTER = "angband.dpadcenterkey";
+
 	String KEY_TAB = "angband.tabkey";
 	String KEY_F1 = "angband.f1key";
 	String KEY_F2 = "angband.f2key";
@@ -245,6 +251,12 @@ public class KeyMapper {
 			initKeyMap(KEY_UPRIGHTKEY, '9');
 			initKeyMap(KEY_UPLEFTKEY, '7');
 
+			initKeyMap(KEY_PAGE_DOWN, '3');
+			initKeyMap(KEY_END, '1');
+			initKeyMap(KEY_PAGE_UP, '9');
+			initKeyMap(KEY_HOME, '7');
+			initKeyMap(KEY_DPAD_CENTER, '5');
+
 			initKeyMap(KEY_AMPKEY, '&');
 			initKeyMap(KEY_ASTKEY, '*');
 			initKeyMap(KEY_ATKEY, '@');
@@ -348,7 +360,7 @@ public class KeyMapper {
 			assignKeyMap(KEY_ZOOMOUTKEY, KeyEvent.KEYCODE_VOLUME_DOWN);
 
 			assignKeyMap(KEY_BKSPACEKEY, KeyEvent.KEYCODE_DEL);
-			assignKeyMap(KEY_CTRLKEY, KeyEvent.KEYCODE_DPAD_CENTER);
+			assignKeyMap(KEY_DPAD_CENTER, KeyEvent.KEYCODE_DPAD_CENTER);
 			assignKeyMap(KEY_LCTRLKEY, KeyEvent.KEYCODE_CTRL_LEFT);
 			assignKeyMap(KEY_RCTRLKEY, KeyEvent.KEYCODE_CTRL_RIGHT);
 			assignKeyMap(KEY_LSHIFTKEY, KeyEvent.KEYCODE_SHIFT_LEFT);
@@ -371,6 +383,11 @@ public class KeyMapper {
 			assignKeyMap(KEY_UPLEFTKEY, KeyEvent.KEYCODE_NUMPAD_7);
 			assignKeyMap(KEY_UPRIGHTKEY, KeyEvent.KEYCODE_NUMPAD_9);
 			*/
+
+			assignKeyMap(KEY_END, KeyEvent.KEYCODE_MOVE_END);
+			assignKeyMap(KEY_HOME, KeyEvent.KEYCODE_MOVE_HOME);
+			assignKeyMap(KEY_PAGE_UP, KeyEvent.KEYCODE_PAGE_UP);
+			assignKeyMap(KEY_PAGE_DOWN, KeyEvent.KEYCODE_PAGE_DOWN);
 
 			assignKeyMap(KEY_TAB, KeyEvent.KEYCODE_TAB);
 			assignKeyMap(KEY_F1, KeyEvent.KEYCODE_F1);
