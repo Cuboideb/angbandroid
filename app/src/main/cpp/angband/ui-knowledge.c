@@ -66,7 +66,7 @@
  * abstract classes represented by member_funcs and group_funcs.
  *
  * After the knowledge menus are various knowledge functions - message review;
- * inventory, equipment, monster and object lists; symbol lookup; and the 
+ * inventory, equipment, monster and object lists; symbol lookup; and the
  * "locate" command which scrolls the screen around the current dungeon level.
  */
 
@@ -269,7 +269,7 @@ static void place_tile_cursor(int col, int row, byte a, byte c, byte attr_top,
 
 
 /**
- * Remove the tile display and clear the screen 
+ * Remove the tile display and clear the screen
  */
 static void remove_tiles(int col, int row, bool *picker_ptr, int width,
 						 int height)
@@ -498,7 +498,7 @@ static bool tile_picker_command(ui_event ke, bool *tile_picker_ptr,
 /**
  * Display glyph and colours
  */
-static void display_glyphs(int col, int row, int height, int width, byte a, 
+static void display_glyphs(int col, int row, int height, int width, byte a,
 			   wchar_t c)
 {
 	int i;
@@ -512,7 +512,7 @@ static void display_glyphs(int col, int row, int height, int width, byte a,
 	prt("Choose colour:", row + height/2, col);
 	Term_locate(&x, &y);
 	for (i = 0; i < MAX_COLORS; i++) big_pad(x + i, y, i, c);
-	
+
 	/* Place the cursor */
 	Term_gotoxy(x + a, y);
 }
@@ -526,20 +526,20 @@ static bool glyph_command(ui_event ke, bool *glyph_picker_ptr,
 {
         static byte attr_old = 0;
 	static char char_old = 0;
-	
+
 	/* Get mouse movement */
 	if (*glyph_picker_ptr && (ke.type == EVT_MOUSE)) {
 		int mx = logical_width(ke.mouse.x - col);
-		
+
 		if (ke.mouse.y != row + height/2) return false;
-		
+
 		if ((mx >= 0) && (mx < MAX_COLORS) && (ke.mouse.button == 1)) {
 		        /* Set the visual */
 			*cur_attr_ptr = mx - 14;
 
 			/* Accept change */
 			remove_tiles(col, row, glyph_picker_ptr, width, height);
-			
+
 			return true;
 		} else {
 		        return false;
@@ -559,7 +559,7 @@ static bool glyph_command(ui_event ke, bool *glyph_picker_ptr,
 				*cur_attr_ptr = attr_old;
 				*cur_char_ptr = char_old;
 				remove_tiles(col, row, glyph_picker_ptr, width, height);
-				
+
 				return true;
 			}
 
@@ -573,7 +573,7 @@ static bool glyph_command(ui_event ke, bool *glyph_picker_ptr,
 			    remove_tiles(col, row, glyph_picker_ptr, width, height);
 			    return true;
 		    }
-		    
+
 		    break;
 	    }
 
@@ -627,11 +627,11 @@ static bool glyph_command(ui_event ke, bool *glyph_picker_ptr,
 		    if (*glyph_picker_ptr) {
 			    char code_point[6];
 			    bool res = false;
-	
+
 			    /* Ask the user for a code point */
 			    Term_gotoxy(col, row + height/2 + 2);
 			    res = get_string("(up to 5 hex digits):", code_point, 5);
-	
+
 			    /* Process input */
 			    if (res) {
 				    unsigned long int point = strtoul(code_point,
@@ -640,31 +640,31 @@ static bool glyph_command(ui_event ke, bool *glyph_picker_ptr,
 				    return true;
 			    }
 		    }
-		    
+
 		    break;
-		    
-		    
+
+
 	    }
-	    
+
 	    default:
 	    {
 		    int d = target_dir(ke.key);
 		    byte a = *cur_attr_ptr;
-		    
+
 		    if (!*glyph_picker_ptr)
 				break;
 
 		    /* Horizontal only */
 		    if (ddy[d] != 0) break;
-		    
+
 		    /* Horizontal movement */
 		    if (ddx[d] != 0) {
 				a += ddx[d] + BASIC_COLORS;
 				a = a % BASIC_COLORS;
 				*cur_attr_ptr = a;
 		    }
-    
-	
+
+
 		    /* We need to always eat the input even if it is clipped,
 		     * otherwise it will be interpreted as a change object
 		     * selection command with messy results.
@@ -844,6 +844,10 @@ static void display_knowledge(const char *title, int *obj_list, int o_count,
 
 	o_funcs.is_visual = false;
 
+	/* Save screen */
+	screen_save();
+	clear_from(0);
+
 	if (tile_width > 1 || tile_height > 1) {
 		th = tile_height;
 		tw = tile_width;
@@ -853,10 +857,6 @@ static void display_knowledge(const char *title, int *obj_list, int o_count,
 
 		Term_control_visuals();
 	}
-
-	/* Save screen */
-	screen_save();
-	clear_from(0);
 
 	/* This is the event loop for a multi-region panel */
 	/* Panels are -- text panels, two menus, and visual browser */
@@ -967,17 +967,17 @@ static void display_knowledge(const char *title, int *obj_list, int o_count,
 		if (tile_picker) {
 		        bigcurs = true;
 			display_tiles(g_name_len + 3, 7, browser_rows - 1,
-				      wid - (g_name_len + 3), attr_top, 
+				      wid - (g_name_len + 3), attr_top,
 				      char_left);
-			place_tile_cursor(g_name_len + 3, 7, 
+			place_tile_cursor(g_name_len + 3, 7,
 					  *o_funcs.xattr(oid),
-					  (byte) *o_funcs.xchar(oid), 
+					  (byte) *o_funcs.xchar(oid),
 					  attr_top, char_left);
 		}
 
 		if (glyph_picker) {
 		        display_glyphs(g_name_len + 3, 7, browser_rows - 1,
-				       wid - (g_name_len + 3), 
+				       wid - (g_name_len + 3),
 				       *o_funcs.xattr(oid),
 				       *o_funcs.xchar(oid));
 		}
@@ -1011,18 +1011,18 @@ static void display_knowledge(const char *title, int *obj_list, int o_count,
 		/* XXX Do visual mode command if needed */
 		if (o_funcs.xattr && o_funcs.xchar) {
 			if (tiles) {
-				if (tile_picker_command(ke, &tile_picker, 
+				if (tile_picker_command(ke, &tile_picker,
 										browser_rows - 1,
 										wid - (g_name_len + 3),
 										&attr_top, &char_left,
 										o_funcs.xattr(oid),
-										(byte *) o_funcs.xchar(oid), 
+										(byte *) o_funcs.xchar(oid),
 										g_name_len + 3, 7, &delay))
 					continue;
 			} else {
-				if (glyph_command(ke, &glyph_picker, 
-								  browser_rows - 1, wid - (g_name_len + 3), 
-								  o_funcs.xattr(oid), o_funcs.xchar(oid), 
+				if (glyph_command(ke, &glyph_picker,
+								  browser_rows - 1, wid - (g_name_len + 3),
+								  o_funcs.xattr(oid), o_funcs.xchar(oid),
 								  g_name_len + 3, 7))
 					continue;
 			}
@@ -1106,11 +1106,13 @@ static void display_knowledge(const char *title, int *obj_list, int o_count,
 	if (tw > 0) {
 		tile_height = th;
 		tile_width = tw;
-		
+
 		Term_control_visuals();
 	}
 
 	screen_load();
+
+	verify_panel();
 }
 
 /**
@@ -1550,7 +1552,7 @@ static struct object *find_artifact(struct artifact *artifact)
 				obj = obj->next;
 			}
 		}
-	}	
+	}
 
 	return NULL;
 }
@@ -2398,7 +2400,7 @@ static void f_xtra_act(struct keypress ch, int oid)
                 case LIGHTING_TORCH: f_uik_lighting = LIGHTING_LOS; break;
 				case LIGHTING_LOS:  f_uik_lighting = LIGHTING_DARK; break;
 				default:	f_uik_lighting = LIGHTING_LIT; break;
-		}		
+		}
 	} else if (ch.code == 'L') {
 		switch (f_uik_lighting) {
 				case LIGHTING_DARK:  f_uik_lighting = LIGHTING_LOS; break;
@@ -2407,7 +2409,7 @@ static void f_xtra_act(struct keypress ch, int oid)
 				default:	f_uik_lighting = LIGHTING_LIT; break;
 		}
 	}
-	
+
 }
 
 
@@ -2582,7 +2584,7 @@ static void t_xtra_act(struct keypress ch, int oid)
                 case LIGHTING_TORCH: t_uik_lighting = LIGHTING_LOS; break;
 				case LIGHTING_LOS:  t_uik_lighting = LIGHTING_DARK; break;
 				default:	t_uik_lighting = LIGHTING_LIT; break;
-		}		
+		}
 	} else if (ch.code == 'L') {
 		switch (t_uik_lighting) {
 				case LIGHTING_DARK:  t_uik_lighting = LIGHTING_LOS; break;
@@ -2591,7 +2593,7 @@ static void t_xtra_act(struct keypress ch, int oid)
 				default:	t_uik_lighting = LIGHTING_LIT; break;
 		}
 	}
-	
+
 }
 
 
@@ -3370,7 +3372,7 @@ void textui_browse_knowledge(void)
 		    break;
 		}
 	}
-		
+
 	/* Artifacts */
 	if (collect_known_artifacts(NULL, 0) > 0)
 		knowledge_actions[2].flags = 0;
@@ -3513,7 +3515,7 @@ void do_cmd_messages(void)
 		else
 			prt("[Movement keys to navigate, '=' to find, or ESCAPE to exit]",
 				hgt - 1, 0);
-			
+
 		/* Get a command */
 		ke = inkey_ex();
 
@@ -3544,7 +3546,7 @@ void do_cmd_messages(void)
 					/* Get the string to find */
 					prt("Find: ", hgt - 1, 0);
 					if (!askfor_aux(shower, sizeof shower, NULL)) continue;
-		
+
 					/* Set to find */
 					ke.key.code = '-';
 					break;
@@ -3610,7 +3612,7 @@ void do_cmd_messages(void)
 
 #define GET_ITEM_PARAMS \
  	(USE_EQUIP | USE_INVEN | USE_QUIVER | USE_FLOOR | SHOW_QUIVER | SHOW_EMPTY | IS_HARMLESS)
- 
+
 /**
  * Display inventory
  */
@@ -3793,7 +3795,7 @@ void do_cmd_locate(void)
 		/* Get the current panel */
 		int y2 = Term->offset_y;
 		int x2 = Term->offset_x;
-		
+
 		/* Adjust for tiles */
 		int panel_hgt = (int)(PANEL_SIZE / tile_height);
 		int panel_wid = (int)(PANEL_SIZE / tile_width);
@@ -3938,7 +3940,7 @@ static void lookup_symbol(char sym, char *buf, size_t max)
 			return;
 		}
 	}
-	
+
 	/* Look through monster templates */
 	for (race = rb_info; race; race = race->next) {
 		/* Slight hack - P appears twice */
@@ -3955,7 +3957,7 @@ static void lookup_symbol(char sym, char *buf, size_t max)
         } else {
 			strnfmt(buf, max, "? - Unknown Symbol.");
         }
-	
+
 	return;
 }
 

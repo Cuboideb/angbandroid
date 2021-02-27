@@ -43,10 +43,10 @@ static void hallucinatory_monster(int *a, wchar_t *c)
 	while (1) {
 		/* Select a random monster */
 		struct monster_race *race = &r_info[randint0(z_info->r_max)];
-		
+
 		/* Skip non-entries */
 		if (!race->name) continue;
-		
+
 		/* Retrieve attr/char */
 		*a = monster_x_attr[race->ridx];
 		*c = monster_x_char[race->ridx];
@@ -66,18 +66,18 @@ static void hallucinatory_monster(int *a, wchar_t *c)
  */
 static void hallucinatory_object(int *a, wchar_t *c)
 {
-	
+
 	while (1) {
 		/* Select a random object */
 		struct object_kind *kind = &k_info[randint0(z_info->k_max - 1) + 1];
 
 		/* Skip non-entries */
 		if (!kind->name) continue;
-		
+
 		/* Retrieve attr/char (HACK - without flavors) */
 		*a = kind_x_attr[kind->kidx];
 		*c = kind_x_char[kind->kidx];
-		
+
 		/* HACK - Skip empty entries */
 		if (*a == 0 || *c == 0) continue;
 
@@ -144,12 +144,12 @@ static void grid_get_attr(struct grid_data *g, int *a)
 }
 
 /**
- * This function takes a pointer to a grid info struct describing the 
+ * This function takes a pointer to a grid info struct describing the
  * contents of a grid location (as obtained through the function map_info)
  * and fills in the character and attr pairs for display.
  *
- * ap and cp are filled with the attr/char pair for the monster, object or 
- * floor tile that is at the "top" of the grid (monsters covering objects, 
+ * ap and cp are filled with the attr/char pair for the monster, object or
+ * floor tile that is at the "top" of the grid (monsters covering objects,
  * which cover floor, assuming all are present).
  *
  * tap and tcp are filled with the attr/char pair for the floor, regardless
@@ -159,7 +159,7 @@ static void grid_get_attr(struct grid_data *g, int *a)
  * Any lighting effects are also applied to these pairs, clear monsters allow
  * the underlying colour or feature to show through (ATTR_CLEAR and
  * CHAR_CLEAR), multi-hued colour-changing (ATTR_MULTI) is applied, and so on.
- * Technically, the flag "CHAR_MULTI" is supposed to indicate that a monster 
+ * Technically, the flag "CHAR_MULTI" is supposed to indicate that a monster
  * looks strange when examined, but this flag is currently ignored.
  *
  * NOTES:
@@ -257,7 +257,7 @@ void grid_data_as_text(struct grid_data *g, int *ap, wchar_t *cp, int *tap,
 				/* Special attr/char codes */
 				a = da;
 				c = dc;
-			} else if (OPT(player, purple_uniques) && 
+			} else if (OPT(player, purple_uniques) &&
 					   rf_has(mon->race->flags, RF_UNIQUE)) {
 				/* Turn uniques purple if desired (violet, actually) */
 				a = COLOUR_VIOLET;
@@ -273,8 +273,8 @@ void grid_data_as_text(struct grid_data *g, int *ap, wchar_t *cp, int *tap,
 				/* Normal monster (not "clear" in any way) */
 				a = da;
 				/* Desired attr & char. da is not used, should a be set to it?*/
-				/*da = monster_x_attr[mon->race->ridx];*/				
-				/*dc = monster_x_char[mon->race->ridx];*/				
+				/*da = monster_x_attr[mon->race->ridx];*/
+				/*dc = monster_x_char[mon->race->ridx];*/
 				c = dc;
 			} else if (a & 0x80) {
 				/* Hack -- Bizarre grid under monster */
@@ -293,7 +293,7 @@ void grid_data_as_text(struct grid_data *g, int *ap, wchar_t *cp, int *tap,
 		}
 	} else if (g->is_player) {
 		struct monster_race *race = &r_info[0];
-		int life_pct = player->chp * 10 / MAX(player->mhp, 1);		
+		int life_pct = player->chp * 10 / MAX(player->mhp, 1);
 
 		/* Get the "player" attr */
 		a = monster_x_attr[race->ridx];
@@ -301,7 +301,7 @@ void grid_data_as_text(struct grid_data *g, int *ap, wchar_t *cp, int *tap,
 		c = monster_x_char[race->ridx];
 
 		if (use_graphics) {
-		
+
 			if (USE_PSEUDO_ASCII) {
 				a = race->d_attr;
 		 		c = race->d_char;
@@ -312,16 +312,16 @@ void grid_data_as_text(struct grid_data *g, int *ap, wchar_t *cp, int *tap,
 
 		 		int mask = 0x20 | life_pct;
 		 		a |= (mask << 8);
-		 	}		 	
-		}		
+		 	}
+		}
 
 		if ((OPT(player, hp_changes_color)) && !(a & 0x80)) {
 			switch(life_pct)
 			{
 				case 10:
-				case  9: 
+				case  9:
 				{
-					a = COLOUR_WHITE; 
+					a = COLOUR_WHITE;
 					break;
 				}
 				case  8:
@@ -333,20 +333,20 @@ void grid_data_as_text(struct grid_data *g, int *ap, wchar_t *cp, int *tap,
 				case  6:
 				case  5:
 				{
-					a = COLOUR_ORANGE;					
+					a = COLOUR_ORANGE;
 					break;
 				}
 				case  4:
 				case  3:
 				{
-					a = COLOUR_L_RED;					
+					a = COLOUR_L_RED;
 					break;
 				}
 				case  2:
 				case  1:
 				case  0:
 				{
-					a = COLOUR_RED;					
+					a = COLOUR_RED;
 					break;
 				}
 				default:
@@ -362,11 +362,11 @@ void grid_data_as_text(struct grid_data *g, int *ap, wchar_t *cp, int *tap,
 	if (USE_PSEUDO_ASCII) {
 		a |= 0x80;
 	}
-			
+
 	// Hack - Big text (for android)
 	if (!(a & 0x80) && ((tile_width > 1) || (tile_height > 1))) {
 		c |= Term->big_text_mask;
-	}		
+	}
 
 	/* Result */
 	(*ap) = a;
@@ -557,7 +557,7 @@ void print_rel(wchar_t c, byte a, int y, int x)
 
 	if ((tile_width > 1) || (tile_height > 1))
 		Term_big_queue_char(Term, vx, vy, a, c, 0, 0);
-  
+
 }
 
 
@@ -597,7 +597,7 @@ static void prt_map_aux(void)
 
 				/* Determine what is there */
 				map_info(loc(x, y), &g);
-				grid_data_as_text(&g, &a, &c, &ta, &tc);				
+				grid_data_as_text(&g, &a, &c, &ta, &tc);
 
 				Term_queue_char(t, vx, vy, a, c, ta, tc);
 
@@ -737,7 +737,7 @@ void display_map(int *cy, int *cx)
 			if (mp[row][col] < tp) {
 				/* Hack - make every grid on the map lit */
 				g.lighting = LIGHTING_LIT;
-				grid_data_as_text(&g, &a, &c, &ta, &tc);				
+				grid_data_as_text(&g, &a, &c, &ta, &tc);
 
 				Term_queue_char(Term, col + 1, row + 1, a, c, ta, tc);
 
@@ -769,7 +769,7 @@ void display_map(int *cy, int *cx)
 
 	if ((tile_width > 1) || (tile_height > 1))
 		Term_big_putch(col + 1, row + 1, ta, tc);
-  
+
 	/* Return player location */
 	if (cy != NULL) (*cy) = row + 1;
 	if (cx != NULL) (*cx) = col + 1;
@@ -836,6 +836,8 @@ void do_cmd_view_map(void)
 
 	/* Load screen */
 	screen_load();
+
+	verify_panel();
 }
 
 
