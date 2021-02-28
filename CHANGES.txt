@@ -1,3 +1,8 @@
+Version 1.26.9 - 2021-02-28
+- Keymap editor: removed the update button. Now it saves on exit.
+- Changed default subwindows (they are now monsters, items, messages).
+- Lines in messages subwindow are displayed in reverse order.
+
 Version 1.26.6 - 2021-01-02
 - Blackguard changes (nightly V)
 - Keyboard: more margin between keys and option for hidding them 5 seconds after using them.

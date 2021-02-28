@@ -703,6 +703,12 @@ public class GameActivity extends Activity {
 		menu.add(0, CONTEXTMENU_QUIT_ITEM, 0, "Quit");
 	}
 
+	public void showKeymapEditor()
+	{
+		KeymapEditor editor = new KeymapEditor(this, screenLayout);
+	    editor.show();
+	}
+
 	@Override
 	public boolean onContextItemSelected(MenuItem aItem) {
 		Intent intent;
@@ -723,8 +729,7 @@ public class GameActivity extends Activity {
 			state.setRunningMode(!state.getRunningMode());
 			return true;
 	    case CONTEXTMENU_KEYMAPS:
-	    	KeymapEditor editor = new KeymapEditor(this, screenLayout);
-	    	editor.show();
+	    	showKeymapEditor();
 	    	return true;
 	    case CONTEXTMENU_RESET_DPAD:
 	    	if (term != null) term.resetDragOffset();

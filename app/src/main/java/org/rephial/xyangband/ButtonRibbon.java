@@ -1363,6 +1363,10 @@ public class ButtonRibbon implements OnClickListener,
                 }
             }
 
+            if (isUserCommand()) {
+                btn.setOnLongClickListener(this);
+            }
+
             // Set bold
             if (txt.length() == 1) {
                 btn.setTypeface(context.monoBoldFont);
@@ -1404,6 +1408,12 @@ public class ButtonRibbon implements OnClickListener,
         @Override
         public boolean onLongClick(View v) {
 
+            // Special case
+            if (isUserCommand()) {
+                context.showKeymapEditor();
+                return true;
+            }
+
             char cmd = getCommand(false);
             String desc = "";
 
@@ -1425,7 +1435,8 @@ public class ButtonRibbon implements OnClickListener,
                             btn.performClick();
                         }
                     });
-            return false;
+
+            return true;
         }
     }
 }
