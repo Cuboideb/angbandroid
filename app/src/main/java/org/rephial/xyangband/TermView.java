@@ -881,7 +881,8 @@ public class TermView extends View implements OnGestureListener {
     }
 
     public void drawSubWindow(Canvas p_canvas, TermWindow w,
-        int startX, int startY, int maxWidth, int maxHeight, Paint paint)
+        int startX, int startY, int maxWidth, int maxHeight, Paint paint,
+        boolean reverse)
     {
         TSize s = getCharDimensions(paint);
         int th = s.height;
@@ -891,9 +892,13 @@ public class TermView extends View implements OnGestureListener {
         int lastRow = -1;
 
         for(int r = 0; r < w.rows; r++) {
+
+            // Draw lines in reverse order?
+            int r2 = reverse ? (w.rows-1-r): r;
+
             for(int c = 0; c < w.cols; c++) {
 
-                TermWindow.TermPoint p = w.buffer[r][c];
+                TermWindow.TermPoint p = w.buffer[r2][c];
 
                 char ch = p.ch;
 
@@ -985,10 +990,15 @@ public class TermView extends View implements OnGestureListener {
         fore_subw.setColor(Color.BLACK);
         p_canvas.drawRect(re, fore_subw);
 
+        int msgWin = state.getMsgSubWindow();
+
         // One window is reserved
         for (int i = 1; i < state.MAX_WINDOWS-1; i++) {
             int idx = i;
             TermWindow w = state.getWin(idx);
+
+            boolean reverse = (i == msgWin);
+
             if (w != null && state.windowIsVisible(w)) {
 
                 int rows = countSubWindowRows(w);
@@ -996,13 +1006,14 @@ public class TermView extends View implements OnGestureListener {
                 if (rows > 0) {
                     if (vertical) {
                         drawSubWindow(p_canvas, w, startX, startY,
-                            maxWidth, maxHeight, fore_subw);
+                            maxWidth, maxHeight, fore_subw, reverse);
                         startY += ((rows+1)*th); // Plus one row
                     }
                     else {
                         startY = re.top;
                         drawSubWindow(p_canvas, w, startX, startY,
-                            startX+subWinWidth, maxHeight, fore_subw);
+                            startX+subWinWidth, maxHeight, fore_subw,
+                            reverse);
                         startX += ((columns+1)*tw); // Plus one col
                     }
                 }
@@ -1095,7 +1106,7 @@ public class TermView extends View implements OnGestureListener {
 
         if (win == null) return;
 
-        drawSubWindow(p_canvas, win, x, y, w, h, fore_topbar);
+        drawSubWindow(p_canvas, win, x, y, w, h, fore_topbar, false);
     }
 
     public void setFlashText(String value)

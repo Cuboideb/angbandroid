@@ -888,6 +888,17 @@ int queryInt(const char* argv0) {
 		 	result = 1;
 		}
 	}
+	else if (strcmp(argv0, "msg_subw") == 0) {
+		result = 0;
+		if (PLAYER_PLAYING) {
+			for (int i = 1; i < MAX_AND_TERM-1; i++) {
+				if (window_flag[i] & (PW_MESSAGE)) {
+					result = i;
+					break;
+				}
+			}
+		}
+	}
 	else if (strcmp(argv0, "life_pct") == 0 && player) {
 		result = player->chp * 10 / MAX(player->mhp, 1);
 	}

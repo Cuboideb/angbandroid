@@ -210,6 +210,12 @@ public class StateManager {
 		return rogueLike;
 	}
 
+	public int getMsgSubWindow()
+	{
+		if (!gameThread.gameRunning()) return -1;
+		return nativew.gameQueryInt(1, new String[]{"msg_subw"});
+	}
+
 	public boolean cantRun()
 	{
 		if (!gameThread.gameRunning()) return false;
