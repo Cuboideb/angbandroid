@@ -837,7 +837,7 @@ void do_cmd_view_map(void)
 	/* Load screen */
 	screen_load();
 
-	verify_panel();
+	//verify_panel();
 }
 
 

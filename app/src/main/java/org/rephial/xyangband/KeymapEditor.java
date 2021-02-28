@@ -119,9 +119,11 @@ public class KeymapEditor extends PopupWindow
         btn.setTag("action:delete");
         btn.setOnClickListener(this);
 
+        /*
         btn = mainView.findViewById(R.id.update_button);
         btn.setTag("action:update");
         btn.setOnClickListener(this);
+        */
 
         btn = mainView.findViewById(R.id.back_button);
         btn.setTag("action:backward");
@@ -204,7 +206,7 @@ public class KeymapEditor extends PopupWindow
         rebuildButtons(curRow);
     }
 
-    public void actionUpdate()
+    public void actionUpdate(boolean doRebuild)
     {
         String action = actionEdit.getText().toString().trim();
 
@@ -218,7 +220,7 @@ public class KeymapEditor extends PopupWindow
 
         curRow.actionLst.set(curRow.curIdx, action);
 
-        rebuildButtons(curRow);
+        if (doRebuild) rebuildButtons(curRow);
     }
 
     public void actionDelete()
@@ -236,6 +238,9 @@ public class KeymapEditor extends PopupWindow
 
     public void actionMoveItem(int dir)
     {
+        // Save current
+        actionUpdate(false);
+
         if (curRow == null) return;
 
         if (curRow.curIdx < 0) return;
@@ -267,6 +272,9 @@ public class KeymapEditor extends PopupWindow
     @Override
     public void dismiss() {
 
+        // Save current
+        actionUpdate(false);
+
         String keymaps = row1.formatKeymaps() + "#rowsep#" +
                 row2.formatKeymaps();
         //Preferences.setUserKeymaps(keymaps);
@@ -291,10 +299,12 @@ public class KeymapEditor extends PopupWindow
             return;
         }
 
+        /*
         if (tag.equals("action:update")) {
             actionUpdate();
             return;
         }
+        */
 
         if (tag.equals("action:delete")) {
             actionDelete();
@@ -317,6 +327,9 @@ public class KeymapEditor extends PopupWindow
         }
 
         if (tag.startsWith("row:")) {
+
+            // Save current
+            actionUpdate(false);
 
             String action = tag.substring(6);
             actionEdit.setText(action);

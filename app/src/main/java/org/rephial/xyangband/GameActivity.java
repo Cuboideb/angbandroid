@@ -324,7 +324,8 @@ public class GameActivity extends Activity {
 				int cols = Integer.parseInt(matcher.group(2));
 				int graf = Integer.parseInt(matcher.group(3));
 
-				term.configureVisuals(rows, cols, graf);
+				// In graphics thread
+				state.nativew.configureVisuals(rows, cols, graf);
 			}
 		}
 		if (what == TERM_CONTROL_SHOW_CURSOR) {

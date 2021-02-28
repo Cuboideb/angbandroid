@@ -2587,5 +2587,8 @@ errr Term_control_context()
 
 errr Term_control_visuals()
 {
-	return Term_control(TERM_CONTROL_VISUAL_STATE,"dummy");
+	errr status = Term_control(TERM_CONTROL_VISUAL_STATE,"dummy");
+	/* Wait some time for the ui */
+	Term_xtra(TERM_XTRA_DELAY, 500);
+	return status;
 }

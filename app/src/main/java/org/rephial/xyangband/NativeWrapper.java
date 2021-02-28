@@ -167,6 +167,15 @@ public class NativeWrapper {
 		}
 	}
 
+	public void configureVisuals(int rows, int cols, int graf) {
+		Log.d("Angband", "Configure visuals");
+		if (term == null) return;
+
+		synchronized (display_lock) {
+			term.configureVisuals(rows, cols, graf);
+		}
+	}
+
 	public void resize() {
 		Log.d("Angband", "Native resize");
         if (term == null) return;

@@ -1112,7 +1112,7 @@ static void display_knowledge(const char *title, int *obj_list, int o_count,
 
 	screen_load();
 
-	verify_panel();
+	//verify_panel();
 }
 
 /**
