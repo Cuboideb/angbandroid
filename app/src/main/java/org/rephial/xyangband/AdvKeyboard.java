@@ -101,7 +101,9 @@ class AdvKeyboard implements OnTouchListener
 		mainView.setOrientation(LinearLayout.VERTICAL);
 		mainView.setOnTouchListener(this);
 
-		vertical = Preferences.getVerticalKeyboard();
+		//vertical = Preferences.getVerticalKeyboard();
+
+		vertical = false;
 
 		if (vertical) {
 			numRows = 10;

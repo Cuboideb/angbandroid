@@ -205,7 +205,7 @@ static int get_input_from_ui(int wait)
 
 void send_key_to_term(int key) {
 	if (key == MOUSE_TAG) {
-		//Term_mousepress(mouse_data.x, mouse_data.y, mouse_data.button);
+		Term_mousepress(mouse_data.x, mouse_data.y, mouse_data.button);
 	}
 	else {
 

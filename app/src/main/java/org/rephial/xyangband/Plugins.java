@@ -27,22 +27,19 @@ final public class Plugins {
 		}
 		public boolean onlyText()
 		{
-			//return (id != 0);
 			return this != angband;
 		}
 		public boolean only1x1()
 		{
-			//return (id != 0) && (id != 4);
 			return this != angband && this != faangband;
 		}
 		public boolean noMouse()
 		{
-			//return (id != 0) && (id != 4);
-			return this != angband && this != faangband;
+			return this != angband && this != faangband &&
+				this != npp710;
 		}
 		public boolean enableSubWindows()
 		{
-			//return (id == 0);
 			return this == angband;
 		}
 		public boolean useLatin1()
