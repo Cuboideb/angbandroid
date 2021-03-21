@@ -11,7 +11,8 @@ final public class Plugins {
 		angband(0),
 		frogcomposband(1),
 		npp041(2),
-		faangband(3);
+		npp710(3),
+		faangband(4);
 
 		private int id;
 
@@ -26,19 +27,27 @@ final public class Plugins {
 		}
 		public boolean onlyText()
 		{
-			return (id > 0);
+			//return (id != 0);
+			return this != angband;
 		}
 		public boolean only1x1()
 		{
-			return (id > 0) && (id != 3);
+			//return (id != 0) && (id != 4);
+			return this != angband && this != faangband;
 		}
 		public boolean noMouse()
 		{
-			return (id > 0) && (id != 3);
+			//return (id != 0) && (id != 4);
+			return this != angband && this != faangband;
 		}
 		public boolean enableSubWindows()
 		{
-			return (id == 0);
+			//return (id == 0);
+			return this == angband;
+		}
+		public boolean useLatin1()
+		{
+			return this == npp710;
 		}
 	}
 
@@ -82,6 +91,9 @@ final public class Plugins {
 		if (plugin == Plugin.npp041.getId())
 			is = Preferences.getResources().openRawResource(R.raw.zipnpp041);
 
+		if (plugin == Plugin.npp710.getId())
+			is = Preferences.getResources().openRawResource(R.raw.zipnpp041);
+
 		return new ZipInputStream(is);
 	}
 	public static String getPluginCrc(int plugin) {
@@ -96,6 +108,9 @@ final public class Plugins {
 			is = Preferences.getResources().openRawResource(R.raw.crcfrogcomposband);
 		}
 		else if (plugin == Plugin.npp041.getId()) {
+			is = Preferences.getResources().openRawResource(R.raw.crcnpp041);
+		}
+		else if (plugin == Plugin.npp710.getId()) {
 			is = Preferences.getResources().openRawResource(R.raw.crcnpp041);
 		}
 		else {
