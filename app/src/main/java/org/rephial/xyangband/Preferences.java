@@ -262,7 +262,7 @@ final public class Preferences {
 
 	public static boolean getVerticalKeyboard()
 	{
-		return pref.getBoolean(Preferences.KEY_USE_VERT_KBD, false);
+		return getKeyboardWidth() <= 35;
 	}
 
 	public static void setVerticalKeyboard(boolean value)

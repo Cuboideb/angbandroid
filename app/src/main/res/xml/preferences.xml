@@ -149,11 +149,13 @@
 			android:dependency="angband.use_adv_keyboard"
 			android:title="Show keymaps if keymap mode is ON" />
 
+		<!--
 		<CheckBoxPreference
 			android:key="angband.use_vert_keyboard"
 			android:defaultValue="false"
 			android:dependency="angband.use_adv_keyboard"
 			android:title="Use Vertical Layout for Advanced Keyboard" />
+		-->
 
 		<CheckBoxPreference
 			android:key="angband.auto_hide_adv_kbd"

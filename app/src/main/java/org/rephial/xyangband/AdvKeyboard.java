@@ -101,9 +101,7 @@ class AdvKeyboard implements OnTouchListener
 		mainView.setOrientation(LinearLayout.VERTICAL);
 		mainView.setOnTouchListener(this);
 
-		//vertical = Preferences.getVerticalKeyboard();
-
-		vertical = false;
+		vertical = Preferences.getVerticalKeyboard();
 
 		if (vertical) {
 			numRows = 10;
@@ -347,18 +345,17 @@ class AdvKeyboard implements OnTouchListener
 	public static float calcPercentage(int fixedPart,
 		int varPart, int modPct)
 	{
-		int p = Preferences.getKeyboardWidth();
-		p = fixedPart + ((varPart * modPct) / 100);
+		int p = fixedPart + ((varPart * modPct) / 100);
 		if (p > 100) p = 100;
 		return p / 100f;
 	}
 
 	public void computeButtonSize()
 	{
-		if (vertical) {
+		float pctW = calcPercentage(0, 100,
+			Preferences.getKeyboardWidth());
 
-			float pctW = calcPercentage(20, 20,
-				Preferences.getKeyboardWidth());
+		if (vertical) {
 
 			btnWidth = (int)(winSize.x * pctW) / numCols;
 			btnWidth = Math.max(btnWidth, 30);
@@ -370,9 +367,6 @@ class AdvKeyboard implements OnTouchListener
 			btnHeight = Math.max(btnHeight, 16);
 		}
 		else {
-
-			float pctW = calcPercentage(50, 50,
-				Preferences.getKeyboardWidth());
 
 			btnWidth = (int)(winSize.x * pctW) / numCols;
 			btnWidth = Math.max(btnWidth, 30);

@@ -450,17 +450,12 @@ public class GameActivity extends Activity {
 			boolean makeOldKbd = false;
 			boolean makeAdvKeyboard = false;
 			boolean makeRibbon = false;
-			boolean vertical = false;
 
 			if (Preferences.getEnableSoftInput()) {
 				if (Preferences.isKeyboardVisible()) {
 
 					makeAdvKeyboard = Preferences.getUseAdvKeyboard();
 					makeOldKbd = !makeAdvKeyboard;
-
-					if (makeAdvKeyboard) {
-						vertical = Preferences.getVerticalKeyboard();
-					}
 				}
 				else {
 					makeRibbon = true;
@@ -477,24 +472,12 @@ public class GameActivity extends Activity {
 			advKeyboard = null;
 
 			if (Preferences.getKeyboardOverlap()) {
-				if (vertical) {
-					screenLayout = (RelativeLayout)getLayoutInflater()
+				screenLayout = (RelativeLayout)getLayoutInflater()
 							.inflate(R.layout.term_horiz_overlap, null);
-				}
-				else {
-					screenLayout = (RelativeLayout)getLayoutInflater()
-							.inflate(R.layout.term_vert_overlap, null);
-				}
 			}
 			else {
-				if (vertical) {
-					screenLayout = (RelativeLayout)getLayoutInflater()
+				screenLayout = (RelativeLayout)getLayoutInflater()
 							.inflate(R.layout.term_horiz_no_overlap, null);
-				}
-				else {
-					screenLayout = (RelativeLayout)getLayoutInflater()
-							.inflate(R.layout.term_vert_no_overlap, null);
-				}
 			}
 
 			FrameLayout frameTerm = screenLayout.findViewById(R.id.frameTerm);
@@ -518,18 +501,10 @@ public class GameActivity extends Activity {
 				}
 
 				advKeyboard = new AdvKeyboard(this);
-				if (vertical) {
-					advKeyboard.mainView.setLayoutParams
+				advKeyboard.mainView.setLayoutParams
 							(new FrameLayout.LayoutParams(
 									FrameLayout.LayoutParams.WRAP_CONTENT,
 									FrameLayout.LayoutParams.MATCH_PARENT));
-				}
-				else {
-					advKeyboard.mainView.setLayoutParams
-							(new FrameLayout.LayoutParams(
-									FrameLayout.LayoutParams.MATCH_PARENT,
-									FrameLayout.LayoutParams.WRAP_CONTENT));
-				}
 				frameInput.addView(advKeyboard.mainView);
 			}
 			else if (makeOldKbd) {
@@ -597,6 +572,7 @@ public class GameActivity extends Activity {
 			pct = (size.x / 10.0f) * (5.0f / size.y) * 100.0f;
 		}
 		pct = Math.max(20f, pct);
+		pct = Math.min(100f, pct);
 		Preferences.setKeyboardHeight((int)pct);
 	}
 
@@ -619,9 +595,9 @@ public class GameActivity extends Activity {
 		Preferences.setEnableSoftInput(true);
 
 		Preferences.setUseAdvKeyboard(true);
-		Preferences.setVerticalKeyboard(false);
+		//Preferences.setVerticalKeyboard(false);
 		Preferences.setKeyboardWidth(100);
-		Preferences.setKeyboardHeight(40);
+		Preferences.setKeyboardHeight(100);
 		//Preferences.setMiddleOpacity(100);
 
 		Preferences.setEnableTouch(true);
