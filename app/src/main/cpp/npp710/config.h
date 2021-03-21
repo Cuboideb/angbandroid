@@ -53,11 +53,16 @@
  * for storing pref files and character dumps.
  */
 #ifdef SET_UID
+
+#define SAFE_SETUID 1
+
+/* NO PRIVATE PATH ON ANDROID */
 #if 0
 #	ifndef PRIVATE_USER_PATH
 #		define PRIVATE_USER_PATH "~/.angband"
 #	endif /* PRIVATE_USER_PATH */
 #endif
+
 #endif /* SET_UID */
 
 

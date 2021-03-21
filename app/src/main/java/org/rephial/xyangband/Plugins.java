@@ -92,7 +92,7 @@ final public class Plugins {
 			is = Preferences.getResources().openRawResource(R.raw.zipnpp041);
 
 		if (plugin == Plugin.npp710.getId())
-			is = Preferences.getResources().openRawResource(R.raw.zipnpp041);
+			is = Preferences.getResources().openRawResource(R.raw.zipnpp710);
 
 		return new ZipInputStream(is);
 	}
@@ -111,7 +111,7 @@ final public class Plugins {
 			is = Preferences.getResources().openRawResource(R.raw.crcnpp041);
 		}
 		else if (plugin == Plugin.npp710.getId()) {
-			is = Preferences.getResources().openRawResource(R.raw.crcnpp041);
+			is = Preferences.getResources().openRawResource(R.raw.crcnpp710);
 		}
 		else {
 			return "";
