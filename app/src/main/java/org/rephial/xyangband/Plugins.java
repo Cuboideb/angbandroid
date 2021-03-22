@@ -12,7 +12,8 @@ final public class Plugins {
 		frogcomposband(1),
 		npp041(2),
 		npp710(3),
-		faangband(4);
+		silq(4),
+		faangband(5);
 
 		private int id;
 
@@ -91,6 +92,9 @@ final public class Plugins {
 		if (plugin == Plugin.npp710.getId())
 			is = Preferences.getResources().openRawResource(R.raw.zipnpp710);
 
+		if (plugin == Plugin.silq.getId())
+			is = Preferences.getResources().openRawResource(R.raw.zipsilq);
+
 		return new ZipInputStream(is);
 	}
 	public static String getPluginCrc(int plugin) {
@@ -109,6 +113,9 @@ final public class Plugins {
 		}
 		else if (plugin == Plugin.npp710.getId()) {
 			is = Preferences.getResources().openRawResource(R.raw.crcnpp710);
+		}
+		else if (plugin == Plugin.silq.getId()) {
+			is = Preferences.getResources().openRawResource(R.raw.crcsilq);
 		}
 		else {
 			return "";

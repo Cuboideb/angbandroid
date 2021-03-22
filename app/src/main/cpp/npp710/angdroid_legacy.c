@@ -962,6 +962,10 @@ void angdroid_main()
 	/* Set up the display handlers and things. */
 	init_display();
 
+	/* Erase screen */
+	Term_clear();
+	Term_fresh();
+
 	/* Wait for response */
 	/*pause_line(Term->hgt - 1);*/
 

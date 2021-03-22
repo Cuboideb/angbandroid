@@ -923,6 +923,10 @@ void angdroid_main()
 	/* Catch nasty signals */
 	signals_init();
 
+	/* Erase screen */
+	Term_clear();
+	Term_fresh();
+
 	init_angband();
 
 	/* Wait for response */

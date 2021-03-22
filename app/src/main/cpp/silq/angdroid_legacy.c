@@ -831,7 +831,7 @@ int queryInt(const char* argv0) {
 	}
 	else if (strcmp(argv0, "rl") == 0) {
 		result = 0;
-		if (rogue_like_commands) result = 1;
+		/*if (rogue_like_commands) result = 1;*/
 	}
 	else if (strcmp(argv0, "life_pct") == 0 && p_ptr) {
 		result = p_ptr->chp * 10 / MAX(p_ptr->mhp, 1);
@@ -929,7 +929,7 @@ void angdroid_main()
 	Term_clear();
 	Term_fresh();
 
-	init_angband();
+	init_angband();	
 
 	/* Wait for response */
 	pause_line(Term->hgt - 1);
