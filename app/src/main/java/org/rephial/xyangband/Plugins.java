@@ -41,7 +41,7 @@ final public class Plugins {
 		}
 		public boolean enableSubWindows()
 		{
-			return this == angband;
+			return true;
 		}
 		public boolean useLatin1()
 		{

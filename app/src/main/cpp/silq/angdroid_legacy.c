@@ -836,6 +836,17 @@ int queryInt(const char* argv0) {
 	else if (strcmp(argv0, "life_pct") == 0 && p_ptr) {
 		result = p_ptr->chp * 10 / MAX(p_ptr->mhp, 1);
 	}
+	else if (strcmp(argv0, "msg_subw") == 0) {
+		result = 0;
+		if (PLAYER_PLAYING && op_ptr) {
+			for (int i = 1; i < MAX_AND_TERM; i++) {
+				if (op_ptr->window_flag[i] & (PW_MESSAGE)) {
+					result = i;
+					break;
+				}
+			}
+		}
+	}
 	// Starts with this pattern?
 	else if (strncmp(argv0, ROGUE_KEY, strlen(ROGUE_KEY)) == 0) {
 		// Find the respective key in roguelike mode
@@ -929,7 +940,7 @@ void angdroid_main()
 	Term_clear();
 	Term_fresh();
 
-	init_angband();	
+	init_angband();
 
 	/* Wait for response */
 	pause_line(Term->hgt - 1);

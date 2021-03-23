@@ -1580,13 +1580,13 @@
  *  Default terms to put these in:
  */
 #define WINDOW_MAIN 0
-#define WINDOW_INVEN 1
-#define WINDOW_EQUIP 2
-#define WINDOW_COMBAT_ROLLS 3
+#define WINDOW_MONLIST 1
+#define WINDOW_COMBAT_ROLLS 2
+#define WINDOW_MESSAGE 3
 #define WINDOW_MONSTER 4
 #define WINDOW_PLAYER_0 5
-#define WINDOW_MESSAGE 6
-#define WINDOW_MONLIST 7
+#define WINDOW_INVEN 6
+#define WINDOW_EQUIP 7
 
 /*** Cave flags ***/
 
