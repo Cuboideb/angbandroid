@@ -636,7 +636,8 @@ final public class Preferences {
 	}
 
 	public static boolean getTopBar() {
-		return pref.getBoolean(KEY_TOP_BAR, true);
+		return pref.getBoolean(KEY_TOP_BAR, true)
+			&& getActivePlugin().canUseTopBar();
 	}
 
 	public static void setTopBar(boolean value) {

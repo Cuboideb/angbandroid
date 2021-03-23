@@ -261,6 +261,7 @@ int process_special_command(int key)
 		//if (!PLAYER_PLAYING) return 0;
 
 		Term_resize(tcols, trows);
+		//Term_redraw();
 		//return KTRL('R');
 		return 0;
 	}

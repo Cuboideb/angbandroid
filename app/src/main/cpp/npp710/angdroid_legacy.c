@@ -484,7 +484,8 @@ static errr Term_text_android(int x, int y, int n, byte a, cptr cp)
 {
 	term_data *td = (term_data*)(Term->data);
 
-	int fg = GET_BASE_COLOR(a);
+	/*int fg = GET_BASE_COLOR(a);*/
+	int fg = a;
 	int bg = TERM_DARK;
 
 	/* Handle background */
@@ -632,9 +633,9 @@ errr init_android(void)
 void init_colors(void)
 {
 	int i;
-	uint32_t color_data[MAX_BASE_COLORS];
+	uint32_t color_data[MAX_COLORS];
 
-	for (i = 0; i < MAX_BASE_COLORS; i++) {
+	for (i = 0; i < MAX_COLORS; i++) {
 		color_data[i] = ((uint32_t)(0xFF << 24))
 			| ((uint32_t)(angband_color_table[i][1] << 16))
 			| ((uint32_t)(angband_color_table[i][2] << 8))
@@ -642,10 +643,10 @@ void init_colors(void)
 	}
 
 	initscr();
-	for (i = 0; i < MAX_BASE_COLORS; i++) {
+	for (i = 0; i < MAX_COLORS; i++) {
 		init_color(i, color_data[i]);
 	}
-	for (i = 0; i < MAX_BASE_COLORS; i++) {
+	for (i = 0; i < MAX_COLORS; i++) {
 		init_pair(i, i, 0);
 	}
 }
