@@ -76,7 +76,7 @@
     <string name="preferences_skipwelcome_title">Skip welcome screen</string>
     <string name="preferences_skipwelcome_summary">Automatically skip the Angband welcome screen at startup</string>
 
-    <string name="def_number_subwindows">2</string>
+    <string name="def_number_subwindows">3</string>
     <string name="def_rows_subwindows">40</string>
     <string name="def_cols_subwindows">48</string>
     <string name="def_font_subwindows">50</string>

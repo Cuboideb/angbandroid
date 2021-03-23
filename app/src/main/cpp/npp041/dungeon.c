@@ -3064,6 +3064,11 @@ void play_game(bool new_game)
 
 		/* Hack -- enter the world */
 		turn = 1;
+
+		// Init subwindows
+    	op_ptr->window_flag[1] = PW_MONLIST;    
+    	op_ptr->window_flag[2] = PW_MESSAGE;
+    	op_ptr->window_flag[3] = PW_OBJECT;
 	}
 
 	/* Normal machine (process player name) */

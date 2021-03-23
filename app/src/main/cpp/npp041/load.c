@@ -788,7 +788,7 @@ static void rd_options(void)
 
 	/* Analyze the options */
 	for (n = 0; n < ANGBAND_TERM_MAX; n++)
-	{
+	{		
 		/* Analyze the options */
 		for (i = 0; i < 32; i++)
 		{

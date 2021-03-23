@@ -3596,6 +3596,11 @@ void play_game(void)
 
 		quest_indicator_timer = 0;
 		quest_indicator_complete = FALSE;
+
+		if (true) {
+			u32b flags[] = {op_ptr->window_flag[0], PW_MONLIST, PW_MESSAGE, PW_OBJECT};
+			subwindows_set_flags(flags, N_ELEMENTS(flags));
+		}		
 	}
 
 	/* Normal machine (process player name) */

@@ -1209,7 +1209,6 @@ static errr init_other(void)
 		op_ptr->window_flag[i] = 0L;
 	}
 
-
 	/*** Pre-allocate space for the "format()" buffer ***/
 
 	/* Hack -- Just call the "format()" function */

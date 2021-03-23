@@ -6157,6 +6157,10 @@ void play_game(bool new_game)
 
         /* After the last opportunity to modify birth options... */
         birth_location();
+
+        window_flag[1] = PW_MONSTER_LIST;
+        window_flag[2] = PW_OBJECT_LIST;
+        window_flag[3] = PW_MESSAGE;
     }
     else
     {

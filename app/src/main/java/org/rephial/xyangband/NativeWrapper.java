@@ -209,6 +209,17 @@ public class NativeWrapper {
 		}
 	}
 
+	public void wipeAll()
+	{
+		synchronized (display_lock) {
+			if (state.stdscr != null && state.virtscr != null) {				
+				state.stdscr.clear();			
+				state.virtscr.overwrite(state.stdscr);
+				frosh(null);
+			}
+		}
+	}
+
 	public void updateNow()
 	{
 		if (term != null) {

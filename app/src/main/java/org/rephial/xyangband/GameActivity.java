@@ -171,7 +171,7 @@ public class GameActivity extends Activity {
 
 	public void processPrefChanges()
 	{
-		boolean adjust = false;
+		boolean adjust = false;		
 
 		for (String key: Preferences.changed) {
 			Log.d("Angband", "Changed: " + key);
