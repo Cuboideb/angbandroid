@@ -478,14 +478,14 @@ class AdvKeyboard implements OnTouchListener
 			list.add(" ");
 			list.add(InputUtils.Visibility);
 			list.add(InputUtils.Menu);
-			list.add("sym");
+			list.add(page == 0 ? "+/-": "abc");
 			list.add("kmp");
 			list.add("run");
 		}
 		else {
 			list.add(InputUtils.Visibility);
 			list.add(InputUtils.Menu);
-			list.add("sym");
+			list.add(page == 0 ? "+/-": "abc");
 			list.add("kmp");
 			list.add("run");
 			list.add(".");

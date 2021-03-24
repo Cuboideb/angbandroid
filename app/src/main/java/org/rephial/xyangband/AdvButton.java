@@ -97,8 +97,8 @@ class AdvButton extends View
 			|| defaultValue.equals(InputUtils.Escape)
 			|| defaultValue.equals(InputUtils.Shift)
 			//|| defaultValue.equals(InputUtils.BackSpace)
-			|| defaultValue.equals(" ")
-			|| defaultValue.equals("sym")
+			//|| defaultValue.equals(" ")
+			|| defaultValue.equals("+/-")
 			|| defaultValue.equals("abc")
 			|| defaultValue.equals("kmp")
 			|| defaultValue.equals(InputUtils.Menu);
@@ -111,10 +111,10 @@ class AdvButton extends View
 		return defaultValue.equals(InputUtils.Visibility)
 			|| defaultValue.equals(InputUtils.Enter)
 			|| defaultValue.equals(InputUtils.Escape)
-			|| defaultValue.equals(" ")
+			//|| defaultValue.equals(" ")
 			//|| defaultValue.equals(".")
 			//|| defaultValue.equals("run")
-			//|| defaultValue.equals("sym")
+			//|| defaultValue.equals("+/-")
 			//|| defaultValue.equals("abc")
 			//|| defaultValue.equals("kmp")
 			//|| defaultValue.equals(InputUtils.Menu)
@@ -173,7 +173,7 @@ class AdvButton extends View
 			return;
 		}
 
-		if (action.equals("sym") || action.equals("abc")) {
+		if (action.equals("+/-") || action.equals("abc")) {
 			parent.changePage();
 			return;
 		}
