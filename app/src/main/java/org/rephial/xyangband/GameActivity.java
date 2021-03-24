@@ -171,7 +171,9 @@ public class GameActivity extends Activity {
 
 	public void processPrefChanges()
 	{
-		boolean adjust = false;		
+		boolean adjust = false;
+
+		boolean resetDim = false;
 
 		for (String key: Preferences.changed) {
 			Log.d("Angband", "Changed: " + key);
@@ -185,11 +187,25 @@ public class GameActivity extends Activity {
 				key.equals(Preferences.KEY_MULT_TOP_BAR)) {
 				adjust = true;
 			}
+
+			if (key.equals(Preferences.KEY_GAMEPLUGIN)) {
+				resetDim = true;
+			}
 		}
 
 		if (adjust && state.characterPlaying()) {
 			adjustSize(shouldAdjustByWidth());
 		}
+
+		// Reset font size
+		/*
+		if (resetDim) {
+			if (landscapeNow())
+				Preferences.setPortraitFontSize(0);
+			else
+				Preferences.setLandscapeFontSize(0);
+		}
+		*/
 	}
 
 	@Override
@@ -471,13 +487,31 @@ public class GameActivity extends Activity {
 
 			advKeyboard = null;
 
+			boolean vertical = false;
+
 			if (Preferences.getKeyboardOverlap()) {
-				screenLayout = (RelativeLayout)getLayoutInflater()
-							.inflate(R.layout.term_horiz_overlap, null);
+				if (makeAdvKeyboard) {
+					vertical = true;
+
+					screenLayout = (RelativeLayout)getLayoutInflater()
+						.inflate(R.layout.term_horiz_overlap, null);
+				}
+				else {
+					screenLayout = (RelativeLayout)getLayoutInflater()
+						.inflate(R.layout.term_vert_overlap, null);
+				}
 			}
 			else {
-				screenLayout = (RelativeLayout)getLayoutInflater()
-							.inflate(R.layout.term_horiz_no_overlap, null);
+				if (makeAdvKeyboard && Preferences.getVerticalKeyboard()) {
+					vertical = true;
+
+					screenLayout = (RelativeLayout)getLayoutInflater()
+						.inflate(R.layout.term_horiz_no_overlap, null);
+				}
+				else {
+					screenLayout = (RelativeLayout)getLayoutInflater()
+						.inflate(R.layout.term_vert_no_overlap, null);
+				}
 			}
 
 			FrameLayout frameTerm = screenLayout.findViewById(R.id.frameTerm);
@@ -494,6 +528,20 @@ public class GameActivity extends Activity {
 							FrameLayout.LayoutParams.MATCH_PARENT));
 			frameTerm.addView(term);
 
+			FrameLayout.LayoutParams lparams = null;
+			if (vertical) {
+				lparams =
+					new FrameLayout.LayoutParams(
+						FrameLayout.LayoutParams.WRAP_CONTENT,
+						FrameLayout.LayoutParams.MATCH_PARENT);
+			}
+			else {
+				lparams =
+					new FrameLayout.LayoutParams(
+						FrameLayout.LayoutParams.MATCH_PARENT,
+						FrameLayout.LayoutParams.WRAP_CONTENT);
+			}
+
 			if (makeAdvKeyboard) {
 
 				if (Preferences.getKeyboardHeight() == 0) {
@@ -501,28 +549,19 @@ public class GameActivity extends Activity {
 				}
 
 				advKeyboard = new AdvKeyboard(this);
-				advKeyboard.mainView.setLayoutParams
-							(new FrameLayout.LayoutParams(
-									FrameLayout.LayoutParams.WRAP_CONTENT,
-									FrameLayout.LayoutParams.MATCH_PARENT));
+				advKeyboard.mainView.setLayoutParams(lparams);
 				frameInput.addView(advKeyboard.mainView);
 			}
 			else if (makeOldKbd) {
 				virtualKeyboard = new AngbandKeyboard(this);
 				virtualKeyboardView = virtualKeyboard.virtualKeyboardView;
-				virtualKeyboardView.setLayoutParams
-						(new FrameLayout.LayoutParams(
-								FrameLayout.LayoutParams.MATCH_PARENT,
-								FrameLayout.LayoutParams.WRAP_CONTENT));
+				virtualKeyboardView.setLayoutParams(lparams);
 				frameInput.addView(virtualKeyboardView);
 			}
 			else if (makeRibbon) {
 				ribbonZone = new LinearLayout(this);
 				ribbonZone.setOrientation(LinearLayout.VERTICAL);
-				ribbonZone.setLayoutParams
-						(new FrameLayout.LayoutParams(
-								FrameLayout.LayoutParams.MATCH_PARENT,
-								FrameLayout.LayoutParams.WRAP_CONTENT));
+				ribbonZone.setLayoutParams(lparams);
 				frameInput.addView(ribbonZone);
 				rebuildButtonRibbon();
 			}
