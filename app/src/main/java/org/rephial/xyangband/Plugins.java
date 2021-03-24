@@ -11,7 +11,7 @@ final public class Plugins {
 		angband(0),
 		frogcomposband(1),
 		npp041(2),
-		npp710(3),
+		npp054(3),
 		silq(4),
 		faangband(5);
 
@@ -37,7 +37,7 @@ final public class Plugins {
 		public boolean noMouse()
 		{
 			return this != angband && this != faangband &&
-				this != npp710;
+				this != npp054;
 		}
 		public boolean enableSubWindows()
 		{
@@ -45,7 +45,7 @@ final public class Plugins {
 		}
 		public boolean useLatin1()
 		{
-			return this == npp710;
+			return this == npp054;
 		}
 		public boolean canUseTopBar()
 		{
@@ -93,8 +93,8 @@ final public class Plugins {
 		if (plugin == Plugin.npp041.getId())
 			is = Preferences.getResources().openRawResource(R.raw.zipnpp041);
 
-		if (plugin == Plugin.npp710.getId())
-			is = Preferences.getResources().openRawResource(R.raw.zipnpp710);
+		if (plugin == Plugin.npp054.getId())
+			is = Preferences.getResources().openRawResource(R.raw.zipnpp054);
 
 		if (plugin == Plugin.silq.getId())
 			is = Preferences.getResources().openRawResource(R.raw.zipsilq);
@@ -115,8 +115,8 @@ final public class Plugins {
 		else if (plugin == Plugin.npp041.getId()) {
 			is = Preferences.getResources().openRawResource(R.raw.crcnpp041);
 		}
-		else if (plugin == Plugin.npp710.getId()) {
-			is = Preferences.getResources().openRawResource(R.raw.crcnpp710);
+		else if (plugin == Plugin.npp054.getId()) {
+			is = Preferences.getResources().openRawResource(R.raw.crcnpp054);
 		}
 		else if (plugin == Plugin.silq.getId()) {
 			is = Preferences.getResources().openRawResource(R.raw.crcsilq);

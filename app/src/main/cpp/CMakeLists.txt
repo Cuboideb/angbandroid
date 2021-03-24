@@ -20,6 +20,6 @@ add_subdirectory(frogcomposband)
 
 add_subdirectory(npp041)
 
-add_subdirectory(npp710)
+add_subdirectory(npp054)
 
 add_subdirectory(silq)

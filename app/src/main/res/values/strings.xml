@@ -7,7 +7,7 @@
       <item>Angband 4.2.2</item>
       <item>FrogComposband 7.1.salmiak</item>
       <item>NPPAngband 0.4.1</item>
-      <item>NPPAngband 7.1.0</item>
+      <item>NPPAngband 0.5.4</item>
       <item>Sil-Q 1.4.2</item>
       <!--<item>FAangband 2.0 (BETA)</item>-->
     </string-array>
@@ -15,7 +15,7 @@
       <item>angband</item>
       <item>frogcomposband</item>
       <item>npp041</item>
-      <item>npp710</item>
+      <item>npp054</item>
       <item>silq</item>
       <!--<item>faangband</item>-->
     </string-array>
