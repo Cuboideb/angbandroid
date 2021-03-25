@@ -444,13 +444,12 @@ int rd_options(void)
 
 	/* Read sidebar mode (if it's an actual game) */
 	if (angband_term[0]) {
-	rd_byte(&b);
-	if (b >= SIDEBAR_MAX) b = SIDEBAR_LEFT;
-	SIDEBAR_MODE = b;
+		rd_byte(&b);
+		if (b >= SIDEBAR_MAX) b = SIDEBAR_LEFT;
+		SIDEBAR_MODE = b;
 	} else {
 		strip_bytes(1);
 	}
-
 
 	/* Read options */
 	while (1) {

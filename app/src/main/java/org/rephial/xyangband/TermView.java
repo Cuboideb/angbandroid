@@ -408,9 +408,15 @@ public class TermView extends View implements OnGestureListener {
         return 1;
     }
 
+    public boolean topBarEnabled()
+    {
+        return Preferences.getTopBar() &&
+            Preferences.getActivePlugin().canUseTopBar();
+    }
+
     public int COL_MAP()
     {
-        return Preferences.getTopBar() ? 0: 13;
+        return topBarEnabled() ? 0: 13;
     }
 
     public void createTimers()
@@ -1264,7 +1270,7 @@ public class TermView extends View implements OnGestureListener {
     public int getTopBarHeight()
     {
         if (Preferences.getActivePlugin().enableSubWindows()
-            && Preferences.getTopBar()) {
+            && topBarEnabled()) {
 
             TSize size = getCharDimensions(fore_topbar);
             return (3 * size.height); // amount of rows for topbar
