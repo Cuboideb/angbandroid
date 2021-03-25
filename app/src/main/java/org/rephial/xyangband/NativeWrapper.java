@@ -212,8 +212,9 @@ public class NativeWrapper {
 	public void wipeAll()
 	{
 		synchronized (display_lock) {
-			if (state.stdscr != null && state.virtscr != null) {				
-				state.stdscr.clear();			
+			if (state.stdscr != null && state.virtscr != null) {
+				Log.d("Angband", "Wipe all!");
+				state.stdscr.clear();
 				state.virtscr.overwrite(state.stdscr);
 				frosh(null);
 			}

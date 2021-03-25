@@ -91,8 +91,9 @@ public class GameThread implements Runnable {
 		}
 		else {
 
-			nativew.wclear(0);
-			nativew.updateNow();
+			//nativew.wclear(0);
+			//nativew.updateNow();
+			nativew.wipeAll();
 
 			/* time to start angband */
 
@@ -168,8 +169,9 @@ public class GameThread implements Runnable {
 			   && !state.fatalError);
 
 		if	(local_restart) {
-			nativew.wclear(0);
-			nativew.updateNow();
+			//nativew.wclear(0);
+			//nativew.updateNow();
+			nativew.wipeAll();
 			state.handler.sendEmptyMessage(AngbandDialog.Action.StartGame.ordinal());
 		}
 	}
@@ -226,6 +228,8 @@ public class GameThread implements Runnable {
 			+ ":" + (Preferences.getTopBar() ? 1: 0);
 
 		String pluginName = Preferences.getActivePluginName();
+
+		nativew.wipeAll();
 
 		/* game is not running, so start it up */
 		nativew.gameStart(
