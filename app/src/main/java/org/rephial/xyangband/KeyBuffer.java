@@ -319,6 +319,9 @@ public class KeyBuffer {
 		case DeleteKey:
 			add(state.getKeyDelete());
 			break;
+		case Five:
+			add('5');
+			break;
 		case Space:
 			add(' ');
 			break;

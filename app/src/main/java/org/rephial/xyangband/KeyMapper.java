@@ -145,6 +145,7 @@ public class KeyMapper {
 			EscKey,
 			Period,
 			Comma,
+			Five,
 			ShiftKey,
 			Space,
 			VirtualKeyboard,

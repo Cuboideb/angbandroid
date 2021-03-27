@@ -99,6 +99,7 @@
 		<item>Back (Esc)</item>
 		<item>Period (.)</item>
         <item>Comma (,)</item>
+        <item>Five (5)</item>
 		<item>Shift Key</item>
 		<item>Space</item>
 		<item>Virtual Keyboard</item>
@@ -113,6 +114,7 @@
 		<item>BackKey</item>
 		<item>Period</item>
         <item>Comma</item>
+        <item>Five</item>
 		<item>ShiftKey</item>
 		<item>Space</item>
 		<item>VirtualKeyboard</item>
