@@ -294,6 +294,25 @@ bool put_object_in_inventory(object_type *o_ptr)
 	return (TRUE);
 }
 
+static int get_first_from_pile(int y, int x)
+{
+	int this_o_idx;
+	int next_o_idx = 0;
+	object_type *o_ptr;
+
+	for (this_o_idx = cave_o_idx[y][x]; this_o_idx; this_o_idx = next_o_idx) {
+
+		/* Get the object */
+		o_ptr = &o_list[this_o_idx];
+
+		/* Get the next object */
+		next_o_idx = o_ptr->next_o_idx;
+
+		if (k_info[o_ptr->k_idx].squelch != NO_SQUELCH_NEVER_PICKUP) break;
+	}
+
+	return this_o_idx;
+}
 
 /*
  * Allow the player to sort through items in a pile and
@@ -362,17 +381,26 @@ void do_cmd_pickup_from_pile(bool pickup, bool message)
 		/*clear the restriction*/
 		item_tester_hook = NULL;
 
-		q = "Pick up which object? (ESC to cancel):";
-		s = "THere are no objects to pick up!";
+		/* Just one object */
+		if (want_pickup_num == 1) {
 
-		if (!get_item(&item, q, s, (USE_FLOOR)))
-		{
-			/*player chose escape*/
-			break;
+			item = get_first_from_pile(py, px);
+
+			if (!item) break;
 		}
+		else {
+			q = "Pick up which object? (ESC to cancel):";
+			s = "THere are no objects to pick up!";
 
-		/* FLoor items are returned as negative numbers */
-		item = -item;
+			if (!get_item(&item, q, s, (USE_FLOOR)))
+			{
+				/*player chose escape*/
+				break;
+			}
+
+			/* FLoor items are returned as negative numbers */
+			item = -item;
+		}
 
 		o_ptr = &o_list[item];
 
