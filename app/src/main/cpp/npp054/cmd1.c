@@ -381,8 +381,8 @@ void do_cmd_pickup_from_pile(bool pickup, bool message)
 		/*clear the restriction*/
 		item_tester_hook = NULL;
 
-		/* Just one object */
-		if (want_pickup_num == 1) {
+		/* Just one initial object */
+		if (want_pickup_num == 1 && cycles == 1) {
 
 			item = get_first_from_pile(py, px);
 
@@ -687,8 +687,10 @@ void py_pickup(bool pickup)
 		o_ptr = &o_list[cave_o_idx[py][px]];
 
 		/* Describe the object, fully if identified */
-		if (object_known_p(o_ptr)) object_desc(o_name, sizeof(o_name), o_ptr, ODESC_PREFIX | ODESC_FULL);
+		/*if (object_known_p(o_ptr)) object_desc(o_name, sizeof(o_name), o_ptr, ODESC_PREFIX | ODESC_FULL);
 		else object_desc(o_name, sizeof(o_name), o_ptr, ODESC_PREFIX | ODESC_BASE);
+		*/
+		object_desc(o_name, sizeof(o_name), o_ptr, ODESC_PREFIX | ODESC_FULL);
 
 		msg_c_format(msgt, "You see %s.", o_name);
 	}
