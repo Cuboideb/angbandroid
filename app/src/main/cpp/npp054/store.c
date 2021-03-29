@@ -3858,7 +3858,8 @@ static bool store_purchase(int oid)
 	object_type object_type_body;
 	object_type *i_ptr = &object_type_body;
 
-	char o_name[80];
+	char o_name[200];
+	char tmp_name[200];
 
 	s32b price;
 
@@ -3938,10 +3939,10 @@ static bool store_purchase(int oid)
 		num = find_inven(o_ptr);
 
 	/* Describe the object (minimum effort) */
-	object_desc(o_name, sizeof(o_name), o_ptr, ODESC_BASE);
+	object_desc(tmp_name, sizeof(tmp_name), o_ptr, ODESC_BASE);
 
-	strnfmt(o_name, sizeof o_name, "%s - %s how many%s? (max %d) ",
-			o_name, (this_store == STORE_HOME) ? "Take" : "Buy",
+	strnfmt(o_name, sizeof(o_name), "%s - %s how many%s? (max %d) ",
+			tmp_name, (this_store == STORE_HOME) ? "Take" : "Buy",
 	        num ? format(" (you have %d)", num) : "", max_amount);
 
 	/* Get a quantity */
