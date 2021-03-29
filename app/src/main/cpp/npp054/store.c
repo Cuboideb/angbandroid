@@ -4452,6 +4452,9 @@ static bool store_process_command(char cmd, void *db, int oid)
 
 	int next_cmd = 0;
 
+	/* Clear */
+	prt("", 0, 0);
+
 	/* Parse the command */
 	switch (cmd)
 	{
@@ -4878,10 +4881,11 @@ void do_cmd_store(cmd_code code, cmd_arg args[])
 				evt = menu_select(&menu, &cursor, EVT_MOVE);
 			}
 
-			prt("", 0, 0);
-
 			if (evt.key == ESCAPE || evt.type == EVT_BACK)
 			{
+				/* Clear */
+				prt("", 0, 0);
+
 				if (current_cmd != 0) current_cmd = 0;
 				else leave = TRUE;
 			}
