@@ -1901,7 +1901,7 @@ static int choose_ranged_attack(int m_idx, int *tar_y, int *tar_x)
 	/* Figure out if we want mana */
 	if (m_ptr->mana < r_ptr->mana/4) want_mana +=2;
 	else if (m_ptr->mana < r_ptr->mana/2) want_mana++;
-	else if (m_ptr->mana == m_ptr->mana) f6 &= ~(RF6_ADD_MANA);
+	else if (m_ptr->mana == r_ptr->mana) f6 &= ~(RF6_ADD_MANA);
 
 	/* Figure out if we want to scram */
 	if (want_hps) want_escape = want_hps - 1;

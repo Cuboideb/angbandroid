@@ -23,7 +23,6 @@
 #include "game-event.h"
 
 
-
 /*** Constants and definitions ***/
 
 /* Easy names for the elements of the 'scr_places' arrays. */
@@ -1792,7 +1791,7 @@ static bool store_object_similar(const object_type *o_ptr, const object_type *j_
 	/*Allow well balanced items to stack only with other
 			 *well balanced items*/
 	if ((o_ptr->ident & IDENT_PERFECT_BALANCE) !=
-        (o_ptr->ident & IDENT_PERFECT_BALANCE)) return (FALSE);
+        (j_ptr->ident & IDENT_PERFECT_BALANCE)) return (FALSE);
 
 	/* Different flags */
 	if ((f1 != j1) || (f2 != j2) || \
@@ -3938,8 +3937,11 @@ static bool store_purchase(int oid)
 	else
 		num = find_inven(o_ptr);
 
-	strnfmt(o_name, sizeof o_name, "%s how many%s? (max %d) ",
-	        (this_store == STORE_HOME) ? "Take" : "Buy",
+	/* Describe the object (minimum effort) */
+	object_desc(o_name, sizeof(o_name), o_ptr, ODESC_BASE);
+
+	strnfmt(o_name, sizeof o_name, "%s - %s how many%s? (max %d) ",
+			o_name, (this_store == STORE_HOME) ? "Take" : "Buy",
 	        num ? format(" (you have %d)", num) : "", max_amount);
 
 	/* Get a quantity */
@@ -4432,6 +4434,8 @@ static bool store_overflow(void)
 	return FALSE;
 }
 
+static int current_cmd = 0;
+
 /*
  * Process a command in a store
  *
@@ -4445,6 +4449,8 @@ static bool store_process_command(char cmd, void *db, int oid)
 	bool redraw = FALSE;
 	bool command_processed = FALSE;
 
+	int next_cmd = 0;
+
 	/* Parse the command */
 	switch (cmd)
 	{
@@ -4452,6 +4458,7 @@ static bool store_process_command(char cmd, void *db, int oid)
 		case ESCAPE:
 		{
 			command_processed = TRUE;
+			next_cmd = current_cmd;
 			break;
 		}
 
@@ -4459,7 +4466,6 @@ static bool store_process_command(char cmd, void *db, int oid)
 		case 's':
 		case 'd':
 		{
-
 			command_processed = store_sell();
 			if (command_processed)
 			{
@@ -4475,15 +4481,9 @@ static bool store_process_command(char cmd, void *db, int oid)
 		case 'p':
 		case 'g':
 		{
-			/* On successful purchase, redraw */
-			command_processed = store_purchase(oid);
-			if (command_processed)
-			{
-				redraw = TRUE;
-				/* Changing the inventory usually changes the frame. */
-				store_flags |= (STORE_FRAME_CHANGE | STORE_GOLD_CHANGE);
 
-			}
+			prt("Select item to buy (ENTER for current): ", 0, 0);
+			next_cmd = cmd;
 			break;
 		}
 
@@ -4491,7 +4491,8 @@ static bool store_process_command(char cmd, void *db, int oid)
 		case 'l':
 		case 'x':
 		{
-			store_examine(oid);
+			prt("Select item to examine (ENTER for current): ", 0, 0);
+			next_cmd = cmd;
 			break;
 		}
 
@@ -4567,7 +4568,6 @@ static bool store_process_command(char cmd, void *db, int oid)
 			break;
 		}
 
-
 		/*** Various commands ***/
 
 		/* Identify an object */
@@ -4583,8 +4583,6 @@ static bool store_process_command(char cmd, void *db, int oid)
 			toggle_inven_equip();
 			break;
 		}
-
-
 
 		/*** Use various objects ***/
 
@@ -4675,7 +4673,35 @@ static bool store_process_command(char cmd, void *db, int oid)
 			do_cmd_save_screen();
 			break;
 		}
+
+		/* Complete hybrid commands */
+		case DEFINED_XFF:
+		case '\r':
+		case '\n': {
+
+			/*plog_fmt("index: %d - cmd: %d", oid, current_cmd);*/
+
+			if (current_cmd == 'g' || current_cmd == 'p') {
+				/* On successful purchase, redraw */
+				command_processed = store_purchase(oid);
+				if (command_processed)
+				{
+					redraw = TRUE;
+					/* Changing the inventory usually changes the frame. */
+					store_flags |= (STORE_FRAME_CHANGE | STORE_GOLD_CHANGE);
+				}
+			}
+
+			if (current_cmd == 'x' || current_cmd == 'l') {
+				store_examine(oid);
+				redraw = TRUE;
+			}
+
+			break;
+		}
 	}
+
+	current_cmd = next_cmd;
 
 	/* Let the game handle any core commands (equipping, etc) */
 	process_command(CMD_STORE, TRUE);
@@ -4763,7 +4789,7 @@ void do_cmd_store(cmd_code code, cmd_arg args[])
 
 		/* Wipe the menu and set it up */
 		WIPE(&menu, menu);
-		menu.flags = MN_DBL_TAP;
+		/*menu.flags = MN_DBL_TAP;*/
 
 		/* Calculate the positions of things and redraw */
 		store_flags = STORE_INIT_CHANGE;
@@ -4823,7 +4849,7 @@ void do_cmd_store(cmd_code code, cmd_arg args[])
 			else
 			{
 				/* These two can't intersect! */
-				menu.cmd_keys = "\n\x010\r?={}~CEIbdegiklpstw\x8B\x8C"; /* \x10 = ^p */
+				menu.cmd_keys = "\n\x010\r?={}~CEIbdegiklpstwx\x8B\x8C"; /* \x10 = ^p */
 				menu.selections = "acfhmnoqruvyz13456790ABDFGHJKLMNO";
 			}
 
@@ -4850,9 +4876,13 @@ void do_cmd_store(cmd_code code, cmd_arg args[])
 			{
 				evt = menu_select(&menu, &cursor, EVT_MOVE);
 			}
+
+			prt("", 0, 0);
+
 			if (evt.key == ESCAPE || evt.type == EVT_BACK)
 			{
-				leave = TRUE;
+				if (current_cmd != 0) current_cmd = 0;
+				else leave = TRUE;
 			}
 			/* Handle buttons */
 			else if (evt.type == EVT_BUTTON)
@@ -4871,7 +4901,6 @@ void do_cmd_store(cmd_code code, cmd_arg args[])
 			}
 			else
 			{
-
 				/* Display the store */
 				store_display_recalc(this_store);
 				store_redraw();

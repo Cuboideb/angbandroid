@@ -581,6 +581,7 @@ struct player_flag_record
 	u32b im_flag;			/* corresponding immunity bit, if any */
 };
 
+/*
 static const struct player_flag_record player_flag_table[RES_ROWS*4] =
 {
 	{ "rAcid",	1, TR2_RES_ACID,	TR2_IM_ACID},
@@ -623,8 +624,7 @@ static const struct player_flag_record player_flag_table[RES_ROWS*4] =
 	{ "Shots",	0, TR1_SHOTS,		0},
 	{ "Might",	0, TR1_MIGHT,		0},
 };
-
-
+*/
 
 
 /*
