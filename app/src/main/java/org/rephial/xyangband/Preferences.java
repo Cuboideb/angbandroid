@@ -189,8 +189,18 @@ final public class Preferences {
 		return resources;
 	}
 
+
+
 	public static String getString(String key) {
 		return pref.getString(key, "");
+	}
+
+	public static String getDPadColor(int colorIdx) {
+		String key = "angband.dpad_color" + colorIdx;
+		String defValue = (colorIdx == 1) ?
+			resources.getString(R.string.def_dpad_color1):
+			resources.getString(R.string.def_dpad_color2);
+		return pref.getString(key, defValue);
 	}
 
 	/* no longer needed, replaced with crc logic

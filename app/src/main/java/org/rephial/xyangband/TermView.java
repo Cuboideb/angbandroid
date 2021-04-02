@@ -72,8 +72,18 @@ public class TermView extends View implements OnGestureListener {
     Bitmap atlas = null;
     //BitmapRegionDecoder tiles = null;
 
-	private int color1 = Color.parseColor("#4a4855");
-	private int color2 = Color.parseColor("#807c93");
+    private int color1 = Color.parseColor("#4a4855");
+    private int color2 = Color.parseColor("#807c93");
+
+    private String[][] dPadColors = {
+        {"Gray", "#807c93"},
+        {"Darker Gray", "#4a4855"},
+        {"Red", "red"},
+        {"Blue", "#118ab2"},
+        {"Yellow", "#ffff3f"},
+        {"Violet", "#f20089"},
+        {"Green", "#0ead69"}
+    };
     private int color3 = Color.parseColor("#4d7ed6");
     private int color_drag = Color.parseColor("#B2FB49");
 	private int alpha = 70;
@@ -760,6 +770,21 @@ public class TermView extends View implements OnGestureListener {
         }
     }
 
+    private int lookupColor(int colorIdx)
+    {
+        String name = Preferences.getDPadColor(colorIdx);
+
+        Log.d("Angband", "Color: " + name);
+
+        for (int i = 0; i < dPadColors.length; i++) {
+            if (dPadColors[i][0].equals(name)) {
+                return Color.parseColor(dPadColors[i][1]);
+            }
+        }
+
+        return Color.parseColor("red");
+    }
+
 	protected void drawDirZonesRight(Canvas p_canvas)
 	{
 	    this.zones.clear();
@@ -785,6 +810,9 @@ public class TermView extends View implements OnGestureListener {
 		w = Math.min(w, h);
 		h = w = ((100 + Preferences.getTouchMultiplier()) * w) / 100;
 
+        int _col1 = lookupColor(1);
+        int _col2 = lookupColor(2);
+
 		for (int py = 1; py <= 3; py++) {
 			for (int px = 1; px <= 3; px++) {
 
@@ -808,10 +836,10 @@ public class TermView extends View implements OnGestureListener {
                     dirZoneFill.setColor(color_drag);
                 }
                 else if (px == 2 || py == 2) {
-                    dirZoneFill.setColor(color2);
+                    dirZoneFill.setColor(_col2);
                 }
                 else {
-                    dirZoneFill.setColor(color1);
+                    dirZoneFill.setColor(_col1);
                 }
                 dirZoneFill.setAlpha(alpha);
 

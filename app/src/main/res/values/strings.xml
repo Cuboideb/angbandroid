@@ -167,4 +167,17 @@
         <item>4x4</item>
         <item>6x3</item>
     </string-array>
+
+    <string-array name="DPadColors">
+        <item>Gray</item>
+        <item>Darker Gray</item>
+        <item>Blue</item>
+        <item>Red</item>
+        <item>Yellow</item>
+        <item>Green</item>
+        <item>Violet</item>
+    </string-array>
+
+    <string name="def_dpad_color1">Darker Gray</string>
+    <string name="def_dpad_color2">Gray</string>
 </resources>
