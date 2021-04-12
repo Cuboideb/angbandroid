@@ -483,16 +483,31 @@ class AdvKeyboard implements OnTouchListener
 			list.add("run");
 		}
 		else {
-			list.add(InputUtils.Visibility);
-			list.add(InputUtils.Menu);
-			list.add(page == 0 ? "+/-": "abc");
-			list.add("kmp");
-			list.add("run");
-			list.add(".");
-			list.add(" ");
-			list.add(" ");
-			list.add(InputUtils.Escape);
-			list.add(InputUtils.Enter);
+
+			int[] grp = {0,1};
+
+			// For smaller keyboard, invert groups
+			if (Preferences.getKeyboardWidth() < 90) {
+				grp[0] = 1;
+				grp[1] = 0;
+			}
+
+			for (int i = 0; i < 2; i++) {
+				if (grp[i] == 0) {
+					list.add(InputUtils.Visibility);
+					list.add(InputUtils.Menu);
+					list.add(page == 0 ? "+/-": "abc");
+					list.add("kmp");
+					list.add("run");
+					list.add(".");
+					list.add(" ");
+					list.add(" ");
+				}				
+				else {
+					list.add(InputUtils.Escape);
+					list.add(InputUtils.Enter);
+				}
+			}
 		}
 
 		int i = 0;

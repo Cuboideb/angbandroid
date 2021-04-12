@@ -1323,9 +1323,9 @@ public class ButtonRibbon implements OnClickListener,
             return 0;
         }
 
-        public char fixIcon()
+        public char fixIcon(char p_chr)
         {
-            char raw = getCommand(false);
+            char raw = (p_chr > 0) ? p_chr: getCommand(false);
             if (raw == 'h') raw = 0xF9;
             if (raw == 'U') raw = 0xF5;
             if (raw == 'n') raw = 0xD2;
@@ -1343,17 +1343,23 @@ public class ButtonRibbon implements OnClickListener,
             }
         }
 
+        public void convertToIcon(char p_chr)
+        {
+            btn.setTypeface(ButtonRibbon.fontCmd);
+            //setIconTooltip();
+            btn.setOnLongClickListener(this);
+            String txt = Character.toString(fixIcon(p_chr));
+            btn.setText(txt);
+        }
+
         public void setButtonText(String txt)
         {
             // Set icon
             if (isCommand()) {
                 if (Preferences.getIconsEnabled() &&
                         ButtonRibbon.fontCmd != null) {
-                    btn.setTypeface(ButtonRibbon.fontCmd);
-                    //setIconTooltip();
-                    btn.setOnLongClickListener(this);
-                    txt = Character.toString(fixIcon());
-                    btn.setText(txt);
+
+                    convertToIcon((char)0);
                     // Done!
                     return;
                 }
@@ -1364,7 +1370,16 @@ public class ButtonRibbon implements OnClickListener,
             }
 
             if (isUserCommand()) {
-                btn.setOnLongClickListener(this);
+                btn.setOnLongClickListener(this);                
+
+                if (action.toUpperCase().equals("USER_RUN")) {
+                    convertToIcon('.');
+                    return;
+                }
+                else if (action.toUpperCase().equals("USER_OPA")) {
+                    convertToIcon('l');
+                    return;
+                }
             }
 
             // Set bold
