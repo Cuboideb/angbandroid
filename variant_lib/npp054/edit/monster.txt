@@ -23,12 +23,12 @@
 # 'N' indicates the beginning of an entry. The serial number must
 # increase for each new item. Entry 0 is used for the player.
 
-# 'G' is for graphics - symbol and color. There are 37 colors, 
+# 'G' is for graphics - symbol and color. There are 37 colors,
 # with up to 256 customizable colors, as follows:
 
 # b  - Blue
-# b1 - Navy Blue 
-# B  - Light Blue 
+# b1 - Navy Blue
+# B  - Light Blue
 # B1 - Deep Sky Blue
 # d  - Black(default background)
 # D  - Dark Gray (Light Dark)
@@ -62,7 +62,7 @@
 # y  - yellow
 # y1 - Maize (yellow shaded)
 # y2 - Gold
-#       
+#
 # (note that black is the same color as the screen background, and
 # thus anything will appear to be an empty black space if its
 # color is d.)
@@ -84,7 +84,7 @@
 # one of its spells. X must not be zero. If X is 1, the monster will
 # never move while the player is in sight, and will thus never attack
 # in melee, as it will cast spells every turn: if the monster is to use
-# a melee attack, then X must be 2 or greater.  Power determines the 
+# a melee attack, then X must be 2 or greater.  Power determines the
 # damage and intensity of the attacks.  The format is POW_X with X being
 # the spell power.
 
@@ -6848,7 +6848,7 @@ D:A massive elephantine form with eyes twisted by madness.
 N:501:Pallando the Blue
 G:A:b
 I:120:40d100:100:100:0
-W:55:2:135:32000
+W:70:2:135:32000
 B:HIT:EXP_80:8d5
 B:HIT:EXP_80:8d5
 B:HIT:HURT:8d5
@@ -7135,7 +7135,7 @@ D: down its length.
 N:517:Radagast the Brown
 G:A:u1
 I:115:30d100:100:100:0
-W:45:4:120:30000
+W:65:4:120:30000
 B:HIT:UN_BONUS:8d4
 B:HIT:UN_BONUS:8d4
 B:HIT:HURT:8d4

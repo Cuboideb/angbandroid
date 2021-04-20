@@ -1,4 +1,4 @@
-# Angband for Android 4.2.1
+# Angband for Android 4.2.2
 
 An unofficial port of the roguelike Angband to Android.
 
