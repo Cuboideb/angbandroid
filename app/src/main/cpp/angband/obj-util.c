@@ -554,9 +554,10 @@ static int compare_types(const struct object *o1, const struct object *o2)
 int compare_items(const struct object *o1, const struct object *o2)
 {
 	/* unknown objects go at the end, order doesn't matter */
-	if (is_unknown(o1) || is_unknown(o2)) {
-		if (!is_unknown(o1)) return -1;
-		return 1;
+	if (is_unknown(o1)) {
+		return (is_unknown(o2)) ? 0 : 1;
+	} else if (is_unknown(o2)) {
+		return -1;
 	}
 
 	/* known artifacts will sort first */
@@ -655,7 +656,7 @@ bool obj_kind_can_browse(const struct object_kind *kind)
 
 	for (i = 0; i < player->class->magic.num_books; i++) {
 		struct class_book book = player->class->magic.books[i];
-		if (kind == lookup_kind(book.tval, book.sval))
+		if (kind->tval == book.tval && kind->sval == book.sval)
 			return true;
 	}
 
@@ -938,7 +939,7 @@ bool recharge_timeout(struct object *obj)
  *
  * The item can be negative to mean "item on floor".
  */
-bool verify_object(const char *prompt, struct object *obj)
+bool verify_object(const char *prompt, const struct object *obj)
 {
 	char o_name[80];
 

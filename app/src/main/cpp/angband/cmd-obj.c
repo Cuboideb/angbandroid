@@ -148,14 +148,9 @@ void do_cmd_uninscribe(struct command *cmd)
 {
 	struct object *obj;
 
-	if (player_is_shapechanged(player)) {
-		msg("You cannot do this while in %s form.",	player->shape->name);
-		if (get_check("Do you want to change back? " )) {
-			player_resume_normal_shape(player);
-		} else {
+	if (!player_get_resume_normal_shape(player, cmd)) {
 			return;
 		}
-	}
 
 	/* Get arguments */
 	if (cmd_get_item(cmd, "item", &obj,
@@ -183,14 +178,9 @@ void do_cmd_inscribe(struct command *cmd)
 	char prompt[1024];
 	char o_name[80];
 
-	if (player_is_shapechanged(player)) {
-		msg("You cannot do this while in %s form.",	player->shape->name);
-		if (get_check("Do you want to change back? " )) {
-			player_resume_normal_shape(player);
-		} else {
+	if (!player_get_resume_normal_shape(player, cmd)) {
 			return;
 		}
-	}
 
 	/* Get arguments */
 	if (cmd_get_item(cmd, "item", &obj,
@@ -244,14 +234,9 @@ void do_cmd_takeoff(struct command *cmd)
 {
 	struct object *obj;
 
-	if (player_is_shapechanged(player)) {
-		msg("You cannot do this while in %s form.",	player->shape->name);
-		if (get_check("Do you want to change back? " )) {
-			player_resume_normal_shape(player);
-		} else {
+	if (!player_get_resume_normal_shape(player, cmd)) {
 			return;
 		}
-	}
 
 	/* Get arguments */
 	if (cmd_get_item(cmd, "item", &obj,
@@ -282,21 +267,16 @@ void do_cmd_wield(struct command *cmd)
 	int slot;
 	struct object *obj;
 
-	if (player_is_shapechanged(player)) {
-		msg("You cannot do this while in %s form.",	player->shape->name);
-		if (get_check("Do you want to change back? " )) {
-			player_resume_normal_shape(player);
-		} else {
+	if (!player_get_resume_normal_shape(player, cmd)) {
 			return;
 		}
-	}
 
 	/* Get arguments */
 	if (cmd_get_item(cmd, "item", &obj,
 			/* Prompt */ "Wear or wield which item?",
 			/* Error  */ "You have nothing to wear or wield.",
 			/* Filter */ obj_can_wear,
-			/* Choice */ USE_INVEN | USE_FLOOR) != CMD_OK)
+			/* Choice */ USE_INVEN | USE_FLOOR | USE_QUIVER) != CMD_OK)
 		return;
 
 	/* Get the slot the object wants to go in, and the item currently there */
@@ -373,14 +353,9 @@ void do_cmd_drop(struct command *cmd)
 	int amt;
 	struct object *obj;
 
-	if (player_is_shapechanged(player)) {
-		msg("You cannot do this while in %s form.",	player->shape->name);
-		if (get_check("Do you want to change back? " )) {
-			player_resume_normal_shape(player);
-		} else {
+	if (!player_get_resume_normal_shape(player, cmd)) {
 			return;
 		}
-	}
 
 	/* Get arguments */
 	if (cmd_get_item(cmd, "item", &obj,
@@ -652,14 +627,9 @@ void do_cmd_read_scroll(struct command *cmd)
 {
 	struct object *obj;
 
-	if (player_is_shapechanged(player)) {
-		msg("You cannot do this while in %s form.",	player->shape->name);
-		if (get_check("Do you want to change back? " )) {
-			player_resume_normal_shape(player);
-		} else {
+	if (!player_get_resume_normal_shape(player, cmd)) {
 			return;
 		}
-	}
 
 	/* Check player can use scroll */
 	if (!player_can_read(player, true))
@@ -682,14 +652,9 @@ void do_cmd_use_staff(struct command *cmd)
 {
 	struct object *obj;
 
-	if (player_is_shapechanged(player)) {
-		msg("You cannot do this while in %s form.",	player->shape->name);
-		if (get_check("Do you want to change back? " )) {
-			player_resume_normal_shape(player);
-		} else {
+	if (!player_get_resume_normal_shape(player, cmd)) {
 			return;
 		}
-	}
 
 	/* Get an item */
 	if (cmd_get_item(cmd, "item", &obj,
@@ -713,14 +678,9 @@ void do_cmd_aim_wand(struct command *cmd)
 {
 	struct object *obj;
 
-	if (player_is_shapechanged(player)) {
-		msg("You cannot do this while in %s form.",	player->shape->name);
-		if (get_check("Do you want to change back? " )) {
-			player_resume_normal_shape(player);
-		} else {
+	if (!player_get_resume_normal_shape(player, cmd)) {
 			return;
 		}
-	}
 
 	/* Get an item */
 	if (cmd_get_item(cmd, "item", &obj,
@@ -744,14 +704,9 @@ void do_cmd_zap_rod(struct command *cmd)
 {
 	struct object *obj;
 
-	if (player_is_shapechanged(player)) {
-		msg("You cannot do this while in %s form.",	player->shape->name);
-		if (get_check("Do you want to change back? " )) {
-			player_resume_normal_shape(player);
-		} else {
+	if (!player_get_resume_normal_shape(player, cmd)) {
 			return;
 		}
-	}
 
 	/* Get an item */
 	if (cmd_get_item(cmd, "item", &obj,
@@ -775,14 +730,9 @@ void do_cmd_activate(struct command *cmd)
 {
 	struct object *obj;
 
-	if (player_is_shapechanged(player)) {
-		msg("You cannot do this while in %s form.",	player->shape->name);
-		if (get_check("Do you want to change back? " )) {
-			player_resume_normal_shape(player);
-		} else {
+	if (!player_get_resume_normal_shape(player, cmd)) {
 			return;
 		}
-	}
 
 	/* Get an item */
 	if (cmd_get_item(cmd, "item", &obj,
@@ -823,14 +773,9 @@ void do_cmd_quaff_potion(struct command *cmd)
 {
 	struct object *obj;
 
-	if (player_is_shapechanged(player)) {
-		msg("You cannot do this while in %s form.",	player->shape->name);
-		if (get_check("Do you want to change back? " )) {
-			player_resume_normal_shape(player);
-		} else {
+	if (!player_get_resume_normal_shape(player, cmd)) {
 			return;
 		}
-	}
 
 	/* Get an item */
 	if (cmd_get_item(cmd, "item", &obj,
@@ -849,14 +794,9 @@ void do_cmd_use(struct command *cmd)
 {
 	struct object *obj;
 
-	if (player_is_shapechanged(player)) {
-		msg("You cannot do this while in %s form.",	player->shape->name);
-		if (get_check("Do you want to change back? " )) {
-			player_resume_normal_shape(player);
-		} else {
+	if (!player_get_resume_normal_shape(player, cmd)) {
 			return;
 		}
-	}
 
 	/* Get an item */
 	if (cmd_get_item(cmd, "item", &obj,
@@ -956,21 +896,16 @@ void do_cmd_refill(struct command *cmd)
 	struct object *light = equipped_item_by_slot_name(player, "light");
 	struct object *obj;
 
-	if (player_is_shapechanged(player)) {
-		msg("You cannot do this while in %s form.",	player->shape->name);
-		if (get_check("Do you want to change back? " )) {
-			player_resume_normal_shape(player);
-		} else {
+	if (!player_get_resume_normal_shape(player, cmd)) {
 			return;
 		}
-	}
 
 	/* Get an item */
 	if (cmd_get_item(cmd, "item", &obj,
 			"Refuel with with fuel source? ",
 			"You have nothing you can refuel with.",
 			obj_can_refill,
-			USE_INVEN | USE_FLOOR) != CMD_OK) return;
+			USE_INVEN | USE_FLOOR | USE_QUIVER) != CMD_OK) return;
 
 	/* Check what we're wielding. */
 	if (!light || !tval_is_light(light)) {
@@ -1005,10 +940,7 @@ void do_cmd_cast(struct command *cmd)
 	int spell_index, dir = 0;
 	const struct class_spell *spell;
 
-	if (player_is_shapechanged(player)) {
-		if (get_check("Change back to your original form? " )) {
-			player_resume_normal_shape(player);
-		}
+	if (!player_get_resume_normal_shape(player, cmd)) {
 		return;
 	}
 
@@ -1134,13 +1066,8 @@ void do_cmd_study_book(struct command *cmd)
  */
 void do_cmd_study(struct command *cmd)
 {
-	if (player_is_shapechanged(player)) {
-		msg("You cannot do this while in %s form.",	player->shape->name);
-		if (get_check("Do you want to change back? " )) {
-			player_resume_normal_shape(player);
-		} else {
+	if (!player_get_resume_normal_shape(player, cmd)) {
 			return;
-		}
 	}
 
 	if (player_has(player, PF_CHOOSE_SPELLS))

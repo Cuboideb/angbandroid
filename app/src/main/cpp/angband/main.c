@@ -79,6 +79,10 @@ static const struct module modules[] =
 #ifdef USE_STATS
 	{ "stats", help_stats, init_stats },
 #endif /* USE_STATS */
+
+#ifdef USE_SPOIL
+	{ "spoil", help_spoil, init_spoil },
+#endif
 };
 
 /**
@@ -148,6 +152,27 @@ static void init_stuff(void)
 
 	/* Initialize */
 	init_file_paths(configpath, libpath, datapath);
+}
+
+
+#ifdef SOUND
+/* State shared by generic_reinit() and main(). */
+static const char *soundstr = NULL;
+static int saved_argc = 0;
+static char **saved_argv = NULL;
+#endif
+
+
+/**
+ * Perform (as ui-game.c's reinit_hook) platform-specific actions necessary
+ * when restarting without exiting.  Also called directly at startup.
+ */
+static void generic_reinit(void)
+{
+#ifdef SOUND
+	/* Initialise sound */
+	init_sound(soundstr, saved_argc, saved_argv);
+#endif
 }
 
 
@@ -315,9 +340,6 @@ int main(int argc, char *argv[])
 	bool done = false;
 
 	const char *mstr = NULL;
-#ifdef SOUND
-	const char *soundstr = NULL;
-#endif
 	bool args = true;
 
 	/* Save the "program name" XXX XXX XXX */
@@ -344,8 +366,8 @@ int main(int argc, char *argv[])
 	/* Drop permissions */
 	safe_setuid_drop();
 
-	/* Get the file paths 
-	 * Paths may be overriden by -d options, so this has to occur *before* 
+	/* Get the file paths
+	 * Paths may be overriden by -d options, so this has to occur *before*
 	 * processing command line args */
 	init_stuff();
 
@@ -374,7 +396,7 @@ int main(int argc, char *argv[])
 			case 'g':
 				/* Default graphics tile */
 				/* in graphics.txt, 2 corresponds to adam bolt's tiles */
-				arg_graphics = 2; 
+				arg_graphics = 2;
 				if (*arg) arg_graphics = atoi(arg);
 				break;
 
@@ -483,6 +505,21 @@ int main(int argc, char *argv[])
 	}
 #endif
 
+#ifdef UNIX
+
+	/* Get the "user name" as default player name, unless set with -u switch */
+	if (!arg_name[0]) {
+		user_name(arg_name, sizeof(arg_name), player_uid);
+
+		/* Sanitise name and set as savefile */
+		savefile_set_name(arg_name, true, false);
+	}
+
+	/* Create any missing directories */
+	create_needed_dirs();
+
+#endif /* UNIX */
+
 	/* Commented out for android */
 #if !defined(ANGBAND_ANDROID)
 	/* Try the modules in the order specified by modules[] */
@@ -501,31 +538,22 @@ int main(int argc, char *argv[])
 	if (!done) quit("Unable to prepare any 'display module'!");
 #endif
 
-#ifdef UNIX
-
-	/* Get the "user name" as default player name, unless set with -u switch */
-	if (!arg_name[0]) {
-		user_name(arg_name, sizeof(arg_name), player_uid);
-
-		/* Sanitise name and set as savefile */
-		savefile_set_name(arg_name, true, false);
-	}
-
-	/* Create any missing directories */
-	create_needed_dirs();
-
-#endif /* UNIX */
-
 	/* Catch nasty signals */
 	signals_init();
 
 	/* Set up the command hook */
 	cmd_get_hook = textui_get_cmd;
 
+	/*
+	 * Set action that needs to be done if restarting without exiting.
+	 * Also need to do it now.
+	 */
 #ifdef SOUND
-	/* Initialise sound */
-	init_sound(soundstr, argc, argv);
+	saved_argc = argc;
+	saved_argv = argv;
 #endif
+	reinit_hook = generic_reinit;
+	generic_reinit();
 
 	/* Set up the display handlers and things. */
 	init_display();
