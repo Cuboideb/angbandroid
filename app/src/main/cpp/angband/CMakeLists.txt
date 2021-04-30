@@ -37,6 +37,8 @@ add_library( # Sets the name of the library.
             cmd-misc.c
             cmd-obj.c
             cmd-pickup.c
+            cmd-spoil.c
+            cmd-wizard.c
             datafile.c
             debug.c
             effects.c
@@ -54,6 +56,8 @@ add_library( # Sets the name of the library.
             guid.c
             init.c
             load.c
+            main-spoil.c
+            main-stats.c
             message.c
             mon-attack.c
             mon-blows.c
@@ -153,6 +157,7 @@ add_library( # Sets the name of the library.
             ui-target.c
             ui-term.c
             ui-visuals.c
+            ui-wizard.c
             wiz-debug.c
             wiz-spoil.c
             wiz-stats.c
