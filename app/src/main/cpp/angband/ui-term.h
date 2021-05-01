@@ -244,6 +244,8 @@ struct term
 	errr (*control_hook)(int what, const char *msg);
 };
 
+#define HAS_DBLH_HOOK 1
+
 /**
  * ------------------------------------------------------------------------
  * Available Constants
