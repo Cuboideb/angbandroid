@@ -1789,7 +1789,7 @@ errr Term_fresh(void)
 							y, x1, x2, pr_drw[ipr]);
 						ipr = (ipr + 1) % tile_height;
 					} else {
-					Term_fresh_row_pict(y, x1, x2);
+						Term_fresh_row_pict(y, x1, x2);
 					}
 				} else if (Term->higher_pict) {
 					/* Flush the row */
@@ -1798,7 +1798,7 @@ errr Term_fresh(void)
 							y, x1, x2, pr_drw[ipr]);
 						ipr = (ipr + 1) % tile_height;
 					} else {
-					Term_fresh_row_both(y, x1, x2);
+						Term_fresh_row_both(y, x1, x2);
 					}
 				} else {
 					/* Flush the row */

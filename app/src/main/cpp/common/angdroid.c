@@ -596,7 +596,7 @@ static void term_data_link(int i)
 	t->char_blank = ' ';
 
 	t->attr_pad = COLOUR_WHITE;
-	t->char_pad = 0x1E00;
+	//t->char_pad = 0x1E00;
 	t->big_text_mask = 0x1D00;
 
 	/* Prepare the init/nuke hooks */

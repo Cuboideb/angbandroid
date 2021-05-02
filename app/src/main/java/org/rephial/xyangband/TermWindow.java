@@ -12,8 +12,8 @@ public class TermWindow {
 		public int bColor;
 		public ColorPair(int f,int b) {this.fColor = f; this.bColor = b;}
 	}
-	public static Map<Integer,ColorPair> pairs = new HashMap<Integer,ColorPair>(); 
-	public static Map<Integer,Integer> color_table = new HashMap<Integer, Integer>(); 
+	public static Map<Integer,ColorPair> pairs = new HashMap<Integer,ColorPair>();
+	public static Map<Integer,Integer> color_table = new HashMap<Integer, Integer>();
 	public static int TERM_BLACK = 0xFF000000;
 	public static int TERM_WHITE = 0xFFFFFFFF;
 	public static int DEFAULT_FORE = 1;
@@ -21,9 +21,11 @@ public class TermWindow {
 
 	public class TermPoint {
 		public char ch = ' ';
+		public int fgColor = DEFAULT_FORE;
+
 		public char bgChar = 0;
 		public int bgColor = 0;
-		public int fgColor = DEFAULT_FORE;
+
 		public boolean isDirty = false;
 		public boolean isUgly = false;
 
@@ -42,7 +44,7 @@ public class TermWindow {
 		}
 
 		public boolean isBigText() {
-			return ch >= 0x1D00 && ch <= 0x1DFF;			
+			return ch >= 0x1D00 && ch <= 0x1DFF;
 		}
 
 		public boolean isBigPad()
@@ -50,9 +52,8 @@ public class TermWindow {
 			return ch == TermView.BIG_PAD;
 		}
 	}
-	public TermPoint[][] buffer = null; 
+	public TermPoint[][] buffer = null;
 
-	public boolean allDirty = false;
 	public boolean cursor_visible = false;
 	public boolean big_cursor = false;
 	public int col = 0;
@@ -94,7 +95,7 @@ public class TermWindow {
 		if (this.row >= this.rows) this.row = 0;
 
 		this.buffer = new TermPoint[this.rows][this.cols];
-		
+
 		for (int r=0;r<this.rows;r++) {
 			for (int c=0;c<this.cols;c++) {
 
@@ -205,9 +206,9 @@ public class TermWindow {
 	public void touchBigTile(int r, int c, int tw, int th)
 	{
 		int x, y;
-		
+
 		for (y = r - th + 1; y <= r ; y++) {
-			for (x = c - tw + 1; x <= c; x++) {			
+			for (x = c - tw + 1; x <= c; x++) {
 
 				if (y < begin_y || y >= rows ||
 					x < begin_x || x >= cols) continue;
@@ -217,7 +218,7 @@ public class TermWindow {
 					p.isUgly = !p.isDirty;
 				}
 			}
-		}		
+		}
 	}
 
 	public void quiet()
@@ -278,7 +279,7 @@ public class TermWindow {
 						p2.bgColor = p1.bgColor;
 						p2.fgColor = p1.fgColor;
 						p2.bgChar = p1.bgChar;
-					}					
+					}
 				}
 			}
 		}
@@ -310,7 +311,7 @@ public class TermWindow {
 		// Overwrite n, because the parameter was expressed in bytes,
 		// not in UTF-8 characters
 		n = str.length();
-		
+
 		for (int i = 0; i < n; i++) {
 		    addch(str.charAt(i));
 		}
@@ -352,10 +353,10 @@ public class TermWindow {
 
 			TermPoint p = buffer[y][x];
 
-			if (p.ch != c ||
+			if (true /*p.ch != c ||
 					p.fgColor != a ||
 					p.bgColor != ta ||
-					p.bgChar != tc) {
+					p.bgChar != tc*/) {
 				p.isDirty = true;
 				p.ch = (char)c;
 				p.bgChar = (char)tc;
@@ -366,7 +367,7 @@ public class TermWindow {
 	}
 
 	public void addch(char c) {
-		
+
 		/*
 		Formatter fmt = new Formatter();
 		fmt.format("color: %x", cur_color);
@@ -376,11 +377,11 @@ public class TermWindow {
 		if (col>-1 && col<cols && row>-1 && row<rows) {
 			if (c > 19) {
 				TermPoint p = buffer[row][col];
-			
-				if (p.ch != c ||
+
+				if (true /*p.ch != c ||
 						p.fgColor != cur_color ||
 						p.bgColor != cur_bg_color ||
-						p.bgChar != 0) {
+						p.bgChar != 0*/) {
 					p.isDirty = true;
 					p.ch = c;
 					p.bgChar = 0;
@@ -391,7 +392,7 @@ public class TermWindow {
 				advance();
 			}
 			else if (c == 9) {  // recurse to expand that tab
-				//Log.d("Angband","TermWindow.addch - tab expand");				
+				//Log.d("Angband","TermWindow.addch - tab expand");
 				int ss = col % 8;
 				if (ss==0) ss=8;
 				for (int i=0;i<ss;i++) addch(' ');
@@ -403,7 +404,7 @@ public class TermWindow {
 		}
 		else {
 			Log.d("Angband","TermWindow.addch - point out of bounds: "+col+","+row);
-		}	
+		}
 	}
 
 	private void advance() {

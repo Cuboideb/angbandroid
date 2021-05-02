@@ -182,6 +182,9 @@ public class NativeWrapper {
 
 		synchronized (display_lock) {
 			term.onGameStart(); // recalculate TermView canvas dimension
+
+			term.clear();
+
 			frosh(null);
 		}
 	}
@@ -216,6 +219,9 @@ public class NativeWrapper {
 				Log.d("Angband", "Wipe all!");
 				state.stdscr.clear();
 				state.virtscr.overwrite(state.stdscr);
+
+				if (term != null) term.clear();
+
 				frosh(null);
 			}
 		}
@@ -249,6 +255,19 @@ public class NativeWrapper {
 	}
 
 	private void frosh(TermWindow w) {
+		if (term != null) {
+			term.postInvalidate();
+		}
+	}
+
+	private void wipe(int r, int c)
+	{
+		if (term != null) {
+			term.wipe(r, c);
+		}
+	}
+
+	private void frosh2(TermWindow w) {
 
 		if (w != null) {
 			if (w != state.virtscr && w != state.stdscr) {
@@ -272,21 +291,28 @@ public class NativeWrapper {
 		synchronized(display_lock) {
 			/* for forcing a redraw due to an Android event, w should be null */
 
+			/*
 			TermWindow v = state.virtscr;
 
 			if (w != null) {
 				v.overwrite(w);
 			}
+    		*/
 
-			if (term == null) {
+    		TermWindow v = state.stdscr;
+
+    		if (term == null) {
     	    	v.quiet();
             	return;
     		}
 
 			/* mark ugly points, i.e. those clobbered by anti-alias overflow */
+
+			/*
 			for(int c = 0; c<v.cols; c++) {
 				for(int r = 0; r<v.rows; r++) {
 					TermWindow.TermPoint p = v.buffer[r][c];
+
 					if (p.isDirty || w == null) {
 
 						if (r<v.rows-1) {
@@ -308,6 +334,7 @@ public class NativeWrapper {
 					}
 				}
 			}
+			*/
 
 			term.preloadTiles(v);
 
@@ -405,7 +432,25 @@ public class NativeWrapper {
 			TermWindow t = state.getWin(w);
 			if (t != null && state.windowIsVisible(t)) {
 				t.cursor_visible = false;
+
+				int x0 = t.col;
+				int y0 = t.row;
+
 				t.addnstr(n, cp);
+
+				if (w == 0 && term != null) {
+					int dx = 0;
+					for (dx = 0; dx < n; dx++) {
+						int x = x0+dx;
+						int y = y0;
+						if (x >= 0 && y >= 0 && x < t.cols && y < t.rows) {
+							TermWindow.TermPoint p = t.buffer[y][x];
+							if (p != null) {
+								drawPoint(y, x, p, false);
+							}
+						}
+					}
+				}
 			}
 		}
 	}
@@ -419,6 +464,15 @@ public class NativeWrapper {
 				t.cursor_visible = false;
 				t.addTile(x, y, a, c, ta, tc);
 				//t.addTilePad(x, y, term.tile_wid, term.tile_hgt);
+
+				if (w == 0 && term != null) {
+					if (x >= 0 && y >= 0 && x < t.cols && y < t.rows) {
+						TermWindow.TermPoint p = t.buffer[y][x];
+						if (p != null) {
+							drawTile(y, x, p);
+						}
+					}
+				}
 			}
 		}
 	}
@@ -479,7 +533,27 @@ public class NativeWrapper {
 	public void whline(final int w, final byte c, final int n) {
 		synchronized (display_lock) {
 			TermWindow t = state.getWin(w);
-			if (t != null) t.hline((char)c, n);
+			if (t != null) {
+
+				int x0 = t.col;
+				int y0 = t.row;
+
+				t.hline((char)c, n);
+
+				if (w == 0 && term != null) {
+					int dx = 0;
+					for (dx = 0; dx < n; dx++) {
+						int x = x0+dx;
+						int y = y0;
+						if (x >= 0 && y >= 0 && x < t.cols && y < t.rows) {
+							TermWindow.TermPoint p = t.buffer[y][x];
+							if (p != null) {
+								drawPoint(y, x, p, false);
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -487,21 +561,53 @@ public class NativeWrapper {
 		//Log.d("Angband", "Native wclear");
 		synchronized (display_lock) {
 			TermWindow t = state.getWin(w);
-			if (t != null) t.clear();
+			if (t != null) {
+				t.clear();
+
+				if (w == 0 && term != null) {
+					term.clear();
+				}
+			}
 		}
 	}
 
 	public void wclrtoeol(final int w) {
 		synchronized (display_lock) {
 			TermWindow t = state.getWin(w);
-			if (t != null) t.clrtoeol();
+			if (t != null) {
+
+				int x0 = t.col;
+				int y0 = t.row;
+
+				t.clrtoeol();
+
+				if (w == 0 && term != null) {
+					for (int x = x0; x < t.cols; x++) {
+						wipe(y0, x);
+					}
+				}
+			}
 		}
 	}
 
 	public void wclrtobot(final int w) {
 		synchronized (display_lock) {
 			TermWindow t = state.getWin(w);
-			if (t != null) t.clrtobot();
+			if (t != null) {
+
+				int x0 = t.col;
+				int y0 = t.row;
+
+				t.clrtobot();
+
+				if (w == 0 && term != null) {
+					for (int y = y0; y < t.rows; y++) {
+						for (int x = x0; x < t.cols; x++) {
+							wipe(y, x);
+						}
+					}
+				}
+			}
 		}
 	}
 

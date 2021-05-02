@@ -774,7 +774,7 @@ public class TermView extends View implements OnGestureListener {
     {
         String name = Preferences.getDPadColor(colorIdx);
 
-        Log.d("Angband", "Color: " + name);
+        //Log.d("Angband", "Color: " + name);
 
         for (int i = 0; i < dPadColors.length; i++) {
             if (dPadColors[i][0].equals(name)) {
@@ -2094,6 +2094,17 @@ public class TermView extends View implements OnGestureListener {
    		return true;
 	}
 
+    public void wipe(int r, int c)
+    {
+        int tw = char_width;
+        int th = char_height;
+        int x = c * tw;
+        int y = r * th;
+
+        setBackColor(Color.BLACK);
+
+        canvas.drawRect(x, y, x + tw, y + th, back);
+    }
 
 	public void drawPoint(int r, int c, TermWindow.TermPoint p,
         int fcolor, int bcolor, boolean extendedErase) {
@@ -2390,13 +2401,13 @@ public class TermView extends View implements OnGestureListener {
 
             //game_context.infoAlert("Big tile! " + row + " " + col);
 
-            markTile(state.virtscr, row, col, tile_hgt, tile_wid);
+            //markTile(state.virtscr, row, col, tile_hgt, tile_wid);
         }
 
         Rect dst = tile.locateDest();
 
         // Optimization: just clear grids with alpha
-        if (fill && tileHasAlpha(tile)) {
+        if (fill/* && tileHasAlpha(tile)*/) {
             setBackColor(Color.BLACK);
             canvas.drawRect(dst, back);
         }
