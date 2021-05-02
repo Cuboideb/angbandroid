@@ -317,7 +317,6 @@ public class TermWindow {
 		}
 	}
 
-	/*
 	public void addTilePad(int x, int y, int tw, int th)
 	{
 		int x2, y2;
@@ -344,7 +343,6 @@ public class TermWindow {
 			}
 		}
 	}
-	*/
 
 	public void addTile(int x, int y, int a, int c, int ta, int tc) {
 		if (x>-1 && x<cols && y>-1 && y<rows) {

@@ -254,12 +254,6 @@ public class NativeWrapper {
 		}
 	}
 
-	private void frosh(TermWindow w) {
-		if (term != null) {
-			term.postInvalidate();
-		}
-	}
-
 	private void wipe(int r, int c)
 	{
 		if (term != null) {
@@ -267,7 +261,50 @@ public class NativeWrapper {
 		}
 	}
 
-	private void frosh2(TermWindow w) {
+	private void frosh(TermWindow w)
+	{
+		if (term == null) return;
+
+		TermWindow v = state.stdscr;
+
+		term.preloadTiles(v);
+
+		if (w != null) {
+			// Just redraw
+			if (state.windowIsVisible(w)) {
+				term.postInvalidate();
+			}
+			return;
+		}
+
+		Log.d("Angband", "Frosh with NULL");
+
+		for(int r = 0; r < v.rows; r++) {
+			for(int c = 0; c < v.cols; c++) {
+				TermWindow.TermPoint p = v.buffer[r][c];
+
+				if (p.isBigPad()) {
+					continue;
+				}
+
+				if (p.isGraphicTile()) {
+					drawTile(r, c, p);
+				}
+				else {
+					drawPoint(r, c, p, false);
+				}
+			}
+		}
+
+		term.postInvalidate();
+
+		if (false && w == null) {
+			Log.d("Angband", "Scroll reset");
+			term.onScroll(null,null,0,0);  // sanitize scroll position
+		}
+	}
+
+	private void froshOld(TermWindow w) {
 
 		if (w != null) {
 			if (w != state.virtscr && w != state.stdscr) {
@@ -291,15 +328,11 @@ public class NativeWrapper {
 		synchronized(display_lock) {
 			/* for forcing a redraw due to an Android event, w should be null */
 
-			/*
 			TermWindow v = state.virtscr;
 
 			if (w != null) {
 				v.overwrite(w);
 			}
-    		*/
-
-    		TermWindow v = state.stdscr;
 
     		if (term == null) {
     	    	v.quiet();
@@ -308,7 +341,6 @@ public class NativeWrapper {
 
 			/* mark ugly points, i.e. those clobbered by anti-alias overflow */
 
-			/*
 			for(int c = 0; c<v.cols; c++) {
 				for(int r = 0; r<v.rows; r++) {
 					TermWindow.TermPoint p = v.buffer[r][c];
@@ -334,7 +366,6 @@ public class NativeWrapper {
 					}
 				}
 			}
-			*/
 
 			term.preloadTiles(v);
 
@@ -463,7 +494,8 @@ public class NativeWrapper {
 			if (t != null && state.windowIsVisible(t)) {
 				t.cursor_visible = false;
 				t.addTile(x, y, a, c, ta, tc);
-				//t.addTilePad(x, y, term.tile_wid, term.tile_hgt);
+
+				t.addTilePad(x, y, term.tile_wid, term.tile_hgt);
 
 				if (w == 0 && term != null) {
 					if (x >= 0 && y >= 0 && x < t.cols && y < t.rows) {
