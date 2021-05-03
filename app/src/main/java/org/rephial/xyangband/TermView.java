@@ -2165,8 +2165,6 @@ public class TermView extends View implements OnGestureListener {
         a &= 0x7F;
         c &= 0xFF;
 
-        if (c == ' ') return;
-
         TermWindow.ColorPair pair = TermWindow.pairs.get(a);
         if (pair == null) return;
 
@@ -2188,6 +2186,8 @@ public class TermView extends View implements OnGestureListener {
         Rect bg = new Rect(x, y, x+tw, y+th);
         setBackColor(Color.BLACK);
         canvas.drawRect(bg, back);
+
+        if (c == ' ') return;
 
         fore_temp.setColor(pair.fColor);
 

@@ -19,6 +19,8 @@ public class TermWindow {
 	public static int DEFAULT_FORE = 1;
 	public static ColorPair defaultColor = new ColorPair(TERM_WHITE,TERM_BLACK);
 
+	public long nextRedraw = 0;
+
 	public class TermPoint {
 		public char ch = ' ';
 		public int fgColor = DEFAULT_FORE;
@@ -107,6 +109,16 @@ public class TermWindow {
 				}
 			}
 		}
+	}
+
+	public boolean canRedraw()
+	{
+		return System.currentTimeMillis() >= nextRedraw;
+	}
+
+	public void delayRedraw()
+	{
+		nextRedraw = System.currentTimeMillis() + (1000/60);
 	}
 
 	public static void init_color(int c, int rgb) {

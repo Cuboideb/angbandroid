@@ -217,7 +217,7 @@ public class KeyBuffer {
 				keyspecial.offer((int)c);
 			}
 			keyspecial.offer(mark);
-			//wakeUp();
+			wakeUp();
 		}
 	}
 

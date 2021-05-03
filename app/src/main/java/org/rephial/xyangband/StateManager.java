@@ -200,7 +200,9 @@ public class StateManager {
 
 	public void addSpecialCommand(String cmd)
 	{
-		if (keyBuffer != null) keyBuffer.addSpecialCommand(cmd);
+		if (keyBuffer != null) {
+			keyBuffer.addSpecialCommand(cmd);
+		}
 	}
 
 	public boolean isRoguelikeKeyboard()

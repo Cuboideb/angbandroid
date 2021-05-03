@@ -244,13 +244,23 @@ public class NativeWrapper {
 	}
 
 	public void wrefresh(int w) {
-		//Log.d("Angband", "Native wrefresh");
 
 		if (term == null) return;
 
 		synchronized (display_lock) {
 			TermWindow t = state.getWin(w);
-			if (t != null) frosh(t);
+
+			if (t != null) {
+
+				if (w > 0 || !t.canRedraw()) {
+					//Log.d("Angband", "Native wrefresh too soon " + w);
+					return;
+				}
+
+				Log.d("Angband", "Native wrefresh " + w + " -- " + System.currentTimeMillis());
+
+				frosh(t);
+			}
 		}
 	}
 
@@ -272,10 +282,15 @@ public class NativeWrapper {
 		if (w != null) {
 			// Just redraw
 			if (state.windowIsVisible(w)) {
+
+				w.delayRedraw();
+
 				term.postInvalidate();
 			}
 			return;
 		}
+
+		v.delayRedraw();
 
 		Log.d("Angband", "Frosh with NULL");
 
@@ -590,11 +605,15 @@ public class NativeWrapper {
 	}
 
 	public void wclear(final int w) {
-		//Log.d("Angband", "Native wclear");
+
 		synchronized (display_lock) {
 			TermWindow t = state.getWin(w);
 			if (t != null) {
 				t.clear();
+
+				//t.delayRedraw();
+
+				Log.d("Angband", "Native wclear " + w + " NEXT: " + t.nextRedraw);
 
 				if (w == 0 && term != null) {
 					term.clear();

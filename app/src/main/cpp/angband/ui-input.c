@@ -1488,6 +1488,31 @@ static int textui_get_count(void)
  */
 static struct keypress request_command_buffer[256];
 
+void feed_keymap(const char *buf)
+{
+	int idx = 0;
+
+	inkey_next = NULL;
+
+	while (true) {
+		struct keypress *key = &request_command_buffer[idx];
+
+		key->type = EVT_KBRD;
+		key->code = buf[idx];
+		key->mods = 0;
+
+		if (!buf[idx]) {
+			key->type = EVT_NONE;
+			break;
+		}
+
+		++idx;
+	}
+
+	if (idx > 1) {
+		inkey_next = request_command_buffer;
+	}
+}
 
 /**
  * Request a command from the user.

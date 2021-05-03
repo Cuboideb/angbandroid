@@ -1137,10 +1137,14 @@ public class ButtonRibbon implements OnClickListener,
         String action = cmd.action.replace("USER_", "");
         Iterator<Integer> iter = InputUtils.parseCodeKeys(action)
             .iterator();
+        String txt = "";
         while (iter.hasNext()) {
             Integer num = iter.next();
-            state.addKey(num.intValue());
+            txt += Character.toString((char)num.intValue());
+            //state.addKey(num.intValue());
         }
+        state.stdscr.delayRedraw();
+        state.addSpecialCommand("macro:"+txt);
     }
 
     @Override
@@ -1370,7 +1374,7 @@ public class ButtonRibbon implements OnClickListener,
             }
 
             if (isUserCommand()) {
-                btn.setOnLongClickListener(this);                
+                btn.setOnLongClickListener(this);
 
                 if (action.toUpperCase().equals("USER_RUN")) {
                     convertToIcon('.');

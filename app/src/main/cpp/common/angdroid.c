@@ -214,6 +214,7 @@ void send_key_to_term(int key) {
 int process_special_command(int key)
 {
 	char buf[2048] = "";
+	char tmp[200] = "";
 	char *pbuf = buf;
 	int graf, pseudo, trows, tcols, top_bar;
 
@@ -248,6 +249,32 @@ int process_special_command(int key)
 		return KTRL('R');
 		//return 0;
 	}
+
+#if defined(HAS_FEED_KEYMAP)
+	if (strncmp(buf, "macro:", 6) == 0) {
+
+		my_strcpy(tmp, buf+6, sizeof(tmp));
+
+		LOGD("Macro: %s", tmp);
+
+		feed_keymap(tmp);
+
+		/* Return the first code */
+		if (inkey_next) {
+			keycode_t code = inkey_next->code;
+			if (code) {
+				++inkey_next;
+			}
+			if (!inkey_next->code) {
+				inkey_next = NULL;
+			}
+			LOGD("Code: %u", code);
+			return code;
+		}
+
+		return 0;
+	}
+#endif
 
 	if (sscanf(buf, "resize:%d:%d", &tcols, &trows) == 2) {
 
@@ -317,23 +344,44 @@ static errr Term_xtra_android(int n, int v)
 			 * This action is required.
 			 */
 
+			LOGD("Waiting key v: %d", v);
+
+			/*
+			if (inkey_next) {
+				LOGD("has inkey_next");
+				keycode_t code = inkey_next->code;
+				if (code) {
+					++inkey_next;
+				}
+				if (!inkey_next->code) {
+					inkey_next = NULL;
+				}
+				return code;
+			}
+			*/
+
 			int key = get_input_from_ui(v);
+
+			LOGD("Initial key: %d", key);
 
 			if (key == -1) {
 				try_save();
 			}
 			else if (key == SPECIAL_CMD) {
+				LOGD("Special command");
 				key = process_special_command(key);
 				if (key != 0) {
 					send_key_to_term(key);
 				}
 			}
 			else if (v == 0) {
+				LOGD("v == 0");
 				while (key != 0) {
 					send_key_to_term(key);
 					key = get_input_from_ui(v);
 				}
 			} else {
+				LOGD("Common case");
 				send_key_to_term(key);
 			}
 

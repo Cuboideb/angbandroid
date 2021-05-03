@@ -114,4 +114,7 @@ ui_event textui_get_command(int *count);
 bool key_confirm_command(unsigned char c);
 bool textui_process_key(struct keypress kp, unsigned char *c, int count);
 
+#define HAS_FEED_KEYMAP 1
+void feed_keymap(const char *buf);
+
 #endif /* INCLUDED_UI_INPUT_H */
