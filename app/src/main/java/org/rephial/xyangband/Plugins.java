@@ -51,6 +51,10 @@ final public class Plugins {
 		{
 			return this == angband;
 		}
+		public boolean canHandleKeymaps()
+		{
+			return this == angband;
+		}
 	}
 
 	static final String DEFAULT_PROFILE = "0~Default~PLAYER~0~0";

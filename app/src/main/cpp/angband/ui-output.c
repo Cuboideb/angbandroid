@@ -30,7 +30,7 @@ s16b screen_save_depth;
  * ------------------------------------------------------------------------ */
 
 /**
- * These functions are used for manipulating regions on the screen, used 
+ * These functions are used for manipulating regions on the screen, used
  * mostly (but not exclusively) by the menu functions.
  */
 
@@ -266,7 +266,7 @@ void text_out_to_screen(byte a, const char *str)
 
 	/* Copy to a rewriteable string */
 	text_mbstowcs(buf, str, 1024);
-	
+
 	/* Use special wrapping boundary? */
 	if ((text_out_wrap > 0) && (text_out_wrap < wid))
 		wrap = text_out_wrap;
@@ -443,7 +443,8 @@ void screen_load(void)
 	Term_control_context();
 
 	/* Redraw big graphics */
-	if (screen_save_depth == 0 && (tile_width > 1 || tile_height > 1))
+	if (screen_save_depth == 0 && !inkey_next &&
+		(tile_width > 1 || tile_height > 1))
 		Term_redraw();
 }
 
