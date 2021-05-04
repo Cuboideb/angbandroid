@@ -363,10 +363,8 @@ void grid_data_as_text(struct grid_data *g, int *ap, wchar_t *cp, int *tap,
 		a |= 0x80;
 	}
 
-	// Hack - Big text (for android)
-	if (!(a & 0x80) && ((tile_width > 1) || (tile_height > 1))) {
-		c |= Term->big_text_mask;
-
+	// Hack - Big text uses padding in Android
+	if ((tile_width > 1) || (tile_height > 1)) {
 		a |= 0x80;
 	}
 

@@ -249,18 +249,8 @@ public class NativeWrapper {
 
 		synchronized (display_lock) {
 			TermWindow t = state.getWin(w);
-
 			if (t != null) {
-
-				/*
-				if (w == 0 && !t.canRedraw()) {
-					Log.d("Angband", "Native wrefresh too soon " + w);
-					return;
-				}
-				*/
-
-				Log.d("Angband", "Native wrefresh " + w + " -- " + System.currentTimeMillis());
-
+				//Log.d("Angband", "Native wrefresh " + w + " -- " + System.currentTimeMillis());
 				frosh(t);
 			}
 		}
@@ -280,7 +270,6 @@ public class NativeWrapper {
 		if (w != null && w != state.stdscr &&
 			state.windowIsVisible(w)) {
 			// Just redraw
-			// w.delayRedraw();
 			term.postInvalidate();
 			return;
 		}
@@ -291,8 +280,6 @@ public class NativeWrapper {
 		TermWindow v = state.stdscr;
 
 		term.preloadTiles(v);
-
-		v.delayRedraw();
 
 		for(int r = 0; r < v.rows; r++) {
 			for(int c = 0; c < v.cols; c++) {
@@ -314,13 +301,9 @@ public class NativeWrapper {
 		}
 
 		term.postInvalidate();
-
-		if (false && w == null) {
-			Log.d("Angband", "Scroll reset");
-			term.onScroll(null,null,0,0);  // sanitize scroll position
-		}
 	}
 
+	/*
 	private void froshOld(TermWindow w) {
 
 		if (w != null) {
@@ -343,7 +326,7 @@ public class NativeWrapper {
 		}
 
 		synchronized(display_lock) {
-			/* for forcing a redraw due to an Android event, w should be null */
+			// for forcing a redraw due to an Android event, w should be null
 
 			TermWindow v = state.virtscr;
 
@@ -356,7 +339,7 @@ public class NativeWrapper {
             	return;
     		}
 
-			/* mark ugly points, i.e. those clobbered by anti-alias overflow */
+			// mark ugly points, i.e. those clobbered by anti-alias overflow
 
 			for(int c = 0; c<v.cols; c++) {
 				for(int r = 0; r<v.rows; r++) {
@@ -415,6 +398,7 @@ public class NativeWrapper {
 			}
 		}
 	}
+	*/
 
 	private void drawTile(int r, int c, TermWindow.TermPoint p)
 	{
@@ -480,27 +464,7 @@ public class NativeWrapper {
 			TermWindow t = state.getWin(w);
 			if (t != null && state.windowIsVisible(t)) {
 				t.cursor_visible = false;
-
-				int x0 = t.col;
-				int y0 = t.row;
-
 				t.addnstr(n, cp);
-
-				/*
-				if (w == 0 && term != null) {
-					int dx = 0;
-					for (dx = 0; dx < n; dx++) {
-						int x = x0+dx;
-						int y = y0;
-						if (x >= 0 && y >= 0 && x < t.cols && y < t.rows) {
-							TermWindow.TermPoint p = t.buffer[y][x];
-							if (p != null) {
-								drawPoint(y, x, p, false);
-							}
-						}
-					}
-				}
-				*/
 			}
 		}
 	}
@@ -513,19 +477,7 @@ public class NativeWrapper {
 			if (t != null && state.windowIsVisible(t)) {
 				t.cursor_visible = false;
 				t.addTile(x, y, a, c, ta, tc);
-
 				t.addTilePad(x, y, term.tile_wid, term.tile_hgt);
-
-				/*
-				if (w == 0 && term != null) {
-					if (x >= 0 && y >= 0 && x < t.cols && y < t.rows) {
-						TermWindow.TermPoint p = t.buffer[y][x];
-						if (p != null) {
-							drawTile(y, x, p);
-						}
-					}
-				}
-				*/
 			}
 		}
 	}
@@ -587,27 +539,7 @@ public class NativeWrapper {
 		synchronized (display_lock) {
 			TermWindow t = state.getWin(w);
 			if (t != null) {
-
-				int x0 = t.col;
-				int y0 = t.row;
-
 				t.hline((char)c, n);
-
-				/*
-				if (w == 0 && term != null) {
-					int dx = 0;
-					for (dx = 0; dx < n; dx++) {
-						int x = x0+dx;
-						int y = y0;
-						if (x >= 0 && y >= 0 && x < t.cols && y < t.rows) {
-							TermWindow.TermPoint p = t.buffer[y][x];
-							if (p != null) {
-								drawPoint(y, x, p, false);
-							}
-						}
-					}
-				}
-				*/
 			}
 		}
 	}
@@ -618,16 +550,6 @@ public class NativeWrapper {
 			TermWindow t = state.getWin(w);
 			if (t != null) {
 				t.clear();
-
-				//t.delayRedraw();
-
-				/*
-				Log.d("Angband", "Native wclear " + w + " NEXT: " + t.nextRedraw);
-
-				if (w == 0 && term != null) {
-					term.clear();
-				}
-				*/
 			}
 		}
 	}
@@ -636,19 +558,7 @@ public class NativeWrapper {
 		synchronized (display_lock) {
 			TermWindow t = state.getWin(w);
 			if (t != null) {
-
-				int x0 = t.col;
-				int y0 = t.row;
-
 				t.clrtoeol();
-
-				/*
-				if (w == 0 && term != null) {
-					for (int x = x0; x < t.cols; x++) {
-						wipe(y0, x);
-					}
-				}
-				*/
 			}
 		}
 	}
@@ -657,21 +567,7 @@ public class NativeWrapper {
 		synchronized (display_lock) {
 			TermWindow t = state.getWin(w);
 			if (t != null) {
-
-				int x0 = t.col;
-				int y0 = t.row;
-
 				t.clrtobot();
-
-				/*
-				if (w == 0 && term != null) {
-					for (int y = y0; y < t.rows; y++) {
-						for (int x = x0; x < t.cols; x++) {
-							wipe(y, x);
-						}
-					}
-				}
-				*/
 			}
 		}
 	}

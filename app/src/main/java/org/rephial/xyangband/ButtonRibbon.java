@@ -1143,8 +1143,6 @@ public class ButtonRibbon implements OnClickListener,
                 Integer num = iter.next();
                 txt += Character.toString((char)num.intValue());
             }
-            // Delay to avoid flickering
-            //if (state.stdscr != null) state.stdscr.delayRedraw();
             state.addSpecialCommand("macro:"+txt);
         }
         else {

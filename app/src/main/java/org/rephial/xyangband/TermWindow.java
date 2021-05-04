@@ -19,8 +19,6 @@ public class TermWindow {
 	public static int DEFAULT_FORE = 1;
 	public static ColorPair defaultColor = new ColorPair(TERM_WHITE,TERM_BLACK);
 
-	public long nextRedraw = 0;
-
 	public class TermPoint {
 		public char ch = ' ';
 		public int fgColor = DEFAULT_FORE;
@@ -32,8 +30,9 @@ public class TermWindow {
 		public boolean isUgly = false;
 
 		public void clear() {
-			isDirty = isDirty || ch != ' ' || bgChar != 0 ||
-					fgColor != DEFAULT_FORE || bgColor != 0;
+			//isDirty = isDirty || ch != ' ' || bgChar != 0 ||
+			//		fgColor != DEFAULT_FORE || bgColor != 0;
+			isDirty = true;
 			ch = ' ';
 			bgChar = 0;
 			bgColor = 0;
@@ -109,16 +108,6 @@ public class TermWindow {
 				}
 			}
 		}
-	}
-
-	public boolean canRedraw()
-	{
-		return System.currentTimeMillis() >= nextRedraw;
-	}
-
-	public void delayRedraw()
-	{
-		nextRedraw = System.currentTimeMillis() + (1000/60);
 	}
 
 	public static void init_color(int c, int rgb) {
@@ -341,8 +330,6 @@ public class TermWindow {
 			for (x2 = x; x2 < x + tw; x2++) {
 
 				if ((y2 >= rows) || (x2 >= cols)) continue;
-
-				//move(y2, x2);
 
 				if (y2 > y || x2 > x) {
 					TermPoint p = buffer[y2][x2];

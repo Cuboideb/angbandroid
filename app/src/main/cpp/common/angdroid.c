@@ -643,10 +643,6 @@ static void term_data_link(int i)
 	t->attr_blank = COLOUR_WHITE;
 	t->char_blank = ' ';
 
-	t->attr_pad = COLOUR_WHITE;
-	//t->char_pad = 0x1E00;
-	t->big_text_mask = 0x1D00;
-
 	/* Prepare the init/nuke hooks */
 	t->init_hook = Term_init_android;
 	t->nuke_hook = Term_nuke_android;

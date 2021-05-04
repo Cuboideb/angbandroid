@@ -187,10 +187,6 @@ struct term
 	int attr_blank;
 	wchar_t char_blank;
 
-	int attr_pad;
-	wchar_t char_pad;
-	int big_text_mask;
-
 	bool complex_input;
 
 	ui_event *key_queue;

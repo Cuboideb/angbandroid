@@ -21,8 +21,6 @@
 #include "z-color.h"
 #include "z-util.h"
 #include "z-virt.h"
-#include "z-form.h"
-#include "ui-prefs.h"
 
 /**
  * This file provides a generic, efficient, terminal window package,
@@ -616,10 +614,7 @@ void Term_big_queue_char(term *t, int x, int y, int a, wchar_t c, int a1,
         /* Horizontal first; skip already marked upper left corner */
         for (hor = 1; hor < tile_width; hor++) {
         	/* Queue dummy character */
-
-        	if (t->char_pad)
-        		Term_queue_char(t, x + hor, y, t->attr_pad, t->char_pad, 0, 0);
-	        else if (a & 0x80)
+			if (a & 0x80)
 		    	Term_queue_char(t, x + hor, y, 255, -1, 0, 0);
 			else
 		        Term_queue_char(t, x + hor, y, COLOUR_WHITE, L' ', a1, c1);
@@ -629,9 +624,7 @@ void Term_big_queue_char(term *t, int x, int y, int a, wchar_t c, int a1,
 		for (vert = 1; vert < vmax; vert++) {
 			for (hor = 0; hor < tile_width; hor++) {
 				/* Queue dummy character */
-				if (t->char_pad)
-        			Term_queue_char(t, x + hor, y + vert, t->attr_pad, t->char_pad, 0, 0);
-	        	else if (a & 0x80)
+				if (a & 0x80)
 					Term_queue_char(t, x + hor, y + vert, 255, -1, 0, 0);
 				else
 					Term_queue_char(t, x + hor, y + vert, COLOUR_WHITE, L' ', a1, c1);
@@ -641,10 +634,7 @@ void Term_big_queue_char(term *t, int x, int y, int a, wchar_t c, int a1,
 		/* Only vertical */
 		for (vert = 1; vert < vmax; vert++) {
 			/* Queue dummy character */
-
-			if (t->char_pad)
-				Term_queue_char(t, x, y + vert, t->attr_pad, t->char_pad, 0, 0);
-			else if (a & 0x80)
+			if (a & 0x80)
 				Term_queue_char(t, x, y + vert, 255, -1, 0, 0);
 			else
 				Term_queue_char(t, x, y + vert, COLOUR_WHITE, L' ', a1, c1);
@@ -2079,9 +2069,7 @@ void Term_big_putch(int x, int y, int a, wchar_t c)
 		for (hor = 0; hor <= tile_width; hor++) {
 			/* Queue dummy character */
 			if (hor != 0) {
-				if (Term->char_pad)
-					Term_putch(x + hor, y, Term->attr_pad, Term->char_pad);
-				else if (a & 0x80)
+				if (a & 0x80)
 					Term_putch(x + hor, y, 255, -1);
 				else
 					Term_putch(x + hor, y, COLOUR_WHITE, L' ');
@@ -2090,9 +2078,7 @@ void Term_big_putch(int x, int y, int a, wchar_t c)
 			/* Now vertical */
 			for (vert = 1; vert <= tile_height; vert++) {
 				/* Queue dummy character */
-				if (Term->char_pad)
-					Term_putch(x + hor, y + vert, Term->attr_pad, Term->char_pad);
-				else if (a & 0x80)
+				if (a & 0x80)
 					Term_putch(x + hor, y + vert, 255, -1);
 				else
 					Term_putch(x + hor, y + vert, COLOUR_WHITE, L' ');
@@ -2102,9 +2088,7 @@ void Term_big_putch(int x, int y, int a, wchar_t c)
 		/* Only vertical */
 		for (vert = 1; vert <= tile_height; vert++) {
 			/* Queue dummy character */
-			if (Term->char_pad)
-				Term_putch(x, y + vert, Term->attr_pad, Term->char_pad);
-			else if (a & 0x80)
+			if (a & 0x80)
 				Term_putch(x, y + vert, 255, -1);
 			else
 				Term_putch(x, y + vert, COLOUR_WHITE, L' ');
@@ -3030,11 +3014,6 @@ errr term_init(term *t, int w, int h, int k)
 	/* Default "blank" */
 	t->attr_blank = 0;
 	t->char_blank = L' ';
-
-	/* Default pad */
-	t->attr_pad = 0;
-	t->char_pad = 0;
-	t->big_text_mask = 0;
 
 	/* No saves yet */
 	t->saved = 0;
