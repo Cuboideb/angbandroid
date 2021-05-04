@@ -252,10 +252,12 @@ public class NativeWrapper {
 
 			if (t != null) {
 
-				if (w > 0 || !t.canRedraw()) {
-					//Log.d("Angband", "Native wrefresh too soon " + w);
+				/*
+				if (w == 0 && !t.canRedraw()) {
+					Log.d("Angband", "Native wrefresh too soon " + w);
 					return;
 				}
+				*/
 
 				Log.d("Angband", "Native wrefresh " + w + " -- " + System.currentTimeMillis());
 
@@ -275,28 +277,28 @@ public class NativeWrapper {
 	{
 		if (term == null) return;
 
+		if (w != null && w != state.stdscr &&
+			state.windowIsVisible(w)) {
+			// Just redraw
+			// w.delayRedraw();
+			term.postInvalidate();
+			return;
+		}
+
+		if (w == null) Log.d("Angband", "Frosh with NULL");
+		else Log.d("Angband", "Frosh with main window");
+
 		TermWindow v = state.stdscr;
 
 		term.preloadTiles(v);
 
-		if (w != null) {
-			// Just redraw
-			if (state.windowIsVisible(w)) {
-
-				w.delayRedraw();
-
-				term.postInvalidate();
-			}
-			return;
-		}
-
 		v.delayRedraw();
-
-		Log.d("Angband", "Frosh with NULL");
 
 		for(int r = 0; r < v.rows; r++) {
 			for(int c = 0; c < v.cols; c++) {
 				TermWindow.TermPoint p = v.buffer[r][c];
+
+				if (w != null && !p.isDirty) continue;
 
 				if (p.isBigPad()) {
 					continue;
@@ -484,6 +486,7 @@ public class NativeWrapper {
 
 				t.addnstr(n, cp);
 
+				/*
 				if (w == 0 && term != null) {
 					int dx = 0;
 					for (dx = 0; dx < n; dx++) {
@@ -497,6 +500,7 @@ public class NativeWrapper {
 						}
 					}
 				}
+				*/
 			}
 		}
 	}
@@ -512,6 +516,7 @@ public class NativeWrapper {
 
 				t.addTilePad(x, y, term.tile_wid, term.tile_hgt);
 
+				/*
 				if (w == 0 && term != null) {
 					if (x >= 0 && y >= 0 && x < t.cols && y < t.rows) {
 						TermWindow.TermPoint p = t.buffer[y][x];
@@ -520,6 +525,7 @@ public class NativeWrapper {
 						}
 					}
 				}
+				*/
 			}
 		}
 	}
@@ -587,6 +593,7 @@ public class NativeWrapper {
 
 				t.hline((char)c, n);
 
+				/*
 				if (w == 0 && term != null) {
 					int dx = 0;
 					for (dx = 0; dx < n; dx++) {
@@ -600,6 +607,7 @@ public class NativeWrapper {
 						}
 					}
 				}
+				*/
 			}
 		}
 	}
@@ -613,11 +621,13 @@ public class NativeWrapper {
 
 				//t.delayRedraw();
 
+				/*
 				Log.d("Angband", "Native wclear " + w + " NEXT: " + t.nextRedraw);
 
 				if (w == 0 && term != null) {
 					term.clear();
 				}
+				*/
 			}
 		}
 	}
@@ -632,11 +642,13 @@ public class NativeWrapper {
 
 				t.clrtoeol();
 
+				/*
 				if (w == 0 && term != null) {
 					for (int x = x0; x < t.cols; x++) {
 						wipe(y0, x);
 					}
 				}
+				*/
 			}
 		}
 	}
@@ -651,6 +663,7 @@ public class NativeWrapper {
 
 				t.clrtobot();
 
+				/*
 				if (w == 0 && term != null) {
 					for (int y = y0; y < t.rows; y++) {
 						for (int x = x0; x < t.cols; x++) {
@@ -658,6 +671,7 @@ public class NativeWrapper {
 						}
 					}
 				}
+				*/
 			}
 		}
 	}

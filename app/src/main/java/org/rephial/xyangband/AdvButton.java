@@ -185,11 +185,26 @@ class AdvButton extends View
 		}
 
 		List<Integer> list = InputUtils.parseCodeKeys(action);
-		for (Integer keycode: list) {
-			if (keycode > 0) {
-				state.addKey(keycode);
+		if (list.size() > 1 &&
+			Preferences.getActivePlugin().canHandleKeymaps()) {
+
+			String txt = "";
+			for (Integer keycode: list) {
+				if (keycode > 0) {
+					char ch = (char)keycode.intValue();
+					txt += Character.toString(ch);
+				}
+			}
+            state.addSpecialCommand("macro:"+txt);
+		}
+		else {
+			for (Integer keycode: list) {
+				if (keycode > 0) {
+					state.addKey(keycode);
+				}
 			}
 		}
+
 		parent.setShiftMode(0);
 	}
 

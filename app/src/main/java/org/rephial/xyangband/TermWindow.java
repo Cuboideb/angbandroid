@@ -346,7 +346,7 @@ public class TermWindow {
 
 				if (y2 > y || x2 > x) {
 					TermPoint p = buffer[y2][x2];
-					p.isDirty = true;
+					p.isDirty = false;
 					p.ch = TermView.BIG_PAD;
 					p.fgColor = 0;
 					p.bgChar = 0;
