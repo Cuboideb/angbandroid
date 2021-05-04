@@ -1135,22 +1135,7 @@ public class ButtonRibbon implements OnClickListener,
     public void procUserCommand(Command cmd)
     {
         String action = cmd.action.replace("USER_", "");
-        Iterator<Integer> iter = InputUtils.parseCodeKeys(action).iterator();
-
-        if (Preferences.getActivePlugin().canHandleKeymaps()) {
-            String txt = "";
-            while (iter.hasNext()) {
-                Integer num = iter.next();
-                txt += Character.toString((char)num.intValue());
-            }
-            state.addSpecialCommand("macro:"+txt);
-        }
-        else {
-            while (iter.hasNext()) {
-                Integer num = iter.next();
-                state.addKey(num.intValue());
-            }
-        }
+        InputUtils.processAction(state, action);
     }
 
     @Override

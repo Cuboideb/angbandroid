@@ -255,7 +255,12 @@ int process_special_command(int key)
 
 		my_strcpy(tmp, buf+6, sizeof(tmp));
 
-		LOGD("Macro: %s", tmp);
+		/*LOGD("Macro: %s", tmp);*/
+
+		/* Just a simple character */
+		if (strlen(tmp) <= 1) {
+			return tmp[0];
+		}
 
 		feed_keymap(tmp);
 
@@ -268,7 +273,7 @@ int process_special_command(int key)
 			if (!inkey_next->code) {
 				inkey_next = NULL;
 			}
-			LOGD("Code: %u", code);
+			/*LOGD("Code: %u", code);*/
 			return code;
 		}
 

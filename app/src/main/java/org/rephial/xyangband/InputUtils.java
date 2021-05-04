@@ -132,7 +132,7 @@ class InputUtils
 
             // We have another char
             if ((i+1) < n) next = txt.charAt(i+1);
-                            
+
             if (ch0 == '^' && Character.isAlphabetic(next)) {
                 ch0 = KTRL(next);
                 i += 1;
@@ -161,11 +161,36 @@ class InputUtils
                 // ignore, and next char too
                 ch0 = 0;
                 i += 1;
-            }            
+            }
 
             if (ch0 > 0) lst.add(ch0);
             i += 1;
         }
         return lst;
+    }
+
+    public static void processAction(StateManager state, String action)
+    {
+        List<Integer> list = InputUtils.parseCodeKeys(action);
+
+        if (list.size() > 1 &&
+            Preferences.getActivePlugin().canHandleKeymaps()) {
+
+            String txt = "";
+            for (Integer keycode: list) {
+                if (keycode > 0) {
+                    char ch = (char)keycode.intValue();
+                    txt += Character.toString(ch);
+                }
+            }
+            state.addSpecialCommand("macro:"+txt);
+        }
+        else {
+            for (Integer keycode: list) {
+                if (keycode > 0) {
+                    state.addKey(keycode);
+                }
+            }
+        }
     }
 }
