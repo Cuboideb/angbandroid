@@ -659,6 +659,10 @@ final public class Preferences {
 		return pref.getInt(KEY_MULT_TOP_BAR, 0);
 	}
 
+	public static int getAsciiHelperPct() {
+		return pref.getInt("angband.ascii_helper", 0);
+	}
+
 	public static boolean getShowMouseIcon() {
 		return pref.getBoolean("angband.show_mouse_icon", false);
 	}

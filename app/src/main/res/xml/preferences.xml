@@ -56,6 +56,12 @@
 			android:defaultValue="false"
 			android:title="Pseudo Ascii"
 			android:summary="Use ascii for monsters and tiles for everything else" />
+		<org.rephial.xyangband.SeekBarPreference
+			android:key="angband.ascii_helper"
+			android:title="Show small ascii helper for tiles (suggested value: 40%)"
+			seekBar:min="0"
+			seekBar:max="100"
+			seekBar:defaultVal="0" />
 		<CheckBoxPreference
 			android:key="angband.top_bar"
 			android:defaultValue="true"

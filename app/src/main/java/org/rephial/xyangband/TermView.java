@@ -2407,7 +2407,9 @@ public class TermView extends View implements OnGestureListener {
 
     public void drawAsciiHelper(TileGrid tile, Rect src)
     {
-        if (Preferences.getActivePlugin().onlyText()) return;
+        int pctHelper = Preferences.getAsciiHelperPct();
+
+        if (pctHelper < 10) return;
 
         GxAscii info = null;
 
@@ -2448,7 +2450,7 @@ public class TermView extends View implements OnGestureListener {
             return;
         }
 
-        int side = 40 * Math.min(src.bottom - src.top,
+        int side = pctHelper * Math.min(src.bottom - src.top,
             src.right - src.left) / 100;
 
         if (side < 10) return;
