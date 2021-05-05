@@ -439,13 +439,6 @@ void screen_load(void)
 	event_signal(EVENT_MESSAGE_FLUSH);
 	Term_load();
 	screen_save_depth--;
-
-	Term_control_context();
-
-	/* Redraw big graphics */
-	if (screen_save_depth == 0 && !inkey_next &&
-		(tile_width > 1 || tile_height > 1))
-		Term_redraw();
 }
 
 bool textui_map_is_visible(void)
