@@ -36,6 +36,7 @@
 #include "ui-command.h"
 #include "ui-game.h" // save_game()
 #include "player-timed.h"
+#include "monster.h"
 
 static char variant_name[100];
 static char android_files_path[1024];
@@ -349,7 +350,7 @@ static errr Term_xtra_android(int n, int v)
 			 * This action is required.
 			 */
 
-			LOGD("Waiting key v: %d", v);
+			/*LOGD("Waiting key v: %d", v);*/
 
 			/*
 			if (inkey_next) {
@@ -367,26 +368,26 @@ static errr Term_xtra_android(int n, int v)
 
 			int key = get_input_from_ui(v);
 
-			LOGD("Initial key: %d", key);
+			/*LOGD("Initial key: %d", key);*/
 
 			if (key == -1) {
 				try_save();
 			}
 			else if (key == SPECIAL_CMD) {
-				LOGD("Special command");
+				/*LOGD("Special command");*/
 				key = process_special_command(key);
 				if (key != 0) {
 					send_key_to_term(key);
 				}
 			}
 			else if (v == 0) {
-				LOGD("v == 0");
+				/*LOGD("v == 0");*/
 				while (key != 0) {
 					send_key_to_term(key);
 					key = get_input_from_ui(v);
 				}
 			} else {
-				LOGD("Common case");
+				/*LOGD("Common case");*/
 				send_key_to_term(key);
 			}
 
@@ -886,11 +887,36 @@ static char *get_tilesets(void)
 	return strdup(buf);
 }
 
+static char *get_gx_ascii(int ga, int gc)
+{
+	int i;
+	char buf[100] = "";
+
+	/*LOGD("r_max: %d", z_info->r_max);*/
+
+	for (i = 0; i < z_info->r_max; i++) {
+
+		struct monster_race *race = &r_info[i];
+
+		/* Retrieve attr/char and compare */
+		if (race->name
+			&& monster_x_attr[race->ridx] == ga
+			&& monster_x_char[race->ridx] == gc) {
+
+			sprintf(buf, "monster;%d;%d", race->d_attr, race->d_char);
+        	break;
+        }
+	}
+
+	return strdup(buf);
+}
+
 char* queryString(const char* argv0)
 {
 	const char *CMD_DESC = "cmd_desc_";
 
 	char *buf = 0;
+	int ga, gc;
 
 	if (strncmp(argv0, CMD_DESC, strlen(CMD_DESC)) == 0) {
 		// Find the respective key in roguelike mode
@@ -906,6 +932,9 @@ char* queryString(const char* argv0)
 	}
 	else if (strcmp(argv0, "get_tilesets") == 0) {
 		buf = get_tilesets();
+	}
+	else if (sscanf(argv0, "get_gx_ascii_%d_%d", &ga, &gc) == 2) {
+		buf = get_gx_ascii(ga, gc);
 	}
 
 	return buf;

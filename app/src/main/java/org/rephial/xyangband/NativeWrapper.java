@@ -275,7 +275,7 @@ public class NativeWrapper {
 		}
 
 		if (w == null) Log.d("Angband", "Frosh with NULL");
-		else Log.d("Angband", "Frosh with main window");
+		//else Log.d("Angband", "Frosh with main window");
 
 		TermWindow v = state.stdscr;
 

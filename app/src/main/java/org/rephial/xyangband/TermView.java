@@ -168,7 +168,8 @@ public class TermView extends View implements OnGestureListener {
 
     public class TileGrid
     {
-        //Point _pt;
+        int attr;
+        int chr;
         Point srcPoint;
         TSize srcSize;
 
@@ -188,6 +189,9 @@ public class TermView extends View implements OnGestureListener {
             int pDstRow, int pDstCol)
         {
             gm = pGM;
+
+            attr = pSrcRow;
+            chr = pSrcCol;
 
             //_pt = new Point(pSrcCol, pSrcRow);
 
@@ -2388,6 +2392,107 @@ public class TermView extends View implements OnGestureListener {
         return alphaTiles.get(key).intValue() == 1;
     }
 
+    public class GxAscii
+    {
+        /* Graphics encoding */
+        int ga;
+        int gc;
+        /* Ascii encoding */
+        int a;
+        int c;
+        String type;
+    }
+
+    public ArrayList<GxAscii> gxa_list = new ArrayList<>();
+
+    public void drawAsciiHelper(TileGrid tile, Rect src)
+    {
+        if (Preferences.getActivePlugin().onlyText()) return;
+
+        GxAscii info = null;
+
+        for (GxAscii ele: gxa_list) {
+            if (ele.ga == tile.attr && ele.gc == tile.chr) {
+                info = ele;
+                break;
+            }
+        }
+
+        // Not found
+        if (info == null) {
+            String key = "get_gx_ascii_" + tile.attr
+                + "_" + tile.chr;
+
+            info = new GxAscii();
+            info.type = "unknown";
+            info.ga = tile.attr;
+            info.gc = tile.chr;
+            info.a = 0;
+            info.c = 0;
+
+            String txt = state.nativew.queryString(key);
+
+            if (txt != null) {
+                String[] parts = txt.split(";");
+                if (parts.length == 3) {
+                    info.type = parts[0];
+                    info.a = Integer.parseInt(parts[1]);
+                    info.c = Integer.parseInt(parts[2]);
+                }
+            }
+
+            gxa_list.add(info);
+        }
+
+        if (!info.type.equals("monster") || (info.a + info.c) == 0) {
+            return;
+        }
+
+        int side = 40 * Math.min(src.bottom - src.top,
+            src.right - src.left) / 100;
+
+        if (side < 10) return;
+
+        /*
+        int top = src.top;
+        if (tile.isLargeTile) top += ((src.bottom-src.top)/2);
+
+        Rect dst = new Rect(src.right - side,
+            top, src.right, top + side);
+        */
+
+        Rect dst = new Rect(src.right - side,
+            src.bottom - side, src.right, src.bottom);
+
+        setBackColor(Color.BLACK);
+        canvas.drawRect(dst, back);
+
+        TermWindow.ColorPair pair = TermWindow.pairs.get(info.a);
+        if (pair == null) return;
+
+        int color = pair.fColor;
+
+        Paint paint = fore;
+
+        float old = paint.getTextSize();
+
+        float fs = Math.max(side * 0.8f, MIN_FONT);
+
+        paint.setTextSize(fs);
+        paint.setColor(color);
+
+        String str = Character.toString((char)info.c);
+
+        int w2 = (int)paint.measureText(str, 0, str.length());
+
+        float x = dst.left + (side - w2) / 2;
+        float y = dst.bottom - paint.descent();
+
+        canvas.drawText(str, x, y, paint);
+
+        paint.setTextSize(old);
+    }
+
 	public void drawTileAux(int row, int col, int a, int c,
         boolean fill)
 	{
@@ -2397,17 +2502,19 @@ public class TermView extends View implements OnGestureListener {
 
         TileGrid tile = new TileGrid(currentGraf, a, c, row, col);
 
+        /*
         if (tile.isLargeTile) {
 
             //game_context.infoAlert("Big tile! " + row + " " + col);
 
-            //markTile(state.virtscr, row, col, tile_hgt, tile_wid);
+            markTile(state.virtscr, row, col, tile_hgt, tile_wid);
         }
+        */
 
         Rect dst = tile.locateDest();
 
         // Optimization: just clear grids with alpha
-        if (fill/* && tileHasAlpha(tile)*/) {
+        if (fill && tileHasAlpha(tile)) {
             setBackColor(Color.BLACK);
             canvas.drawRect(dst, back);
         }
@@ -2419,7 +2526,13 @@ public class TermView extends View implements OnGestureListener {
         canvas.drawBitmap(bm, dst.left, dst.top, null);
 
         // Special mark for life color
-        if ((a & 0x02000) != 0) drawLifeColor(a, dst);
+        if ((a & 0x02000) != 0) {
+            drawLifeColor(a, dst);
+        }
+
+        if (!fill) {
+            drawAsciiHelper(tile, dst);
+        }
 	}
 
     public void drawTile(int row, int col, int a, char c,
