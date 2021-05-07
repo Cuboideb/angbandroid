@@ -8,6 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_gravity="bottom"
         android:id="@+id/at_left" />
 
     <HorizontalScrollView
@@ -20,10 +21,25 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:layout_gravity="right"
-            android:orientation="horizontal"
-            android:id="@+id/at_center" />
-            <!-- android:layout_gravity="right" -->
+            android:id="@+id/at_center">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="right"
+                android:id="@+id/dynamic2" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="right"
+                android:id="@+id/dynamic1" />
+
+        </LinearLayout>
 
     </HorizontalScrollView>
 
@@ -31,5 +47,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_gravity="bottom"
         android:id="@+id/at_right" />
 </LinearLayout>

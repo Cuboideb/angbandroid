@@ -354,7 +354,7 @@ public class GameActivity extends Activity {
 	public void setFastKeysAux(String keys)
 	{
 		if (ribbonZone != null) {
-			topRibbon.setKeys(keys, ButtonRibbon.CmdLocation.Dynamic);
+			topRibbon.setFastKeys(keys);
 			bottomRibbon.setShift(false);
 		}
 	}
@@ -416,6 +416,7 @@ public class GameActivity extends Activity {
 			ribbonZone.addView(bottomRibbon.rootView);
 			bottomRibbon.addSibling(topRibbon);
 
+			/*
 			for (int i = 0; i < Preferences.getExtraRibbonRows(); i++) {
 				ButtonRibbon another = new ButtonRibbon(this, state,
 					false, true);
@@ -425,6 +426,7 @@ public class GameActivity extends Activity {
 			}
 
 			bottomRibbon.notifyClones();
+			*/
 		}
 	}
 

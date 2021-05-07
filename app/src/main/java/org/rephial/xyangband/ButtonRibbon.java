@@ -43,7 +43,8 @@ public class ButtonRibbon implements OnClickListener,
     GameActivity context = null;
     StateManager state = null;
     LinearLayout atLeft = null;
-    LinearLayout atCenter = null;
+    LinearLayout dynamic1 = null;
+    LinearLayout dynamic2 = null;
     LinearLayout atRight = null;
     boolean fastMode = false;
     boolean cloneMode = true;
@@ -64,11 +65,12 @@ public class ButtonRibbon implements OnClickListener,
     public static int popupBackAlpha = 255;
     public static int popupButtonColor = Color.BLACK;
 
-    public String userKeymaps = "";
+    public String[] userKeymaps = null;
 
     public enum CmdLocation {
         FixedL,
-        Dynamic,
+        Dynamic1,
+        Dynamic2,
         FixedR
     }
 
@@ -84,7 +86,8 @@ public class ButtonRibbon implements OnClickListener,
         rootView.findViewById(R.id.scrollv).setFocusable(false);
 
         atLeft = rootView.findViewById(R.id.at_left);
-        atCenter = rootView.findViewById(R.id.at_center);
+        dynamic1 = rootView.findViewById(R.id.dynamic1);
+        dynamic2 = rootView.findViewById(R.id.dynamic2);
         atRight = rootView.findViewById(R.id.at_right);
 
         commands = new ArrayList();
@@ -107,14 +110,12 @@ public class ButtonRibbon implements OnClickListener,
 
         if (cloneMode) return;
 
-        String userActions[] = KeymapEditor.getUserKeymaps();
-
         // Fixed keys
         if (fastMode) {
 
             rebuildTopFixed("default");
 
-            userKeymaps = userActions[0];
+            userKeymaps = KeymapEditor.getUserKeymaps();
 
             rebuildKeymaps();
         }
@@ -124,8 +125,6 @@ public class ButtonRibbon implements OnClickListener,
             //makeCommand("▤", "Kbd", CmdLocation.FixedL);
             //makeCommand("✦", "do_cmd_list", CmdLocation.FixedL);
             //makeCommand("^", "Ctrl", CmdLocation.FixedL);
-
-            userKeymaps = userActions[1];
 
             if (state.inTheDungeon()) {
                 restoreCommandMode();
@@ -173,11 +172,13 @@ public class ButtonRibbon implements OnClickListener,
 
     public ViewGroup getGroup(CmdLocation loc)
     {
-        if (loc == CmdLocation.Dynamic) return atCenter;
+        if (loc == CmdLocation.Dynamic1) return dynamic1;
+        if (loc == CmdLocation.Dynamic2) return dynamic2;
         if (loc == CmdLocation.FixedL) return atLeft;
         return atRight;
     }
 
+    /*
     public void clonify(ButtonRibbon from, CmdLocation loc,
         int first)
     {
@@ -208,7 +209,9 @@ public class ButtonRibbon implements OnClickListener,
             }
         }, 300L);
     }
+    */
 
+    /*
     public void notifyClones()
     {
         if (clones.size() == 0) return;
@@ -229,6 +232,7 @@ public class ButtonRibbon implements OnClickListener,
             first += page_size;
         }
     }
+    */
 
     public void setCommandMode(boolean set)
     {
@@ -237,16 +241,14 @@ public class ButtonRibbon implements OnClickListener,
         }
 
         // Already created and equal, do nothing
-        if (atCenter.getChildCount() > 0 && set == commandMode) {
+        if (dynamic1.getChildCount() > 0 && set == commandMode) {
             return;
         }
 
-        removeCommands(atCenter);
+        removeCommands(dynamic1);
 
-        makeCommand("▤", "Kbd", CmdLocation.Dynamic);
-        makeCommand("✦", "do_cmd_list", CmdLocation.Dynamic);
-
-        rebuildUserKeymaps(CmdLocation.Dynamic);
+        makeCommand("▤", "Kbd", CmdLocation.Dynamic1);
+        makeCommand("✦", "do_cmd_list", CmdLocation.Dynamic1);
 
         if (set) {
             // Hide shift and ctrl
@@ -257,7 +259,7 @@ public class ButtonRibbon implements OnClickListener,
             for (char c: txt.toCharArray()) {
                 String label = Character.toString(c);
                 String action = "CMD_" + c;
-                makeCommand(label, action, CmdLocation.Dynamic);
+                makeCommand(label, action, CmdLocation.Dynamic1);
             }
         }
         else {
@@ -267,24 +269,24 @@ public class ButtonRibbon implements OnClickListener,
 
             setKeys("abcdefghijklmnopqrstuvwxyz " +
                     "0123456789.,*'?~!#$%&<>|^" +
-                    "/\\=()[]{}@+-_:;\"", CmdLocation.Dynamic);
+                    "/\\=()[]{}@+-_:;\"", CmdLocation.Dynamic1);
             // Other keys
             for (int i = 0; InputUtils.keynames[i].length() > 0; i++) {
                 makeCommand(InputUtils.keynames[i],
                     Character.toString(InputUtils.keycodes[i]),
-                    CmdLocation.Dynamic);
+                    CmdLocation.Dynamic1);
             }
         }
 
         atLeft.requestLayout();
         atLeft.invalidate();
-        atCenter.invalidate();
+        dynamic1.invalidate();
 
         commandMode = set;
         shifted = false;
         controlDown = false;
 
-        notifyClones();
+        //notifyClones();
     }
 
     public void resizeButton(Button btn)
@@ -490,15 +492,15 @@ public class ButtonRibbon implements OnClickListener,
                 }
             }
 
-            removeCommands(atCenter);
+            removeCommands(dynamic1);
 
             removeAutoList();
         }
     }
 
-    public void rebuildUserKeymaps(CmdLocation loc)
+    public void rebuildUserKeymaps(String src, CmdLocation loc)
     {
-        String keymaps[] = userKeymaps.split("###");
+        String keymaps[] = src.split("###");
         //Arrays.sort(keymaps);
         for (String str: keymaps) {
 
@@ -519,14 +521,23 @@ public class ButtonRibbon implements OnClickListener,
 
     public void rebuildKeymaps()
     {
-        CmdLocation loc = CmdLocation.Dynamic;
-        ViewGroup grp = getGroup(loc);
+        if (userKeymaps == null || userKeymaps.length != 2) return;
 
-        removeCommands(grp);
-        grp.invalidate();
+        CmdLocation[] vloc = {
+            CmdLocation.Dynamic1,
+            CmdLocation.Dynamic2
+        };
+        for (int i = 0; i < 2; i++) {
+            CmdLocation loc = vloc[i];
+            ViewGroup grp = getGroup(loc);
 
-        rebuildUserKeymaps(loc);
+            removeCommands(grp);
+            grp.invalidate();
 
+            rebuildUserKeymaps(userKeymaps[i], loc);
+        }
+
+        /*
         String coreKeymaps = Preferences.getCoreKeymaps();
         if (coreKeymaps.length() > 0) {
 
@@ -542,6 +553,7 @@ public class ButtonRibbon implements OnClickListener,
                 makeCommand(label, action, loc);
             }
         }
+        */
     }
 
     public void addFKeys(CmdLocation loc)
@@ -555,13 +567,18 @@ public class ButtonRibbon implements OnClickListener,
         }
     }
 
+    public void setFastKeys(String keys)
+    {
+        setKeys(keys, CmdLocation.Dynamic1);
+    }
+
     public void setKeys(String keys, CmdLocation loc) {
 
         boolean showList = false;
 
         clearFastKeys();
 
-        if (fastMode && loc == CmdLocation.Dynamic) {
+        if (fastMode && loc == CmdLocation.Dynamic1) {
 
             if (keys.length() > 0) {
 
@@ -820,7 +837,7 @@ public class ButtonRibbon implements OnClickListener,
     }
 
     public void showDynamicKeys(View parentView) {
-        CmdLocation loc = CmdLocation.Dynamic;
+        CmdLocation loc = CmdLocation.Dynamic1;
 
         final PopupWindow win = new PopupWindow(context);
         win.setFocusable(true);
@@ -953,7 +970,7 @@ public class ButtonRibbon implements OnClickListener,
 
         removeAutoList();
 
-        CmdLocation loc = CmdLocation.Dynamic;
+        CmdLocation loc = CmdLocation.Dynamic1;
 
         int minRowItems = 3;
         float screenPct = 0.5f;
