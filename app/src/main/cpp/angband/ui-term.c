@@ -596,18 +596,27 @@ void Term_queue_char(term *t, int x, int y, int a, wchar_t c, int ta,
 }
 
 /**
- * Queue a large-sized tile
+ * Queue a large-sized tile.
+ * \param x Is the column for the upper left corner of the tile.
+ * \param y Is the row for the upper left corner of the tile.
+ * \param clipy Is the lower bound for rows that should not be modified when
+ * writing the large-sized tile.
+ * \param a Is the foreground attribute.
+ * \param c Is the foreground character.
+ * \param a1 Is the background attribute.
+ * \param c1 Is the background character.
  */
-void Term_big_queue_char(term *t, int x, int y, int a, wchar_t c, int a1,
-						 wchar_t c1)
+void Term_big_queue_char(term *t, int x, int y, int clipy,
+	int a, wchar_t c, int a1, wchar_t c1)
 {
-	/* Leave space on bottom for status */
-	int vmax = (y + tile_height < t->hgt - ROW_BOTTOM_MAP) ?
-	    tile_height : t->hgt - ROW_BOTTOM_MAP - y;
+	int vmax;
         int hor, vert;
 
 	/* Avoid warning */
 	(void)c;
+
+	/* Leave space on bottom if requested */
+	vmax = (y + tile_height <= clipy) ? tile_height : clipy - y;
 
 	/* No tall skinny tiles */
 	if (tile_width > 1) {
@@ -2147,7 +2156,7 @@ void Term_big_putch(int x, int y, int a, wchar_t c)
 			}
 
 			/* Now vertical */
-			for (vert = 1; vert <= tile_height; vert++) {
+			for (vert = 1; vert < tile_height; vert++) {
 				/* Queue dummy character */
 				if (a & 0x80)
 					Term_putch(x + hor, y + vert, 255, -1);
@@ -2157,7 +2166,7 @@ void Term_big_putch(int x, int y, int a, wchar_t c)
 		}
 	} else {
 		/* Only vertical */
-		for (vert = 1; vert <= tile_height; vert++) {
+		for (vert = 1; vert < tile_height; vert++) {
 			/* Queue dummy character */
 			if (a & 0x80)
 				Term_putch(x, y + vert, 255, -1);
