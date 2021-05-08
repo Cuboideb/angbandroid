@@ -83,7 +83,7 @@ public class ButtonRibbon implements OnClickListener,
 
         rootView = context.getLayoutInflater().inflate(R.layout.buttonribbon, null);
 
-        rootView.findViewById(R.id.scrollv).setFocusable(false);
+        //rootView.findViewById(R.id.scrollv).setFocusable(false);
 
         atLeft = rootView.findViewById(R.id.at_left);
         dynamic1 = rootView.findViewById(R.id.dynamic1);
@@ -984,6 +984,7 @@ public class ButtonRibbon implements OnClickListener,
         }
     }
 
+    /*
     public void doPageScroll(String action)
     {
         final HorizontalScrollView hsv =
@@ -991,6 +992,7 @@ public class ButtonRibbon implements OnClickListener,
         hsv.pageScroll(action.equals("PageLeft") ?
             View.FOCUS_LEFT: View.FOCUS_RIGHT);
     }
+    */
 
     public boolean canFitButtons(int amount)
     {
@@ -1224,11 +1226,13 @@ public class ButtonRibbon implements OnClickListener,
             return;
         }
 
+        /*
         if (action.equals("PageRight") ||
             action.equals("PageLeft")) {
             doPageScroll(action);
             return;
         }
+        */
 
         if (cmd.isCommand()) {
             action = Character.toString(cmd.getCommand(true));
