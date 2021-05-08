@@ -289,11 +289,22 @@ public class ButtonRibbon implements OnClickListener,
         //notifyClones();
     }
 
+    public void resizeButtonAux(Button btn, float pct)
+    {
+        int w = btn.getMinWidth();
+
+        w = (int)(w * pct);
+        // Hack, set both to get it working
+        btn.setMinimumWidth(w);
+        btn.setMinWidth(w);
+
+        float fw = btn.getTextSize();
+        btn.setTextSize(TypedValue.COMPLEX_UNIT_PX, fw * pct);
+    }
+
     public void resizeButton(Button btn)
     {
         int mult = Preferences.getRibbonButtonMult();
-
-        int w = btn.getMinWidth();
 
         if (mult < 45 || mult > 55) {
 
@@ -301,13 +312,7 @@ public class ButtonRibbon implements OnClickListener,
             pct = Math.min(pct, 1.5f);
             pct = Math.max(pct, 0.5f);
 
-            w = (int)(w * pct);
-            // Hack, set both to get it working
-            btn.setMinimumWidth(w);
-            btn.setMinWidth(w);
-
-            float fw = btn.getTextSize();
-            btn.setTextSize(TypedValue.COMPLEX_UNIT_PX, fw * pct);
+            resizeButtonAux(btn, pct);
         }
     }
 
@@ -575,6 +580,7 @@ public class ButtonRibbon implements OnClickListener,
     public void setKeys(String keys, CmdLocation loc) {
 
         boolean showList = false;
+        boolean enableSmall = false;
 
         clearFastKeys();
 
@@ -601,6 +607,8 @@ public class ButtonRibbon implements OnClickListener,
                     // Remove the pattern
                     keys = keys.replace(pattern, "");
                 }
+
+                enableSmall = true;
             }
             else {
                 rebuildKeymaps();
@@ -622,6 +630,20 @@ public class ButtonRibbon implements OnClickListener,
 
         if (showList) {
             showAutoList(rootView);
+        }
+
+        if (enableSmall) {
+            ViewGroup grp = getGroup(loc);
+            int n = grp.getChildCount();
+            float pct = Preferences.getReducedButtonWeight();
+            if (pct > 0.0f && n > 0 && !canFitButtons(n)) {
+                for (int i = 0; i < n; i++) {
+                    Button btn = (Button)grp.getChildAt(i);
+                    resizeButtonAux(btn, pct);
+                    btn.invalidate();
+                }
+                grp.requestLayout();
+            }
         }
     }
 
@@ -966,6 +988,19 @@ public class ButtonRibbon implements OnClickListener,
             View.FOCUS_LEFT: View.FOCUS_RIGHT);
     }
 
+    public boolean canFitButtons(int amount)
+    {
+        int kbdH = context.getKeyboardHeight();
+        Point winSize = context.getWinSize();
+        // Calculate the size of a button
+        // We have 2 or 3 rows of buttons
+        int btnSize = kbdH / (dynamic2.getChildCount() > 0 ? 3: 2);
+        // Add fixed items at the left
+        amount += 5;
+        // Wide enough ?
+        return btnSize * amount <= winSize.x;
+    }
+
     public void showAutoList(View parentView) {
 
         removeAutoList();
@@ -982,7 +1017,9 @@ public class ButtonRibbon implements OnClickListener,
 
         int kbdH = context.getKeyboardHeight();
         int maxH = winSize.y - kbdH;
-        int btnSize = kbdH / 2;
+        // Calculate the size of a button
+        // We have 2 or 3 rows of buttons
+        int btnSize = kbdH / (dynamic2.getChildCount() > 0 ? 3: 2);
         int winH = 0;
 
         ArrayList<Command> the_list = new ArrayList<>();

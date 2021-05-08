@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.util.Log;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -189,8 +190,6 @@ final public class Preferences {
 		return resources;
 	}
 
-
-
 	public static String getString(String key) {
 		return pref.getString(key, "");
 	}
@@ -229,6 +228,18 @@ final public class Preferences {
 
 	public static int getOrientation() {
 		return Integer.parseInt(pref.getString(Preferences.KEY_ORIENTATION, "0"));
+	}
+
+	public static float getReducedButtonWeight() {
+		try {
+			int n = pref.getInt("angband.reduce_buttons", 0);
+			float w = (float)n / 100.0f;
+			return w < 0.2f ? 0.0f: w;
+		}
+		catch (Exception ex) {
+			Log.d("Angband", ex.getMessage());
+		}
+		return 0.5f;
 	}
 
 	public static boolean getIconsEnabled() {

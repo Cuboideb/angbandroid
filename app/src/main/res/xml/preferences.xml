@@ -184,32 +184,34 @@
 		  seekBar:max="100"
 		  seekBar:defaultVal="0" />
 
+    <PreferenceScreen android:title="Button Ribbon options"
+    	android:summary="Configure things like button size or management of long lists">
+
 	  <org.rephial.xyangband.SeekBarPreference
 		  android:key="angband.ribbonbuttonmult"
 		  android:title="Ribbon button size multiplier"
 		  seekBar:min="0"
 		  seekBar:max="100"
 		  seekBar:defaultVal="50" />
+	  <org.rephial.xyangband.SeekBarPreference
+		  android:key="angband.reduce_buttons"
+		  android:title="Button width for long selections lists (try with 50%)"
+		  seekBar:min="0"
+		  seekBar:max="100"
+		  seekBar:defaultVal="0" />
 	  <CheckBoxPreference
 		  android:key="angband.showautolist"
 		  android:defaultValue="false"
 		  android:title="Auto display long lists"
 		  android:summary="When you are prompted for selection" />
 
-		<!--
-		<ListPreference
-			android:key="angband.ribbon_rows"
-			android:title="Number of extra rows in ribbon"
-			android:defaultValue="0"
-			android:entries="@array/extraRibbonRows"
-			android:entryValues="@array/extraRibbonRows"/>
-		-->
-
       <CheckBoxPreference
 		  android:key="angband.useicons"
 		  android:defaultValue="true"
 		  android:title="Use Icons"
 		  android:summary="Use Icons for ribbon buttons" />
+	</PreferenceScreen>
+
 	<PreferenceScreen
 	   android:title="Hardware Key Mapping"
 	   android:summary="Configure hardware buttons on your device to perform various functions">
