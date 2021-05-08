@@ -612,6 +612,10 @@ public class ButtonRibbon implements OnClickListener,
             }
             else {
                 rebuildKeymaps();
+                // Hack - Adjust d-pad position
+                if (context.term != null) {
+                    context.term.postInvalidate();
+                }
             }
         }
 
@@ -642,7 +646,7 @@ public class ButtonRibbon implements OnClickListener,
                     resizeButtonAux(btn, pct);
                     btn.invalidate();
                 }
-                grp.requestLayout();
+                //grp.requestLayout();
             }
         }
     }
