@@ -249,7 +249,7 @@ void do_cmd_go_down(struct command *cmd)
 
 	/* Make certain the player really wants to leave a themed level. -LM- */
 	if (player->themed_level) {
-		if (!get_check("This level will never appear again.  Really leave?")) {
+		if (!get_check("This level will never appear again.  Really leave? ")) {
 			return;
 		}
 	}
@@ -676,7 +676,8 @@ static bool do_cmd_tunnel_aux(struct loc grid)
 
 	/* Find what we're digging with and our chance of success */
 	best_digger = player_best_digger(player, false);
-	if (best_digger != current_weapon) {
+	if (best_digger != current_weapon &&
+			(!current_weapon || obj_can_takeoff(current_weapon))) {
 		/* Use only one without the overhead of gear_obj_for_use(). */
 		if (best_digger) {
 			oldn = best_digger->number;
@@ -1620,8 +1621,8 @@ void do_cmd_hold(struct command *cmd)
 			if (player->upkeep->energy_use > z_info->move_energy)
 				player->upkeep->energy_use = z_info->move_energy;
 		} else {
-	    event_signal(EVENT_SEEFLOOR);
-		square_know_pile(cave, player->grid);
+			event_signal(EVENT_SEEFLOOR);
+			square_know_pile(cave, player->grid);
 		}
 	}
 }

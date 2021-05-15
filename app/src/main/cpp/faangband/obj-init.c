@@ -55,7 +55,7 @@ static const char *mon_race_flags[] =
 
 static const char *obj_flags[] = {
 	"NONE",
-	#define OF(a) #a,
+	#define OF(a, b) #a,
 	#include "list-object-flags.h"
 	#undef OF
 	NULL
@@ -2084,15 +2084,15 @@ static void cleanup_object(void)
 		string_free(kind->name);
 		string_free(kind->text);
 		if (idx < z_info->ordinary_kind_max) {
-		string_free(kind->effect_msg);
+			string_free(kind->effect_msg);
 		}
 		string_free(kind->vis_msg);
 		mem_free(kind->brands);
 		mem_free(kind->slays);
 		mem_free(kind->curses);
 		if (idx < z_info->ordinary_kind_max) {
-		free_effect(kind->effect);
-	}
+			free_effect(kind->effect);
+		}
 	}
 	mem_free(k_info);
 }
@@ -2561,8 +2561,8 @@ static enum parser_error parse_artifact_base_object(struct parser *p) {
 	a->tval = tval;
 
 	if (parser_hasval(p, "sval")) {
-	sval_name = parser_getsym(p, "sval");
-	sval = lookup_sval(a->tval, sval_name);
+		sval_name = parser_getsym(p, "sval");
+		sval = lookup_sval(a->tval, sval_name);
 	} else {
 		/* Artifact devices */
 		return write_dummy_object_record(a, a->name);
@@ -2857,7 +2857,7 @@ static enum parser_error parse_artifact_msg(struct parser *p) {
 	if (a->effect) {
 		a->effect_msg = string_append(a->effect_msg, parser_getstr(p, "text"));
 	} else {
-	a->alt_msg = string_append(a->alt_msg, parser_getstr(p, "text"));
+		a->alt_msg = string_append(a->alt_msg, parser_getstr(p, "text"));
 	}
 	return PARSE_ERROR_NONE;
 }

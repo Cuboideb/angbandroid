@@ -121,7 +121,7 @@ static const char *slots[] = {
 
 const char *list_obj_flag_names[] = {
 	"NONE",
-	#define OF(a) #a,
+	#define OF(a, b) #a,
 	#include "list-object-flags.h"
 	#undef OF
 	NULL
@@ -276,6 +276,9 @@ static enum parser_error write_book_kind(struct class_book *book,
 	for (i = 0; i < ELEM_MAX; i++) {
 		kind->el_info[i].res_level = RES_LEVEL_BASE;
 	}
+
+	/* Inherit base flags. */
+	kf_union(kind->kind_flags, kb_info[kind->tval].kind_flags);
 
 	/* Dungeon books get extra properties */
 	if (book->dungeon) {
@@ -622,6 +625,8 @@ static enum parser_error parse_constants_carry_cap(struct parser *p) {
 		z->quiver_size = value;
 	else if (streq(label, "quiver-slot-size"))
 		z->quiver_slot_size = value;
+	else if (streq(label, "thrown-quiver-mult"))
+		z->thrown_quiver_mult = value;
 	else if (streq(label, "floor-size"))
 		z->floor_size = value;
 	else
@@ -2134,6 +2139,9 @@ static errr finish_parse_feat(struct parser *p) {
 static void cleanup_feat(void) {
 	int idx;
 	for (idx = 0; idx < z_info->f_max; idx++) {
+		string_free(f_info[idx].look_in_preposition);
+		string_free(f_info[idx].look_prefix);
+		string_free(f_info[idx].confused_msg);
 		string_free(f_info[idx].die_msg);
 		string_free(f_info[idx].hurt_msg);
 		string_free(f_info[idx].run_msg);
@@ -3478,10 +3486,29 @@ static enum parser_error parse_class_title(struct parser *p) {
 	return PARSE_ERROR_NONE;
 }
 
+static int lookup_option(const char *name)
+{
+	int result = 1;
+
+	while (1) {
+		if (result >= OPT_MAX) {
+			return 0;
+		}
+		if (streq(option_name(result), name)) {
+			return result;
+		}
+		++result;
+	}
+}
+
 static enum parser_error parse_class_equip(struct parser *p) {
 	struct player_class *c = parser_priv(p);
 	struct start_item *si;
 	int tval, sval;
+	char *eopts;
+	char *s;
+	int *einds;
+	int nind, nalloc;
 
 	if (!c)
 		return PARSE_ERROR_MISSING_RECORD_HEADER;
@@ -3494,11 +3521,49 @@ static enum parser_error parse_class_equip(struct parser *p) {
 	if (sval < 0)
 		return PARSE_ERROR_UNRECOGNISED_SVAL;
 
+	eopts = string_make(parser_getsym(p, "eopts"));
+	einds = NULL;
+	nind = 0;
+	nalloc = 0;
+	s = strtok(eopts, " |");
+	while (s) {
+		bool negated = false;
+		int ind;
+
+		if (prefix(s, "NOT-")) {
+			negated = true;
+			s += 4;
+		}
+		ind = lookup_option(s);
+		if (ind > 0 && option_type(ind) == OP_BIRTH) {
+			if (nind >= nalloc - 2) {
+				if (nalloc == 0) {
+					nalloc = 2;
+				} else {
+					nalloc *= 2;
+				}
+				einds = mem_realloc(einds,
+					nalloc * sizeof(*einds));
+			}
+			einds[nind] = (negated) ? -ind : ind;
+			einds[nind + 1] = 0;
+			++nind;
+		} else if (!streq(s, "none")) {
+			mem_free(einds);
+			mem_free(eopts);
+			quit_fmt("bad option name: %s", s);
+			return PARSE_ERROR_INVALID_FLAG;
+		}
+		s = strtok(NULL, " |");
+	}
+	mem_free(eopts);
+
 	si = mem_zalloc(sizeof *si);
 	si->tval = tval;
 	si->sval = sval;
 	si->min = parser_getuint(p, "min");
 	si->max = parser_getuint(p, "max");
+	si->eopts = einds;
 
 	if (si->min > 99 || si->max > 99) {
 		mem_free(si);
@@ -3852,7 +3917,7 @@ struct parser *init_parse_class(void) {
 	parser_reg(p, "min-weight int min-weight", parse_class_min_weight);
 	parser_reg(p, "strength-multiplier int att-multiply", parse_class_str_mult);
 	parser_reg(p, "title str title", parse_class_title);
-	parser_reg(p, "equip sym tval sym sval uint min uint max",
+	parser_reg(p, "equip sym tval sym sval uint min uint max sym eopts",
 			   parse_class_equip);
 	parser_reg(p, "obj-flags ?str flags", parse_class_obj_flags);
 	parser_reg(p, "player-flags ?str flags", parse_class_play_flags);
@@ -3906,6 +3971,7 @@ static void cleanup_class(void)
 		item = c->start_items;
 		while(item) {
 			item_next = item->next;
+			mem_free(item->eopts);
 			mem_free(item);
 			item = item_next;
 		}

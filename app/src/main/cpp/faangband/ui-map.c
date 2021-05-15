@@ -44,10 +44,10 @@ static void hallucinatory_monster(int *a, wchar_t *c)
 	while (1) {
 		/* Select a random monster */
 		struct monster_race *race = &r_info[randint0(z_info->r_max)];
-		
+
 		/* Skip non-entries */
 		if (!race->name) continue;
-		
+
 		/* Retrieve attr/char */
 		*a = monster_x_attr[race->ridx];
 		*c = monster_x_char[race->ridx];
@@ -61,18 +61,18 @@ static void hallucinatory_monster(int *a, wchar_t *c)
  */
 static void hallucinatory_object(int *a, wchar_t *c)
 {
-	
+
 	while (1) {
 		/* Select a random object */
 		struct object_kind *kind = &k_info[randint0(z_info->k_max - 1) + 1];
 
 		/* Skip non-entries */
 		if (!kind->name) continue;
-		
+
 		/* Retrieve attr/char (HACK - without flavors) */
 		*a = kind_x_attr[kind->kidx];
 		*c = kind_x_char[kind->kidx];
-		
+
 		/* HACK - Skip empty entries */
 		if (*a == 0 || *c == 0) continue;
 
@@ -140,12 +140,12 @@ static void grid_get_attr(struct grid_data *g, int *a)
 }
 
 /**
- * This function takes a pointer to a grid info struct describing the 
+ * This function takes a pointer to a grid info struct describing the
  * contents of a grid location (as obtained through the function map_info)
  * and fills in the character and attr pairs for display.
  *
- * ap and cp are filled with the attr/char pair for the monster, object or 
- * floor tile that is at the "top" of the grid (monsters covering objects, 
+ * ap and cp are filled with the attr/char pair for the monster, object or
+ * floor tile that is at the "top" of the grid (monsters covering objects,
  * which cover floor, assuming all are present).
  *
  * tap and tcp are filled with the attr/char pair for the floor, regardless
@@ -155,7 +155,7 @@ static void grid_get_attr(struct grid_data *g, int *a)
  * Any lighting effects are also applied to these pairs, clear monsters allow
  * the underlying colour or feature to show through (ATTR_CLEAR and
  * CHAR_CLEAR), multi-hued colour-changing (ATTR_MULTI) is applied, and so on.
- * Technically, the flag "CHAR_MULTI" is supposed to indicate that a monster 
+ * Technically, the flag "CHAR_MULTI" is supposed to indicate that a monster
  * looks strange when examined, but this flag is currently ignored.
  *
  * NOTES:
@@ -247,7 +247,7 @@ void grid_data_as_text(struct grid_data *g, int *ap, wchar_t *cp, int *tap,
 				/* Special attr/char codes */
 				a = da;
 				c = dc;
-			} else if (OPT(player, purple_uniques) && 
+			} else if (OPT(player, purple_uniques) &&
 					   rf_has(mon->race->flags, RF_UNIQUE)) {
 				/* Turn uniques purple if desired (violet, actually) */
 				a = COLOUR_VIOLET;
@@ -290,9 +290,9 @@ void grid_data_as_text(struct grid_data *g, int *ap, wchar_t *cp, int *tap,
 			switch(player->chp * 10 / player->mhp)
 			{
 			case 10:
-			case  9: 
+			case  9:
 			{
-				a = COLOUR_WHITE; 
+				a = COLOUR_WHITE;
 				break;
 			}
 			case  8:
@@ -332,9 +332,8 @@ void grid_data_as_text(struct grid_data *g, int *ap, wchar_t *cp, int *tap,
 		c = monster_x_char[race->ridx];
 	}
 
-	// Hack - Big text (for android)
-	if (!(a & 0x80) && ((tile_width > 1) || (tile_height > 1))) {
-		c |= Term->big_text_mask;
+	if (tile_width > 1 && tile_height > 1) {
+		a |= 0x80;
 	}
 
 	/* Result */
@@ -482,7 +481,13 @@ static void print_rel_map(wchar_t c, byte a, int y, int x)
 		Term_queue_char(t, kx, ky, a, c, 0, 0);
 
 		if ((tile_width > 1) || (tile_height > 1))
-			Term_big_queue_char(t, kx, ky, a, c, 0, 0);
+			/*
+			 * The overhead view can make use of the last row in
+			 * the terminal.  Others leave it be.
+			 */
+			Term_big_queue_char(t, kx, ky, t->hgt -
+				((window_flag[j] & PW_OVERHEAD) ? 0 : 1),
+				a, c, 0, 0);
 	}
 }
 
@@ -525,8 +530,9 @@ void print_rel(wchar_t c, byte a, int y, int x)
 	Term_queue_char(Term, vx, vy, a, c, 0, 0);
 
 	if ((tile_width > 1) || (tile_height > 1))
-		Term_big_queue_char(Term, vx, vy, a, c, 0, 0);
-  
+		Term_big_queue_char(Term, vx, vy, ROW_MAP + SCREEN_ROWS,
+			a, c, 0, 0);
+
 }
 
 
@@ -545,6 +551,7 @@ static void prt_map_aux(void)
 	/* Scan windows */
 	for (j = 0; j < ANGBAND_TERM_MAX; j++) {
 		term *t = angband_term[j];
+		int clipy;
 
 		/* No window */
 		if (!t) continue;
@@ -556,13 +563,27 @@ static void prt_map_aux(void)
 		ty = t->offset_y + (t->hgt / tile_height);
 		tx = t->offset_x + (t->wid / tile_width);
 
+		/*
+		 * The overhead view can use the last row of the terminal.
+		 * Others can not.
+		 */
+		clipy = t->hgt - ((window_flag[j] & PW_OVERHEAD) ? 0 : 1);
+
 		/* Dump the map */
 		for (y = t->offset_y, vy = 0; y < ty; vy += tile_height, y++) {
-			if (vy + tile_height - 1 >= t->hgt) continue;
 			for (x = t->offset_x, vx = 0; x < tx; vx += tile_width, x++) {
 				/* Check bounds */
-				if (!square_in_bounds(cave, loc(x, y))) continue;
-				if (vx + tile_width - 1 >= t->wid) continue;
+				if (!square_in_bounds(cave, loc(x, y))) {
+					Term_queue_char(t, vx, vy,
+						t->attr_blank, t->char_blank,
+						0, 0);
+					if (tile_width > 1 || tile_height > 1) {
+						Term_big_queue_char(t, vx, vy,
+							clipy, t->attr_blank,
+							t->char_blank, 0, 0);
+					}
+					continue;
+				}
 
 				/* Determine what is there */
 				map_info(loc(x, y), &g);
@@ -570,7 +591,20 @@ static void prt_map_aux(void)
 				Term_queue_char(t, vx, vy, a, c, ta, tc);
 
 				if ((tile_width > 1) || (tile_height > 1))
-					Term_big_queue_char(t, vx, vy, 255, -1, 0, 0);
+					Term_big_queue_char(t, vx, vy, clipy,
+						255, -1, 0, 0);
+			}
+			/* Clear partial tile at the end of each line. */
+			for (; vx < t->wid; ++vx) {
+				Term_queue_char(t, vx, vy, t->attr_blank,
+					t->char_blank, 0, 0);
+			}
+		}
+		/* Clear row of partial tiles at the bottom. */
+		for (; vy < t->hgt; ++vy) {
+			for (vx = 0; vx < t->wid; ++vx) {
+				Term_queue_char(t, vx, vy, t->attr_blank,
+					t->char_blank, 0, 0);
 			}
 		}
 	}
@@ -594,6 +628,7 @@ void prt_map(void)
 	int y, x;
 	int vy, vx;
 	int ty, tx;
+	int clipy;
 
 	/* Redraw map sub-windows */
 	prt_map_aux();
@@ -601,6 +636,9 @@ void prt_map(void)
 	/* Assume screen */
 	ty = Term->offset_y + SCREEN_HGT;
 	tx = Term->offset_x + SCREEN_WID;
+
+	/* Avoid overwriting the last row with padding for big tiles. */
+	clipy = ROW_MAP + SCREEN_ROWS;
 
 	/* Dump the map */
 	for (y = Term->offset_y, vy = ROW_MAP; y < ty; vy += tile_height, y++)
@@ -616,7 +654,8 @@ void prt_map(void)
 			Term_queue_char(Term, vx, vy, a, c, ta, tc);
 
 			if ((tile_width > 1) || (tile_height > 1))
-				Term_big_queue_char(Term, vx, vy, a, c, COLOUR_WHITE, L' ');
+				Term_big_queue_char(Term, vx, vy, clipy, a, c,
+					COLOUR_WHITE, L' ');
 		}
 }
 
@@ -710,7 +749,9 @@ void display_map(int *cy, int *cx)
 				Term_queue_char(Term, col + 1, row + 1, a, c, ta, tc);
 
 				if ((tile_width > 1) || (tile_height > 1))
-					Term_big_queue_char(Term, col + 1, row + 1, 255, -1, 0, 0);
+					Term_big_queue_char(Term, col + 1,
+						row + 1, Term->hgt - 1,
+						255, -1, 0, 0);
 
 				/* Save priority */
 				mp[row][col] = tp;
@@ -737,7 +778,7 @@ void display_map(int *cy, int *cx)
 
 	if ((tile_width > 1) || (tile_height > 1))
 		Term_big_putch(col + 1, row + 1, ta, tc);
-  
+
 	/* Return player location */
 	if (cy != NULL) (*cy) = row + 1;
 	if (cx != NULL) (*cx) = col + 1;

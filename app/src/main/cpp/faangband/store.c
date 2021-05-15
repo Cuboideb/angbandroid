@@ -73,7 +73,7 @@ static unsigned int store_home_idx;
 
 static const char *obj_flags[] = {
 	"NONE",
-	#define OF(a) #a,
+	#define OF(a, b) #a,
 	#include "list-object-flags.h"
 	#undef OF
 	NULL
@@ -732,7 +732,7 @@ static bool store_will_buy(struct store *store, const struct object *obj)
 
 		/* OK if the object is known to have the flag */
 		if (of_has(obj->flags, buy->flag) &&
-			object_flag_is_known(obj, buy->flag))
+			object_flag_is_known(player, obj, buy->flag))
 			return true;
 	}
 
@@ -1903,7 +1903,7 @@ void do_cmd_buy(struct command *cmd)
 	object_copy_amt(bought, obj, amt);
 
 	/* Ensure we have room */
-	if (bought->number > inven_carry_num(bought, false)) {
+	if (bought->number > inven_carry_num(bought)) {
 		msg("You cannot carry that many items.");
 		object_delete(&bought);
 		return;
@@ -2030,7 +2030,7 @@ void do_cmd_retrieve(struct command *cmd)
 	object_copy_amt(picked_item, obj, amt);
 
 	/* Ensure we have room */
-	if (picked_item->number > inven_carry_num(picked_item, false)) {
+	if (picked_item->number > inven_carry_num(picked_item)) {
 		msg("You cannot carry that many items.");
 		object_delete(&picked_item);
 		return;

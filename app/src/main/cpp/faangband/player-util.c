@@ -41,6 +41,7 @@
 #include "store.h"
 #include "target.h"
 #include "trap.h"
+#include "ui-input.h"
 
 /**
  * Check if an underworld level is available
@@ -472,7 +473,7 @@ void player_regen_hp(struct player *p)
 		percent *= 2;
 
 	/* Some things slow it down */
-	if (player_of_has(p, OF_IMPAIR_HP) || player_has(p, PF_COMBAT_REGEN))
+	if (player_of_has(p, OF_IMPAIR_HP))
 		percent /= 2;
 
 	/* Various things interfere with physical healing */
@@ -738,6 +739,8 @@ struct object *player_best_digger(struct player *p, bool forbid_stack)
 		int score, old_number;
 		if (!tval_is_melee_weapon(obj)) continue;
 		if (obj->number < 1 || (forbid_stack && obj->number > 1)) continue;
+		/* Don't use it if it has a sticky curse. */
+		if (!obj_can_takeoff(obj)) continue;
 
 		/* Swap temporarily for the calc_bonuses() computation. */
 		old_number = obj->number;
@@ -1058,6 +1061,38 @@ struct player_shape *player_shape_by_idx(int index)
 }
 
 /**
+ * Give shapechanged players a choice of returning to normal shape and
+ * performing a command, just returning to normal shape without acting, or
+ * canceling.
+ *
+ * \param p the player
+ * \param cmd the command being performed
+ * \return true if the player wants to proceed with their command
+ */
+bool player_get_resume_normal_shape(struct player *p, struct command *cmd)
+{
+	if (player_is_shapechanged(player)) {
+		msg("You cannot do this while in %s form.",	player->shape->name);
+		char prompt[100];
+		strnfmt(prompt, sizeof(prompt),
+		        "Change back and %s (y/n) or (r)eturn to normal? ",
+		        cmd_verb(cmd->code));
+		char p = get_char(prompt, "yrn", 3, 'n');
+
+		// Change back to normal shape
+		if (p == 'y' || p == 'r') {
+			player_resume_normal_shape(player);
+		}
+
+		// Players may only act if they return to normal shape
+		return p == 'y';
+	}
+
+	// Normal shape players can proceed as usual
+	return true;
+}
+
+/**
  * Revert to normal shape
  */
 void player_resume_normal_shape(struct player *p)
@@ -1255,7 +1290,8 @@ bool player_can_refuel(struct player *p, bool show_msg)
 }
 
 /**
- * Prerequiste function for command. See struct cmd_info in cmd-process.c.
+ * Prerequisite function for command. See struct cmd_info in ui-input.h and
+ * it's use in ui-game.c.
  */
 bool player_can_cast_prereq(void)
 {
@@ -1263,7 +1299,8 @@ bool player_can_cast_prereq(void)
 }
 
 /**
- * Prerequiste function for command. See struct cmd_info in cmd-process.c.
+ * Prerequisite function for command. See struct cmd_info in ui-input.h and
+ * it's use in ui-game.c.
  */
 bool player_can_study_prereq(void)
 {
@@ -1271,7 +1308,8 @@ bool player_can_study_prereq(void)
 }
 
 /**
- * Prerequiste function for command. See struct cmd_info in cmd-process.c.
+ * Prerequisite function for command. See struct cmd_info in ui-input.h and
+ * it's use in ui-game.c.
  */
 bool player_can_read_prereq(void)
 {
@@ -1279,7 +1317,8 @@ bool player_can_read_prereq(void)
 }
 
 /**
- * Prerequiste function for command. See struct cmd_info in cmd-process.c.
+ * Prerequisite function for command. See struct cmd_info in ui-input.h and
+ * it's use in ui-game.c.
  */
 bool player_can_fire_prereq(void)
 {
@@ -1287,12 +1326,31 @@ bool player_can_fire_prereq(void)
 }
 
 /**
- * Prerequiste function for command. See struct cmd_info in cmd-process.c.
+ * Prerequisite function for command. See struct cmd_info in ui-input.h and
+ * it's use in ui-game.c.
  */
 bool player_can_refuel_prereq(void)
 {
 	return player_can_refuel(player, true);
 }
+
+/**
+ * Prerequisite function for command. See struct cmd_info in ui-input.h and
+ * it's use in ui-game.c.
+ */
+bool player_can_debug_prereq(void)
+{
+	if (player->noscore & NOSCORE_DEBUG) {
+		return true;
+	}
+	if (confirm_debug()) {
+		/* Mark savefile */
+		player->noscore |= NOSCORE_DEBUG;
+		return true;
+	}
+	return false;
+}
+
 
 /**
  * Return true if the player has access to a book that has unlearned spells.

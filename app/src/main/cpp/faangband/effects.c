@@ -1143,7 +1143,8 @@ bool effect_handler_WEB(effect_handler_context_t *context)
 	/* Check within the radius for clear floor */
 	for (grid.y = mon->grid.y - rad; grid.y <= mon->grid.y + rad; grid.y++) {
 		for (grid.x = mon->grid.x - rad; grid.x <= mon->grid.x + rad; grid.x++){
-			if (distance(grid, mon->grid) > rad) continue;
+			if (distance(grid, mon->grid) > rad ||
+				!square_in_bounds_fully(cave, grid)) continue;
 
 			/* Require a floor grid with no existing traps or glyphs */
 			if (!square_iswebbable(cave, grid)) continue;
@@ -1918,7 +1919,7 @@ bool effect_handler_DETECT_STAIRS(effect_handler_context_t *context)
 			if (!square_in_bounds_fully(cave, grid)) continue;
 
 			/* Detect stairs */
-			if (square_isstairs(cave, grid)) {
+			if (square_isstairs(cave, grid) || square_ispath(cave, grid)) {
 				/* Memorize */
 				square_memorize(cave, grid);
 				square_light_spot(cave, grid);
@@ -4493,7 +4494,7 @@ bool effect_handler_ARC(effect_handler_context_t *context)
 
 	/* Diameter of the energy source. */
 	if (degrees_of_arc < 60) {
-			diameter_of_source = diameter_of_source * 60 / degrees_of_arc;
+		diameter_of_source = diameter_of_source * 60 / degrees_of_arc;
 	}
 
 	/* Max */

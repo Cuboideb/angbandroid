@@ -125,6 +125,8 @@ static bool describe_curses(textblock *tb, const struct object *obj,
 			textblock_append_c(tb, COLOUR_L_RED, "%s", curses[i].desc);
 			if (c[i].power == 100) {
 				textblock_append(tb, "; this curse cannot be removed");
+			} else {
+				textblock_append(tb, " (power %d)", c[i].power);
 			}
 			textblock_append(tb, ".\n");
 		}
@@ -1056,7 +1058,7 @@ static bool describe_damage(textblock *tb, const struct object *obj, bool throw)
 		if (nsort == 0) {
 			has_brands_or_slays = false;
 		} else {
-		textblock_append(tb, (nsort == 1) ? " and " : ", and ");
+			textblock_append(tb, (nsort == 1) ? " and " : ", and ");
 		}
 		mem_free(sortind);
 	}
@@ -1200,8 +1202,8 @@ static bool obj_known_digging(struct object *obj, int deciturns[])
 	struct player_state state;
 	int i;
 	int chances[DIGGING_MAX];
-	int slot = wield_slot(obj);
-	struct object *current = slot_object(player, slot);
+	int slot;
+	struct object *current;
 
 	/* Doesn't remotely resemble a digger */
 	if (!tval_is_wearable(obj) ||
@@ -1213,6 +1215,8 @@ static bool obj_known_digging(struct object *obj, int deciturns[])
 		return false;
 
 	/* Pretend we're wielding the object */
+	slot = wield_slot(obj);
+	current = slot_object(player, slot);
 	player->body.slots[slot].obj = obj;
 
 	/* Calculate the player's hypothetical state */

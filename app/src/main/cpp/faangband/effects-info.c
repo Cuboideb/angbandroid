@@ -48,8 +48,8 @@ static void format_dice_string(const random_value *v, int multiplier,
 {
 	if (v->dice && v->base) {
 		if (multiplier == 1) {
-		strnfmt(dice_string, len, "%d+%dd%d", v->base, v->dice,
-			v->sides);
+			strnfmt(dice_string, len, "%d+%dd%d", v->base, v->dice,
+				v->sides);
 		} else {
 			strnfmt(dice_string, len, "%d+%d*(%dd%d)",
 				multiplier * v->base, multiplier, v->dice,
@@ -57,8 +57,8 @@ static void format_dice_string(const random_value *v, int multiplier,
 		}
 	} else if (v->dice) {
 		if (multiplier == 1) {
-		strnfmt(dice_string, len, "%dd%d", v->dice, v->sides);
-	} else {
+			strnfmt(dice_string, len, "%dd%d", v->dice, v->sides);
+		} else {
 			strnfmt(dice_string, len, "%d*(%dd%d)", multiplier,
 				v->dice, v->sides);
 		}
@@ -334,7 +334,7 @@ textblock *effect_describe(const struct effect *e, const char *prefix,
 
 		/* Check all the possible types of description format. */
 		switch (base_descs[e->index].efinfo_flag) {
-		case EFINFO_HURT:
+		case EFINFO_DICE:
 			strnfmt(desc, sizeof(desc), edesc, dice_string);
 			break;
 
@@ -438,6 +438,12 @@ textblock *effect_describe(const struct effect *e, const char *prefix,
 			boosted = (dev_skill_boost != 0);
 			break;
 
+		case EFINFO_STAR:
+			strnfmt(desc, sizeof(desc), edesc,
+				e->radius, dice_string);
+			boosted = (dev_skill_boost != 0);
+			break;
+
 		case EFINFO_SPOT:
 			{
 				int i_radius = e->other ? e->other : e->radius;
@@ -485,10 +491,6 @@ textblock *effect_describe(const struct effect *e, const char *prefix,
 		case EFINFO_TOUCH:
 			strnfmt(desc, sizeof(desc), edesc,
 				projections[e->subtype].desc);
-			break;
-
-		case EFINFO_TAP:
-			strnfmt(desc, sizeof(desc), edesc, dice_string);
 			break;
 
 		case EFINFO_NONE:

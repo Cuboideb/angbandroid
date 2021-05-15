@@ -661,9 +661,7 @@ static void term_data_link(int i)
 	t->text_hook = Term_text_android;
 	t->pict_hook = Term_pict_android;
 	t->control_hook = Term_control_android;
-#if defined(HAS_DBLH_HOOK)
 	t->dblh_hook = is_dh_tile;
-#endif
 
 #if defined(SIDEBAR_MODE)
 	t->sidebar_mode = (initial_top_bar ? SIDEBAR_NONE: SIDEBAR_LEFT);

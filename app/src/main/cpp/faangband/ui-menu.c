@@ -747,80 +747,6 @@ bool menu_handle_keypress(struct menu *menu, const ui_event *in,
 	return eat;
 }
 
-static void keys_to_ui(struct menu *menu)
-{
-	char buf[256] = "";
-
-	if (menu->inscriptions) {
-		int i, j;
-		char used[20];
-		for (i = 0, j = 0; i < 10; i++) {
-			if (menu->inscriptions[i]) {
-				used[j++] = ('0' + i);
-			}
-		}
-		used[j] = '\0';
-		my_strcat(buf, used, sizeof(buf));
-	}
-
-	int pos, current;
-	char temp[256];
-	int n = menu->filter_list ? menu->filter_count : menu->count;
-
-	//plog_fmt("count: %d", menu->count);
-
-	for (pos = 0, current = 0; pos < n; pos++) {
-
-		int oid = pos;
-		menu_row_validity_t row_valid = MN_ROW_VALID;
-		char sel = 0;
-
-		if (menu->filter_list) {
-			oid = menu->filter_list[oid];
-		}
-
-		if (menu->row_funcs->valid_row) {
-			row_valid = menu->row_funcs->valid_row(menu, oid);
-		}
-
-		if (row_valid == MN_ROW_HIDDEN) {
-			continue;
-		}
-
-		if (!(menu->flags & MN_NO_TAGS)) {
-			if (menu->flags & MN_REL_TAGS) {
-				sel = menu->skin->get_tag(menu, pos);
-			}
-			else if (menu->selections && !(menu->flags & MN_PVT_TAGS)) {
-				sel = menu->selections[pos];
-			}
-			else if (menu->row_funcs->get_tag) {
-				sel = menu->row_funcs->get_tag(menu, oid);
-			}
-		}
-
-		if (sel != 0) {
-			temp[current++] = sel;
-		}
-	}
-	temp[current] = '\0';
-	my_strcat(buf, temp, sizeof(buf));
-
-	if (menu->cmd_keys) {
-		my_strcat(buf, menu->cmd_keys, sizeof(buf));
-	}
-	if (menu->switch_keys) {
-		my_strcat(buf, menu->switch_keys, sizeof(buf));
-	}
-
-	strdeldup(buf);
-
-	//plog_fmt("Keys %s\n", buf);
-
-	if (strlen(buf) > 0) {
-		soft_kbd_flash(buf);
-	}
-}
 
 /**
  * Run a menu.
@@ -846,9 +772,6 @@ ui_event menu_select(struct menu *menu, int notify, bool popup)
 		int cursor = menu->cursor;
 
 		menu_refresh(menu, popup);
-
-		keys_to_ui(menu);
-
 		in = inkey_ex();
 
 		/* Handle mouse & keyboard commands */
