@@ -47,6 +47,8 @@ public class GraphicsMode {
                 "-" + page.x + "-" + page.y + ".png");
         }
 
+        //Log.d("Angband", "Tile path: " + pathToPicture);
+
         return pathToPicture;
     }
 };
