@@ -439,6 +439,8 @@ void screen_load(void)
 	event_signal(EVENT_MESSAGE_FLUSH);
 	Term_load();
 	screen_save_depth--;
+
+	Term_control_context();
 }
 
 bool textui_map_is_visible(void)

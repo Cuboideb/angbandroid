@@ -60,8 +60,8 @@
 #include "wizard.h"
 
 /**
- * There are a few functions installed to be triggered by several 
- * of the basic player events.  For convenience, these have been grouped 
+ * There are a few functions installed to be triggered by several
+ * of the basic player events.  For convenience, these have been grouped
  * in this list.
  */
 static game_event_type player_events[] =
@@ -193,10 +193,10 @@ static int fmt_title(char buf[], int max, bool short_mode)
  * Prints title, including wizard, winner or shape as needed.
  */
 static void prt_title(int row, int col)
-{	
+{
 	char buf[32];
 
-	fmt_title(buf, sizeof(buf), false);	
+	fmt_title(buf, sizeof(buf), false);
 
 	prt_field(buf, row, col);
 }
@@ -304,7 +304,7 @@ static void prt_ac(int row, int col)
 	char tmp[32];
 
 	put_str("Cur AC ", row, col);
-	strnfmt(tmp, sizeof(tmp), "%5d", 
+	strnfmt(tmp, sizeof(tmp), "%5d",
 			player->known_state.ac + player->known_state.to_a);
 	c_put_str(COLOUR_L_GREEN, tmp, row, col + 7);
 }
@@ -321,7 +321,7 @@ static void prt_hp(int row, int col)
 
 	strnfmt(max_hp, sizeof(max_hp), "%4d", player->mhp);
 	strnfmt(cur_hp, sizeof(cur_hp), "%4d", player->chp);
-	
+
 	c_put_str(color, cur_hp, row, col + 3);
 	c_put_str(COLOUR_WHITE, "/", row, col + 7);
 	c_put_str(COLOUR_L_GREEN, max_hp, row, col + 8);
@@ -336,7 +336,7 @@ static void prt_sp(int row, int col)
 	byte color = player_sp_attr(player);
 
 	/* Do not show mana unless we should have some */
-	if (player_has(player, PF_NO_MANA) || 
+	if (player_has(player, PF_NO_MANA) ||
 		(player->lev < player->class->magic.spell_first))
 		return;
 
@@ -500,7 +500,7 @@ static int prt_speed_aux(char buf[], int max, byte *attr)
  */
 static void prt_speed(int row, int col)
 {
-	byte attr = COLOUR_WHITE;	
+	byte attr = COLOUR_WHITE;
 	char buf[32] = "";
 
 	prt_speed_aux(buf, sizeof(buf), &attr);
@@ -599,7 +599,7 @@ static int prt_stat_short(int stat, int row, int col)
 
 	/* Injured or healthy stat */
 	if (player->stat_cur[stat] < player->stat_max[stat]) {
-		put_str(format("%c:", stat_names_reduced[stat][0]), row, col);		
+		put_str(format("%c:", stat_names_reduced[stat][0]), row, col);
 		cnv_stat(player->state.stat_use[stat], tmp, sizeof(tmp));
 		/* Trim whitespace */
 		strskip(tmp,' ', 0);
@@ -613,8 +613,8 @@ static int prt_stat_short(int stat, int row, int col)
 			c_put_str(COLOUR_L_BLUE, tmp, row, col + 2);
 		}
 		else {
-			c_put_str(COLOUR_L_GREEN, tmp, row, col + 2);	
-		}		
+			c_put_str(COLOUR_L_GREEN, tmp, row, col + 2);
+		}
 	}
 
 	return 3+strlen(tmp);
@@ -650,7 +650,7 @@ static int prt_ac_short(int row, int col)
 	char tmp[32];
 
 	put_str("AC:", row, col);
-	strnfmt(tmp, sizeof(tmp), "%d", 
+	strnfmt(tmp, sizeof(tmp), "%d",
 			player->known_state.ac + player->known_state.to_a);
 	c_put_str(COLOUR_L_GREEN, tmp, row, col + 3);
 	return 4+strlen(tmp);
@@ -669,14 +669,14 @@ static int prt_gold_short(int row, int col)
 static int prt_hp_short(int row, int col)
 {
 	char cur_hp[32], max_hp[32];
-	byte color = player_hp_attr(player);	
+	byte color = player_hp_attr(player);
 
 	put_str("HP:", row, col);
 	col += 3;
 
 	strnfmt(max_hp, sizeof(max_hp), "%d", player->mhp);
 	strnfmt(cur_hp, sizeof(cur_hp), "%d", player->chp);
-	
+
 	c_put_str(color, cur_hp, row, col);
 	col += strlen(cur_hp);
 	c_put_str(COLOUR_WHITE, "/", row, col);
@@ -691,7 +691,7 @@ static int prt_sp_short(int row, int col)
 	byte color = player_sp_attr(player);
 
 	/* Do not show mana unless we should have some */
-	if (player_has(player, PF_NO_MANA) || 
+	if (player_has(player, PF_NO_MANA) ||
 		(player->lev < player->class->magic.spell_first))
 		return 0;
 
@@ -724,7 +724,7 @@ static int prt_speed_short(int row, int col)
 	char buf[32];
 	byte attr;
 
-	int len = prt_speed_aux(buf, sizeof(buf), &attr);	
+	int len = prt_speed_aux(buf, sizeof(buf), &attr);
 	if (len > 0) {
 		c_put_str(attr, buf, row, col);
 		return len+1;
@@ -735,7 +735,7 @@ static int prt_speed_short(int row, int col)
 static int prt_depth_short(int row, int col)
 {
 	char buf[32];
-	
+
 	int len = fmt_depth(buf, sizeof(buf));
 	put_str(buf, row, col);
 	return len+1;
@@ -744,26 +744,26 @@ static int prt_depth_short(int row, int col)
 static int prt_title_short(int row, int col)
 {
 	char buf[32];
-	
+
 	int len = fmt_title(buf, sizeof(buf), true);
 	if (len > 0) {
-		c_put_str(COLOUR_YELLOW, buf, row, col);	
+		c_put_str(COLOUR_YELLOW, buf, row, col);
 		return len+1;
-	}	
+	}
 	return 0;
 }
 
 static void update_topbar(game_event_type type, game_event_data *data,
 						  void *user, int row)
-{	
-	int col = 0;	
+{
+	int col = 0;
 
-	prt("", row, col);	
+	prt("", row, col);
 
 	col += prt_level_short(row, col);
 
 	col += prt_exp_short(row, col);
-	
+
 	col += prt_stat_short(STAT_STR, row, col);
 	col += prt_stat_short(STAT_INT, row, col);
 	col += prt_stat_short(STAT_WIS, row, col);
@@ -783,7 +783,7 @@ static void update_topbar(game_event_type type, game_event_data *data,
 
 	col += prt_hp_short(row, col);
 	col += prt_sp_short(row, col);
-	col += prt_health_short(row, col);	
+	col += prt_health_short(row, col);
 	col += prt_speed_short(row, col);
 	col += prt_depth_short(row, col);
 	col += prt_title_short(row, col);
@@ -839,7 +839,7 @@ static void update_sidebar(game_event_type type, game_event_data *data,
 	int max_priority;
 	size_t i;
 
-	if (Term->sidebar_mode == SIDEBAR_NONE) {		
+	if (Term->sidebar_mode == SIDEBAR_NONE) {
 		return;
 	}
 
@@ -1009,7 +1009,7 @@ static size_t prt_state(int row, int col)
 	return strlen(text);
 }
 
-static const byte obj_feeling_color[] = 
+static const byte obj_feeling_color[] =
 {
 	/* Colors used to display each obj feeling 	*/
 	COLOUR_WHITE,  /* "Looks like any other level." */
@@ -1025,7 +1025,7 @@ static const byte obj_feeling_color[] =
 	COLOUR_L_BLUE  /* "there is naught but cobwebs here. */
 };
 
-static const byte mon_feeling_color[] = 
+static const byte mon_feeling_color[] =
 {
 	/* Colors used to display each monster feeling */
 	COLOUR_WHITE, /* "You are still uncertain about this place" */
@@ -1093,7 +1093,7 @@ static size_t prt_level_feeling(int row, int col)
 			strnfmt(obj_feeling_str, 5, "%d", (unsigned int) (11-obj_feeling));
 	}
 
-	/* 
+	/*
 	 *   Convert monster feeling to a symbol easier to parse
 	 * for a human.
 	 *   0 -> ? . Monster feeling should never be 0, but we check
@@ -1749,7 +1749,7 @@ static void pause_display(game_event_type type, game_event_data *data,
  * ------------------------------------------------------------------------ */
 
 /**
- * true when we're supposed to display the equipment in the inventory 
+ * true when we're supposed to display the equipment in the inventory
  * window, or vice-versa.
  */
 static bool flip_inven;
@@ -1769,7 +1769,7 @@ static void update_inven_subwindow(game_event_type type, game_event_data *data,
 		show_equip(OLIST_WINDOW | OLIST_WEIGHT, NULL);
 
 	Term_fresh();
-	
+
 	/* Restore */
 	Term_activate(old);
 }
@@ -1789,7 +1789,7 @@ static void update_equip_subwindow(game_event_type type, game_event_data *data,
 		show_inven(OLIST_WINDOW | OLIST_WEIGHT | OLIST_QUIVER, NULL);
 
 	Term_fresh();
-	
+
 	/* Restore */
 	Term_activate(old);
 }
@@ -1810,21 +1810,21 @@ void toggle_inven_equip(void)
 		/* Skip unused subwindows. */
 		if (!angband_term[i]) continue;
 
-		Term_activate(angband_term[i]); 
+		Term_activate(angband_term[i]);
 
 		if (window_flag[i] & PW_INVEN) {
 			if (!flip_inven)
 				show_inven(OLIST_WINDOW | OLIST_WEIGHT | OLIST_QUIVER, NULL);
 			else
 				show_equip(OLIST_WINDOW | OLIST_WEIGHT, NULL);
-			
+
 			Term_fresh();
 		} else if (window_flag[i] & PW_EQUIP) {
 			if (!flip_inven)
 				show_equip(OLIST_WINDOW | OLIST_WEIGHT, NULL);
 			else
 				show_inven(OLIST_WINDOW | OLIST_WEIGHT | OLIST_QUIVER, NULL);
-			
+
 			Term_fresh();
 		}
 	}
@@ -1844,7 +1844,7 @@ static void update_itemlist_subwindow(game_event_type type,
     clear_from(0);
     object_list_show_subwindow(Term->hgt, Term->wid);
 	Term_fresh();
-	
+
 	/* Restore */
 	Term_activate(old);
 }
@@ -1861,7 +1861,7 @@ static void update_monlist_subwindow(game_event_type type,
 	clear_from(0);
 	monster_list_show_subwindow(Term->hgt, Term->wid);
 	Term_fresh();
-	
+
 	/* Restore */
 	Term_activate(old);
 }
@@ -1878,11 +1878,11 @@ static void update_monster_subwindow(game_event_type type,
 
 	/* Display monster race info */
 	if (player->upkeep->monster_race)
-		lore_show_subwindow(player->upkeep->monster_race, 
+		lore_show_subwindow(player->upkeep->monster_race,
 							get_lore(player->upkeep->monster_race));
 
 	Term_fresh();
-	
+
 	/* Restore */
 	Term_activate(old);
 }
@@ -1893,16 +1893,16 @@ static void update_object_subwindow(game_event_type type,
 {
 	term *old = Term;
 	term *inv_term = user;
-	
+
 	/* Activate */
 	Term_activate(inv_term);
-	
+
 	if (player->upkeep->object != NULL)
 		display_object_recall(player->upkeep->object);
 	else if (player->upkeep->object_kind)
 		display_object_kind_recall(player->upkeep->object_kind);
 	Term_fresh();
-	
+
 	/* Restore */
 	Term_activate(old);
 }
@@ -1950,7 +1950,7 @@ static void update_messages_subwindow(game_event_type type,
 	}
 
 	Term_fresh();
-	
+
 	/* Restore */
 	Term_activate(old);
 }
@@ -2019,7 +2019,7 @@ static void update_player0_subwindow(game_event_type type,
 	display_player(0);
 
 	Term_fresh();
-	
+
 	/* Restore */
 	Term_activate(old);
 }
@@ -2040,7 +2040,7 @@ static void update_player1_subwindow(game_event_type type,
 	display_player(1);
 
 	Term_fresh();
-	
+
 	/* Restore */
 	Term_activate(old);
 }
@@ -2062,7 +2062,7 @@ static void update_topbar_subwindow(game_event_type type,
 	update_statusline_aux(2, 0);
 
 	Term_fresh();
-	
+
 	/* Restore */
 	Term_activate(old);
 }
@@ -2119,7 +2119,7 @@ static void update_player_compact_subwindow(game_event_type type,
 	prt_health(row, col);
 
 	Term_fresh();
-	
+
 	/* Restore */
 	Term_activate(old);
 }
@@ -2135,7 +2135,7 @@ static void flush_subwindow(game_event_type type, game_event_data *data,
 	Term_activate(t);
 
 	Term_fresh();
-	
+
 	/* Restore */
 	Term_activate(old);
 }
@@ -2220,7 +2220,7 @@ static void subwindow_flag_changed(int win_idx, u32b flag, bool new_state)
 
 		case PW_PLAYER_0:
 		{
-			set_register_or_deregister(player_events, 
+			set_register_or_deregister(player_events,
 						   N_ELEMENTS(player_events),
 						   update_player0_subwindow,
 						   angband_term[win_idx]);
@@ -2229,7 +2229,7 @@ static void subwindow_flag_changed(int win_idx, u32b flag, bool new_state)
 
 		case PW_PLAYER_1:
 		{
-			set_register_or_deregister(player_events, 
+			set_register_or_deregister(player_events,
 						   N_ELEMENTS(player_events),
 						   update_player1_subwindow,
 						   angband_term[win_idx]);
@@ -2238,7 +2238,7 @@ static void subwindow_flag_changed(int win_idx, u32b flag, bool new_state)
 
 		case PW_PLAYER_2:
 		{
-			set_register_or_deregister(player_events, 
+			set_register_or_deregister(player_events,
 						   N_ELEMENTS(player_events),
 						   update_player_compact_subwindow,
 						   angband_term[win_idx]);
@@ -2248,8 +2248,8 @@ static void subwindow_flag_changed(int win_idx, u32b flag, bool new_state)
 		case PW_PLAYER_3:
 		{
 			/* Topbar */
-			set_register_or_deregister(player_events, 
-						   N_ELEMENTS(player_events),						 
+			set_register_or_deregister(player_events,
+						   N_ELEMENTS(player_events),
 						   update_topbar_subwindow,
 						   angband_term[win_idx]);
 
@@ -2336,7 +2336,7 @@ static void subwindow_flag_changed(int win_idx, u32b flag, bool new_state)
 
 /**
  * Set the flags for one Term, calling "subwindow_flag_changed" with each flag
- * that has changed setting so that it can do any housekeeping to do with 
+ * that has changed setting so that it can do any housekeeping to do with
  * displaying the new thing or no longer displaying the old one.
  */
 static void subwindow_set_flags(int win_idx, u32b new_flags)
@@ -2354,16 +2354,16 @@ static void subwindow_set_flags(int win_idx, u32b new_flags)
 
 	/* Store the new flags */
 	window_flag[win_idx] = new_flags;
-	
+
 	/* Activate */
 	Term_activate(angband_term[win_idx]);
-	
+
 	/* Erase */
 	Term_clear();
-	
+
 	/* Refresh */
 	Term_fresh();
-			
+
 	/* Restore */
 	Term_activate(old);
 }
@@ -2697,6 +2697,8 @@ static void ui_enter_init(game_event_type type, game_event_data *data,
 
 	/* Set up our splashscreen handlers */
 	event_add_handler(EVENT_INITSTATUS, splashscreen_note, NULL);
+
+	Term_control_context();
 }
 
 static void ui_leave_init(game_event_type type, game_event_data *data,
@@ -2787,6 +2789,8 @@ static void ui_enter_world(game_event_type type, game_event_data *data,
 
 	/* Hack -- Decrease "icky" depth */
 	screen_save_depth--;
+
+	Term_control_context();
 }
 
 static void ui_leave_world(game_event_type type, game_event_data *data,
@@ -2858,6 +2862,8 @@ static void ui_leave_world(game_event_type type, game_event_data *data,
 
 	/* Hack -- Increase "icky" depth */
 	screen_save_depth++;
+
+	Term_control_context();
 }
 
 static void ui_enter_game(game_event_type type, game_event_data *data,

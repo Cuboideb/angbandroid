@@ -233,7 +233,7 @@ int themed_level_index(char *name)
  */
 bool is_daytime(void)
 {
-	if ((turn % (10L * z_info->day_length)) < ((10L * z_info->day_length) / 2)) 
+	if ((turn % (10L * z_info->day_length)) < ((10L * z_info->day_length) / 2))
 		return true;
 
 	return false;
@@ -432,7 +432,7 @@ void play_ambient_sound(void)
 	if (player->depth == 0) {
 		if (is_daytime())
 			sound(MSG_AMBIENT_DAY);
-		else 
+		else
 			sound(MSG_AMBIENT_NITE);
 	} else if (player->depth <= 20) {
 		sound(MSG_AMBIENT_DNG1);
@@ -739,7 +739,7 @@ void process_world(struct chunk *c)
 
 	/* Decay special heighten power */
 	if (player->heighten_power) {
-		/* To keep it from being a free ride for high speed 
+		/* To keep it from being a free ride for high speed
 		 * characters, Heighten Power decays quickly when highly charged */
 		int decrement = 10 + (player->heighten_power / 55);
 		player->heighten_power = MAX(0, player->heighten_power - decrement);
@@ -1012,6 +1012,8 @@ void process_player(void)
  */
 void on_new_level(void)
 {
+	Term_control_context();
+
 	/* Arena levels are not really a level change */
 	if (!player->upkeep->arena_level) {
 		/* Play ambient sound on change of level. */
@@ -1116,7 +1118,7 @@ void run_game_loop(void)
 	while (player->energy >= z_info->move_energy) {
 		/* Do any necessary animations */
 		event_signal(EVENT_ANIMATE);
-		
+
 		/* Process monster with even more energy first */
 		process_monsters(cave, player->energy + 1);
 		if (player->is_dead || !player->upkeep->playing ||
@@ -1133,14 +1135,14 @@ void run_game_loop(void)
 		}
 	}
 
-	/* Now that the player's turn is fully complete, we run the main loop 
+	/* Now that the player's turn is fully complete, we run the main loop
 	 * until player input is needed again */
 	while (true) {
 		notice_stuff(player);
 		handle_stuff(player);
 		event_signal(EVENT_REFRESH);
 
-		/* Process the rest of the world, give the player energy and 
+		/* Process the rest of the world, give the player energy and
 		 * increment the turn counter unless we need to stop playing or
 		 * generate a new level */
 		if (player->is_dead || !player->upkeep->playing)
