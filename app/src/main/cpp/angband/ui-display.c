@@ -2028,7 +2028,7 @@ static void update_topbar_subwindow(game_event_type type,
 	term *old = Term;
 	term *inv_term = user;
 
-	// Check sanity
+	/* Check sanity */
 	if (!(player && player->race && player->class && cave)) return;
 
 	/* Activate */
@@ -2224,13 +2224,13 @@ static void subwindow_flag_changed(int win_idx, u32b flag, bool new_state)
 
 		case PW_PLAYER_3:
 		{
-			// Topbar
+			/* Topbar */
 			set_register_or_deregister(player_events,
 						   N_ELEMENTS(player_events),
 						   update_topbar_subwindow,
 						   angband_term[win_idx]);
 
-			// Also update status
+			/* Also update status */
 			set_register_or_deregister(statusline_events,
 						   N_ELEMENTS(statusline_events),
 						   update_topbar_subwindow,
