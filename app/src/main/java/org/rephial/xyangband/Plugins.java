@@ -28,7 +28,7 @@ final public class Plugins {
 		}
 		public boolean onlyText()
 		{
-			return this != angband;
+			return this != angband && this != faangband;
 		}
 		public boolean only1x1()
 		{
@@ -49,7 +49,7 @@ final public class Plugins {
 		}
 		public boolean canUseTopBar()
 		{
-			return this == angband;
+			return this == angband || this == faangband;
 		}
 		public boolean canHandleKeymaps()
 		{
