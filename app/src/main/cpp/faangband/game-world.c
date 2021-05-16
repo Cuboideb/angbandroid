@@ -37,6 +37,7 @@
 #include "source.h"
 #include "target.h"
 #include "trap.h"
+#include "ui-term.h"
 
 u16b daycount = 0;
 u32b seed_randart;		/* Hack -- consistent random artifacts */
