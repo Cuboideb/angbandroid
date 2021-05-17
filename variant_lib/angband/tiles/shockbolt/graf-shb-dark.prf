@@ -492,6 +492,7 @@ object:shield:Small Metal Shield:0x80:0x9E
 object:shield:Leather Shield:0x80:0x9D
 object:shield:Large Metal Shield:0x80:0x9F
 object:shield:Mithril Shield:0x80:0xA0
+object:shield:Knight's Shield:0x81:0xDD
 
 ##### Rings #####
 
