@@ -78,6 +78,14 @@ static const struct {
 	#undef ROOM
 };
 
+static const char *room_flags[] = {
+	"NONE",
+	#define ROOMF(a, b) #a,
+	#include "list-room-flags.h"
+	#undef ROOMF
+	NULL
+};
+
 
 /**
  * Parsing functions for dungeon_profile.txt
@@ -404,6 +412,22 @@ static enum parser_error parse_room_tval(struct parser *p) {
 	return PARSE_ERROR_NONE;
 }
 
+static enum parser_error parse_room_flags(struct parser *p) {
+	struct room_template *t = parser_priv(p);
+	char *s, *st;
+
+	if (!t)
+		return PARSE_ERROR_MISSING_RECORD_HEADER;
+	s = string_make(parser_getstr(p, "flags"));
+	st = strtok(s, " |");
+	while (st && !grab_flag(t->flags, ROOMF_SIZE, room_flags, st)) {
+		st = strtok(NULL, " |");
+	}
+	mem_free(s);
+
+	return st ? PARSE_ERROR_INVALID_FLAG : PARSE_ERROR_NONE;
+}
+
 static enum parser_error parse_room_d(struct parser *p) {
 	struct room_template *t = parser_priv(p);
 
@@ -423,6 +447,7 @@ static struct parser *init_parse_room(void) {
 	parser_reg(p, "columns uint width", parse_room_width);
 	parser_reg(p, "doors uint doors", parse_room_doors);
 	parser_reg(p, "tval sym tval", parse_room_tval);
+	parser_reg(p, "flags str flags", parse_room_flags);
 	parser_reg(p, "D str text", parse_room_d);
 	return p;
 }
@@ -546,6 +571,22 @@ static enum parser_error parse_vault_max_depth(struct parser *p) {
 	return PARSE_ERROR_NONE;
 }
 
+static enum parser_error parse_vault_flags(struct parser *p) {
+	struct vault *v = parser_priv(p);
+	char *s, *st;
+
+	if (!v)
+		return PARSE_ERROR_MISSING_RECORD_HEADER;
+	s = string_make(parser_getstr(p, "flags"));
+	st = strtok(s, " |");
+	while (st && !grab_flag(v->flags, ROOMF_SIZE, room_flags, st)) {
+		st = strtok(NULL, " |");
+	}
+	mem_free(s);
+
+	return st ? PARSE_ERROR_INVALID_FLAG : PARSE_ERROR_NONE;
+}
+
 static enum parser_error parse_vault_d(struct parser *p) {
 	struct vault *v = parser_priv(p);
 	const char *desc;
@@ -570,6 +611,7 @@ struct parser *init_parse_vault(void) {
 	parser_reg(p, "columns uint width", parse_vault_columns);
 	parser_reg(p, "min-depth uint min_lev", parse_vault_min_depth);
 	parser_reg(p, "max-depth uint max_lev", parse_vault_max_depth);
+	parser_reg(p, "flags str flags", parse_vault_flags);
 	parser_reg(p, "D str text", parse_vault_d);
 	return p;
 }
@@ -814,7 +856,7 @@ const struct cave_profile *choose_profile(struct player *p)
 		profile = find_cave_profile("moria");
 	} else {
 		int total_alloc = 0;
-			size_t i;
+		size_t i;
 
 		/*
 		 * Use PowerWyrm's selection algorithm from
@@ -836,7 +878,7 @@ const struct cave_profile *choose_profile(struct player *p)
 			total_alloc += test_profile->alloc;
 			if (randint0(total_alloc) < test_profile->alloc) {
 				profile = test_profile;
-		}
+			}
 		}
 		if (!profile) {
 			profile = find_cave_profile("classic");
@@ -1003,6 +1045,9 @@ static struct chunk *cave_generate(struct player *p, int height, int width)
 		/* Allocate global data (will be freed when we leave the loop) */
 		dun = &dun_body;
 		dun->cent = mem_zalloc(z_info->level_room_max * sizeof(struct loc));
+		dun->ent_n = mem_zalloc(z_info->level_room_max * sizeof(*dun->ent_n));
+		dun->ent = mem_zalloc(z_info->level_room_max * sizeof(*dun->ent));
+		dun->ent2room = NULL;
 		dun->door = mem_zalloc(z_info->level_door_max * sizeof(struct loc));
 		dun->wall = mem_zalloc(z_info->wall_pierce_max * sizeof(struct loc));
 		dun->tunn = mem_zalloc(z_info->tunn_grid_max * sizeof(struct loc));
@@ -1020,6 +1065,17 @@ static struct chunk *cave_generate(struct player *p, int height, int width)
 			error = "Failed to find builder";
 			mem_free(dun->join);
 			mem_free(dun->cent);
+			mem_free(dun->ent_n);
+			for (i = 0; i < z_info->level_room_max; ++i) {
+				mem_free(dun->ent[i]);
+			}
+			mem_free(dun->ent);
+			if (dun->ent2room) {
+				for (i = 0; dun->ent2room[i]; ++i) {
+					mem_free(dun->ent2room[i]);
+				}
+				mem_free(dun->ent2room);
+			}
 			mem_free(dun->door);
 			mem_free(dun->wall);
 			mem_free(dun->tunn);
@@ -1084,6 +1140,17 @@ static struct chunk *cave_generate(struct player *p, int height, int width)
 
 		mem_free(dun->join);
 		mem_free(dun->cent);
+		mem_free(dun->ent_n);
+		for (i = 0; i < z_info->level_room_max; ++i) {
+			mem_free(dun->ent[i]);
+		}
+		mem_free(dun->ent);
+		if (dun->ent2room) {
+			for (i = 0; dun->ent2room[i]; ++i) {
+				mem_free(dun->ent2room[i]);
+			}
+			mem_free(dun->ent2room);
+		}
 		mem_free(dun->door);
 		mem_free(dun->wall);
 		mem_free(dun->tunn);
@@ -1123,14 +1190,14 @@ static struct chunk *cave_generate(struct player *p, int height, int width)
 static void sanitize_player_loc(struct chunk *c, struct player *p)
 {
 	/* TODO potential problem: stairs in vaults? */
-	
+
 	/* allow direct transfer if target location is teleportable */
 	if (square_in_bounds_fully(c, p->grid)
 		&& square_isarrivable(c, p->grid)
 		&& !square_isvault(c, p->grid)) {
 		return;
 	}
-	
+
 	/* TODO should use something similar to teleport code, but this will
 	 *  do for now as a quick'n dirty fix
 	 */
@@ -1142,8 +1209,8 @@ static void sanitize_player_loc(struct chunk *c, struct player *p)
 	/* a bunch of random locations */
 	while (try) {
 		try = try - 1;
-		tx = randint0(c->width-1) + 1;
-		ty = randint0(c->height-1) + 1;
+		tx = randint0(c->width - 1) + 1;
+		ty = randint0(c->height - 1) + 1;
 		if (square_isempty(c, loc(tx, ty))
 			&& !square_isvault(c, loc(tx, ty))) {
 			p->grid.y = ty;
@@ -1151,10 +1218,10 @@ static void sanitize_player_loc(struct chunk *c, struct player *p)
 			return;
 		}
 	}
-	
+
 	/* whelp, that didnt work */
-	ix = randint0(c->width-1) + 1;
-	iy = randint0(c->height-1) + 1;
+	ix = randint0(c->width - 1) + 1;
+	iy = randint0(c->height - 1) + 1;
 	ty = iy;
 	tx = tx + 1;
 	if (tx >= c->width - 1) {
@@ -1164,7 +1231,7 @@ static void sanitize_player_loc(struct chunk *c, struct player *p)
 			ty = 1;
 		}
 	}
-	
+
 	while (1) {		//until full loop through dungeon
 		if (square_isempty(c, loc(tx, ty))) {
 			if (!square_isvault(c, loc(tx, ty))) {
@@ -1190,7 +1257,7 @@ static void sanitize_player_loc(struct chunk *c, struct player *p)
 			}
 		}
 	}
-	
+
 	// fallback vault location (or at least a non-crashy square)
 	p->grid.x = vx;
 	p->grid.y = vy;
