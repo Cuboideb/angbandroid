@@ -521,7 +521,7 @@ int main(int argc, char *argv[])
 #endif /* UNIX */
 
 	/* Commented out for android */
-#if !defined(ANGBAND_ANDROID)
+#if !defined(ANDROID)
 	/* Try the modules in the order specified by modules[] */
 	for (i = 0; i < (int)N_ELEMENTS(modules); i++) {
 		/* User requested a specific module? */

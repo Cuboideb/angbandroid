@@ -49,27 +49,25 @@
  * possible you should use a packaging system which does this for you.
  *
  * N.B. The data path is only used if USE_PRIVATE_PATHS is not defined.
- * The other two are always used. 
+ * The other two are always used.
  */
 #ifndef DEFAULT_CONFIG_PATH
 # define DEFAULT_CONFIG_PATH "." PATH_SEP "lib" PATH_SEP
-#endif 
+#endif
 
 #ifndef DEFAULT_LIB_PATH
 # define DEFAULT_LIB_PATH "." PATH_SEP "lib" PATH_SEP
-#endif 
+#endif
 
 #ifndef DEFAULT_DATA_PATH
 # define DEFAULT_DATA_PATH "." PATH_SEP "lib" PATH_SEP
-#endif 
+#endif
 
-#if defined(ANDROID) || defined(__ANDROID__)
+#if defined(ANDROID)
 
-#   define ANGBAND_ANDROID 1
 #   if !defined(USE_PRIVATE_PATHS)
 #       define USE_PRIVATE_PATHS 1
 #   endif
-
 
 #else
 
@@ -81,6 +79,6 @@
 # define PRIVATE_USER_PATH "~/.angband"
 #endif
 
-#endif
+#endif /* ANDROID */
 
 #endif /* !INCLUDED_CONFIG_H */

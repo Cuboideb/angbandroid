@@ -394,7 +394,7 @@ static void do_cmd_options_win(const char *name, int row)
 		}
 	}
 
-#if defined(ANGBAND_ANDROID)
+#if defined(ANDROID)
 	// Hack for android, the 4th window must have the topbar
 	new_flags[4] = (PW_PLAYER_3);
 #endif

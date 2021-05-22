@@ -1059,7 +1059,7 @@ static enum parser_error parse_prefs_window(struct parser *p)
 			d->window_flags[window] &= ~(1L << flag);
 	}
 
-#if defined(ANGBAND_ANDROID)
+#if defined(ANDROID)
 	// Hack for android, the 4th window must have the topbar
 	if (window == 4) d->window_flags[window] = (PW_PLAYER_3);
 #endif

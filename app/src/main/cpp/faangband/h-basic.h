@@ -61,6 +61,13 @@
 #  endif
 # endif
 
+#if defined(ANDROID) || defined(ANDROID_PLATFORM) || \
+     defined(__ANDROID_API__)
+#	ifndef ANDROID
+#		define ANDROID
+#	endif
+#endif
+
 /**
  * Define UNIX if our OS is UNIXy
  */
@@ -74,7 +81,7 @@
 /**
  * May need to be tightened:  without autoconf.h assume all Unixes have mkdir().
  */
-# if !defined(HAVE_MKDIR) && !defined(HAVE_CONFIG_H)
+# if !defined(HAVE_MKDIR) && !defined(HAVE_CONFIG_H) && !defined(ANDROID)
 #   define HAVE_MKDIR
 # endif
 
