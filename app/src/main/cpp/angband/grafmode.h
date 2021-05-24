@@ -28,7 +28,7 @@
 
 /**
  * Specifications for graphics modes.
- * 
+ *
  * grafID:      ID of tile set should be >0 and unique for anything new.
  * alphablend:  Bool whether or not the tileset needs alpha blending.
  * overdrawRow: Row in the file where tiles in that row or lower draw the tile
@@ -58,8 +58,6 @@ typedef struct _graphics_mode {
 extern graphics_mode *graphics_modes;
 extern graphics_mode *current_graphics_mode;
 extern int graphics_mode_high_id;
-extern bool pseudo_ascii;
-#define USE_PSEUDO_ASCII (pseudo_ascii && use_graphics != GRAPHICS_NONE)
 
 bool init_graphics_modes();
 void close_graphics_modes(void);

@@ -16,7 +16,7 @@
  *    are included in all such copies.  Other copyrights may also apply.
  *
  * This file maintains a list of saved chunks of world which can be reloaded
- * at any time.  The intitial example of this is the town, which is saved 
+ * at any time.  The initial example of this is the town, which is saved
  * immediately after generation and restored when the player returns there.
  *
  * The copying routines are also useful for generating a level in pieces and
@@ -171,14 +171,14 @@ void symmetry_transform(struct loc *grid, int y0, int x0, int height, int width,
 	int i;
 
 	/* Rotate (in multiples of 90 degrees clockwise) */
-    for (i = 0; i < rotate % 4; i++) {
-        int temp = grid->x;
+	for (i = 0; i < rotate % 4; i++) {
+		int temp = grid->x;
 		grid->x = rheight - 1 - (grid->y);
-        grid->y = temp;
+		grid->y = temp;
 		temp = rwidth;
 		rwidth = rheight;
 		rheight = temp;
-    }
+	}
 
 	/* Reflect (horizontally in the rotated system) */
 	if (reflect)
@@ -192,7 +192,7 @@ void symmetry_transform(struct loc *grid, int y0, int x0, int height, int width,
 /**
  * Select a random symmetry transformation subject to certain constraints.
  * \param height Is the height of the piece to transform.
- * \param width Is the height of the piece to transform.
+ * \param width Is the width of the piece to transform.
  * \param flags Is a bitwise-or of one or more of SYMTR_FLAG_NONE,
  * SYMTR_FLAG_NO_ROT (disallow 90 and 270 degree rotation and 180 degree
  * rotation if not accompanied by a horizontal reflection - equivalent to a
@@ -398,10 +398,10 @@ bool chunk_copy(struct chunk *dest, struct chunk *source, int y0, int x0,
 				dest->squares[dest_grid.y][dest_grid.x].mon = -1;
 				player->grid = dest_grid;
 			}
-				}
-			}
+		}
+	}
 
-			/* Monsters */
+	/* Monsters */
 	dest->mon_max += source->mon_max;
 	dest->mon_cnt += source->mon_cnt;
 	dest->num_repro += source->num_repro;
@@ -409,7 +409,7 @@ bool chunk_copy(struct chunk *dest, struct chunk *source, int y0, int x0,
 		struct monster *source_mon = &source->monsters[i];
 		struct monster *dest_mon = &dest->monsters[mon_skip + i];
 
-				/* Valid monster */
+		/* Valid monster */
 		if (!source_mon->race) continue;
 
 		/* Copy */
@@ -423,16 +423,16 @@ bool chunk_copy(struct chunk *dest, struct chunk *source, int y0, int x0,
 		dest->squares[dest_mon->grid.y][dest_mon->grid.x].mon = dest_mon->midx;
 
 		/* Held or mimicked objects */
-				if (source_mon->held_obj) {
-					struct object *obj;
-					dest_mon->held_obj = source_mon->held_obj;
-					for (obj = source_mon->held_obj; obj; obj = obj->next) {
-						obj->held_m_idx = dest_mon->midx;
-					}
-				}
+		if (source_mon->held_obj) {
+			struct object *obj;
+			dest_mon->held_obj = source_mon->held_obj;
+			for (obj = source_mon->held_obj; obj; obj = obj->next) {
+				obj->held_m_idx = dest_mon->midx;
+			}
+		}
 		if (source_mon->mimicked_obj) {
 			dest_mon->mimicked_obj = source_mon->mimicked_obj;
-			}
+		}
 	}
 
 	/* Find max monster group id */

@@ -50,12 +50,6 @@ static void hallucinatory_monster(int *a, wchar_t *c)
 		/* Retrieve attr/char */
 		*a = monster_x_attr[race->ridx];
 		*c = monster_x_char[race->ridx];
-
-        if (USE_PSEUDO_ASCII) {
-            *a = race->d_attr;
-            *c = race->d_char;
-        }
-
 		return;
 	}
 }
@@ -246,12 +240,6 @@ void grid_data_as_text(struct grid_data *g, int *ap, wchar_t *cp, int *tap,
 			da = monster_x_attr[mon->race->ridx];
 			dc = monster_x_char[mon->race->ridx];
 
-			// Revert for monsters
-			if (USE_PSEUDO_ASCII) {
-				da = mon->race->d_attr;
-				dc = mon->race->d_char;
-			}
-
 			/* Special handling of attrs and/or chars */
 			if (da & 0x80) {
 				/* Special attr/char codes */
@@ -274,7 +262,7 @@ void grid_data_as_text(struct grid_data *g, int *ap, wchar_t *cp, int *tap,
 				a = da;
 				/* Desired attr & char. da is not used, should a be set to it?*/
 				/*da = monster_x_attr[mon->race->ridx];*/
-				/*dc = monster_x_char[mon->race->ridx];*/
+				dc = monster_x_char[mon->race->ridx];
 				c = dc;
 			} else if (a & 0x80) {
 				/* Hack -- Bizarre grid under monster */
@@ -293,30 +281,11 @@ void grid_data_as_text(struct grid_data *g, int *ap, wchar_t *cp, int *tap,
 		}
 	} else if (g->is_player) {
 		struct monster_race *race = &r_info[0];
-		int life_pct = player->chp * 10 / MAX(player->mhp, 1);
 
 		/* Get the "player" attr */
 		a = monster_x_attr[race->ridx];
-		/* Get the "player" char */
-		c = monster_x_char[race->ridx];
-
-		if (use_graphics) {
-
-			if (USE_PSEUDO_ASCII) {
-				a = race->d_attr;
-		 		c = race->d_char;
-		 	}
-		 	// Pack interesting colors for Android
-		 	else if (OPT(player, hp_changes_color) &&
-		 		(life_pct >= 0) && (life_pct <= 10)) {
-
-		 		int mask = 0x20 | life_pct;
-		 		a |= (mask << 8);
-		 	}
-		}
-
 		if ((OPT(player, hp_changes_color)) && !(a & 0x80)) {
-			switch(life_pct)
+			switch(player->chp * 10 / player->mhp)
 			{
 				case 10:
 				case  9:
@@ -356,17 +325,28 @@ void grid_data_as_text(struct grid_data *g, int *ap, wchar_t *cp, int *tap,
 				}
 			}
 		}
+
+		/* Get the "player" char */
+		c = monster_x_char[race->ridx];
 	}
 
-	// Set higher bit
-	if (USE_PSEUDO_ASCII) {
-		a |= 0x80;
+#if defined(ANDROID)
+	/* For graphics mode */
+	if (g->is_player && OPT(player, hp_changes_color)) {
+		int hp = MAX(player->chp,0);
+		hp = (hp * 10 / MAX(player->mhp,1)) & 0x0F;
+		a |= ((0x20 + hp) << 8);
 	}
-
-	// Hack - Big text uses padding in Android
-	if ((tile_width > 1) || (tile_height > 1)) {
-		a |= 0x80;
+	if (g->m_idx > 0 && !g->hallucinate
+		&& !monster_is_mimicking(cave_monster(cave, g->m_idx))) {
+		struct monster *mon = cave_monster(cave, g->m_idx);
+		int hp = MAX(mon->hp,0);
+		hp = (hp * 10 / MAX(mon->maxhp,1)) & 0x0F;
+		a |= ((0x10 + hp) << 8);
 	}
+	/* Hack -- Always a tile */
+	a |= 0x80;
+#endif
 
 	/* Result */
 	(*ap) = a;

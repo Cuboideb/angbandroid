@@ -1193,11 +1193,6 @@ static void display_monster(int col, int row, bool cursor, int oid)
 	byte a = monster_x_attr[race->ridx];
 	wchar_t c = monster_x_char[race->ridx];
 
-	if (USE_PSEUDO_ASCII) {
-		a = race->d_attr;
-		c = race->d_char;
-	}
-
 	if ((tile_height != 1) && (a & 0x80)) {
 		a = race->d_attr;
 		c = race->d_char;

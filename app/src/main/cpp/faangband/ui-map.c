@@ -332,9 +332,23 @@ void grid_data_as_text(struct grid_data *g, int *ap, wchar_t *cp, int *tap,
 		c = monster_x_char[race->ridx];
 	}
 
-	if (tile_width > 1 && tile_height > 1) {
-		a |= 0x80;
+#if defined(ANDROID)
+	/* For graphics mode */
+	if (g->is_player && OPT(player, hp_changes_color)) {
+		int hp = MAX(player->chp,0);
+		hp = (hp * 10 / MAX(player->mhp,1)) & 0x0F;
+		a |= ((0x20 + hp) << 8);
 	}
+	if (g->m_idx > 0 && !g->hallucinate
+		&& !monster_is_mimicking(cave_monster(cave, g->m_idx))) {
+		struct monster *mon = cave_monster(cave, g->m_idx);
+		int hp = MAX(mon->hp,0);
+		hp = (hp * 10 / MAX(mon->maxhp,1)) & 0x0F;
+		a |= ((0x10 + hp) << 8);
+	}
+	/* Hack -- Always a tile */
+	a |= 0x80;
+#endif
 
 	/* Result */
 	(*ap) = a;

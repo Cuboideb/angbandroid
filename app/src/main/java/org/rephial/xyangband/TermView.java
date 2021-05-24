@@ -121,11 +121,14 @@ public class TermView extends View implements OnGestureListener {
 	public int canvas_width = 0;
 	public int canvas_height = 0;
 
-	private int char_height = 0;
-	private int char_width = 0;
-	private int font_text_size = 0;
+	public int char_height = 0;
+	public int char_width = 0;
+	public int font_text_size = 0;
 
     public static char BIG_PAD = 0x1E00;
+
+    public static int PLAYER_MASK = 0x2000;
+    public static int MONSTER_MASK = 0x1000;
 
     public static int MIN_FONT = 6;
     public static int MAX_FONT = 64;
@@ -133,7 +136,6 @@ public class TermView extends View implements OnGestureListener {
     public int tile_wid = 1;
     public int tile_hgt = 1;
     public int useGraphics = 0;
-    public boolean pseudoAscii = false;
 
     public int tile_wid_pix = 0;
     public int tile_hgt_pix = 0;
@@ -152,138 +154,6 @@ public class TermView extends View implements OnGestureListener {
             if (!condition) {
                 throw new AssertionError(message);
             }
-        }
-    }
-
-    public class TSize {
-
-        public int width;
-        public int height;
-
-        public TSize(int w, int h) {
-            width = w;
-            height = h;
-        }
-    }
-
-    public class TileGrid
-    {
-        int attr;
-        int chr;
-        Point srcPoint;
-        TSize srcSize;
-
-        Point dstPoint;
-        TSize dstSize;
-
-        Point ptInPage;
-        Point page;
-
-        GraphicsMode gm;
-
-        boolean isLargeTile = false;
-
-        String key = "";
-
-        public TileGrid(GraphicsMode pGM, int pSrcRow, int pSrcCol,
-            int pDstRow, int pDstCol)
-        {
-            gm = pGM;
-
-            attr = pSrcRow;
-            chr = pSrcCol;
-
-            //_pt = new Point(pSrcCol, pSrcRow);
-
-            srcPoint = new Point(pSrcCol & 0x7F, pSrcRow & 0x7F);
-
-            srcSize = new TSize(gm.cell_width, gm.cell_height);
-
-            dstPoint = new Point(pDstCol, pDstRow);
-
-            dstSize = new TSize(tile_wid * char_width,
-                tile_hgt * char_height);
-
-            isLargeTile = false;
-
-            if (gm.isLargeTile(srcPoint.y, srcPoint.x) && dstPoint.y > 2) {
-
-                isLargeTile = true;
-
-                srcPoint.y -= 1;
-                srcSize.height *= 2;
-
-                dstPoint.y -= tile_hgt;
-                dstSize.height *= 2;
-            }
-
-            page = new Point(0, 0);
-            ptInPage = new Point(srcPoint);
-
-            if (gm.havePages()) {
-                ptInPage.x %= gm.pageSize;
-                ptInPage.y %= gm.pageSize;
-
-                page.x = srcPoint.x / gm.pageSize;
-                page.y = srcPoint.y / gm.pageSize;
-            }
-        }
-
-        public Rect locateSource()
-        {
-            int x = ptInPage.x * gm.cell_width;
-            int y = ptInPage.y * gm.cell_height;
-            return new Rect(x, y, x + srcSize.width,
-                y + srcSize.height);
-        }
-
-        public Rect locateDest()
-        {
-            int x = dstPoint.x * char_width;
-            int y = dstPoint.y * char_height;
-            return new Rect(x, y, x + dstSize.width,
-                y + dstSize.height);
-        }
-
-        public String createKey()
-        {
-            if (key == "") {
-                key = "" + gm.idx + "-" + srcPoint.x + "@" + srcPoint.y +
-                    "-" + dstSize.width + "x" + dstSize.height;
-            }
-            return key;
-        }
-
-        public Bitmap loadBitmap(Bitmap from)
-        {
-            Rect src = locateSource();
-
-            Bitmap result = null;
-
-            if (src.left < 0 || src.top < 0) return null;
-
-            int sw = src.right - src.left;
-            int sh = src.bottom - src.top;
-
-            if (sw <= 0 || src.left + sw > from.getWidth()) return null;
-            if (sh <= 0 || src.top + sh > from.getHeight()) return null;
-
-            if (dstSize.width <= 0 || dstSize.height <= 0) return null;
-
-            try {
-                Bitmap region = Bitmap.createBitmap(from, src.left,
-                        src.top, sw, sh);
-
-                result = Bitmap.createScaledBitmap(region,
-                        dstSize.width, dstSize.height, true);
-
-                region.recycle();
-            }
-            catch (java.lang.IllegalArgumentException ex) {
-                result = null;
-            }
-
-            return result;
         }
     }
 
@@ -385,7 +255,6 @@ public class TermView extends View implements OnGestureListener {
 
         tile_hgt = Preferences.getTileHeight();
         tile_wid = Preferences.getTileWidth();
-        pseudoAscii = Preferences.getPseudoAscii();
         topBar = Preferences.getTopBar();
 
         iconMouse1 = BitmapFactory.decodeResource(game_context.getResources(),
@@ -519,7 +388,6 @@ public class TermView extends View implements OnGestureListener {
     {
         String txt = "graphics:" + useGraphics +
             ":" + tile_hgt + ":" + tile_wid +
-            ":" + (pseudoAscii ? 1: 0) +
             ":" + (topBar ? 1: 0);
 
         Log.d("Angband", "Visual State: " + txt);
@@ -1218,26 +1086,9 @@ public class TermView extends View implements OnGestureListener {
 			int x = col * tw;
 			int y = origin_y + row * th;
 
-			if (this.bigTileActive()) {
-
-                /*
-                TermWindow.TermPoint p = null;
-
-				if (state.virtscr != null) {
-					 p = state.virtscr.buffer[row][col];
-				}
-
-			    if (p != null && (p.isGraphicTile() || p.isBigText())) {
-
-                    tw = tile_wid_pix;
-                    th = tile_hgt_pix;
-                }
-                */
-
-                if (state.stdscr.big_cursor) {
-                    tw = tile_wid_pix;
-                    th = tile_hgt_pix;
-                }
+			if (this.bigTileActive() && state.stdscr.big_cursor) {
+                tw = tile_wid_pix;
+                th = tile_hgt_pix;
 			}
 
 			// due to font "scrunch", cursor is sometimes a bit too big
@@ -2119,22 +1970,15 @@ public class TermView extends View implements OnGestureListener {
 			return;
 		}
 
-        char ch = p.ch;
+        if (p.isBigPad()) return;
 
-        if (ch == BIG_PAD) return;
+        char ch = p.ch;
 
 		Paint fore_temp = fore;
 		int tw = char_width;
 		int th = char_height;
         int x = c * tw;
         int y = r * th;
-
-		if (p.isBigText() && this.bigTileActive()) {
-
-            fore_temp = tile_fore;
-            tw = tile_wid_pix;
-            th = tile_hgt_pix;
-        }
 
         ch &= 0xFF;
 
@@ -2166,6 +2010,8 @@ public class TermView extends View implements OnGestureListener {
 
     public void drawText(int row, int col, int a, int c)
     {
+        int gxa = a;
+
         a &= 0x7F;
         c &= 0xFF;
 
@@ -2201,6 +2047,11 @@ public class TermView extends View implements OnGestureListener {
         float pady = Math.max((th - h2) / 2, 0) + fore_temp.descent();
 
         canvas.drawText(str, x + padx, y + th - pady, fore_temp);
+
+        if ((gxa & MONSTER_MASK) != 0) {
+            Rect r = new Rect(x, y, x+tw, y+th);
+            drawLifeColor(gxa, r);
+        }
     }
 
     public void markTile(TermWindow t, int r, int c, int th, int tw)
@@ -2231,7 +2082,7 @@ public class TermView extends View implements OnGestureListener {
                 if (!p.isGraphicTile()) continue;
                 if (p.bgColor < 0) continue;
 
-                g = new TileGrid(gm, p.fgColor, p.ch, row, col);
+                g = new TileGrid(gm, p.fgColor, p.ch, row, col, this);
                 key = g.createKey();
                 if (state.tileCache.get(key) == null) {
                     grids.add(g);
@@ -2240,7 +2091,7 @@ public class TermView extends View implements OnGestureListener {
                     //Log.d("Angband", "Cache hit (preload): " + key);
                 }
 
-                g = new TileGrid(gm, p.bgColor, p.bgChar, row, col);
+                g = new TileGrid(gm, p.bgColor, p.bgChar, row, col, this);
                 key = g.createKey();
                 if (state.tileCache.get(key) == null) {
                     grids.add(g);
@@ -2347,22 +2198,55 @@ public class TermView extends View implements OnGestureListener {
 
     public void drawLifeColor(int a, Rect dst)
     {
-        // Mask is 0x02000
         int pct = (a >> 8) & 0x0F;
-        int color;
+        int color = 0;
 
-        if (pct <= 2) color = Color.RED;
-        else if (pct <= 4) color = 0x0FF4040; // Light red
-        else if (pct <= 6) color = 0x0FF8000; // Orange
-        else if (pct <= 8) color = Color.YELLOW;
-        else return; // White, do nothing
+        if ((a & PLAYER_MASK) != 0) {
 
-        back.setColor(color);
-        back.setAlpha(90);
+            color = Color.RED;
+            if (pct >= 3) color = 0x0FF4040; // Light red
+            if (pct >= 5) color = 0x0FF8000; // Orange
+            if (pct >= 7) color = Color.YELLOW;
+            if (pct >= 9) return; // White, do nothing
 
-        canvas.drawRect(dst, back);
+            back.setColor(color);
+            back.setAlpha(90);
+            canvas.drawRect(dst, back);
+        }
+
+        if ((a & MONSTER_MASK) != 0) {
+
+            color = Color.RED;
+            if (pct >= 1) color = 0x0FF4040; // Light red
+            if (pct >= 3) color = 0x0FF8000; // Orange
+            if (pct >= 6) color = Color.YELLOW;
+            if (pct >= 9) return; // White, do nothing
+        }
+
+        // Draw a health bar, for player and monster
+        if (Preferences.getDrawHealthBars()) {
+            int h = (int)(tile_hgt_pix * 0.07f);
+            // Adjust pct like Vanilla
+            pct = Math.min(pct+1,10);
+            int w = pct * (tile_wid_pix) / 10;
+            w = Math.max(w,2);
+            if (h >= 2) {
+                back.setColor(Color.BLACK);
+                back.setAlpha(255);
+                Rect r = new Rect(dst.left, dst.top, dst.right,
+                    dst.top + h);
+                canvas.drawRect(r, back);
+
+                back.setColor(color);
+                back.setAlpha(255);
+                Rect r2 = new Rect(dst.left, dst.top, dst.left + w,
+                    dst.top + h);
+                canvas.drawRect(r2, back);
+            }
+        }
 
         back.setColor(Color.BLACK);
+        back.setAlpha(255);
     }
 
     public boolean bitmapHasAlpha(Bitmap bm)
@@ -2413,8 +2297,10 @@ public class TermView extends View implements OnGestureListener {
 
         GxAscii info = null;
 
+        int attr = tile.attr & 0xFF;
+
         for (GxAscii ele: gxa_list) {
-            if (ele.ga == tile.attr && ele.gc == tile.chr) {
+            if (ele.ga == attr && ele.gc == tile.chr) {
                 info = ele;
                 break;
             }
@@ -2422,12 +2308,12 @@ public class TermView extends View implements OnGestureListener {
 
         // Not found
         if (info == null) {
-            String key = "get_gx_ascii_" + tile.attr
+            String key = "get_gx_ascii_" + attr
                 + "_" + tile.chr;
 
             info = new GxAscii();
             info.type = "unknown";
-            info.ga = tile.attr;
+            info.ga = attr;
             info.gc = tile.chr;
             info.a = 0;
             info.c = 0;
@@ -2502,16 +2388,7 @@ public class TermView extends View implements OnGestureListener {
 
         if (!currentGraf.havePages() && atlas == null) return;
 
-        TileGrid tile = new TileGrid(currentGraf, a, c, row, col);
-
-        /*
-        if (tile.isLargeTile) {
-
-            //game_context.infoAlert("Big tile! " + row + " " + col);
-
-            markTile(state.virtscr, row, col, tile_hgt, tile_wid);
-        }
-        */
+        TileGrid tile = new TileGrid(currentGraf, a, c, row, col, this);
 
         Rect dst = tile.locateDest();
 
@@ -2527,13 +2404,12 @@ public class TermView extends View implements OnGestureListener {
 
         canvas.drawBitmap(bm, dst.left, dst.top, null);
 
-        // Special mark for life color
-        if ((a & 0x02000) != 0) {
-            drawLifeColor(a, dst);
-        }
-
         if (!fill) {
             drawAsciiHelper(tile, dst);
+
+            if ((a & (PLAYER_MASK|MONSTER_MASK)) != 0) {
+                drawLifeColor(a, dst);
+            }
         }
 	}
 
@@ -2546,7 +2422,7 @@ public class TermView extends View implements OnGestureListener {
         }
 
         // Pad character
-        if (a == 255) {
+        if ((a & 0xFF) == 255) {
             return;
         }
 

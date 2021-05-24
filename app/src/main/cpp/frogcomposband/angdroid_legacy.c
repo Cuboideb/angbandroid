@@ -51,7 +51,6 @@ static int initial_height = 24;
 static int initial_tile_wid = 1;
 static int initial_tile_hgt = 1;
 static int initial_graphics = 0;
-static int initial_pseudo_ascii = 0;
 
 /*
  * Android's terms are boring
@@ -245,7 +244,7 @@ int process_special_command(int key)
 {
 	char buf[2048] = "";
 	char *pbuf = buf;
-	int graf, pseudo, trows, tcols;
+	int trows, tcols;
 
 	key = 0;
 

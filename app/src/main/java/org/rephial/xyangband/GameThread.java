@@ -224,7 +224,6 @@ public class GameThread implements Runnable {
 		String visuals = "" + Preferences.getGraphicsMode()
 			+ ":" + Preferences.getTileHeight()
 			+ ":" + Preferences.getTileWidth()
-			+ ":" + (Preferences.getPseudoAscii() ? 1: 0)
 			+ ":" + (Preferences.getTopBar() ? 1: 0);
 
 		String pluginName = Preferences.getActivePluginName();

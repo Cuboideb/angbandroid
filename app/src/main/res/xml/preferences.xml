@@ -52,10 +52,10 @@
 			android:entries="@array/tileMultValues"
 			android:entryValues="@array/tileMultValues"/>
 	    <CheckBoxPreference
-			android:key="angband.pseudoascii"
-			android:defaultValue="false"
-			android:title="Pseudo Ascii"
-			android:summary="Use ascii for monsters and tiles for everything else" />
+			android:key="angband.draw_health_bars"
+			android:defaultValue="true"
+			android:title="Draw health bars"
+			android:summary="Above player and monsters" />
 		<org.rephial.xyangband.SeekBarPreference
 			android:key="angband.ascii_helper"
 			android:title="Show small ascii helper for tiles (suggested value: 40%)"

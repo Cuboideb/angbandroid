@@ -415,8 +415,8 @@ public class NativeWrapper {
 	{
 		if (p.bgColor < 0) return;
 
-		int fgColorIdx = p.fgColor;
-		int bgColorIdx = p.bgColor;
+		int fgColorIdx = p.fgColor & 0x7F;
+		int bgColorIdx = p.bgColor & 0x7F;
 
 		/*
 		 * This is a bit hacky.  Angband doesn't actually use colour pairs -

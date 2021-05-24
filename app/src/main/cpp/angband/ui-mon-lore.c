@@ -31,7 +31,7 @@
  *
  * If graphics are turned on, this appends the title with the appropriate tile.
  * Note: if the title is the only thing in the textblock, make sure to append a
- * newline so that the textui stuff works properly. 
+ * newline so that the textui stuff works properly.
  *
  * \param tb is the textblock we are placing the title into.
  * \param race is the monster race we are describing.
@@ -68,7 +68,7 @@ void lore_title(textblock *tb, const struct monster_race *race)
 	textblock_append(tb, "')");
 
 	if (((optional_attr != standard_attr) || (optional_char != standard_char))
-		&& (tile_width == 1) && (tile_height == 1) && !USE_PSEUDO_ASCII) {
+		&& (tile_width == 1) && (tile_height == 1)) {
 		/* Append the "optional" attr/char info */
 		textblock_append(tb, " ('");
 		textblock_append_pict(tb, optional_attr, optional_char);

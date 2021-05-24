@@ -44,10 +44,6 @@ public class TermWindow {
 			return (fgColor & 0x80) != 0;
 		}
 
-		public boolean isBigText() {
-			return ch >= 0x1D00 && ch <= 0x1DFF;
-		}
-
 		public boolean isBigPad()
 		{
 			return ch == TermView.BIG_PAD;
@@ -215,7 +211,7 @@ public class TermWindow {
 					x < begin_x || x >= cols) continue;
 
 				TermPoint p = buffer[y][x];
-				if (p.isGraphicTile() || p.isBigText()) {
+				if (p.isGraphicTile()) {
 					p.isUgly = !p.isDirty;
 				}
 			}

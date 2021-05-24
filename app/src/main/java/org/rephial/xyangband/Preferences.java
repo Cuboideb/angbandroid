@@ -81,7 +81,6 @@ final public class Preferences {
 	static final String KEY_SKIPWELCOME = "angband.skipwelcome";
 
 	static final String KEY_GRAPHICS = "angband.graphics";
-	static final String KEY_PSEUDOASCII = "angband.pseudoascii";
 
 	static final String KEY_PROFILES = "angband.profiles";
 	static final String KEY_ACTIVEPROFILE = "angband.activeprofile";
@@ -180,6 +179,11 @@ final public class Preferences {
 	public static boolean getQwertyNumPad()
 	{
 		return pref.getBoolean(Preferences.KEY_QWERTYNUMPAD, false);
+	}
+
+	public static boolean getDrawHealthBars()
+	{
+		return pref.getBoolean("angband.draw_health_bars", true);
 	}
 
 	public static String getVersion() {
@@ -429,11 +433,6 @@ final public class Preferences {
 		//String s = pref.getString(Preferences.KEY_RIBBON_ROWS, "0");
 		//return Integer.valueOf(s);
 		return 0;
-	}
-
-	public static boolean getPseudoAscii()
-	{
-		return pref.getBoolean(Preferences.KEY_PSEUDOASCII, false);
 	}
 
 	public static String getUserKeymaps()

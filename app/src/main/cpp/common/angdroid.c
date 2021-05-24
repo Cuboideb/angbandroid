@@ -26,6 +26,7 @@
 #include "grafmode.h"
 
 #include "angband.h"
+#include "cave.h"
 #include "init.h" // init_file_paths()
 #include "game-world.h"
 #include "ui-term.h"
@@ -48,7 +49,6 @@ static int initial_height = 24;
 static int initial_tile_wid = 1;
 static int initial_tile_hgt = 1;
 static int initial_graphics = 0;
-static int initial_pseudo_ascii = 0;
 static int initial_top_bar = 0;
 
 /*
@@ -218,7 +218,7 @@ int process_special_command(int key)
 	char buf[2048] = "";
 	char tmp[200] = "";
 	char *pbuf = buf;
-	int graf, pseudo, trows, tcols, top_bar;
+	int graf, trows, tcols, top_bar;
 
 	key = 0;
 
@@ -229,8 +229,8 @@ int process_special_command(int key)
 	}
 	pbuf = 0;
 
-	if (sscanf(buf, "graphics:%d:%d:%d:%d:%d",
-		&graf, &trows, &tcols, &pseudo, &top_bar) == 5) {
+	if (sscanf(buf, "graphics:%d:%d:%d:%d",
+		&graf, &trows, &tcols, &top_bar) == 4) {
 
 		if (!PLAYER_PLAYING) return 0;
 
@@ -238,9 +238,6 @@ int process_special_command(int key)
 
 		use_graphics = graf;
 		current_graphics_mode = get_graphics_mode(use_graphics);
-#if defined(USE_PSEUDO_ASCII)
-		pseudo_ascii = pseudo;
-#endif
 		tile_width = tcols;
 		tile_height = trows;
 #if defined(SIDEBAR_MODE)
@@ -620,9 +617,6 @@ static void term_data_link(int i)
 
 	tile_width = initial_tile_wid;
 	tile_height = initial_tile_hgt;
-#if defined(USE_PSEUDO_ASCII)
-	pseudo_ascii = initial_pseudo_ascii;
-#endif
 
 	t->complex_input = true;
 
@@ -910,12 +904,52 @@ static char *get_gx_ascii(int ga, int gc)
 	return strdup(buf);
 }
 
+static char *get_grid_info(int row, int col)
+{
+	char buf[1024] = "";
+
+	if (cave == NULL) return 0;
+
+	/*LOGD("row: %d, col: %d", row, col);*/
+
+	row = (row - ROW_MAP) / MAX(tile_height,1) + angband_term[0]->offset_y;
+	col = (col - COL_MAP) / MAX(tile_width,1) + angband_term[0]->offset_x;
+
+	/*LOGD("row ------ : %d, col: %d", row, col);*/
+
+	if (row < 0 || row >= cave->height) return 0;
+	if (col < 0 || col >= cave->width) return 0;
+
+	struct loc grid;
+	grid.y = row;
+	grid.x = col;
+
+	int m_idx = square(cave, grid)->mon;
+
+	/*LOGD("m_idx: %d", m_idx);*/
+
+	if (m_idx < 0) {
+		int pct = player->chp * 10 / MAX(player->mhp,1);
+		sprintf(buf, "player_%d", pct);
+	}
+	else if (m_idx > 0) {
+		struct monster *mon = cave_monster(cave, m_idx);
+		if (mon != NULL && mon->race != NULL) {
+			int pct = mon->hp * 10 / MAX(mon->maxhp,1);
+			sprintf(buf, "monster_%d", pct);
+		}
+	}
+
+	return strdup(buf);
+}
+
 char* queryString(const char* argv0)
 {
 	const char *CMD_DESC = "cmd_desc_";
 
 	char *buf = 0;
 	int ga, gc;
+	int row, col;
 
 	if (strncmp(argv0, CMD_DESC, strlen(CMD_DESC)) == 0) {
 		// Find the respective key in roguelike mode
@@ -931,6 +965,9 @@ char* queryString(const char* argv0)
 	}
 	else if (strcmp(argv0, "get_tilesets") == 0) {
 		buf = get_tilesets();
+	}
+	else if (sscanf(argv0, "get_grid_info_%d_%d", &row, &col) == 2) {
+		buf = get_grid_info(row, col);
 	}
 	else if (sscanf(argv0, "get_gx_ascii_%d_%d", &ga, &gc) == 2) {
 		buf = get_gx_ascii(ga, gc);
@@ -1030,8 +1067,8 @@ void angdroid_process_argv(int i, const char* argv)
     		}
     		break;
 		case 4:
-			sscanf(argv, "%d:%d:%d:%d:%d", &initial_graphics, &initial_tile_hgt,
-				&initial_tile_wid, &initial_pseudo_ascii, &initial_top_bar);
+			sscanf(argv, "%d:%d:%d:%d", &initial_graphics, &initial_tile_hgt,
+				&initial_tile_wid, &initial_top_bar);
 			break;
 		case 5:
 			my_strcpy(variant_name, argv, sizeof(variant_name));

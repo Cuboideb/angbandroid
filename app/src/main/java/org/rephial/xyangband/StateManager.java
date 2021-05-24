@@ -114,6 +114,13 @@ public class StateManager {
 		buildCommandList();
 	}
 
+	public String getGridInfo(int row, int col)
+	{
+		String str = nativew.queryString("get_grid_info_" + row + "_" + col);
+		if (str == null) str = "";
+		return str;
+	}
+
 	public void loadGraphics()
     {
     	if (grafmodes.size() > 0) return;
