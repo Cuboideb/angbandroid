@@ -9,7 +9,7 @@ public class NativeWrapper {
 		System.loadLibrary(Plugins.LoaderLib);
 	}
 
-	private TermView term = null;
+	public TermView term = null;
 	private StateManager state = null;
 
 	private final String display_lock = "lock";
@@ -234,8 +234,25 @@ public class NativeWrapper {
 		}
 	}
 
+	public void disableGraphics()
+	{
+		Log.d("Angband", "DISABLE GX");
+		synchronized (display_lock) {
+			// No graphics tilesets
+			state.grafmodes.clear();
+			// Notify term
+			if (term != null) {
+				term.currentGraf = null;
+				term.currentAtlas = "";
+				term.atlas = null;
+				frosh(null);
+			}
+		}
+	}
+
 	public void reloadGraphics()
 	{
+		Log.d("Angband", "RELOADING GX");
 		synchronized (display_lock) {
 			if (term != null && term.reloadGraphics()) {
 				updateNow();
@@ -454,6 +471,7 @@ public class NativeWrapper {
 
 			// Hack -- Force setup of graphics mode variables
 			if (what == GameActivity.TERM_CONTROL_CONTEXT) {
+				state.inGameHook();
 				reloadGraphics();
 			}
 		}

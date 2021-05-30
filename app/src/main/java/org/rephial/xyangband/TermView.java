@@ -149,6 +149,8 @@ public class TermView extends View implements OnGestureListener {
     public boolean topBar = true;
     public String flashText = "";
 
+    public String pluginName = "";
+
     public static class Assert {
         public static void that(boolean condition, String message) {
             if (!condition) {
@@ -261,6 +263,8 @@ public class TermView extends View implements OnGestureListener {
                 R.drawable.mouse1);
         iconMouse2 = BitmapFactory.decodeResource(game_context.getResources(),
                 R.drawable.mouse2);
+
+        pluginName = Preferences.getActivePluginName();
 
         createTimers();
 
@@ -417,30 +421,15 @@ public class TermView extends View implements OnGestureListener {
         }
     }
 
-    public GraphicsMode findGraphicsMode(int gidx)
-    {
-        GraphicsMode gm = null;
-
-        if (gidx > 0) {
-            for (GraphicsMode gx: state.grafmodes) {
-                if (gx.idx == gidx) {
-                    gm = gx;
-                    break;
-                }
-            }
-        }
-
-        return gm;
-    }
-
     public void setGraphicsMode(int gidx)
     {
         if (state.grafmodes.isEmpty()) {
             useGraphics = gidx;
+            Log.d("Angband", "No graphics modes");
             return;
         }
 
-        GraphicsMode gm = findGraphicsMode(gidx);
+        GraphicsMode gm = state.findGraphicsMode(gidx);
         Bitmap image = null;
         String path = "";
 
@@ -453,7 +442,12 @@ public class TermView extends View implements OnGestureListener {
             }
             else {
                 image = BitmapFactory.decodeFile(path);
-                image.prepareToDraw();
+                if (image == null) {
+                    Log.d("Angband", "Can't load " + path);
+                }
+                else {
+                    image.prepareToDraw();
+                }
             }
         }
 
@@ -461,6 +455,10 @@ public class TermView extends View implements OnGestureListener {
         currentGraf = gm;
         atlas = image;
         currentAtlas = path;
+
+        if (useGraphics > 0 && currentGraf == null) {
+            Log.d("Angband","No currentGraf");
+        }
     }
 
     public boolean bigTileActive()
@@ -1944,7 +1942,7 @@ public class TermView extends View implements OnGestureListener {
 
 		state.currentPlugin = Plugins.Plugin.convert(Preferences.getActiveProfile().getPlugin());
 
-		//Log.d("Angband", "onGameStart !!!");
+		Log.d("Angband", "onGameStart !!!");
 
    		return true;
 	}
@@ -2174,7 +2172,10 @@ public class TermView extends View implements OnGestureListener {
         if (gm.havePages()) {
             String path = gm.getFullPath(tile.page);
             atlas = BitmapFactory.decodeFile(path);
-            if (atlas == null) return null;
+            if (atlas == null) {
+                Log.d("Angband", "Can't load " + path);
+                return null;
+            }
             atlas.prepareToDraw();
 
             //Log.d("Angband", "Loading page: " + path);
@@ -2185,7 +2186,9 @@ public class TermView extends View implements OnGestureListener {
             atlas = null;
         }
         else {
-            if (atlas == null) return null;
+            if (atlas == null) {
+                return null;
+            }
             result = tile.loadBitmap(atlas);
         }
 
@@ -2381,19 +2384,74 @@ public class TermView extends View implements OnGestureListener {
         paint.setTextSize(old);
     }
 
+    public void drawSilQEffects(TileGrid tile, boolean isTerrain)
+    {
+        // Terrain is "Glowing"
+        if (isTerrain && (tile.attr & 0x40) != 0) {
+            // Hack - Get tile
+            tile.changeSource(0x8C, 0x8E);
+            Bitmap glow = getTile(tile);
+            if (glow != null) {
+                //Log.d("Angband", "Loaded GLOWING");
+                Rect dst = tile.locateDest();
+                canvas.drawBitmap(glow, dst.left, dst.top, null);
+            }
+            else {
+                Log.d("Angband", "Cant load GLOWING");
+            }
+        }
+
+        // Monster is "Alert"
+        if (!isTerrain && (tile.chr & 0x40) != 0) {
+            // Hack - Get tile
+            tile.changeSource(0x8C, 0x8B);
+            Bitmap alert = getTile(tile);
+            if (alert != null) {
+                //Log.d("Angband", "Loaded ALERT");
+                Rect dst = tile.locateDest();
+                canvas.drawBitmap(alert, dst.left, dst.top, null);
+            }
+            else {
+                Log.d("Angband", "Cant load ALERT");
+            }
+        }
+    }
+
+    public void drawVanillaEffects(TileGrid tile, Rect dst)
+    {
+        drawAsciiHelper(tile, dst);
+
+        if ((tile.attr & (PLAYER_MASK|MONSTER_MASK)) != 0) {
+            drawLifeColor(tile.attr, dst);
+        }
+    }
+
 	public void drawTileAux(int row, int col, int a, int c,
         boolean fill)
 	{
-        if (currentGraf == null || !canDraw()) return;
+        if (currentGraf == null || !canDraw()) {
+            //Log.d("Angband","Cant draw tiles");
+            return;
+        }
 
-        if (!currentGraf.havePages() && atlas == null) return;
+        if (!currentGraf.havePages() && atlas == null) {
+            //Log.d("Angband","Dont have atlas");
+            return;
+        }
 
         TileGrid tile = new TileGrid(currentGraf, a, c, row, col, this);
 
         Rect dst = tile.locateDest();
 
+        /*
         // Optimization: just clear grids with alpha
         if (fill && tileHasAlpha(tile)) {
+            setBackColor(Color.BLACK);
+            canvas.drawRect(dst, back);
+        }
+        */
+
+        if (fill) {
             setBackColor(Color.BLACK);
             canvas.drawRect(dst, back);
         }
@@ -2404,12 +2462,13 @@ public class TermView extends View implements OnGestureListener {
 
         canvas.drawBitmap(bm, dst.left, dst.top, null);
 
-        if (!fill) {
-            drawAsciiHelper(tile, dst);
-
-            if ((a & (PLAYER_MASK|MONSTER_MASK)) != 0) {
-                drawLifeColor(a, dst);
-            }
+        // Special sil-q effects, glowing and alert
+        if (Preferences.useSilQGraphics()) {
+            drawSilQEffects(tile, fill);
+        }
+        // Vanilla and FAangband
+        else if (!fill) {
+            drawVanillaEffects(tile, dst);
         }
 	}
 
@@ -2418,6 +2477,7 @@ public class TermView extends View implements OnGestureListener {
 
         // Not initialized
         if (canvas == null) {
+            Log.d("Angband", "No canvas");
             return;
         }
 

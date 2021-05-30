@@ -36,6 +36,12 @@ public class GraphicsMode {
 
     public String getFullPath(Point page)
     {
+        if (Preferences.useSilQGraphics()) {
+            String pathToPicture = Preferences.getAngbandFilesDirectory() +
+                "/" + directory + "/" + file;
+            return pathToPicture;
+        }
+
         // HACK - Angband and FAngband share atlas files (some are large)
         // So we point to angband directories
         int pluginId = 0;

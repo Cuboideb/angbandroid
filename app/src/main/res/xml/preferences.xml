@@ -44,6 +44,10 @@
 			android:defaultValue="6"
 			android:entries="@array/graphicsModesDesc"
 			android:entryValues="@array/graphicsModesKeys"/>
+		<CheckBoxPreference
+			android:key="angband.sil_gx"
+			android:defaultValue="false"
+			android:title="Use graphics for Sil-Q" />
 		<ListPreference
 			android:title="Tile Multiplier"
 			android:summary="Columns x Rows"
@@ -51,7 +55,7 @@
 			android:defaultValue="4x2"
 			android:entries="@array/tileMultValues"
 			android:entryValues="@array/tileMultValues"/>
-	    <CheckBoxPreference
+	  <CheckBoxPreference
 			android:key="angband.draw_health_bars"
 			android:defaultValue="true"
 			android:title="Draw health bars"

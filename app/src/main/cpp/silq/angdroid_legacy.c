@@ -51,7 +51,7 @@ static int initial_height = 24;
 static int initial_tile_wid = 1;
 static int initial_tile_hgt = 1;
 static int initial_graphics = 0;
-static int initial_pseudo_ascii = 0;
+static int initial_top_bar = 0;
 
 /*
  * Android's terms are boring
@@ -245,7 +245,7 @@ int process_special_command(int key)
 {
 	char buf[2048] = "";
 	char *pbuf = buf;
-	int trows, tcols;
+	int graf, top_bar, trows, tcols;
 
 	key = 0;
 
@@ -255,6 +255,26 @@ int process_special_command(int key)
 		*pbuf++ = key;
 	}
 	pbuf = 0;
+
+	if (sscanf(buf, "graphics:%d:%d:%d:%d",
+		&graf, &trows, &tcols, &top_bar) == 4) {
+
+		if (!PLAYER_PLAYING) return 0;
+
+		if (graf == 500) {
+			use_graphics = GRAPHICS_MICROCHASM;
+			use_bigtile = TRUE;
+		}
+		else {
+			use_graphics = GRAPHICS_NONE;
+			use_bigtile = FALSE;
+		}
+
+		// Process prefs
+		reset_visuals(true);
+		return KTRL('R');
+		//return 0;
+	}
 
 	if (sscanf(buf, "resize:%d:%d", &tcols, &trows) == 2) {
 
@@ -505,6 +525,29 @@ static errr Term_text_android(int x, int y, int n, byte a, cptr cp)
 	return 0;
 }
 
+/*
+ * Draw some attr/char pairs on the screen
+ */
+static errr Term_pict_android(int x, int y, int n,
+	const byte *ap, const char *cp,
+	const byte *tap, const char *tcp)
+{
+	int resu;
+	int i;
+
+	/*LOGD("Pick hook");*/
+
+	term_data *td = (term_data*)(Term->data);
+
+	for (i = 0; i < n; i++) {
+
+		resu = waddtile(td->win, x, y, (byte)ap[i], (byte)cp[i],
+			(byte)tap[i], (byte)tcp[i]);
+		if (resu) break;
+	}
+	return resu;
+}
+
 /*** Internal Functions ***/
 
 /*
@@ -558,6 +601,9 @@ static void term_data_link(int i)
 	/* This may make things slightly more efficient. */
 	t->never_frosh = true;
 
+	/* Use pict hook for graphics */
+	t->higher_pict = true;
+
 	/* Erase with "white space" XXX XXX XXX */
 	t->attr_blank = TERM_WHITE;
 	t->char_blank = ' ';
@@ -572,6 +618,7 @@ static void term_data_link(int i)
 	t->bigcurs_hook = Term_bigcurs_android;
 	t->wipe_hook = Term_wipe_android;
 	t->text_hook = Term_text_android;
+	t->pict_hook = Term_pict_android;
 	//t->control_hook = Term_control_android;
 
 	/* Remember where we came from */
@@ -779,9 +826,23 @@ static char *get_command_list()
 	return strdup(buf);
 }
 
+/*
 static char *get_tilesets(void)
 {
 	char buf[2048] = "";
+	return strdup(buf);
+}
+*/
+
+static char *get_tilesets(void)
+{
+	char buf[2048] = "";
+
+	strnfmt(buf, sizeof(buf), "%d:%s:%s:%s:%d:%d:%d:%d:%d",
+			500, "Microchasm", "xtra/graf", "16x16_microchasm.png",
+			16, 16,
+			0, 0, 0);
+
 	return strdup(buf);
 }
 
@@ -902,6 +963,8 @@ void angdroid_process_argv(int i, const char* argv)
     		}
     		break;
 		case 4:
+			sscanf(argv, "%d:%d:%d:%d", &initial_graphics, &initial_tile_hgt,
+				&initial_tile_wid, &initial_top_bar);
 			break;
 		case 5:
 			my_strcpy(variant_name, argv, sizeof(variant_name));
@@ -935,6 +998,7 @@ void angdroid_main()
 	if (init_android() != 0) quit("Oops!");
 
 	ANGBAND_SYS = "android";
+	ANGBAND_GRAF = "new";
 
 	/* Initialize some stuff */
 	init_android_stuff();
@@ -952,6 +1016,22 @@ void angdroid_main()
 
 	/* Wait for response */
 	pause_line(Term->hgt - 1);
+
+	if (initial_graphics == 500) {
+		use_graphics = GRAPHICS_MICROCHASM;
+		use_bigtile = TRUE;
+	}
+	else {
+		use_graphics = GRAPHICS_NONE;
+		use_bigtile = FALSE;
+	}
+
+	/* Erase screen */
+	Term_clear();
+	Term_fresh();
+
+	/* Hack -- Force graphics reload */
+	control_msg(TERM_CONTROL_CONTEXT, "dummy");
 
 	/* Play game */
 	play_game(false);

@@ -942,6 +942,9 @@ void angdroid_main()
 	/* Wait for response */
 	//pause_line(0);
 
+	/* Hack -- Force graphics reload */
+	control_msg(TERM_CONTROL_CONTEXT, "dummy");
+
 	/* Play game */
 	play_game(false);
 

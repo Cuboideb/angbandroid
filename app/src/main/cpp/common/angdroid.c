@@ -1111,6 +1111,9 @@ void angdroid_main()
 	/* Wait for response */
 	pause_line(Term);
 
+	/* Hack - Force grapchis reload */
+	control_msg(TERM_CONTROL_CONTEXT, "dummy");
+
 	/* Play game */
 	play_game(false);
 

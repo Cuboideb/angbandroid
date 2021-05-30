@@ -2697,8 +2697,6 @@ static void ui_enter_init(game_event_type type, game_event_data *data,
 
 	/* Set up our splashscreen handlers */
 	event_add_handler(EVENT_INITSTATUS, splashscreen_note, NULL);
-
-	Term_control_context();
 }
 
 static void ui_leave_init(game_event_type type, game_event_data *data,
@@ -2789,8 +2787,6 @@ static void ui_enter_world(game_event_type type, game_event_data *data,
 
 	/* Hack -- Decrease "icky" depth */
 	screen_save_depth--;
-
-	Term_control_context();
 }
 
 static void ui_leave_world(game_event_type type, game_event_data *data,
@@ -2862,8 +2858,6 @@ static void ui_leave_world(game_event_type type, game_event_data *data,
 
 	/* Hack -- Increase "icky" depth */
 	screen_save_depth++;
-
-	Term_control_context();
 }
 
 static void ui_enter_game(game_event_type type, game_event_data *data,

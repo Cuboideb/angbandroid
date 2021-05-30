@@ -121,8 +121,25 @@ public class StateManager {
 		return str;
 	}
 
+	public GraphicsMode findGraphicsMode(int gidx)
+    {
+        GraphicsMode gm = null;
+
+        if (gidx > 0) {
+            for (GraphicsMode gx: grafmodes) {
+                if (gx.idx == gidx) {
+                    gm = gx;
+                    break;
+                }
+            }
+        }
+
+        return gm;
+    }
+
 	public void loadGraphics()
     {
+    	// Everything loaded ?
     	if (grafmodes.size() > 0) return;
 
         String buf = nativew.queryString("get_tilesets");

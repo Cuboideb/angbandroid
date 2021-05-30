@@ -62,6 +62,8 @@ final public class Preferences {
 	static final String KEY_TERMWIDTH = "angband.termwidth";
 	static final String KEY_TERMHEIGHT = "angband.termheight";
 
+	static final String KEY_SIL_GX = "angband.sil_gx";
+
 	static final String KEY_USE_ADV_KBD = "angband.use_adv_keyboard";
 	static final String KEY_SHOW_ADV_KEYMAP = "angband.show_adv_keymaps";
 	static final String KEY_USE_VERT_KBD = "angband.use_vert_keyboard";
@@ -103,6 +105,8 @@ final public class Preferences {
 	public static Context context;
 
 	public static ArrayList<String> changed = null;
+
+	public static final int MICROCHASM_GX = 500;
 
 	Preferences() {}
 
@@ -362,6 +366,12 @@ final public class Preferences {
 		ed.commit();
 	}
 
+	public static boolean useSilQGraphics()
+	{
+		return (Preferences.getActivePlugin() == Plugins.Plugin.silq)
+			&& pref.getBoolean(Preferences.KEY_SIL_GX, false);
+	}
+
 	public static void setMiddleOpacity(int value)
 	{
 		if (value < 0) {
@@ -382,9 +392,12 @@ final public class Preferences {
 
 	public static String getTileMultiplier()
 	{
+		if (Preferences.useSilQGraphics()) return "2x1";
+
 		if (Preferences.getActivePlugin().only1x1()) {
 			return "1x1";
 		}
+
 		return pref.getString("angband.tile_multiplier", "4x2");
 	}
 
@@ -420,6 +433,8 @@ final public class Preferences {
 
 	public static int getGraphicsMode()
 	{
+		if (Preferences.useSilQGraphics()) return MICROCHASM_GX;
+
 		String val = pref.getString(Preferences.KEY_GRAPHICS, "6");
 		int num = Integer.parseInt(val);
 		if (getActivePlugin().onlyText()) {

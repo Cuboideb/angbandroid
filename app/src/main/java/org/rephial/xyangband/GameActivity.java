@@ -184,12 +184,14 @@ public class GameActivity extends Activity {
 				key.equals(Preferences.KEY_ROWS_SUBW) ||
 				key.equals(Preferences.KEY_HORIZ_SUBW) ||
 				key.equals(Preferences.KEY_TOP_BAR) ||
+				key.equals(Preferences.KEY_SIL_GX) ||
 				key.equals(Preferences.KEY_MULT_TOP_BAR)) {
 				adjust = true;
 			}
 
 			if (key.equals(Preferences.KEY_GAMEPLUGIN)) {
 				resetDim = true;
+				state.nativew.disableGraphics();
 			}
 		}
 
@@ -210,7 +212,7 @@ public class GameActivity extends Activity {
 
 	@Override
 	public void onStart() {
-		Log.d("Angband", "START");
+		Log.d("Angband", "Activity START");
 
 		super.onStart();
 
@@ -237,14 +239,14 @@ public class GameActivity extends Activity {
 	@Override
 	public void onDestroy()
 	{
-		Log.d("Angband", "DESTROY");
+		Log.d("Angband", "Activity DESTROY");
 
 		super.onDestroy();
 	}
 
 	@Override
 	public void onStop() {
-		Log.d("Angband", "STOP");
+		Log.d("Angband", "Activity STOP");
 
 		super.onStop();
 
@@ -294,7 +296,7 @@ public class GameActivity extends Activity {
 
 	@Override
 	public void finish() {
-		//Log.d("Angband","finish");
+		Log.d("Angband","finish");
 		state.gameThread.send(GameThread.Request.StopGame);
 		super.finish();
 	}
@@ -304,6 +306,7 @@ public class GameActivity extends Activity {
 		if (what == TERM_CONTROL_LIST_KEYS) {
 			setFastKeys(msg);
 		}
+		/*
 		if (what == TERM_CONTROL_CONTEXT) {
 
 			//Log.d("Angband", "Refresh: " + msg);
@@ -330,6 +333,7 @@ public class GameActivity extends Activity {
 				}
 			}
 		}
+		*/
 		if (what == TERM_CONTROL_VISUAL_STATE && term != null) {
 
 			Pattern pattern = Pattern.compile("visual:(\\d+):(\\d+)" +
@@ -450,10 +454,13 @@ public class GameActivity extends Activity {
 			}
 
 			String oldVisuals = "";
+			String oldPlugin = "";
 
 			if (term != null) {
 
 				term.unloadTiles();
+
+				oldPlugin = term.pluginName;
 
 				oldVisuals = term.serializeVisualState();
 			}
@@ -571,7 +578,10 @@ public class GameActivity extends Activity {
 			setContentView(screenLayout);
 			dialog.restoreDialog();
 
-			term.sendVisuals(oldVisuals);
+			// Be careful with plugin changes
+			if (term.pluginName.equals(oldPlugin)) {
+				term.sendVisuals(oldVisuals);
+			}
 			term.invalidate();
 		}
 	}

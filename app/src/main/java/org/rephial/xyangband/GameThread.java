@@ -184,7 +184,7 @@ public class GameThread implements Runnable {
 
 			game_fully_initialized = true;
 
-			state.inGameHook();
+			//state.inGameHook();
 		}
 	}
 
@@ -204,10 +204,15 @@ public class GameThread implements Runnable {
 			*/
 		}
 
-		Log.d("Angband","GameThread.run");
-
 		running_plugin = Preferences.getActivePluginName();
 		running_profile = Preferences.getActiveProfile().getName();
+
+		Log.d("Angband","GameThread.run " + running_plugin);
+
+		if (nativew.term != null) {
+			//Log.d("Angband", "GX: " + nativew.term.useGraphics);
+			//nativew.term.serializeVisualState();
+		}
 
 	    //String pluginPath = Preferences.getActivityFilesDirectory()
 		//	+"/../lib/lib"+running_plugin+".so";
@@ -229,6 +234,8 @@ public class GameThread implements Runnable {
 		String pluginName = Preferences.getActivePluginName();
 
 		nativew.wipeAll();
+
+		nativew.disableGraphics();
 
 		/* game is not running, so start it up */
 		nativew.gameStart(

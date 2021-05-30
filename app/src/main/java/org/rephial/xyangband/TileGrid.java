@@ -33,9 +33,12 @@ class TileGrid
         attr = pSrcRow;
         chr = pSrcCol;
 
-        //_pt = new Point(pSrcCol, pSrcRow);
-
-        srcPoint = new Point(pSrcCol & 0x7F, pSrcRow & 0x7F);
+        if (Preferences.useSilQGraphics()) {
+            srcPoint = new Point(chr & 0x3F, attr & 0x3F);
+        }
+        else {
+            srcPoint = new Point(chr & 0x7F, attr & 0x7F);
+        }
 
         srcSize = new TSize(gm.cell_width, gm.cell_height);
 
@@ -67,6 +70,17 @@ class TileGrid
             page.x = srcPoint.x / gm.pageSize;
             page.y = srcPoint.y / gm.pageSize;
         }
+    }
+
+    public void changeSource(int a, int c)
+    {
+        attr = a;
+        srcPoint.y = ptInPage.y = (a & 0x7F);
+
+        chr = c;
+        srcPoint.x = ptInPage.x = (c & 0x7F);
+
+        key = "";
     }
 
     public Rect locateSource()
