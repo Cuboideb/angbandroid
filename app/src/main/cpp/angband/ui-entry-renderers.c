@@ -2,6 +2,8 @@
  * \file ui-entry-renderers.c
  * \brief Define backend handling for some parts of the second character screen
  *
+ * Copyright (c) 2020 Eric Branlund
+ *
  * This work is free software; you can redistribute it and/or modify it
  * under the terms of either:
  *
@@ -1035,25 +1037,25 @@ static void renderer_NUMERIC_RENDERER_WITH_COMBINED_AUX(
 		} else if (auxvals[i] > 0 &&
 			auxvals[i] != UI_ENTRY_UNKNOWN_VALUE &&
 			auxvals[i] != UI_ENTRY_VALUE_NOT_PRESENT) {
-				palette_index = 5;
-				format_int(auxvals[i], false, info->symbols[2],
-					info->symbols[5], true,
+			palette_index = 5;
+			format_int(auxvals[i], false, info->symbols[2],
+				info->symbols[5], true,
 				info->sign == UI_ENTRY_ALWAYS_SIGN, nbuf,
 				buffer);
 		} else if (auxvals[i] < 0 &&
 			auxvals[i] != UI_ENTRY_UNKNOWN_VALUE &&
 			auxvals[i] != UI_ENTRY_VALUE_NOT_PRESENT) {
-				int v;
-				bool o;
+			int v;
+			bool o;
 
-				palette_index = 6;
-				if (auxvals[i] == INT_MIN) {
-					v = -(INT_MIN + 1);
-					o = true;
-				} else {
-					v = -vals[i];
-					o = false;
-				}
+			palette_index = 6;
+			if (auxvals[i] == INT_MIN) {
+				v = -(INT_MIN + 1);
+				o = true;
+			} else {
+				v = -vals[i];
+				o = false;
+			}
 			format_int(v, o, info->symbols[2], info->symbols[6],
 				false, info->sign != UI_ENTRY_NO_SIGN, nbuf,
 				buffer);

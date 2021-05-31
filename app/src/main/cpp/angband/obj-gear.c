@@ -68,7 +68,7 @@ int slot_by_name(struct player *p, const char *name)
 /**
  * Gets a slot of the given type, preferentially empty unless full is true
  */
-int slot_by_type(struct player *p, int type, bool full)
+static int slot_by_type(struct player *p, int type, bool full)
 {
 	int i, fallback = p->body.count;
 
@@ -617,18 +617,18 @@ int inven_carry_num(const struct object *obj)
 
 	/* See if we can add to a partially full inventory slot. */
 	num_left = obj->number - num_to_quiver;
-		for (i = 0; i < z_info->pack_size; i++) {
-			struct object *inven_obj = player->upkeep->inven[i];
-			if (inven_obj && object_stackable(inven_obj, obj, OSTACK_PACK)) {
+	for (i = 0; i < z_info->pack_size; i++) {
+		struct object *inven_obj = player->upkeep->inven[i];
+		if (inven_obj && object_stackable(inven_obj, obj, OSTACK_PACK)) {
 			num_left -= inven_obj->kind->base->max_stack -
 				inven_obj->number;
 			if (num_left <= 0) break;
-			}
 		}
-
-		/* Return the number we can absorb */
-		return obj->number - MAX(num_left, 0);
 	}
+
+	/* Return the number we can absorb */
+	return obj->number - MAX(num_left, 0);
+}
 
 /**
  * Check if we have space for some of an item in the pack.
@@ -1003,11 +1003,11 @@ static bool inven_can_stack_partial(const struct object *obj1,
 				}
 			}
 		} else {
-		int remainder = total - obj1->kind->base->max_stack;
+			int remainder = total - obj1->kind->base->max_stack;
 
-		if (remainder > obj1->kind->base->max_stack)
-			return false;
-	}
+			if (remainder > obj1->kind->base->max_stack)
+				return false;
+		}
 	}
 
 	return object_stackable(obj1, obj2, mode);
@@ -1059,7 +1059,7 @@ void combine_pack(void)
 					 * Setting this to true spams the
 					 * combine message.
 					 */
-				display_message = false;
+					display_message = false;
 					object_absorb_partial(obj2->known,
 						obj1->known, stack_mode2,
 						stack_mode1);
@@ -1070,12 +1070,12 @@ void combine_pack(void)
 					 * Ensure numbers align (should not be
 					 * necessary, but safer)
 					 */
-				obj2->known->number = obj2->number;
-				obj1->known->number = obj1->number;
+					obj2->known->number = obj2->number;
+					obj1->known->number = obj1->number;
 
-				break;
+					break;
+				}
 			}
-		}
 		}
 		obj1 = prev;
 	}
@@ -1195,7 +1195,7 @@ int preferred_quiver_slot(const struct object *obj)
 		while (1) {
 			if (!s) break;
 			if (s[1] == fire_key || s[1] == throw_key) {
-			desired_slot = s[2] - '0';
+				desired_slot = s[2] - '0';
 				break;
 			}
 			s = strchr(s + 1, '@');

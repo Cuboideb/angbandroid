@@ -91,8 +91,8 @@ static const char *room_flags[] = {
  * Parsing functions for dungeon_profile.txt
  */
 static enum parser_error parse_profile_name(struct parser *p) {
-    struct cave_profile *h = parser_priv(p);
-    struct cave_profile *c = mem_zalloc(sizeof *c);
+	struct cave_profile *h = parser_priv(p);
+	struct cave_profile *c = mem_zalloc(sizeof *c);
 	size_t i;
 
 	c->name = string_make(parser_getstr(p, "name"));
@@ -109,7 +109,7 @@ static enum parser_error parse_profile_name(struct parser *p) {
 }
 
 static enum parser_error parse_profile_params(struct parser *p) {
-    struct cave_profile *c = parser_priv(p);
+	struct cave_profile *c = parser_priv(p);
 
 	if (!c)
 		return PARSE_ERROR_MISSING_RECORD_HEADER;
@@ -121,7 +121,7 @@ static enum parser_error parse_profile_params(struct parser *p) {
 }
 
 static enum parser_error parse_profile_tunnel(struct parser *p) {
-    struct cave_profile *c = parser_priv(p);
+	struct cave_profile *c = parser_priv(p);
 
 	if (!c)
 		return PARSE_ERROR_MISSING_RECORD_HEADER;
@@ -134,7 +134,7 @@ static enum parser_error parse_profile_tunnel(struct parser *p) {
 }
 
 static enum parser_error parse_profile_streamer(struct parser *p) {
-    struct cave_profile *c = parser_priv(p);
+	struct cave_profile *c = parser_priv(p);
 
 	if (!c)
 		return PARSE_ERROR_MISSING_RECORD_HEADER;
@@ -148,7 +148,7 @@ static enum parser_error parse_profile_streamer(struct parser *p) {
 }
 
 static enum parser_error parse_profile_room(struct parser *p) {
-    struct cave_profile *c = parser_priv(p);
+	struct cave_profile *c = parser_priv(p);
 	struct room_profile *r = c->room_profiles;
 	size_t i;
 
@@ -176,17 +176,17 @@ static enum parser_error parse_profile_room(struct parser *p) {
 		return PARSE_ERROR_NO_ROOM_FOUND;
 	r->builder = room_builders[i].builder;
 	r->rating = parser_getint(p, "rating");
-    r->height = parser_getint(p, "height");
-    r->width = parser_getint(p, "width");
-    r->level = parser_getint(p, "level");
-    r->pit = (parser_getint(p, "pit") == 1);
-    r->rarity = parser_getint(p, "rarity");
-    r->cutoff = parser_getint(p, "cutoff");
+	r->height = parser_getint(p, "height");
+	r->width = parser_getint(p, "width");
+	r->level = parser_getint(p, "level");
+	r->pit = (parser_getint(p, "pit") == 1);
+	r->rarity = parser_getint(p, "rarity");
+	r->cutoff = parser_getint(p, "cutoff");
 	return PARSE_ERROR_NONE;
 }
 
 static enum parser_error parse_profile_min_level(struct parser *p) {
-    struct cave_profile *c = parser_priv(p);
+	struct cave_profile *c = parser_priv(p);
 
 	if (!c)
 		return PARSE_ERROR_MISSING_RECORD_HEADER;
@@ -195,7 +195,7 @@ static enum parser_error parse_profile_min_level(struct parser *p) {
 }
 
 static enum parser_error parse_profile_alloc(struct parser *p) {
-    struct cave_profile *c = parser_priv(p);
+	struct cave_profile *c = parser_priv(p);
 
 	if (!c)
 		return PARSE_ERROR_MISSING_RECORD_HEADER;
@@ -772,7 +772,7 @@ static int calc_mon_feeling(struct chunk *c)
  * Find a cave_profile by name
  * \param name is the name of the cave_profile being looked for
  */
-const struct cave_profile *find_cave_profile(char *name)
+static const struct cave_profile *find_cave_profile(const char *name)
 {
 	int i;
 
@@ -792,7 +792,7 @@ const struct cave_profile *find_cave_profile(char *name)
  * Do d_m's prime check for labyrinths
  * \param depth is the depth where we're trying to generate a labyrinth
  */
-bool labyrinth_check(int depth)
+static bool labyrinth_check(int depth)
 {
 	/* There's a base 2 in 100 to accept the labyrinth */
 	int chance = 2;
@@ -821,7 +821,7 @@ bool labyrinth_check(int depth)
  * Choose a cave profile
  * \param p is the player
  */
-const struct cave_profile *choose_profile(struct player *p)
+static const struct cave_profile *choose_profile(struct player *p)
 {
 	const struct cave_profile *profile = NULL;
 	int moria_alloc = find_cave_profile("moria")->alloc;
@@ -897,7 +897,7 @@ const struct cave_profile *choose_profile(struct player *p)
 /**
  * Get information for constructing stairs in the correct places
  */
-static void get_join_info(struct player *p, struct dun_data *dun)
+static void get_join_info(struct player *p, struct dun_data *dd)
 {
 	struct level *lev = NULL;
 
@@ -913,8 +913,8 @@ static void get_join_info(struct player *p, struct dun_data *dun)
 					new->grid.y = join->grid.y;
 					new->grid.x = join->grid.x;
 					new->feat = FEAT_LESS;
-					new->next = dun->join;
-					dun->join = new;
+					new->next = dd->join;
+					dd->join = new;
 				}
 				join = join->next;
 			}
@@ -933,8 +933,8 @@ static void get_join_info(struct player *p, struct dun_data *dun)
 					new->grid.y = join->grid.y;
 					new->grid.x = join->grid.x;
 					new->feat = FEAT_MORE;
-					new->next = dun->join;
-					dun->join = new;
+					new->next = dd->join;
+					dd->join = new;
 				}
 				join = join->next;
 			}
@@ -946,7 +946,7 @@ static void get_join_info(struct player *p, struct dun_data *dun)
  * Check the size of the level above or below the next level to be generated
  * to make sure stairs can connect
  */
-static void	get_min_level_size(struct chunk *check, int *min_height,
+static void get_min_level_size(struct chunk *check, int *min_height,
 							   int *min_width, bool above)
 {
 	struct connector *join = check->join;

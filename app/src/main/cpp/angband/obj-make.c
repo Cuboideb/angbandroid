@@ -1091,10 +1091,10 @@ static struct object_kind *get_obj_num_by_kind(int level, bool good, int tval)
 
 	/* No appropriate items of that tval */
 	if (!total) return NULL;
-	
+
 	/* Pick an object */
 	value = randint0(total);
-	
+
 	/*
 	 * Find it.  Having a loop to calculate the cumulative probability
 	 * here with only the tval and applying a binary search was slower
@@ -1108,7 +1108,7 @@ static struct object_kind *get_obj_num_by_kind(int level, bool good, int tval)
 			if (value < prob) break;
 			value -= prob;
 		}
-		}
+	}
 
 	/* Return the item index */
 	return objkind_byid(item);
@@ -1136,14 +1136,14 @@ struct object_kind *get_obj_num(int level, bool good, int tval)
 
 	if (tval)
 		return get_obj_num_by_kind(level, good, tval);
-	
+
 	objects = (good ? obj_alloc_great : obj_alloc) +
 		level * (z_info->k_max + 1);
 
 	/* Pick an object. */
 	if (! objects[z_info->k_max]) {
 		return NULL;
-		}
+	}
 	value = randint0(objects[z_info->k_max]);
 
 	/* Find it with a binary search. */
@@ -1191,7 +1191,7 @@ struct object *make_object(struct chunk *c, int lev, bool good, bool great,
 
 	/* Try to choose an object kind; reject most books the player can't read */
 	while (tries) {
-	kind = get_obj_num(base, good || great, tval);
+		kind = get_obj_num(base, good || great, tval);
 		if (kind && tval_is_book_k(kind) && !obj_kind_can_browse(kind)) {
 			if (one_in_(5)) break;
 			kind = NULL;
@@ -1210,7 +1210,7 @@ struct object *make_object(struct chunk *c, int lev, bool good, bool great,
 	apply_magic(new_obj, lev, true, good, great, extra_roll);
 
 	/* Generate multiple items */
-	if (! new_obj->artifact && kind->gen_mult_prob >= randint1(100))
+	if (!new_obj->artifact && kind->gen_mult_prob >= randint1(100))
 		new_obj->number = randcalc(kind->stack_size, lev, RANDOMISE);
 
 	if (new_obj->number > new_obj->kind->base->max_stack)
@@ -1286,7 +1286,7 @@ struct object_kind *money_kind(const char *name, int value)
  * \param coin_type the name of the type of money object to make
  * \return a pointer to the newly minted cash (cannot fail)
  */
-struct object *make_gold(int lev, char *coin_type)
+struct object *make_gold(int lev, const char *coin_type)
 {
 	/* This average is 16 at dlev0, 80 at dlev40, 176 at dlev100. */
 	int avg = (16 * lev)/10 + 16;

@@ -633,11 +633,11 @@ static void spell_effect_append_value_info(const struct effect *effect,
 			break;
 		case EF_SHORT_BEAM: {
 			/* Append length of beam */
-			int len = effect->radius;
+			int beam_len = effect->radius;
 			if (effect->other) {
-				len += player->lev / effect->other;
+				beam_len += player->lev / effect->other;
 			}
-			special = format(", len %d", len);
+			special = format(", len %d", beam_len);
 			break;
 		}
 		case EF_SWARM:
@@ -656,11 +656,11 @@ static void spell_effect_append_value_info(const struct effect *effect,
 	}
 
 	if ((rv.base > 0) || (rv.dice > 0 && rv.sides > 0)) {
-	offset += strnfmt(p + offset, len - offset, " %s ", type);
-	offset += append_random_value_string(p + offset, len - offset, &rv);
+		offset += strnfmt(p + offset, len - offset, " %s ", type);
+		offset += append_random_value_string(p + offset, len - offset, &rv);
 
-	if (special != NULL)
-		strnfmt(p + offset, len - offset, "%s", special);
+		if (special != NULL)
+			strnfmt(p + offset, len - offset, "%s", special);
 	}
 }
 

@@ -117,7 +117,7 @@ static void flavor_assign_random(byte tval)
  * Mainly useful for randarts so that fixed flavors for standards aren't
  * predictable. The One Ring is kept as fixed, since it lives through randarts.
  */
-void flavor_reset_fixed(void)
+static void flavor_reset_fixed(void)
 {
 	struct flavor *f;
 
@@ -677,7 +677,7 @@ bool obj_can_cast_from(const struct object *obj)
 bool obj_can_study(const struct object *obj)
 {
 	return obj_can_browse(obj) &&
-			spell_book_count_spells(obj, spell_okay_to_study) > 0;
+		spell_book_count_spells(obj, spell_okay_to_study) > 0;
 }
 
 

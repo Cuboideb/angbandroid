@@ -294,7 +294,7 @@ struct file_parser chest_trap_parser = {
 /**
  * The name of a chest trap
  */
-char *chest_trap_name(const struct object *obj)
+const char *chest_trap_name(const struct object *obj)
 {
 	s16b trap_value = obj->pval;
 
@@ -567,12 +567,12 @@ static void chest_trap(struct object *obj)
 			if (trap->effect) {
 				effect_do(trap->effect, source_chest_trap(trap), obj, &ident,
 						  false, 0, 0, 0, NULL);
-	}
+			}
 			if (trap->destroy) {
 				obj->pval = 0;
 				break;
 			}
-	}
+		}
 	}
 }
 

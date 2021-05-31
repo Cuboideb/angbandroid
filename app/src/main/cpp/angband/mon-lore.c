@@ -174,7 +174,7 @@ static int spell_color(struct player *p, const struct monster_race *race,
  * dangerous the attack is to the player given current state. Blows may be
  * colored green (least dangerous), yellow, orange, or red (most dangerous).
  */
-int blow_color(struct player *p, int blow_idx)
+static int blow_color(struct player *p, int blow_idx)
 {
 	const struct blow_effect *blow = &blow_effects[blow_idx];
 
@@ -491,11 +491,12 @@ bool lore_is_fully_known(const struct monster_race *race)
  * about the treasure (even when the monster is killed for the first
  * time, such as uniques, and the treasure has not been examined yet).
  *
- * This "indirect" method is used to prevent the player from learning
+ * This "indirect" method was used to prevent the player from learning
  * exactly how much treasure a monster can drop from observing only
  * a single example of a drop.  This method actually observes how much
  * gold and items are dropped, and remembers that information to be
- * described later by the monster recall code.
+ * described later by the monster recall code.  The current recall code,
+ * however, makes no use of drop_item and drop_gold.
  */
 void lore_treasure(struct monster *mon, int num_item, int num_gold)
 {
@@ -620,7 +621,7 @@ static const char *lore_describe_speed(byte speed)
  * \param tb is the textblock we are adding to.
  * \param race is the monster race we are describing.
  */
-void lore_adjective_speed(textblock *tb, const struct monster_race *race)
+static void lore_adjective_speed(textblock *tb, const struct monster_race *race)
 {
 	/* "at" is separate from the normal speed description in order to use the
 	 * normal text colour */
@@ -636,7 +637,7 @@ void lore_adjective_speed(textblock *tb, const struct monster_race *race)
  * \param tb is the textblock we are adding to.
  * \param race is the monster race we are describing.
  */
-void lore_multiplier_speed(textblock *tb, const struct monster_race *race)
+static void lore_multiplier_speed(textblock *tb, const struct monster_race *race)
 {
 	// moves at 2.3x normal speed (0.9x your current speed)
 	textblock_append(tb, "at ");
@@ -1174,7 +1175,7 @@ void lore_append_drop(textblock *tb, const struct monster_race *race,
 					  const struct monster_lore *lore,
 					  bitflag known_flags[RF_SIZE])
 {
-	int n = 0;
+	int n = 0, nspec = 0;
 	monster_sex_t msex = MON_SEX_NEUTER;
 
 	assert(tb && race && lore);
@@ -1184,42 +1185,74 @@ void lore_append_drop(textblock *tb, const struct monster_race *race,
 	msex = lore_monster_sex(race);
 
 	/* Count maximum drop */
-	n = mon_create_drop_count(race, true);
+	n = mon_create_drop_count(race, true, false, &nspec);
 
 	/* Drops gold and/or items */
+	if (n > 0 || nspec > 0) {
+		textblock_append(tb, "%s may carry",
+			lore_pronoun_nominative(msex, true));
+
+		/* Report general drops */
 	if (n > 0) {
 		bool only_item = rf_has(known_flags, RF_ONLY_ITEM);
 		bool only_gold = rf_has(known_flags, RF_ONLY_GOLD);
 
-		textblock_append(tb, "%s may carry",
-						 lore_pronoun_nominative(msex, true));
-
-		/* Count drops */
-		if (n == 1)
-			textblock_append_c(tb, COLOUR_BLUE, " a single ");
-		else if (n == 2)
-			textblock_append_c(tb, COLOUR_BLUE, " one or two ");
-		else {
+			if (n == 1) {
+				textblock_append_c(tb, COLOUR_BLUE,
+					" a single ");
+			} else if (n == 2) {
+				textblock_append_c(tb, COLOUR_BLUE,
+					" one or two ");
+			} else {
 			textblock_append(tb, " up to ");
-			textblock_append_c(tb, COLOUR_BLUE, format("%d ", n));
+				textblock_append_c(tb, COLOUR_BLUE,
+					format("%d ", n));
 		}
 
 		/* Quality */
-		if (rf_has(known_flags, RF_DROP_GREAT))
-			textblock_append_c(tb, COLOUR_BLUE, "exceptional ");
-		else if (rf_has(known_flags, RF_DROP_GOOD))
+			if (rf_has(known_flags, RF_DROP_GREAT)) {
+				textblock_append_c(tb, COLOUR_BLUE,
+					"exceptional ");
+			} else if (rf_has(known_flags, RF_DROP_GOOD)) {
 			textblock_append_c(tb, COLOUR_BLUE, "good ");
+			}
 
 		/* Objects or treasures */
-		if (only_item && only_gold)
-			textblock_append_c(tb, COLOUR_BLUE, "error%s", PLURAL(n));
-		else if (only_item && !only_gold)
-			textblock_append_c(tb, COLOUR_BLUE, "object%s", PLURAL(n));
-		else if (!only_item && only_gold)
-			textblock_append_c(tb, COLOUR_BLUE, "treasure%s", PLURAL(n));
-		else if (!only_item && !only_gold)
-			textblock_append_c(tb, COLOUR_BLUE, "object%s or treasure%s",
+			if (only_item && only_gold) {
+				textblock_append_c(tb, COLOUR_BLUE,
+					"error%s", PLURAL(n));
+			} else if (only_item && !only_gold) {
+				textblock_append_c(tb, COLOUR_BLUE,
+					"object%s", PLURAL(n));
+			} else if (!only_item && only_gold) {
+				textblock_append_c(tb, COLOUR_BLUE,
+					"treasure%s", PLURAL(n));
+			} else if (!only_item && !only_gold) {
+				textblock_append_c(tb, COLOUR_BLUE,
+					"object%s or treasure%s",
 							   PLURAL(n), PLURAL(n));
+			}
+		}
+
+		/*
+		 * Report specific drops (just maximum number, no types,
+		 * does not include quest artifacts).
+		 */
+		if (nspec > 0) {
+			if (n > 0) {
+				textblock_append(tb, " and");
+			}
+			if (nspec == 1) {
+				textblock_append(tb, " a single");
+			} else if (nspec == 2) {
+				textblock_append(tb, " one or two");
+			} else {
+				textblock_append(tb, " up to");
+				textblock_append_c(tb, COLOUR_BLUE,
+					format(" %d", nspec));
+			}
+			textblock_append(tb, " specific items");
+		}
 
 		textblock_append(tb, ".  ");
 	}
@@ -1706,7 +1739,7 @@ struct monster_lore *get_lore(const struct monster_race *race)
 /**
  * Write the monster lore
  */
-void write_lore_entries(ang_file *fff)
+static void write_lore_entries(ang_file *fff)
 {
 	int i, n;
 

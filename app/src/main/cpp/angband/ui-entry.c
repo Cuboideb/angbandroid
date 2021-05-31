@@ -2,6 +2,8 @@
  * \file ui-entry.c
  * \brief Definitions to link object/player properties to 2nd character screen
  *
+ * Copyright (c) 2020 - 2021 Eric Branlund
+ *
  * This work is free software; you can redistribute it and/or modify it
  * under the terms of either:
  *
@@ -617,7 +619,7 @@ void compute_ui_entry_values_for_object(const struct ui_entry *entry,
 		*cache = mem_alloc(sizeof(**cache));
 		of_wipe((*cache)->f);
 		if (p) {
-		object_flags_known(obj, (*cache)->f);
+			object_flags_known(obj, (*cache)->f);
 		} else {
 			object_flags(obj, (*cache)->f);
 		}
@@ -1632,7 +1634,7 @@ static int get_priority_from_negative_index(int i)
 
 /* Convert list of categories in the embryo to its final form. */
 static void parameterize_category_list(
-	const struct embryonic_category_reference *categories, int n, int ind,
+	const struct embryonic_category_reference *ctgs, int n, int ind,
 	struct ui_entry *entry)
 {
 	int i;
@@ -1642,12 +1644,12 @@ static void parameterize_category_list(
 	entry->nalloc_category = n;
 
 	for (i = 0; i < n; ++i) {
-		entry->categories[i].name = categories[i].name;
-		if (categories[i].priority_set) {
+		entry->categories[i].name = ctgs[i].name;
+		if (ctgs[i].priority_set) {
 			entry->categories[i].priority =
-				(categories[i].psource_index > 0) ?
-				(*priority_schemes[categories[i].psource_index].priority)(ind) :
-				categories[i].priority;
+				(ctgs[i].psource_index > 0) ?
+				(*priority_schemes[ctgs[i].psource_index].priority)(ind) :
+				ctgs[i].priority;
 			entry->categories[i].priority_set = true;
 		} else {
 			entry->categories[i].priority = 0;

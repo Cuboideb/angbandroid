@@ -37,7 +37,6 @@
 #include "source.h"
 #include "target.h"
 #include "trap.h"
-#include "ui-term.h"
 #include "z-queue.h"
 
 u16b daycount = 0;
@@ -391,18 +390,12 @@ static void make_noise(struct player *p)
 	int noise = 0;
 	int noise_increment = p->timed[TMD_COVERTRACKS] ? 4 : 1;
     struct queue *queue = q_new(cave->height * cave->width);
-	struct loc decoy = cave_find_decoy(cave);
 
 	/* Set all the grids to silence */
 	for (y = 1; y < cave->height - 1; y++) {
 		for (x = 1; x < cave->width - 1; x++) {
 			cave->noise.grids[y][x] = 0;
 		}
-	}
-
-	/* If there's a decoy, use that instead of the player */
-	if (!loc_is_zero(decoy)) {
-		next = decoy;
 	}
 
 	/* Player makes noise */

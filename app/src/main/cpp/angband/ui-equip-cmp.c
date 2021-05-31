@@ -2,6 +2,8 @@
  * \file ui-equip-cmp.c
  * \brief Supply a "resistance grid for home" in the knowledge menu
  *
+ * Copyright (c) 2020 - 2021 Eric Branlund
+ *
  * This work is free software; you can redistribute it and/or modify it
  * under the terms of either:
  *
@@ -241,7 +243,7 @@ static int display_page(struct equippable_summary *s, const struct player *p,
 	bool allow_reconfig);
 static void display_equip_cmp_help(void);
 static void display_equip_cmp_sel_help(void);
-static int get_expected_easy_filter_count(enum store_inclusion stores);
+static int get_expected_easy_filter_count(enum store_inclusion strs);
 static int handle_key_bail(struct keypress ch, int istate,
 	struct equippable_summary *s, struct player *p);
 static int handle_key_equip_cmp_general(struct keypress ch, int istate,
@@ -359,8 +361,6 @@ void equip_cmp_display(void)
 		Term_get_size(&wid, &hgt);
 		prt(states[istate].prompt, hgt - 1, 0);
 
-		soft_kbd_flash("q!crvIxdR?");
-
 		ch = inkey();
 		istate = (*states[istate].keyfunc)(ch, istate, the_summary,
 			player);
@@ -411,9 +411,9 @@ static void display_equip_cmp_help(void)
 }
 
 
-static int get_expected_easy_filter_count(enum store_inclusion stores)
+static int get_expected_easy_filter_count(enum store_inclusion strs)
 {
-	switch (stores) {
+	switch (strs) {
 	case EQUIPPABLE_NO_STORE:
 	case EQUIPPABLE_ONLY_STORE:
 		return 1;
@@ -549,7 +549,7 @@ static int handle_key_equip_cmp_general(struct keypress ch, int istate,
 
 	case 'c':
 		/*
-		 * Cycle through no goods from stores(default), only goods
+		 * Cycle through no goods from stores (default), only goods
 		 * from stores, both possessions and gopds from stores,
 		 * and only what's carried (either equipped or in pack).
 		 */
@@ -703,26 +703,26 @@ static int handle_key_equip_cmp_general(struct keypress ch, int istate,
 		if (! s->config_filt_is_on && s->easy_filt.nv > nfilt) {
 			assert(s->easy_filt.v[nfilt].c == EQUIP_EXPR_SELECTOR);
 			if (s->easy_filt.v[nfilt].s.func ==
-				sel_at_least_resists) {
+					sel_at_least_resists) {
 				s->easy_filt.v[nfilt].s.func =
 					sel_does_not_resist;
 			} else if (s->easy_filt.v[nfilt].s.func ==
-				sel_has_flag) {
+					sel_has_flag) {
 				s->easy_filt.v[nfilt].s.func =
 					sel_does_not_have_flag;
 			} else if (s->easy_filt.v[nfilt].s.func ==
-				sel_has_pos_mod) {
+					sel_has_pos_mod) {
 				s->easy_filt.v[nfilt].s.func =
 					sel_has_nonpos_mod;
 			} else if (s->easy_filt.v[nfilt].s.func ==
-				sel_does_not_resist) {
+					sel_does_not_resist) {
 				s->easy_filt.v[nfilt].s.func =
 					sel_at_least_resists;
 			} else if (s->easy_filt.v[nfilt].s.func ==
-				sel_does_not_have_flag) {
+					sel_does_not_have_flag) {
 				s->easy_filt.v[nfilt].s.func = sel_has_flag;
 			} else if (s->easy_filt.v[nfilt].s.func ==
-				sel_has_nonpos_mod) {
+					sel_has_nonpos_mod) {
 				s->easy_filt.v[nfilt].s.func = sel_has_pos_mod;
 			} else {
 				assert(0);
@@ -978,15 +978,10 @@ static int prompt_for_easy_filter(struct equippable_summary *s, bool apply_not)
 	int itry;
 	bool threec;
 
-	soft_kbd_linger("abcdefghijklmnopqrstuvwxyz0123456789.-_");
-
 	if (! get_string("Enter 2 or 3 (for stat) character code and return or return to clear ", c,
 		N_ELEMENTS(c))) {
-		soft_kbd_clear(true);
 		return EQUIP_CMP_MENU_NEW_PAGE;
 	}
-
-	soft_kbd_clear(true);
 
 	/* Clear the current filter. */
 	if (c[0] == '\0') {
@@ -1026,7 +1021,7 @@ static int prompt_for_easy_filter(struct equippable_summary *s, bool apply_not)
 					ctry[3] = '\0';
 					threec = true;
 				} else {
-				ctry[2] = '\0';
+					ctry[2] = '\0';
 				}
 			} else {
 				ctry[1] = '\0';
@@ -1042,7 +1037,7 @@ static int prompt_for_easy_filter(struct equippable_summary *s, bool apply_not)
 					ctry[3] = '\0';
 					threec = true;
 				} else {
-				ctry[2] = '\0';
+					ctry[2] = '\0';
 				}
 			} else {
 				ctry[1] = '\0';
@@ -1058,7 +1053,7 @@ static int prompt_for_easy_filter(struct equippable_summary *s, bool apply_not)
 					ctry[3] = '\0';
 					threec = true;
 				} else {
-				ctry[2] = '\0';
+					ctry[2] = '\0';
 				}
 			} else {
 				ctry[1] = '\0';
@@ -2049,10 +2044,10 @@ static void compute_player_and_equipment_values(struct player *p,
 					&cache, &v, &a);
 				(*cfuncs.accum_func)(v, a,
 					cstates + k + s->propcats[j].off);
-						}
-						}
+			}
+		}
 		release_cached_object_data(cache);
-					}
+	}
 
 	for (i = 0; i < (int)N_ELEMENTS(s->propcats); ++i) {
 		int j;
@@ -2072,7 +2067,7 @@ static void compute_player_and_equipment_values(struct player *p,
 				cstates[j + s->propcats[i].off].accum;
 			s->p_and_eq_auxvals[j + s->propcats[i].off] =
 				cstates[j + s->propcats[i].off].accum_aux;
-						}
+		}
 	}
 
 	mem_free(cstates);
@@ -2082,7 +2077,7 @@ static void compute_player_and_equipment_values(struct player *p,
 static bool check_for_two_categories(const struct ui_entry *entry,
 	void *closure)
 {
-	char **categories = closure;
+	const char **categories = closure;
 
 	return ui_entry_has_category(entry, categories[0]) &&
 		ui_entry_has_category(entry, categories[1]);
@@ -2097,14 +2092,14 @@ static int initialize_summary(struct player *p,
 	int count, i;
 
 	if (*s == NULL) {
-		char *categories[] = {
+		const char *categories[] = {
 			"resistances",
 			"abilities",
 			"hindrances",
 			"modifiers",
 			"stat_modifiers"
 		};
-		char *test_categories[2];
+		const char *test_categories[2];
 
 		*s = mem_alloc(sizeof(**s));
 		(*s)->items = NULL;

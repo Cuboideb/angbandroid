@@ -32,6 +32,7 @@
 #include "mon-group.h"
 #include "mon-lore.h"
 #include "mon-make.h"
+#include "mon-move.h"
 #include "mon-predicate.h"
 #include "mon-spell.h"
 #include "mon-util.h"
@@ -80,6 +81,7 @@ static bool monster_near_permwall(const struct monster *mon, struct chunk *c)
 		if (square_isperm(c, gp[j])) return true;
 		if (square_isplayer(c, gp[j])) return false;
 	}
+
 	return false;
 }
 
@@ -289,16 +291,16 @@ static void get_move_find_range(struct monster *mon)
 		mon->best_range += 3;
 	}
 
-		/* Breathers like point blank range */
+	/* Breathers like point blank range */
 	if (mon->race->freq_innate > 24) {
 		if (monster_breathes(mon) && (mon->hp > mon->maxhp / 2)) {
 			mon->best_range = MAX(1, mon->best_range);
 		}
 	} else if (mon->race->freq_spell > 24) {
-			/* Other spell casters will sit back and cast */
-			mon->best_range += 3;
-		}
+		/* Other spell casters will sit back and cast */
+		mon->best_range += 3;
 	}
+}
 
 /**
  * Choose the best direction for a bodyguard.
@@ -391,8 +393,8 @@ static bool get_move_bodyguard(struct chunk *c, struct monster *mon)
 static bool get_move_advance(struct chunk *c, struct monster *mon, bool *track)
 {
 	int i;
-	struct loc decoy = cave_find_decoy(c);
-	struct loc target = loc_is_zero(decoy) ? player->grid : decoy;
+	struct loc target = monster_is_decoyed(mon) ? cave_find_decoy(c) :
+		player->grid;
 
 	int base_hearing = mon->race->hearing
 		- player->state.skills[SKILL_STEALTH] / 3;
@@ -425,45 +427,45 @@ static bool get_move_advance(struct chunk *c, struct monster *mon, bool *track)
 
 	/* Try to use sound */
 	if (monster_can_hear(c, mon)) {
-	/* Check nearby sound, giving preference to the cardinal directions */
-	for (i = 0; i < 8; i++) {
-		/* Get the location */
-		struct loc grid = loc_sum(mon->grid, ddgrid_ddd[i]);
-		int heard_noise = base_hearing - c->noise.grids[grid.y][grid.x];
+		/* Check nearby sound, giving preference to the cardinal directions */
+		for (i = 0; i < 8; i++) {
+			/* Get the location */
+			struct loc grid = loc_sum(mon->grid, ddgrid_ddd[i]);
+			int heard_noise = base_hearing - c->noise.grids[grid.y][grid.x];
 
-		/* Bounds check */
-		if (!square_in_bounds(c, grid)) {
-			continue;
-		}
+			/* Bounds check */
+			if (!square_in_bounds(c, grid)) {
+				continue;
+			}
 
-		/* Must be some noise */
-		if (c->noise.grids[grid.y][grid.x] == 0) {
-			continue;
-		}
+			/* Must be some noise */
+			if (c->noise.grids[grid.y][grid.x] == 0) {
+				continue;
+			}
 
-		/* There's a monster blocking that we can't deal with */
+			/* There's a monster blocking that we can't deal with */
 			if (!monster_can_kill(c, mon, grid) &&
 				!monster_can_move(c, mon, grid)) {
-			continue;
-		}
+				continue;
+			}
 
-		/* There's damaging terrain */
-		if (monster_hates_grid(c, mon, grid)) {
-			continue;
-		}
+			/* There's damaging terrain */
+			if (monster_hates_grid(c, mon, grid)) {
+				continue;
+			}
 
-		/* If it's better than the current noise, choose this direction */
-		if (heard_noise > current_noise) {
-			best_grid = grid;
-			found = true;
-			break;
-		} else if (heard_noise == current_noise) {
-			/* Possible move if we can't actually get closer */
-			backup_grid = grid;
-			found_backup = true;
-			continue;
+			/* If it's better than the current noise, choose this direction */
+			if (heard_noise > current_noise) {
+				best_grid = grid;
+				found = true;
+				break;
+			} else if (heard_noise == current_noise) {
+				/* Possible move if we can't actually get closer */
+				backup_grid = grid;
+				found_backup = true;
+				continue;
+			}
 		}
-	}
 	}
 
 	/* If both vision and sound are no good, use scent */
@@ -834,8 +836,8 @@ static int get_move_choose_direction(struct loc offset)
  */
 static bool get_move(struct chunk *c, struct monster *mon, int *dir, bool *good)
 {
-	struct loc decoy = cave_find_decoy(c);
-	struct loc target = loc_is_zero(decoy) ? player->grid : decoy;
+	struct loc target = monster_is_decoyed(mon) ? cave_find_decoy(c) :
+		player->grid;
 	bool group_ai = rf_has(mon->race->flags, RF_GROUP_AI);
 
 	/* Offset to current position to move toward */
@@ -865,12 +867,12 @@ static bool get_move(struct chunk *c, struct monster *mon, int *dir, bool *good)
 			if (mflag_has(mon->mflag, MFLAG_TRACKING)) {
 				/* Keep heading to the most recent goal. */
 				grid = loc_diff(mon->target.grid, mon->grid);
-		}
+			}
 			if (loc_is_zero(grid)) {
 				/* Try a random move and no longer track. */
 				grid = get_move_random(c, mon);
-		mflag_off(mon->mflag, MFLAG_TRACKING);
-	}
+				mflag_off(mon->mflag, MFLAG_TRACKING);
+			}
 		}
 	}
 
@@ -1363,7 +1365,7 @@ static bool monster_turn_try_push(struct chunk *c, struct monster *mon,
 /**
  * Grab all objects from the grid.
  */
-void monster_turn_grab_objects(struct chunk *c, struct monster *mon,
+static void monster_turn_grab_objects(struct chunk *c, struct monster *mon,
 							   const char *m_name, struct loc new)
 {
 	struct monster_lore *lore = get_lore(mon->race);
@@ -1438,9 +1440,9 @@ void monster_turn_grab_objects(struct chunk *c, struct monster *mon,
 
 			/* Try to carry the copy */
 			if (monster_carry(c, mon, taken)) {
-			/* Describe observable situations */
-			if (square_isseen(c, new) && !ignore_item_ok(obj))
-				msg("%s picks up %s.", m_name, o_name);
+				/* Describe observable situations */
+				if (square_isseen(c, new) && !ignore_item_ok(obj))
+					msg("%s picks up %s.", m_name, o_name);
 
 				/* Delete the object */
 				square_delete_object(c, new, obj, true, true);

@@ -127,6 +127,7 @@ add_library( # Sets the name of the library.
             ui-curse.c
             ui-death.c
             ui-display.c
+            ui-effect.c
             ui-entry.c
             ui-entry-combiner.c
             ui-entry-renderers.c

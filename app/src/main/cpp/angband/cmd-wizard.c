@@ -2,6 +2,9 @@
  * \file cmd-wizard.c
  * \brief Implements debug commands in Angband 4's command system.
  *
+ * Copyright (c) 2021 Eric Branlund
+ * Copyright (c) 1997 Ben Harrison, James E. Wilson, Robert A. Koeneke
+ *
  * This work is free software; you can redistribute it and/or modify it
  * under the terms of either:
  *
@@ -1653,7 +1656,7 @@ void do_cmd_wiz_play_item(struct command *cmd)
 	int object_changed = 0;
 	bool done = false;
 	bool rejected = true;
-	char *done_msg = NULL;
+	const char *done_msg = NULL;
 	char ch;
 
 	/*
