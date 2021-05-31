@@ -2463,7 +2463,7 @@ public class TermView extends View implements OnGestureListener {
         canvas.drawBitmap(bm, dst.left, dst.top, null);
 
         // Special sil-q effects, glowing and alert
-        if (Preferences.useSilQGraphics()) {
+        if (useGraphics == Preferences.MICROCHASM_GX) {
             drawSilQEffects(tile, fill);
         }
         // Vanilla and FAangband

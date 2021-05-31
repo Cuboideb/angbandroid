@@ -33,7 +33,7 @@ class TileGrid
         attr = pSrcRow;
         chr = pSrcCol;
 
-        if (Preferences.useSilQGraphics()) {
+        if (term.useGraphics == Preferences.MICROCHASM_GX) {
             srcPoint = new Point(chr & 0x3F, attr & 0x3F);
         }
         else {
