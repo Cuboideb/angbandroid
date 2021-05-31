@@ -240,6 +240,7 @@ public class NativeWrapper {
 		synchronized (display_lock) {
 			// No graphics tilesets
 			state.grafmodes.clear();
+			state.tileCache.evictAll();
 			// Notify term
 			if (term != null) {
 				term.currentGraf = null;

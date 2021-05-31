@@ -350,13 +350,13 @@ static enum birth_stage get_map_command(void)
 		int map = map_menu_select(m);
 		if (map != -1) {
 			if (map == num_maps - 1) {
-			quit(NULL);
-		} else {
-			cmdq_push(CMD_CHOOSE_MAP);
+				quit(NULL);
+			} else {
+				cmdq_push(CMD_CHOOSE_MAP);
 				cmd_set_arg_choice(cmdq_peek(), "choice",
 					m->cursor);
-			next = BIRTH_RACE_CHOICE;
-		}
+				next = BIRTH_RACE_CHOICE;
+			}
 		}
 	}
 	map_menu_destroy(m);
@@ -453,7 +453,7 @@ static void skill_help(const int r_skills[], const int c_skills[], int mhp, int 
 			   skills[SKILL_TO_HIT_THROW], mhp);
 	text_out_e("Disarm: %+3d/%+3d   Devices: %+3d\n", skills[SKILL_DISARM_PHYS],
 			   skills[SKILL_DISARM_MAGIC], skills[SKILL_DEVICE]);
-	text_out_e("Save:   %+3d   Stealth: %+3d\n", skills[SKILL_SAVE],
+	text_out_e("Save:       %+3d   Stealth: %+3d\n", skills[SKILL_SAVE],
 			   skills[SKILL_STEALTH]);
 	text_out_e("Digging:    %+3d   Search:  %+3d\n", skills[SKILL_DIGGING],
 			   skills[SKILL_SEARCH]);
@@ -1084,7 +1084,8 @@ static enum birth_stage get_name_command(void)
 	return next;
 }
 
-void get_screen_loc(size_t cursor, int *x, int *y, size_t n_lines, size_t *line_starts, size_t *line_lengths)
+static void get_screen_loc(size_t cursor, int *x, int *y, size_t n_lines,
+	size_t *line_starts, size_t *line_lengths)
 {
 	size_t lengths_so_far = 0;
 	size_t i;
@@ -1104,7 +1105,7 @@ void get_screen_loc(size_t cursor, int *x, int *y, size_t n_lines, size_t *line_
 	}
 }
 
-int edit_text(char *buffer, int buflen) {
+static int edit_text(char *buffer, int buflen) {
 	int len = strlen(buffer);
 	bool done = false;
 	int cursor = 0;
@@ -1200,7 +1201,7 @@ int edit_text(char *buffer, int buflen) {
 					assert(oshift);
 					memmove(oshift, ocurs,
 						len - (ocurs - buffer));
-				/* Decrement */
+					/* Decrement */
 					--cursor;
 					len -= ocurs - oshift;
 				} else {

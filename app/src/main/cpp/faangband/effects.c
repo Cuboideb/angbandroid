@@ -86,6 +86,7 @@ struct effect_kind {
 	const char *info;    /* Effect info (for spell tips) */
 	effect_handler_f handler;    /* Function to perform the effect */
 	const char *desc;    /* Effect description */
+	const char *menu_name;       /* Format string for short name */
 };
 
 
@@ -102,7 +103,7 @@ static const char *desc_stat(int stat, bool positive)
 }
 
 
-int effect_calculate_value(effect_handler_context_t *context, bool use_boost)
+static int effect_calculate_value(effect_handler_context_t *context, bool use_boost)
 {
 	int final = 0;
 
@@ -160,9 +161,8 @@ static void get_target(struct source origin, int dir, struct loc *grid,
 				struct monster *mon = cave_monster(cave, monster->target.midx);
 				*grid = mon->grid;
 			} else {
-				struct loc decoy = cave_find_decoy(cave);
-				if (!loc_is_zero(decoy)) {
-					*grid = decoy;
+				if (monster_is_decoyed(monster)) {
+					*grid = cave_find_decoy(cave);
 				} else {
 					*grid = player->grid;
 				}
@@ -434,7 +434,7 @@ static bool enchant2(struct object *obj, s16b *score)
  *
  * \returns true if the item was changed in some way
  */
-bool enchant(struct object *obj, int n, int eflag)
+static bool enchant(struct object *obj, int n, int eflag)
 {
 	int i, prob;
 	bool res = false;
@@ -488,7 +488,7 @@ bool enchant(struct object *obj, int n, int eflag)
  * both to_hit and to_dam with the same flag.  This
  * may not be the most desirable behavior (ACB).
  */
-bool enchant_spell(int num_hit, int num_dam, int num_ac, struct command *cmd)
+static bool enchant_spell(int num_hit, int num_dam, int num_ac, struct command *cmd)
 {
 	bool okay = false;
 
@@ -543,7 +543,7 @@ bool enchant_spell(int num_hit, int num_dam, int num_ac, struct command *cmd)
  *
  * Turns the (non-magical) object into an ego-item of 'brand_type'.
  */
-void brand_object(struct object *obj, const char *name)
+static void brand_object(struct object *obj, const char *name)
 {
 	int i;
 	struct ego_item *ego;
@@ -643,7 +643,7 @@ static bool item_tester_hook_bolt(const struct object *obj)
  * Dummy effect, to tell the effect code to pick one of the next
  * context->value.base effects at random.
  */
-bool effect_handler_RANDOM(effect_handler_context_t *context)
+static bool effect_handler_RANDOM(effect_handler_context_t *context)
 {
 	return true;
 }
@@ -651,7 +651,7 @@ bool effect_handler_RANDOM(effect_handler_context_t *context)
 /**
  * Deal damage from the current monster or trap to the player
  */
-bool effect_handler_DAMAGE(effect_handler_context_t *context)
+static bool effect_handler_DAMAGE(effect_handler_context_t *context)
 {
 	int dam = effect_calculate_value(context, false);
 	char killer[80];
@@ -689,7 +689,7 @@ bool effect_handler_DAMAGE(effect_handler_context_t *context)
 
 		case SRC_TRAP: {
 			struct trap *trap = context->origin.which.trap;
-			char *article = is_a_vowel(trap->kind->desc[0]) ? "an " : "a ";
+			const char *article = is_a_vowel(trap->kind->desc[0]) ? "an " : "a ";
 			strnfmt(killer, sizeof(killer), "%s%s", article, trap->kind->desc);
 			break;
 		}
@@ -737,7 +737,7 @@ bool effect_handler_DAMAGE(effect_handler_context_t *context)
  * context->value.base should be the minimum, and
  * context->value.m_bonus the percentage
  */
-bool effect_handler_HEAL_HP(effect_handler_context_t *context)
+static bool effect_handler_HEAL_HP(effect_handler_context_t *context)
 {
 	int num;
 
@@ -786,7 +786,7 @@ bool effect_handler_HEAL_HP(effect_handler_context_t *context)
 /**
  * Monster self-healing.
  */
-bool effect_handler_MON_HEAL_HP(effect_handler_context_t *context)
+static bool effect_handler_MON_HEAL_HP(effect_handler_context_t *context)
 {
 	assert(context->origin.what == SRC_MONSTER);
 
@@ -843,7 +843,7 @@ bool effect_handler_MON_HEAL_HP(effect_handler_context_t *context)
 /**
  * Monster healing of kin.
  */
-bool effect_handler_MON_HEAL_KIN(effect_handler_context_t *context)
+static bool effect_handler_MON_HEAL_KIN(effect_handler_context_t *context)
 {
 	assert(context->origin.what == SRC_MONSTER);
 
@@ -897,7 +897,7 @@ bool effect_handler_MON_HEAL_KIN(effect_handler_context_t *context)
 /**
  * Feed the player, or set their satiety level.
  */
-bool effect_handler_NOURISH(effect_handler_context_t *context)
+static bool effect_handler_NOURISH(effect_handler_context_t *context)
 {
 	int amount = effect_calculate_value(context, false);
 	amount *= z_info->food_value;
@@ -928,7 +928,7 @@ bool effect_handler_NOURISH(effect_handler_context_t *context)
 	return true;
 }
 
-bool effect_handler_CRUNCH(effect_handler_context_t *context)
+static bool effect_handler_CRUNCH(effect_handler_context_t *context)
 {
 	if (one_in_(2))
 		msg("It's crunchy.");
@@ -941,7 +941,7 @@ bool effect_handler_CRUNCH(effect_handler_context_t *context)
 /**
  * Cure a player status condition.
  */
-bool effect_handler_CURE(effect_handler_context_t *context)
+static bool effect_handler_CURE(effect_handler_context_t *context)
 {
 	int type = context->subtype;
 	(void) player_clear_timed(player, type, true);
@@ -952,7 +952,7 @@ bool effect_handler_CURE(effect_handler_context_t *context)
 /**
  * Set a (positive or negative) player status condition.
  */
-bool effect_handler_TIMED_SET(effect_handler_context_t *context)
+static bool effect_handler_TIMED_SET(effect_handler_context_t *context)
 {
 	int amount = effect_calculate_value(context, false);
 	player_set_timed(player, context->subtype, MAX(amount, 0), true);
@@ -966,7 +966,7 @@ bool effect_handler_TIMED_SET(effect_handler_context_t *context)
  * If context->other is set, increase by that amount if the player already
  * has the status
  */
-bool effect_handler_TIMED_INC(effect_handler_context_t *context)
+static bool effect_handler_TIMED_INC(effect_handler_context_t *context)
 {
 	int amount = effect_calculate_value(context, false);
 	struct monster *t_mon = monster_target_monster(context);
@@ -1033,7 +1033,7 @@ bool effect_handler_TIMED_INC(effect_handler_context_t *context)
  * If context->other is set, increase by that amount if the player already
  * has the status
  */
-bool effect_handler_TIMED_INC_NO_RES(effect_handler_context_t *context)
+static bool effect_handler_TIMED_INC_NO_RES(effect_handler_context_t *context)
 {
 	int amount = effect_calculate_value(context, false);
 
@@ -1048,7 +1048,7 @@ bool effect_handler_TIMED_INC_NO_RES(effect_handler_context_t *context)
 /**
  * Extend a (positive or negative) monster status condition.
  */
-bool effect_handler_MON_TIMED_INC(effect_handler_context_t *context)
+static bool effect_handler_MON_TIMED_INC(effect_handler_context_t *context)
 {
 	assert(context->origin.what == SRC_MONSTER);
 
@@ -1067,7 +1067,7 @@ bool effect_handler_MON_TIMED_INC(effect_handler_context_t *context)
  * Reduce a (positive or negative) player status condition.
  * If context->other is set, decrease by the current value / context->other
  */
-bool effect_handler_TIMED_DEC(effect_handler_context_t *context)
+static bool effect_handler_TIMED_DEC(effect_handler_context_t *context)
 {
 	int amount = effect_calculate_value(context, false);
 	if (context->other)
@@ -1080,7 +1080,7 @@ bool effect_handler_TIMED_DEC(effect_handler_context_t *context)
 /**
  * Create a glyph.
  */
-bool effect_handler_GLYPH(effect_handler_context_t *context)
+static bool effect_handler_GLYPH(effect_handler_context_t *context)
 {
 	struct loc decoy = cave_find_decoy(cave);
 	int num_runes = cave->feeling_squares >> 8;
@@ -1119,7 +1119,7 @@ bool effect_handler_GLYPH(effect_handler_context_t *context)
 /**
  * Create a web.
  */
-bool effect_handler_WEB(effect_handler_context_t *context)
+static bool effect_handler_WEB(effect_handler_context_t *context)
 {
 	int rad = 1;
 	struct monster *mon = NULL;
@@ -1160,7 +1160,7 @@ bool effect_handler_WEB(effect_handler_context_t *context)
 /**
  * Restore a stat; the stat index is context->subtype
  */
-bool effect_handler_RESTORE_STAT(effect_handler_context_t *context)
+static bool effect_handler_RESTORE_STAT(effect_handler_context_t *context)
 {
 	int stat = context->subtype;
 
@@ -1191,7 +1191,7 @@ bool effect_handler_RESTORE_STAT(effect_handler_context_t *context)
  * Drain a stat temporarily.  The stat index is context->subtype.
  * If the index is -1, a random stat is drained.
  */
-bool effect_handler_DRAIN_STAT(effect_handler_context_t *context)
+static bool effect_handler_DRAIN_STAT(effect_handler_context_t *context)
 {
 	int stat = context->subtype;
 	int flag = sustain_flag(stat);
@@ -1250,7 +1250,7 @@ bool effect_handler_DRAIN_STAT(effect_handler_context_t *context)
  * Lose a stat point permanently, in a stat other than the one specified
  * in context->subtype.
  */
-bool effect_handler_LOSE_RANDOM_STAT(effect_handler_context_t *context)
+static bool effect_handler_LOSE_RANDOM_STAT(effect_handler_context_t *context)
 {
 	int safe_stat = context->subtype;
 	int loss_stat = randint1(STAT_MAX - 1);
@@ -1273,7 +1273,7 @@ bool effect_handler_LOSE_RANDOM_STAT(effect_handler_context_t *context)
 /**
  * Gain a stat point.  The stat index is context->subtype.
  */
-bool effect_handler_GAIN_STAT(effect_handler_context_t *context)
+static bool effect_handler_GAIN_STAT(effect_handler_context_t *context)
 {
 	int stat = context->subtype;
 
@@ -1291,7 +1291,7 @@ bool effect_handler_GAIN_STAT(effect_handler_context_t *context)
 /**
  * Restores any drained experience
  */
-bool effect_handler_RESTORE_EXP(effect_handler_context_t *context)
+static bool effect_handler_RESTORE_EXP(effect_handler_context_t *context)
 {
 	/* Restore experience */
 	if (player->exp < player->max_exp) {
@@ -1311,7 +1311,7 @@ bool effect_handler_RESTORE_EXP(effect_handler_context_t *context)
 }
 
 /* Note the divisor of 2, a slight hack to simplify food description */
-bool effect_handler_GAIN_EXP(effect_handler_context_t *context)
+static bool effect_handler_GAIN_EXP(effect_handler_context_t *context)
 {
 	int amount = effect_calculate_value(context, false);
 	if (player->exp < PY_MAX_EXP) {
@@ -1326,7 +1326,7 @@ bool effect_handler_GAIN_EXP(effect_handler_context_t *context)
 /**
  * Drain some light from the player's light source, if possible
  */
-bool effect_handler_DRAIN_LIGHT(effect_handler_context_t *context)
+static bool effect_handler_DRAIN_LIGHT(effect_handler_context_t *context)
 {
 	int drain = effect_calculate_value(context, false);
 
@@ -1354,7 +1354,7 @@ bool effect_handler_DRAIN_LIGHT(effect_handler_context_t *context)
 /**
  * Drain mana from the player, healing the caster.
  */
-bool effect_handler_DRAIN_MANA(effect_handler_context_t *context)
+static bool effect_handler_DRAIN_MANA(effect_handler_context_t *context)
 {
 	int drain = effect_calculate_value(context, false);
 	bool monster = context->origin.what != SRC_TRAP;
@@ -1427,7 +1427,7 @@ bool effect_handler_DRAIN_MANA(effect_handler_context_t *context)
 	return true;
 }
 
-bool effect_handler_RESTORE_MANA(effect_handler_context_t *context)
+static bool effect_handler_RESTORE_MANA(effect_handler_context_t *context)
 {
 	int amount = effect_calculate_value(context, false);
 
@@ -1458,7 +1458,7 @@ bool effect_handler_RESTORE_MANA(effect_handler_context_t *context)
 /**
  * Attempt to uncurse an object
  */
-bool effect_handler_REMOVE_CURSE(effect_handler_context_t *context)
+static bool effect_handler_REMOVE_CURSE(effect_handler_context_t *context)
 {
 	const char *prompt = "Uncurse which item? ";
 	const char *rejmsg = "You have no curses to remove.";
@@ -1500,7 +1500,7 @@ bool effect_handler_REMOVE_CURSE(effect_handler_context_t *context)
 /**
  * Set word of recall as appropriate
  */
-bool effect_handler_RECALL(effect_handler_context_t *context)
+static bool effect_handler_RECALL(effect_handler_context_t *context)
 {
 	//int target_place;
 	int i, num_recall_points = 0;
@@ -1589,7 +1589,7 @@ bool effect_handler_RECALL(effect_handler_context_t *context)
 	return true;
 }
 
-bool effect_handler_DEEP_DESCENT(effect_handler_context_t *context)
+static bool effect_handler_DEEP_DESCENT(effect_handler_context_t *context)
 {
 	int i, number, target_place = player->place;
 	struct level *lev;
@@ -1618,7 +1618,7 @@ bool effect_handler_DEEP_DESCENT(effect_handler_context_t *context)
 	return true;
 }
 
-bool effect_handler_ALTER_REALITY(effect_handler_context_t *context)
+static bool effect_handler_ALTER_REALITY(effect_handler_context_t *context)
 {
 	msg("The world changes!");
 	player_change_place(player, player->place);
@@ -1633,7 +1633,7 @@ bool effect_handler_ALTER_REALITY(effect_handler_context_t *context)
  * For player level dependent areas, we use the hack of applying value dice
  * and sides as the height and width.
  */
-bool effect_handler_MAP_AREA(effect_handler_context_t *context)
+static bool effect_handler_MAP_AREA(effect_handler_context_t *context)
 {
 	int i, x, y;
 	int x1, x2, y1, y2;
@@ -1715,7 +1715,7 @@ bool effect_handler_MAP_AREA(effect_handler_context_t *context)
  * and sides as the height and width.
  * If context->other is set, detect traps level-wide on success
  */
-bool effect_handler_READ_MINDS(effect_handler_context_t *context)
+static bool effect_handler_READ_MINDS(effect_handler_context_t *context)
 {
 	int i;
 	int dist_y = context->y ? context->y : context->value.dice;
@@ -1755,7 +1755,7 @@ bool effect_handler_READ_MINDS(effect_handler_context_t *context)
  * Detect traps around the player.  The height to detect above and below the
  * player is context->y, the width either side of the player context->x.
  */
-bool effect_handler_DETECT_TRAPS(effect_handler_context_t *context)
+static bool effect_handler_DETECT_TRAPS(effect_handler_context_t *context)
 {
 	int x, y;
 	int x1, x2, y1, y2;
@@ -1832,7 +1832,7 @@ bool effect_handler_DETECT_TRAPS(effect_handler_context_t *context)
  * Detect doors around the player.  The height to detect above and below the
  * player is context->y, the width either side of the player context->x.
  */
-bool effect_handler_DETECT_DOORS(effect_handler_context_t *context)
+static bool effect_handler_DETECT_DOORS(effect_handler_context_t *context)
 {
 	int x, y;
 	int x1, x2, y1, y2;
@@ -1893,7 +1893,7 @@ bool effect_handler_DETECT_DOORS(effect_handler_context_t *context)
  * Detect stairs around the player.  The height to detect above and below the
  * player is context->y, the width either side of the player context->x.
  */
-bool effect_handler_DETECT_STAIRS(effect_handler_context_t *context)
+static bool effect_handler_DETECT_STAIRS(effect_handler_context_t *context)
 {
 	int x, y;
 	int x1, x2, y1, y2;
@@ -1945,7 +1945,7 @@ bool effect_handler_DETECT_STAIRS(effect_handler_context_t *context)
  * Detect buried gold around the player.  The height to detect above and below
  * the player is context->y, the width either side of the player context->x.
  */
-bool effect_handler_DETECT_GOLD(effect_handler_context_t *context)
+static bool effect_handler_DETECT_GOLD(effect_handler_context_t *context)
 {
 	int x, y;
 	int x1, x2, y1, y2;
@@ -2032,7 +2032,7 @@ static void forget_remembered_objects(struct chunk *c, struct chunk *knownc, str
  * Sense objects around the player.  The height to sense above and below the
  * player is context->y, the width either side of the player context->x
  */
-bool effect_handler_SENSE_OBJECTS(effect_handler_context_t *context)
+static bool effect_handler_SENSE_OBJECTS(effect_handler_context_t *context)
 {
 	int x, y;
 	int x1, x2, y1, y2;
@@ -2086,7 +2086,7 @@ bool effect_handler_SENSE_OBJECTS(effect_handler_context_t *context)
  * Detect objects around the player.  The height to detect above and below the
  * player is context->y, the width either side of the player context->x
  */
-bool effect_handler_DETECT_OBJECTS(effect_handler_context_t *context)
+static bool effect_handler_DETECT_OBJECTS(effect_handler_context_t *context)
 {
 	int x, y;
 	int x1, x2, y1, y2;
@@ -2208,7 +2208,7 @@ static bool detect_monsters(int y_dist, int x_dist, monster_predicate pred)
  * below the player is context->value.dice, the width either side of the player
  * context->value.sides.
  */
-bool effect_handler_DETECT_LIVING_MONSTERS(effect_handler_context_t *context)
+static bool effect_handler_DETECT_LIVING_MONSTERS(effect_handler_context_t *context)
 {
 	bool monsters = detect_monsters(context->y, context->x, monster_is_living);
 
@@ -2230,7 +2230,7 @@ bool effect_handler_DETECT_LIVING_MONSTERS(effect_handler_context_t *context)
  * below the player is context->value.dice, the width either side of the player
  * context->value.sides.
  */
-bool effect_handler_DETECT_VISIBLE_MONSTERS(effect_handler_context_t *context)
+static bool effect_handler_DETECT_VISIBLE_MONSTERS(effect_handler_context_t *context)
 {
 	bool monsters = detect_monsters(context->y, context->x,
 									monster_is_not_invisible);
@@ -2250,7 +2250,7 @@ bool effect_handler_DETECT_VISIBLE_MONSTERS(effect_handler_context_t *context)
  * below the player is context->value.dice, the width either side of the player
  * context->value.sides.
  */
-bool effect_handler_DETECT_INVISIBLE_MONSTERS(effect_handler_context_t *context)
+static bool effect_handler_DETECT_INVISIBLE_MONSTERS(effect_handler_context_t *context)
 {
 	bool monsters = detect_monsters(context->y, context->x,
 									monster_is_invisible);
@@ -2269,7 +2269,7 @@ bool effect_handler_DETECT_INVISIBLE_MONSTERS(effect_handler_context_t *context)
  * above and below the player is context->value.dice, the width either side of
  * the player context->value.sides.
  */
-bool effect_handler_DETECT_FEARFUL_MONSTERS(effect_handler_context_t *context)
+static bool effect_handler_DETECT_FEARFUL_MONSTERS(effect_handler_context_t *context)
 {
 	bool monsters = detect_monsters(context->y, context->x, monster_is_fearful);
 
@@ -2287,7 +2287,7 @@ bool effect_handler_DETECT_FEARFUL_MONSTERS(effect_handler_context_t *context)
  * below the player is context->value.dice, the width either side of the player
  * context->value.sides.
  */
-bool effect_handler_DETECT_EVIL(effect_handler_context_t *context)
+static bool effect_handler_DETECT_EVIL(effect_handler_context_t *context)
 {
 	bool monsters = detect_monsters(context->y, context->x, monster_is_evil);
 
@@ -2305,7 +2305,7 @@ bool effect_handler_DETECT_EVIL(effect_handler_context_t *context)
  * The height to detect above and below the player is context->value.dice,
  * the width either side of the player context->value.sides.
  */
-bool effect_handler_DETECT_SOUL(effect_handler_context_t *context)
+static bool effect_handler_DETECT_SOUL(effect_handler_context_t *context)
 {
 	bool monsters = detect_monsters(context->y, context->x, monster_has_spirit);
 
@@ -2339,7 +2339,7 @@ bool effect_handler_DETECT_ANIMAL(effect_handler_context_t *context)
 /**
  * Identify an unknown rune of an item.
  */
-bool effect_handler_IDENTIFY(effect_handler_context_t *context)
+static bool effect_handler_IDENTIFY(effect_handler_context_t *context)
 {
 	struct object *obj;
 	const char *q, *s;
@@ -2369,7 +2369,7 @@ bool effect_handler_IDENTIFY(effect_handler_context_t *context)
 /**
  * Create stairs at the player location
  */
-bool effect_handler_CREATE_STAIRS(effect_handler_context_t *context)
+static bool effect_handler_CREATE_STAIRS(effect_handler_context_t *context)
 {
 	context->ident = true;
 
@@ -2397,7 +2397,7 @@ bool effect_handler_CREATE_STAIRS(effect_handler_context_t *context)
 /**
  * Apply disenchantment to the player's stuff.
  */
-bool effect_handler_DISENCHANT(effect_handler_context_t *context)
+static bool effect_handler_DISENCHANT(effect_handler_context_t *context)
 {
 	int i, count = 0;
 	struct object *obj;
@@ -2486,7 +2486,7 @@ bool effect_handler_DISENCHANT(effect_handler_context_t *context)
  *
  * Work on incorporating enchant_spell() has been postponed...NRM
  */
-bool effect_handler_ENCHANT(effect_handler_context_t *context)
+static bool effect_handler_ENCHANT(effect_handler_context_t *context)
 {
 	int value = randcalc(context->value, player->depth, RANDOMISE);
 	bool used = false;
@@ -2529,7 +2529,7 @@ int recharge_failure_chance(const struct object *obj, int strength) {
  *
  * It is harder to recharge high level, and highly charged wands.
  */
-bool effect_handler_RECHARGE(effect_handler_context_t *context)
+static bool effect_handler_RECHARGE(effect_handler_context_t *context)
 {
 	int i, t;
 	int strength = context->value.base;
@@ -2606,7 +2606,7 @@ bool effect_handler_RECHARGE(effect_handler_context_t *context)
  *
  * Note that affected monsters are NOT auto-tracked by this usage.
  */
-bool effect_handler_PROJECT_LOS(effect_handler_context_t *context)
+static bool effect_handler_PROJECT_LOS(effect_handler_context_t *context)
 {
 	int i;
 	int dam = effect_calculate_value(context, context->other ? true : false);
@@ -2640,7 +2640,7 @@ bool effect_handler_PROJECT_LOS(effect_handler_context_t *context)
  *
  * Note that affected monsters are NOT auto-tracked by this usage.
  */
-bool effect_handler_PROJECT_LOS_AWARE(effect_handler_context_t *context)
+static bool effect_handler_PROJECT_LOS_AWARE(effect_handler_context_t *context)
 {
 	int i;
 	int dam = effect_calculate_value(context, context->other ? true : false);
@@ -2673,7 +2673,7 @@ bool effect_handler_PROJECT_LOS_AWARE(effect_handler_context_t *context)
 	return true;
 }
 
-bool effect_handler_ACQUIRE(effect_handler_context_t *context)
+static bool effect_handler_ACQUIRE(effect_handler_context_t *context)
 {
 	int num = effect_calculate_value(context, false);
 	acquirement(player->grid, player->depth, num, true);
@@ -2684,7 +2684,7 @@ bool effect_handler_ACQUIRE(effect_handler_context_t *context)
 /**
  * Wake up all monsters in line of sight
  */
-bool effect_handler_WAKE(effect_handler_context_t *context)
+static bool effect_handler_WAKE(effect_handler_context_t *context)
 {
 	int i;
 	bool woken = false;
@@ -2721,7 +2721,7 @@ bool effect_handler_WAKE(effect_handler_context_t *context)
 /**
  * Summon context->value monsters of context->subtype type.
  */
-bool effect_handler_SUMMON(effect_handler_context_t *context)
+static bool effect_handler_SUMMON(effect_handler_context_t *context)
 {
 	int summon_max = effect_calculate_value(context, false);
 	int summon_type = context->subtype;
@@ -2819,7 +2819,7 @@ bool effect_handler_SUMMON(effect_handler_context_t *context)
  *		   character, which may not be true in the future - NRM
  * -------
  */
-bool effect_handler_BANISH(effect_handler_context_t *context)
+static bool effect_handler_BANISH(effect_handler_context_t *context)
 {
 	int i;
 	unsigned dam = 0;
@@ -2881,7 +2881,7 @@ bool effect_handler_BANISH(effect_handler_context_t *context)
  * Delete all nearby (non-unique) monsters.  The radius of effect is
  * context->radius if passed, otherwise the player view radius.
  */
-bool effect_handler_MASS_BANISH(effect_handler_context_t *context)
+static bool effect_handler_MASS_BANISH(effect_handler_context_t *context)
 {
 	int i;
 	int radius = context->radius ? context->radius : z_info->max_sight;
@@ -2921,7 +2921,7 @@ bool effect_handler_MASS_BANISH(effect_handler_context_t *context)
 /**
  * Probe nearby monsters
  */
-bool effect_handler_PROBE(effect_handler_context_t *context)
+static bool effect_handler_PROBE(effect_handler_context_t *context)
 {
 	int i;
 
@@ -2977,7 +2977,7 @@ bool effect_handler_PROBE(effect_handler_context_t *context)
  * Setting context->y and context->x treats them as y and x coordinates
  * and teleports the monster from that grid.
  */
-bool effect_handler_TELEPORT(effect_handler_context_t *context)
+static bool effect_handler_TELEPORT(effect_handler_context_t *context)
 {
 	struct loc start = loc(context->x, context->y);
 	int dis = context->value.base;
@@ -3167,7 +3167,7 @@ bool effect_handler_TELEPORT(effect_handler_context_t *context)
  * This function is slightly obsessive about correctness.
  * This function allows teleporting into vaults (!)
  */
-bool effect_handler_TELEPORT_TO(effect_handler_context_t *context)
+static bool effect_handler_TELEPORT_TO(effect_handler_context_t *context)
 {
 	struct monster *mon = NULL;
 	struct loc start, aim, land;
@@ -3194,9 +3194,8 @@ bool effect_handler_TELEPORT_TO(effect_handler_context_t *context)
 		start = mon->grid;
 	} else {
 		/* Targeted decoys get destroyed */
-		struct loc decoy = cave_find_decoy(cave);
-		if (!loc_is_zero(decoy) && mon) {
-			square_destroy_decoy(cave, decoy);
+		if (mon && monster_is_decoyed(mon)) {
+			square_destroy_decoy(cave, cave_find_decoy(cave));
 			return true;
 		}
 
@@ -3295,7 +3294,7 @@ bool effect_handler_TELEPORT_TO(effect_handler_context_t *context)
 /**
  * Teleport the player one level up or down (random when legal)
  */
-bool effect_handler_TELEPORT_LEVEL(effect_handler_context_t *context)
+static bool effect_handler_TELEPORT_LEVEL(effect_handler_context_t *context)
 {
 	bool up = true;
 	bool down = true;
@@ -3405,7 +3404,7 @@ bool effect_handler_TELEPORT_LEVEL(effect_handler_context_t *context)
  *
  * This causes rubble to fall into empty squares.
  */
-bool effect_handler_RUBBLE(effect_handler_context_t *context)
+static bool effect_handler_RUBBLE(effect_handler_context_t *context)
 {
 	/*
 	 * First we work out how many grids we want to fill with rubble.  Then we
@@ -3454,7 +3453,7 @@ bool effect_handler_RUBBLE(effect_handler_context_t *context)
 	return true;
 }
 
-bool effect_handler_GRANITE(effect_handler_context_t *context)
+static bool effect_handler_GRANITE(effect_handler_context_t *context)
 {
 	struct trap *trap = context->origin.which.trap;
 	square_set_feat(cave, trap->grid, FEAT_GRANITE);
@@ -3473,7 +3472,7 @@ bool effect_handler_GRANITE(effect_handler_context_t *context)
  * This is always an effect centred on the player; it is similar to the
  * earthquake effect.
  */
-bool effect_handler_DESTRUCTION(effect_handler_context_t *context)
+static bool effect_handler_DESTRUCTION(effect_handler_context_t *context)
 {
 	int k, r = context->radius;
 	int elem = context->subtype;
@@ -3585,7 +3584,7 @@ bool effect_handler_DESTRUCTION(effect_handler_context_t *context)
  * Note that players and monsters (except eaters of walls and passers
  * through walls) will never occupy the same grid as a wall (or door).
  */
-bool effect_handler_EARTHQUAKE(effect_handler_context_t *context)
+static bool effect_handler_EARTHQUAKE(effect_handler_context_t *context)
 {
 	int r = context->radius;
 	bool targeted = context->subtype ? true : false;
@@ -3874,7 +3873,7 @@ bool effect_handler_EARTHQUAKE(effect_handler_context_t *context)
  *
  * To do: allow other grids (eg water)
  */
-bool effect_handler_LAVA_POOL(effect_handler_context_t *context)
+static bool effect_handler_LAVA_POOL(effect_handler_context_t *context)
 {
 	int r = context->radius;
 	struct loc grid, pgrid = player->grid;
@@ -3908,7 +3907,7 @@ bool effect_handler_LAVA_POOL(effect_handler_context_t *context)
  *
  * To do: unite with LAVA_POOL
  */
-bool effect_handler_ENERGY_DRAIN(effect_handler_context_t *context)
+static bool effect_handler_ENERGY_DRAIN(effect_handler_context_t *context)
 {
 	struct loc grid, pgrid = player->grid;
 	int r = context->radius;
@@ -3946,7 +3945,7 @@ bool effect_handler_ENERGY_DRAIN(effect_handler_context_t *context)
  *
  * To do: unite with LAVA_POOL
  */
-bool effect_handler_GROW_FOREST(effect_handler_context_t *context)
+static bool effect_handler_GROW_FOREST(effect_handler_context_t *context)
 {
 	struct loc grid, pgrid = player->grid;
 	int r = z_info->max_sight;
@@ -3980,7 +3979,7 @@ bool effect_handler_GROW_FOREST(effect_handler_context_t *context)
 	return true;
 }
 
-bool effect_handler_LIGHT_LEVEL(effect_handler_context_t *context)
+static bool effect_handler_LIGHT_LEVEL(effect_handler_context_t *context)
 {
 	bool full = context->value.base ? true : false;
 	if (full)
@@ -3990,7 +3989,7 @@ bool effect_handler_LIGHT_LEVEL(effect_handler_context_t *context)
 	return true;
 }
 
-bool effect_handler_DARKEN_LEVEL(effect_handler_context_t *context)
+static bool effect_handler_DARKEN_LEVEL(effect_handler_context_t *context)
 {
 	bool full = context->value.base ? true : false;
 	if (full)
@@ -4003,7 +4002,7 @@ bool effect_handler_DARKEN_LEVEL(effect_handler_context_t *context)
 /**
  * Call light around the player
  */
-bool effect_handler_LIGHT_AREA(effect_handler_context_t *context)
+static bool effect_handler_LIGHT_AREA(effect_handler_context_t *context)
 {
 	/* Message */
 	if (!player->timed[TMD_BLIND])
@@ -4021,13 +4020,18 @@ bool effect_handler_LIGHT_AREA(effect_handler_context_t *context)
 /**
  * Call darkness around the player or target monster
  */
-bool effect_handler_DARKEN_AREA(effect_handler_context_t *context)
+static bool effect_handler_DARKEN_AREA(effect_handler_context_t *context)
 {
 	struct loc target = player->grid;
 	bool message = player->timed[TMD_BLIND] ? false : true;
+	struct monster *mon = NULL;
 	struct monster *t_mon = monster_target_monster(context);
 	struct loc decoy = cave_find_decoy(cave);
 	bool decoy_unseen = false;
+
+	if (context->origin.what == SRC_MONSTER) {
+		mon = cave_monster(cave, context->origin.which.monster);
+	}
 
 	/* Check for monster targeting another monster */
 	if (t_mon) {
@@ -4041,7 +4045,7 @@ bool effect_handler_DARKEN_AREA(effect_handler_context_t *context)
 	}
 
 	/* Check for decoy */
-	if (!loc_is_zero(decoy)) {
+	if (mon && monster_is_decoyed(mon)) {
 		target = decoy;
 		if (!los(cave, player->grid, decoy) ||
 			player->timed[TMD_BLIND]) {
@@ -4076,7 +4080,7 @@ bool effect_handler_DARKEN_AREA(effect_handler_context_t *context)
  * its radius
  * Affect the player (even when player-cast), grids, objects, and monsters
  */
-bool effect_handler_SPOT(effect_handler_context_t *context)
+static bool effect_handler_SPOT(effect_handler_context_t *context)
 {
 	struct loc grid;
 	int dam = effect_calculate_value(context, false);
@@ -4113,7 +4117,7 @@ bool effect_handler_SPOT(effect_handler_context_t *context)
  * far as the given diameter
  * Affect grids, objects, and monsters
  */
-bool effect_handler_SPHERE(effect_handler_context_t *context)
+static bool effect_handler_SPHERE(effect_handler_context_t *context)
 {
 	struct loc pgrid = player->grid;
 	int dam = effect_calculate_value(context, false);
@@ -4135,7 +4139,7 @@ bool effect_handler_SPHERE(effect_handler_context_t *context)
  * coordinates
  * Affect grids, objects, and monsters
  */
-bool effect_handler_ZONE(effect_handler_context_t *context)
+static bool effect_handler_ZONE(effect_handler_context_t *context)
 {
 	struct loc grid, centre = player->grid;
 	int dam = effect_calculate_value(context, false);
@@ -4173,7 +4177,7 @@ bool effect_handler_ZONE(effect_handler_context_t *context)
  * Allow target mode to pass over monsters
  * Affect grids, objects, and monsters
  */
-bool effect_handler_BALL(effect_handler_context_t *context)
+static bool effect_handler_BALL(effect_handler_context_t *context)
 {
 	int dam = effect_calculate_value(context, true);
 	int rad = context->radius ? context->radius : 2;
@@ -4214,9 +4218,8 @@ bool effect_handler_BALL(effect_handler_context_t *context)
 				target = t_mon->grid;
 			} else {
 				/* Target player */
-				struct loc decoy = cave_find_decoy(cave);
-				if (!loc_is_zero(decoy)) {
-					target = decoy;
+				if (monster_is_decoyed(mon)) {
+					target = cave_find_decoy(cave);
 				} else {
 					target = player->grid;
 				}
@@ -4262,7 +4265,7 @@ bool effect_handler_BALL(effect_handler_context_t *context)
  * Allow target mode to pass over monsters
  * Affect grids, objects, monsters and the player (even if player cast)
  */
-bool effect_handler_CLOUD(effect_handler_context_t *context)
+static bool effect_handler_CLOUD(effect_handler_context_t *context)
 {
 	int dam = effect_calculate_value(context, true);
 	int rad = context->radius ? context->radius : 2;
@@ -4302,9 +4305,8 @@ bool effect_handler_CLOUD(effect_handler_context_t *context)
 				target = t_mon->grid;
 			} else {
 				/* Target player */
-				struct loc decoy = cave_find_decoy(cave);
-				if (!loc_is_zero(decoy)) {
-					target = decoy;
+				if (monster_is_decoyed(mon)) {
+					target = cave_find_decoy(cave);
 				} else {
 					target = player->grid;
 				}
@@ -4354,7 +4356,7 @@ bool effect_handler_CLOUD(effect_handler_context_t *context)
  * context->subtype is element, context->other degrees of arc
  * If context->radius is set it is radius of breath, but it usually isn't
  */
-bool effect_handler_BREATH(effect_handler_context_t *context)
+static bool effect_handler_BREATH(effect_handler_context_t *context)
 {
 	int dam = effect_calculate_value(context, false);
 	int type = context->subtype;
@@ -4398,9 +4400,8 @@ bool effect_handler_BREATH(effect_handler_context_t *context)
 			target = t_mon->grid;
 		} else {
 			/* Target player. */
-			struct loc decoy = cave_find_decoy(cave);
-			if (!loc_is_zero(decoy)) {
-				target = decoy;
+			if (monster_is_decoyed(mon)) {
+				target = cave_find_decoy(cave);
 			} else {
 				target = player->grid;
 			}
@@ -4428,8 +4429,8 @@ bool effect_handler_BREATH(effect_handler_context_t *context)
 	/* Adjust the diameter of the energy source */
 	if (degrees_of_arc < 60) {
 		/* Narrower cone means energy drops off less quickly. We now have:
-		 * - 30 degree regular breath  | full strength at 5 grids
-		 * - 30 degree powerful breath | full strength at 9 grids
+		 * - 30 degree regular breath  | full strength at 7 grids
+		 * - 30 degree powerful breath | full strength at 11 grids
 		 * - 20 degree regular breath  | full strength at 11 grids
 		 * - 20 degree powerful breath | full strength at 17 grids
 		 * where grids are measured from the breather. */
@@ -4464,7 +4465,7 @@ bool effect_handler_BREATH(effect_handler_context_t *context)
  * context->subtype is element, context->radius radius,
  * context->other degrees of arc (minimum 20)
  */
-bool effect_handler_ARC(effect_handler_context_t *context)
+static bool effect_handler_ARC(effect_handler_context_t *context)
 {
 	int dam = effect_calculate_value(context, true);
 	int type = context->subtype;
@@ -4527,7 +4528,7 @@ bool effect_handler_ARC(effect_handler_context_t *context)
  * increases by a multiple of context->other, and will only take effect for
  * player spells
  */
-bool effect_handler_SHORT_BEAM(effect_handler_context_t *context)
+static bool effect_handler_SHORT_BEAM(effect_handler_context_t *context)
 {
 	int dam = effect_calculate_value(context, false);
 	int type = context->subtype;
@@ -4574,7 +4575,7 @@ bool effect_handler_SHORT_BEAM(effect_handler_context_t *context)
  * Affect grids, objects, and monsters
  * context->radius is length of beam
  */
-bool effect_handler_LASH(effect_handler_context_t *context)
+static bool effect_handler_LASH(effect_handler_context_t *context)
 {
 	int dam = effect_calculate_value(context, false);
 	int rad = context->radius;
@@ -4600,9 +4601,8 @@ bool effect_handler_LASH(effect_handler_context_t *context)
 		if (t_mon) {
 			target = t_mon->grid;
 		} else {
-			struct loc decoy = cave_find_decoy(cave);
-			if (!loc_is_zero(decoy)) {
-				target = decoy;
+			if (monster_is_decoyed(mon)) {
+				target = cave_find_decoy(cave);
 			} else {
 				target = player->grid;
 			}
@@ -4650,7 +4650,7 @@ bool effect_handler_LASH(effect_handler_context_t *context)
  * Targets absolute coordinates instead of a specific monster, so that
  * the death of the monster doesn't change the target's location.
  */
-bool effect_handler_SWARM(effect_handler_context_t *context)
+static bool effect_handler_SWARM(effect_handler_context_t *context)
 {
 	int dam = effect_calculate_value(context, true);
 	int num = context->value.m_bonus;
@@ -4677,7 +4677,7 @@ bool effect_handler_SWARM(effect_handler_context_t *context)
 /**
  * Strike the target with a ball from above
  */
-bool effect_handler_STRIKE(effect_handler_context_t *context)
+static bool effect_handler_STRIKE(effect_handler_context_t *context)
 {
 	int dam = effect_calculate_value(context, true);
 	struct loc target = player->grid;
@@ -4708,7 +4708,7 @@ bool effect_handler_STRIKE(effect_handler_context_t *context)
  * Stop if we hit a monster, act as a ball
  * Affect grids, objects, and monsters
  */
-bool effect_handler_STAR(effect_handler_context_t *context)
+static bool effect_handler_STAR(effect_handler_context_t *context)
 {
 	int dam = effect_calculate_value(context, true);
 	int i;
@@ -4739,7 +4739,7 @@ bool effect_handler_STAR(effect_handler_context_t *context)
  * Stop if we hit a monster, act as a ball
  * Affect grids, objects, and monsters
  */
-bool effect_handler_STAR_BALL(effect_handler_context_t *context)
+static bool effect_handler_STAR_BALL(effect_handler_context_t *context)
 {
 	int dam = effect_calculate_value(context, true);
 	int i;
@@ -4764,7 +4764,7 @@ bool effect_handler_STAR_BALL(effect_handler_context_t *context)
  * effective against monsters that start out in darkness, and against 
  * those who hate light. -LM-
  */
-bool effect_handler_STAR_BURST(effect_handler_context_t *context)
+static bool effect_handler_STAR_BURST(effect_handler_context_t *context)
 {
 	int dam = effect_calculate_value(context, true);
 	int i, j, radius = context->radius, burst_number = 7 + randint0(8);
@@ -4828,7 +4828,7 @@ bool effect_handler_STAR_BURST(effect_handler_context_t *context)
 /**
  * Unleash the wrath of the beings of Air. -LM-
  */
-bool effect_handler_AIR_SMITE(effect_handler_context_t *context)
+static bool effect_handler_AIR_SMITE(effect_handler_context_t *context)
 {
 	int dam = effect_calculate_value(context, true);
 	int i, j;
@@ -4892,7 +4892,7 @@ bool effect_handler_AIR_SMITE(effect_handler_context_t *context)
  * Cast a chain of bolts which leap from monster to monster
  * Affect monsters
  */
-bool effect_handler_CHAIN(effect_handler_context_t *context)
+static bool effect_handler_CHAIN(effect_handler_context_t *context)
 {
 	int dam = effect_calculate_value(context, false);
 	int k, strikes = 2 + randint1(10);
@@ -4965,7 +4965,7 @@ bool effect_handler_CHAIN(effect_handler_context_t *context)
  * Stop if we hit a monster, as a bolt
  * Affect monsters (not grids or objects)
  */
-bool effect_handler_BOLT(effect_handler_context_t *context)
+static bool effect_handler_BOLT(effect_handler_context_t *context)
 {
 	int dam = effect_calculate_value(context, true);
 	int flg = PROJECT_STOP | PROJECT_KILL;
@@ -4981,7 +4981,7 @@ bool effect_handler_BOLT(effect_handler_context_t *context)
  * Pass through monsters, as a beam
  * Affect monsters (not grids or objects)
  */
-bool effect_handler_BEAM(effect_handler_context_t *context)
+static bool effect_handler_BEAM(effect_handler_context_t *context)
 {
 	int dam = effect_calculate_value(context, true);
 	int flg = PROJECT_BEAM | PROJECT_KILL;
@@ -4996,7 +4996,7 @@ bool effect_handler_BEAM(effect_handler_context_t *context)
  * Cast a bolt spell, or rarely, a beam spell
  * context->other is used as any adjustment to the regular beam chance
  */
-bool effect_handler_BOLT_OR_BEAM(effect_handler_context_t *context)
+static bool effect_handler_BOLT_OR_BEAM(effect_handler_context_t *context)
 {
 	int beam = context->beam + context->other;
 
@@ -5011,7 +5011,7 @@ bool effect_handler_BOLT_OR_BEAM(effect_handler_context_t *context)
  * Pass through monsters, as a beam
  * Affect monsters and grids (not objects)
  */
-bool effect_handler_LINE(effect_handler_context_t *context)
+static bool effect_handler_LINE(effect_handler_context_t *context)
 {
 	int dam = effect_calculate_value(context, true);
 	int flg = PROJECT_BEAM | PROJECT_GRID | PROJECT_KILL;
@@ -5024,7 +5024,7 @@ bool effect_handler_LINE(effect_handler_context_t *context)
  * Cast an alter spell
  * Affect objects and grids (not monsters)
  */
-bool effect_handler_ALTER(effect_handler_context_t *context)
+static bool effect_handler_ALTER(effect_handler_context_t *context)
 {
 	int flg = PROJECT_BEAM | PROJECT_GRID | PROJECT_ITEM;
 	if (project_aimed(context->origin, context->subtype, context->dir, 0, flg, context->obj))
@@ -5038,7 +5038,7 @@ bool effect_handler_ALTER(effect_handler_context_t *context)
  * Affect monsters (not grids or objects)
  * Like BOLT, but only identifies on noticing an effect
  */
-bool effect_handler_BOLT_STATUS(effect_handler_context_t *context)
+static bool effect_handler_BOLT_STATUS(effect_handler_context_t *context)
 {
 	int dam = effect_calculate_value(context, true);
 	int flg = PROJECT_STOP | PROJECT_KILL;
@@ -5053,7 +5053,7 @@ bool effect_handler_BOLT_STATUS(effect_handler_context_t *context)
  * Affect monsters (not grids or objects)
  * The same as BOLT_STATUS, but done as a separate function to aid descriptions
  */
-bool effect_handler_BOLT_STATUS_DAM(effect_handler_context_t *context)
+static bool effect_handler_BOLT_STATUS_DAM(effect_handler_context_t *context)
 {
 	int dam = effect_calculate_value(context, true);
 	int flg = PROJECT_STOP | PROJECT_KILL;
@@ -5068,7 +5068,7 @@ bool effect_handler_BOLT_STATUS_DAM(effect_handler_context_t *context)
  * Affect monsters (not grids or objects)
  * Notice stuff based on awareness of the effect
  */
-bool effect_handler_BOLT_AWARE(effect_handler_context_t *context)
+static bool effect_handler_BOLT_AWARE(effect_handler_context_t *context)
 {
 	int dam = effect_calculate_value(context, true);
 	int flg = PROJECT_STOP | PROJECT_KILL;
@@ -5081,7 +5081,7 @@ bool effect_handler_BOLT_AWARE(effect_handler_context_t *context)
 /**
  * Affect adjacent grids (radius 1 ball attack)
  */
-bool effect_handler_TOUCH(effect_handler_context_t *context)
+static bool effect_handler_TOUCH(effect_handler_context_t *context)
 {
 	int dam = effect_calculate_value(context, true);
 	int rad = context->radius ? context->radius : 1;
@@ -5116,7 +5116,7 @@ bool effect_handler_TOUCH(effect_handler_context_t *context)
  * Affect adjacent grids (radius 1 ball attack)
  * Notice stuff based on awareness of the effect
  */
-bool effect_handler_TOUCH_AWARE(effect_handler_context_t *context)
+static bool effect_handler_TOUCH_AWARE(effect_handler_context_t *context)
 {
 	int dam = effect_calculate_value(context, true);
 	int rad = context->radius ? context->radius : 1;
@@ -5128,7 +5128,7 @@ bool effect_handler_TOUCH_AWARE(effect_handler_context_t *context)
 /**
  * Curse the player's armor
  */
-bool effect_handler_CURSE_ARMOR(effect_handler_context_t *context)
+static bool effect_handler_CURSE_ARMOR(effect_handler_context_t *context)
 {
 	struct object *obj;
 
@@ -5186,7 +5186,7 @@ bool effect_handler_CURSE_ARMOR(effect_handler_context_t *context)
 /**
  * Curse the player's weapon
  */
-bool effect_handler_CURSE_WEAPON(effect_handler_context_t *context)
+static bool effect_handler_CURSE_WEAPON(effect_handler_context_t *context)
 {
 	struct object *obj;
 
@@ -5246,7 +5246,7 @@ bool effect_handler_CURSE_WEAPON(effect_handler_context_t *context)
 /**
  * Brand the current weapon
  */
-bool effect_handler_BRAND_WEAPON(effect_handler_context_t *context)
+static bool effect_handler_BRAND_WEAPON(effect_handler_context_t *context)
 {
 	struct object *obj = equipped_item_by_slot_name(player, "weapon");
 
@@ -5264,7 +5264,7 @@ bool effect_handler_BRAND_WEAPON(effect_handler_context_t *context)
 /**
  * Brand some (non-magical) ammo
  */
-bool effect_handler_BRAND_AMMO(effect_handler_context_t *context)
+static bool effect_handler_BRAND_AMMO(effect_handler_context_t *context)
 {
 	struct object *obj;
 	const char *q, *s;
@@ -5297,7 +5297,7 @@ bool effect_handler_BRAND_AMMO(effect_handler_context_t *context)
 /**
  * Enchant some (non-magical) bolts
  */
-bool effect_handler_BRAND_BOLTS(effect_handler_context_t *context)
+static bool effect_handler_BRAND_BOLTS(effect_handler_context_t *context)
 {
 	struct object *obj;
 	const char *q, *s;
@@ -5328,7 +5328,7 @@ bool effect_handler_BRAND_BOLTS(effect_handler_context_t *context)
 /**
  * Turn a staff into arrows
  */
-bool effect_handler_CREATE_ARROWS(effect_handler_context_t *context)
+static bool effect_handler_CREATE_ARROWS(effect_handler_context_t *context)
 {
 	int lev;
 	struct object *obj, *staff, *arrows;
@@ -5385,7 +5385,7 @@ bool effect_handler_CREATE_ARROWS(effect_handler_context_t *context)
 /**
  * Draw energy from a magical device
  */
-bool effect_handler_TAP_DEVICE(effect_handler_context_t *context)
+static bool effect_handler_TAP_DEVICE(effect_handler_context_t *context)
 {
 	int lev;
 	int energy = 0;
@@ -5393,7 +5393,7 @@ bool effect_handler_TAP_DEVICE(effect_handler_context_t *context)
 	bool used = false;
 	int itemmode = (USE_INVEN | USE_FLOOR);
 	const char *q, *s;
-	char *item = "";
+	const char *item = "";
 
 	/* Get an item */
 	q = "Drain charges from which item? ";
@@ -5462,7 +5462,7 @@ bool effect_handler_TAP_DEVICE(effect_handler_context_t *context)
 /**
  * Draw energy from a nearby undead
  */
-bool effect_handler_TAP_UNLIFE(effect_handler_context_t *context)
+static bool effect_handler_TAP_UNLIFE(effect_handler_context_t *context)
 {
 	int amount = effect_calculate_value(context, false);
 	struct loc target;
@@ -5505,7 +5505,7 @@ bool effect_handler_TAP_UNLIFE(effect_handler_context_t *context)
 /**
  * Perform a player shapechange
  */
-bool effect_handler_SHAPECHANGE(effect_handler_context_t *context)
+static bool effect_handler_SHAPECHANGE(effect_handler_context_t *context)
 {
 	struct player_shape *shape = player_shape_by_idx(context->subtype);
 	bool ident = false;
@@ -5535,7 +5535,7 @@ bool effect_handler_SHAPECHANGE(effect_handler_context_t *context)
 /**
  * Curse a monster for direct damage
  */
-bool effect_handler_CURSE(effect_handler_context_t *context)
+static bool effect_handler_CURSE(effect_handler_context_t *context)
 {
 	int dam = effect_calculate_value(context, false);
 	struct monster *mon = target_get_monster();
@@ -5567,7 +5567,7 @@ bool effect_handler_CURSE(effect_handler_context_t *context)
 /**
  * Take control of a monster
  */
-bool effect_handler_COMMAND(effect_handler_context_t *context)
+static bool effect_handler_COMMAND(effect_handler_context_t *context)
 {
 	int amount = effect_calculate_value(context, false);
 	struct monster *mon = target_get_monster();
@@ -5603,7 +5603,7 @@ bool effect_handler_COMMAND(effect_handler_context_t *context)
 /**
  * Jump next to a living monster and draw hitpoints and nourishment from it
  */
-bool effect_handler_JUMP_AND_BITE(effect_handler_context_t *context)
+static bool effect_handler_JUMP_AND_BITE(effect_handler_context_t *context)
 {
 	int amount = effect_calculate_value(context, false);
 	struct loc victim, grid;
@@ -5674,7 +5674,7 @@ bool effect_handler_JUMP_AND_BITE(effect_handler_context_t *context)
  * Move up to 4 spaces then do melee blows.
  * Could vary the length of the move without much work.
  */
-bool effect_handler_MOVE_ATTACK(effect_handler_context_t *context)
+static bool effect_handler_MOVE_ATTACK(effect_handler_context_t *context)
 {
 	int blows = effect_calculate_value(context, false);
 	int moves = 4;
@@ -5743,10 +5743,10 @@ bool effect_handler_MOVE_ATTACK(effect_handler_context_t *context)
 	return true;
 }
 
- /**
+/**
  * Enter single combat with an enemy
  */
-bool effect_handler_SINGLE_COMBAT(effect_handler_context_t *context)
+static bool effect_handler_SINGLE_COMBAT(effect_handler_context_t *context)
 {
 	struct monster *mon = target_get_monster();
 	context->ident = true;
@@ -5791,7 +5791,7 @@ bool effect_handler_SINGLE_COMBAT(effect_handler_context_t *context)
 }
 
 
-bool effect_handler_MELEE_BLOWS(effect_handler_context_t *context)
+static bool effect_handler_MELEE_BLOWS(effect_handler_context_t *context)
 {
 	int blows = effect_calculate_value(context, false);
 	int dam = context->radius;
@@ -5839,7 +5839,7 @@ bool effect_handler_MELEE_BLOWS(effect_handler_context_t *context)
 	return true;
 }
 
-bool effect_handler_SWEEP(effect_handler_context_t *context)
+static bool effect_handler_SWEEP(effect_handler_context_t *context)
 {
 	int blows = effect_calculate_value(context, false);
 	bool fear;
@@ -5865,7 +5865,7 @@ bool effect_handler_SWEEP(effect_handler_context_t *context)
 /**
  * Rod of Delving activation
  */
-bool effect_handler_DELVING(effect_handler_context_t *context)
+static bool effect_handler_DELVING(effect_handler_context_t *context)
 {
 	struct loc grid = loc(0, 0);
 	int flg = PROJECT_GRID | PROJECT_ITEM | PROJECT_KILL | PROJECT_THRU;
@@ -5889,7 +5889,7 @@ bool effect_handler_DELVING(effect_handler_context_t *context)
 /**
  * "Gleaming black runes" chest trap
  */
-bool effect_handler_RUNES_OF_EVIL(effect_handler_context_t *context)
+static bool effect_handler_RUNES_OF_EVIL(effect_handler_context_t *context)
 {
 	/* Determine how many nasty tricks can be played. */
 	int nasty_tricks_count = 4 + randint0(3);
@@ -5930,7 +5930,7 @@ bool effect_handler_RUNES_OF_EVIL(effect_handler_context_t *context)
 /**
  * Wand of Unmaking activation
  */
-bool effect_handler_UNMAKE(effect_handler_context_t *context)
+static bool effect_handler_UNMAKE(effect_handler_context_t *context)
 {
 	bool repeat = true;
 
@@ -6011,7 +6011,7 @@ bool effect_handler_UNMAKE(effect_handler_context_t *context)
 /**
  * One Ring activation
  */
-bool effect_handler_BIZARRE(effect_handler_context_t *context)
+static bool effect_handler_BIZARRE(effect_handler_context_t *context)
 {
 	context->ident = true;
 
@@ -6100,7 +6100,7 @@ bool effect_handler_BIZARRE(effect_handler_context_t *context)
  * keeping the results quite random.  It also allows
  * some potent effects only at high level
  */
-bool effect_handler_WONDER(effect_handler_context_t *context)
+static bool effect_handler_WONDER(effect_handler_context_t *context)
 {
 	int plev = eff_level(player);
 	int die = effect_calculate_value(context, false);
@@ -6247,7 +6247,7 @@ bool effect_handler_WONDER(effect_handler_context_t *context)
  * If the player is in normal shape, this transforms them into the appropriate
  * dragon.  If already a dragon, this becomes a breath.
  */
-bool effect_handler_DRAGON(effect_handler_context_t *context)
+static bool effect_handler_DRAGON(effect_handler_context_t *context)
 {
 	struct player_shape *shape = player_shape_by_idx(context->subtype);
 	bool ident = false;
@@ -6274,7 +6274,17 @@ bool effect_handler_DRAGON(effect_handler_context_t *context)
  * Special effect for scattering chest contents - actually handled in
  * obj-chest.c.
  */
-bool effect_handler_CHEST_SCATTER(effect_handler_context_t *context)
+static bool effect_handler_CHEST_SCATTER(effect_handler_context_t *context)
+{
+	return true;
+}
+
+/**
+ * Dummy effect, to tell the effect code to pick one of the next
+ * context->value.base effects at the player's selection or, if the effect
+ * wasn't initiated by the player, at random.
+ */
+static bool effect_handler_SELECT(effect_handler_context_t *context)
 {
 	return true;
 }
@@ -6288,19 +6298,19 @@ bool effect_handler_CHEST_SCATTER(effect_handler_context_t *context)
  */
 static const struct effect_kind effects[] =
 {
-	{ EF_NONE, false, NULL, NULL, NULL },
+	{ EF_NONE, false, NULL, NULL, NULL, NULL },
 	#define F(x) effect_handler_##x
-	#define EFFECT(x, a, b, c, d, e)	{ EF_##x, a, b, F(x), e },
+	#define EFFECT(x, a, b, c, d, e, f)	{ EF_##x, a, b, F(x), e, f },
 	#include "list-effects.h"
 	#undef EFFECT
 	#undef F
-	{ EF_MAX, false, NULL, NULL, NULL }
+	{ EF_MAX, false, NULL, NULL, NULL, NULL }
 };
 
 
 static const char *effect_names[] = {
 	NULL,
-	#define EFFECT(x, a, b, c, d, e)	#x,
+	#define EFFECT(x, a, b, c, d, e, f)	#x,
 	#include "list-effects.h"
 	#undef EFFECT
 };
@@ -6596,7 +6606,7 @@ bool effect_do(struct effect *effect,
 	random_value value = { 0, 0, 0, 0 };
 
 	do {
-		int random_choices = 0, leftover = 0;
+		int choice_count = 0, leftover = 1;
 
 		if (!effect_valid(effect)) {
 			msg("Bad effect passed to effect_do(). Please report this bug.");
@@ -6604,12 +6614,51 @@ bool effect_do(struct effect *effect,
 		}
 
 		if (effect->dice != NULL)
-			random_choices = dice_roll(effect->dice, &value);
+			choice_count = dice_roll(effect->dice, &value);
 
-		/* Deal with special random effect */
-		if (effect->index == EF_RANDOM) {
-			int choice = randint0(random_choices);
-			leftover = random_choices - choice;
+		/* Deal with special random and select effects */
+		if (effect->index == EF_RANDOM || effect->index == EF_SELECT) {
+			int choice;
+
+			/*
+			 * Treat select effects like random ones if they
+			 * aren't from a player or if there's really no choice
+			 * to be made.
+			 */
+			if (effect->index == EF_RANDOM ||
+					origin.what != SRC_PLAYER ||
+					choice_count < 2) {
+				choice = randint0(choice_count);
+			} else {
+				assert(effect->index == EF_SELECT &&
+					origin.what == SRC_PLAYER);
+				if (cmd) {
+					if (cmd_get_effect_from_list(cmd,
+							"list_index",
+							&choice, NULL,
+							effect->next,
+							choice_count,
+							true) != CMD_OK) {
+						return false;
+					}
+				} else {
+					choice = get_effect_from_list(NULL,
+						effect->next, choice_count,
+						true);
+					if (choice == -1) return false;
+				}
+
+				/*
+				 * If the player chose to use a random effect,
+				 * roll for it.
+				 */
+				if (choice == -2) {
+					choice = randint0(choice_count);
+				}
+				assert(choice >= 0 && choice < choice_count);
+			}
+
+			leftover = choice_count - choice;
 
 			/* Skip to the chosen effect */
 			effect = effect->next;
@@ -6648,11 +6697,7 @@ bool effect_do(struct effect *effect,
 		}
 
 		/* Get the next effect, if there is one */
-		if (leftover)
-			/* Skip the remaining non-chosen effects */
-			while (leftover--)
-				effect = effect->next;
-		else
+		while (leftover--)
 			effect = effect->next;
 	} while (effect);
 

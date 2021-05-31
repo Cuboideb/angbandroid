@@ -2,6 +2,8 @@
  * \file save-charoutput.c
  * \brief Write short human-readable character synopsis for angband.live
  *
+ * Copyright (c) 2020 Eric Branlund
+ *
  * This work is free software; you can redistribute it and/or modify it
  * under the terms of either:
  *
@@ -17,6 +19,7 @@
 #include "game-world.h"
 #include "init.h"
 #include "player.h"
+#include "save-charoutput.h"
 #include "z-file.h"
 #include "z-util.h"
 

@@ -37,7 +37,6 @@
 #include "source.h"
 #include "target.h"
 #include "trap.h"
-#include "ui-term.h"
 
 u16b daycount = 0;
 u32b seed_randart;		/* Hack -- consistent random artifacts */
@@ -234,7 +233,7 @@ int themed_level_index(char *name)
  */
 bool is_daytime(void)
 {
-	if ((turn % (10L * z_info->day_length)) < ((10L * z_info->day_length) / 2))
+	if ((turn % (10L * z_info->day_length)) < ((10L * z_info->day_length) / 2)) 
 		return true;
 
 	return false;
@@ -433,7 +432,7 @@ void play_ambient_sound(void)
 	if (player->depth == 0) {
 		if (is_daytime())
 			sound(MSG_AMBIENT_DAY);
-		else
+		else 
 			sound(MSG_AMBIENT_NITE);
 	} else if (player->depth <= 20) {
 		sound(MSG_AMBIENT_DNG1);
@@ -554,10 +553,6 @@ static void decrease_timeouts(void)
 }
 
 /**
- * ------------------------------------------------------------------------
- * Main turn-by-turn processing functions
- * ------------------------------------------------------------------------ */
-/**
  * Handle things that need updating once every 10 game turns
  */
 void process_world(struct chunk *c)
@@ -674,33 +669,33 @@ void process_world(struct chunk *c)
 
 	/* Digest */
 	if (!player_timed_grade_eq(player, TMD_FOOD, "Full")) {
-	/* Digest normally */
-	if (!(turn % 100)) {
-		/* Basic digestion rate based on speed */
-		i = turn_energy(player->state.speed);
+		/* Digest normally */
+		if (!(turn % 100)) {
+			/* Basic digestion rate based on speed */
+			i = turn_energy(player->state.speed);
 
-		/* Adjust for food value */
-		i = (i * 100) / z_info->food_value;
+			/* Adjust for food value */
+			i = (i * 100) / z_info->food_value;
 
-		/* Regeneration takes more food */
-		if (player_of_has(player, OF_REGEN)) i *= 2;
+			/* Regeneration takes more food */
+			if (player_of_has(player, OF_REGEN)) i *= 2;
 
-		/* Slow digestion takes less food */
-		if (player_of_has(player, OF_SLOW_DIGEST)) i /= 2;
+			/* Slow digestion takes less food */
+			if (player_of_has(player, OF_SLOW_DIGEST)) i /= 2;
 
-		/* Minimal digestion */
-		if (i < 1) i = 1;
+			/* Minimal digestion */
+			if (i < 1) i = 1;
 
-		/* Digest some food */
-		player_dec_timed(player, TMD_FOOD, i, false);
-	}
-
-	/* Fast metabolism */
-	if (player->timed[TMD_HEAL]) {
-		player_dec_timed(player, TMD_FOOD, 8 * z_info->food_value, false);
-		if (player->timed[TMD_FOOD] < PY_FOOD_HUNGRY) {
-			player_set_timed(player, TMD_HEAL, 0, true);
+			/* Digest some food */
+			player_dec_timed(player, TMD_FOOD, i, false);
 		}
+
+		/* Fast metabolism */
+		if (player->timed[TMD_HEAL]) {
+			player_dec_timed(player, TMD_FOOD, 8 * z_info->food_value, false);
+			if (player->timed[TMD_FOOD] < PY_FOOD_HUNGRY) {
+				player_set_timed(player, TMD_HEAL, 0, true);
+			}
 		}
 	} else {
 		/* Digest quickly when gorged */
@@ -740,7 +735,7 @@ void process_world(struct chunk *c)
 
 	/* Decay special heighten power */
 	if (player->heighten_power) {
-		/* To keep it from being a free ride for high speed
+		/* To keep it from being a free ride for high speed 
 		 * characters, Heighten Power decays quickly when highly charged */
 		int decrement = 10 + (player->heighten_power / 55);
 		player->heighten_power = MAX(0, player->heighten_power - decrement);
@@ -1117,7 +1112,7 @@ void run_game_loop(void)
 	while (player->energy >= z_info->move_energy) {
 		/* Do any necessary animations */
 		event_signal(EVENT_ANIMATE);
-
+		
 		/* Process monster with even more energy first */
 		process_monsters(cave, player->energy + 1);
 		if (player->is_dead || !player->upkeep->playing ||
@@ -1134,14 +1129,14 @@ void run_game_loop(void)
 		}
 	}
 
-	/* Now that the player's turn is fully complete, we run the main loop
+	/* Now that the player's turn is fully complete, we run the main loop 
 	 * until player input is needed again */
 	while (true) {
 		notice_stuff(player);
 		handle_stuff(player);
 		event_signal(EVENT_REFRESH);
 
-		/* Process the rest of the world, give the player energy and
+		/* Process the rest of the world, give the player energy and 
 		 * increment the turn counter unless we need to stop playing or
 		 * generate a new level */
 		if (player->is_dead || !player->upkeep->playing)
