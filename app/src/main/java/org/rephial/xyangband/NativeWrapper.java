@@ -107,6 +107,8 @@ public class NativeWrapper {
 
 		int key = state.getKey(v);
 
+		//Log.d("Angband", "Got: " + key);
+
 		return key;
 	}
 

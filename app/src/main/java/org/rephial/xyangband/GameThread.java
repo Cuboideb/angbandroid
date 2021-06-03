@@ -62,6 +62,7 @@ public class GameThread implements Runnable {
 		//			already_running = game_thread_running;
 		//	already_initialized = game_fully_initialized;
 
+		Log.d("Angband","GameThread.Start()");
 
 		if (state.fatalError) {
 
@@ -116,7 +117,7 @@ public class GameThread implements Runnable {
 		// signal keybuffer to send quit command to angband
 		// (this is when the user chooses quit or the app is pausing)
 
-		//Log.d("Angband","GameThread.Stop()");
+		Log.d("Angband","GameThread.Stop()");
 
 		if (!game_thread_running) {
 			//Log.d("Angband","stop().no game running");
@@ -129,7 +130,7 @@ public class GameThread implements Runnable {
 
 		state.signalGameExit();
 
-		//Log.d("Angband","signalGameExit.waiting on thread.join()");
+		Log.d("Angband","signalGameExit.waiting on thread.join()");
 
 		try {
 			thread.join();
@@ -137,7 +138,7 @@ public class GameThread implements Runnable {
 			Log.d("Angband",e.toString());
 		}
 
-		//Log.d("Angband","signalGameExit.after waiting for thread.join()");
+		Log.d("Angband","signalGameExit.after waiting for thread.join()");
 	}
 
 	private void save() {

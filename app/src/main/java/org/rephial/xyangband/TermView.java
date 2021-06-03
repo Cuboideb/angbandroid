@@ -2477,7 +2477,7 @@ public class TermView extends View implements OnGestureListener {
 
         // Not initialized
         if (canvas == null) {
-            Log.d("Angband", "No canvas");
+            //Log.d("Angband", "No canvas");
             return;
         }
 
