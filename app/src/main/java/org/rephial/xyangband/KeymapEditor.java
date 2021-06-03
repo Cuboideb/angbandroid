@@ -28,6 +28,8 @@ public class KeymapEditor extends PopupWindow
     ButtonRow row2;
     ButtonRow curRow;
 
+    static int max = 20;
+
     class ButtonRow {
         ArrayList<String> actionLst = null;
         ViewGroup container = null;
@@ -132,6 +134,30 @@ public class KeymapEditor extends PopupWindow
         btn = mainView.findViewById(R.id.forw_button);
         btn.setTag("action:forward");
         btn.setOnClickListener(this);
+
+        Button btn2 = mainView.findViewById(R.id.run_button);
+        btn2.setTag("action:run");
+        btn2.setOnClickListener(this);
+
+        btn2 = mainView.findViewById(R.id.esc_button);
+        btn2.setTag("action:esc");
+        btn2.setOnClickListener(this);
+
+        btn2 = mainView.findViewById(R.id.spc_button);
+        btn2.setTag("action:spc");
+        btn2.setOnClickListener(this);
+
+        btn2 = mainView.findViewById(R.id.tab_button);
+        btn2.setTag("action:tab");
+        btn2.setOnClickListener(this);
+
+        btn2 = mainView.findViewById(R.id.opa_button);
+        btn2.setTag("action:opa");
+        btn2.setOnClickListener(this);
+
+        btn2 = mainView.findViewById(R.id.ret_button);
+        btn2.setTag("action:ret");
+        btn2.setOnClickListener(this);
     }
 
     public void show()
@@ -288,6 +314,18 @@ public class KeymapEditor extends PopupWindow
         super.dismiss();
     }
 
+    public void addText(String txt)
+    {
+        txt = actionEdit.getText()+txt;
+        if (txt.length() <= max) assignText(txt);
+    }
+
+    public void assignText(String txt)
+    {
+        actionEdit.setText(txt);
+        actionEdit.setSelection(actionEdit.getText().length());
+    }
+
     @Override
     public void onClick(View v) {
 
@@ -326,14 +364,43 @@ public class KeymapEditor extends PopupWindow
             return;
         }
 
+        if (tag.equals("action:run")) {
+            assignText("run");
+            return;
+        }
+
+        if (tag.equals("action:ret")) {
+            addText("\\n");
+            return;
+        }
+
+        if (tag.equals("action:esc")) {
+            addText("\\e");
+            return;
+        }
+
+        if (tag.equals("action:spc")) {
+            addText("\\s");
+            return;
+        }
+
+        if (tag.equals("action:tab")) {
+            addText("\\t");
+            return;
+        }
+
+        if (tag.equals("action:opa")) {
+            assignText("opa");
+            return;
+        }
+
         if (tag.startsWith("row:")) {
 
             // Save current
             actionUpdate(false);
 
             String action = tag.substring(6);
-            actionEdit.setText(action);
-            actionEdit.setSelection(actionEdit.getText().length());
+            assignText(action);
 
             if (tag.startsWith(row1.getPrefix())) {
                 curRow = row1;
