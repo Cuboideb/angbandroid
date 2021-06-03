@@ -160,6 +160,7 @@
 
     <string-array name="tileMultValues">
         <item>1x1</item>
+        <item>2x1</item>
         <item>2x2</item>
         <item>3x2</item>
         <item>3x3</item>
