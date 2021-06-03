@@ -19,7 +19,7 @@ import android.view.WindowManager;
 //import android.view.View.OnClickListener;
 import android.view.GestureDetector;
 import android.view.ViewGroup;
-//import android.widget.Button;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 //import android.widget.FrameLayout;
@@ -209,9 +209,12 @@ class AdvButton extends View
     }
 
     public class OptionPopup extends PopupWindow
+    	implements View.OnClickListener
     {
     	public EditText etext = null;
     	public CheckBox ckAlwaysVisible = null;
+
+    	public int max = 20;
 
     	public OptionPopup()
     	{
@@ -228,14 +231,67 @@ class AdvButton extends View
         	etext = (EditText)content.findViewById
         		(R.id.keymap_action);
 
-        	etext.setText(keymap);
-			etext.setSelection(etext.getText().length());
+        	assignText(keymap);
 
 			ckAlwaysVisible = (CheckBox)content.findViewById
         		(R.id.always_visible);
         	ckAlwaysVisible.setChecked(alwaysVisible);
 
+        	Button btn = content.findViewById(R.id.esc_button);
+	        btn.setTag("action:esc");
+	        btn.setOnClickListener(this);
+
+	        btn = content.findViewById(R.id.spc_button);
+	        btn.setTag("action:spc");
+	        btn.setOnClickListener(this);
+
+	        btn = content.findViewById(R.id.tab_button);
+	        btn.setTag("action:tab");
+	        btn.setOnClickListener(this);
+
+	        btn = content.findViewById(R.id.ret_button);
+	        btn.setTag("action:ret");
+	        btn.setOnClickListener(this);
+
         	setContentView(content);
+    	}
+
+    	public void addText(String txt)
+	    {
+	        txt = etext.getText()+txt;
+	        if (txt.length() <= max) assignText(txt);
+	    }
+
+	    public void assignText(String txt)
+	    {
+	        etext.setText(txt);
+	        etext.setSelection(etext.getText().length());
+	    }
+
+    	@Override
+    	public void onClick(View v) {
+
+    		String tag = (String)v.getTag();
+
+	        if (tag.equals("action:ret")) {
+	            addText("\\n");
+	            return;
+	        }
+
+	        if (tag.equals("action:esc")) {
+	            addText("\\e");
+	            return;
+	        }
+
+	        if (tag.equals("action:spc")) {
+	            addText("\\s");
+	            return;
+	        }
+
+	        if (tag.equals("action:tab")) {
+	            addText("\\t");
+	            return;
+	        }
     	}
 
     	@Override

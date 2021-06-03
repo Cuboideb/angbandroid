@@ -27,15 +27,53 @@
             android:layout_weight="0"
             android:ems="7"
             android:inputType="text"
-            android:maxLength="10" />
+            android:maxLength="20" />
 
     </LinearLayout>
 
+    <!--
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:password="false"
         android:text="\\n: Return - \\t: Tab - \\e: Esc - \\s: Space" />
+    -->
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <Button
+            android:id="@+id/ret_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="Return" />
+
+        <Button
+            android:id="@+id/esc_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="Escape" />
+
+        <Button
+            android:id="@+id/spc_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="Space" />
+
+        <Button
+            android:id="@+id/tab_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="Tab" />
+
+    </LinearLayout>
 
     <CheckBox 
         android:id="@+id/always_visible"
