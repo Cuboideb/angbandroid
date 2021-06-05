@@ -17,7 +17,6 @@
  */
 
 #include "angband.h"
-#include "grafmode.h"
 #include "init.h"
 #include "mon-lore.h"
 #include "ui-mon-lore.h"
