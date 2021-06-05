@@ -2323,7 +2323,7 @@ static bool effect_handler_DETECT_SOUL(effect_handler_context_t *context)
  * The height to detect above and below the player is context->value.dice,
  * the width either side of the player context->value.sides.
  */
-bool effect_handler_DETECT_ANIMAL(effect_handler_context_t *context)
+static bool effect_handler_DETECT_ANIMAL(effect_handler_context_t *context)
 {
 	bool monsters = detect_monsters(context->y, context->x, monster_is_natural);
 
@@ -3174,6 +3174,7 @@ static bool effect_handler_TELEPORT_TO(effect_handler_context_t *context)
 	int dis = 0, ctr = 0, dir = DIR_TARGET;
 	struct monster *t_mon = monster_target_monster(context);
 	bool friendly = false;
+	bool dim_door = false;
 
 	context->ident = true;
 
@@ -3251,6 +3252,7 @@ static bool effect_handler_TELEPORT_TO(effect_handler_context_t *context)
 
 		/* Randomise the landing a bit if it's a vault */
 		if (square_isvault(cave, aim)) dis = 10;
+		dim_door = true;
 	}
 
 	/* Find a usable location */
@@ -3281,6 +3283,11 @@ static bool effect_handler_TELEPORT_TO(effect_handler_context_t *context)
 
 	/* Move player or monster */
 	monster_swap(start, land);
+
+	/* Cancel target if necessary */
+	if (dim_door) {
+		target_set_location(0, 0);
+	}
 
 	/* Clear any projection marker to prevent double processing */
 	sqinfo_off(square(cave, land)->info, SQUARE_PROJECT);
@@ -5446,6 +5453,7 @@ static bool effect_handler_TAP_DEVICE(effect_handler_context_t *context)
 
 			msg("You feel your head clear.");
 			used = true;
+			player_inc_timed(player, TMD_STUN, randint1(2), true, true);
 
 			player->upkeep->redraw |= (PR_MANA);
 		} else {

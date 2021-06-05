@@ -179,8 +179,8 @@ static bool stack_message(struct monster *mon, int msg_code, int flags)
 		/* We found the race and the message code */
 		if (mon_msg[i].race == mon->race &&
 			mon_msg[i].p_race == mon->player_race &&
-					mon_msg[i].flags == flags &&
-					mon_msg[i].msg_code == msg_code) {
+			mon_msg[i].flags == flags &&
+			mon_msg[i].msg_code == msg_code) {
 			mon_msg[i].count++;
 			store_monster(mon, msg_code);
 			return true;
@@ -251,7 +251,7 @@ static void get_subject(char *buf, size_t buflen,
 			strnfmt(buf, buflen, "%d monsters", count);
 		}
 	} else {
-		char *p_name = p_race ? format("%s ", p_race->name) : "";
+		const char *p_name = p_race ? format("%s ", p_race->name) : "";
 
 		/* Uniques, multiple monsters, or just one */
 		if (rf_has(race->flags, RF_UNIQUE)) {
