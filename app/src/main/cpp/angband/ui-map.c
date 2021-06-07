@@ -335,14 +335,16 @@ void grid_data_as_text(struct grid_data *g, int *ap, wchar_t *cp, int *tap,
 	if (g->is_player && OPT(player, hp_changes_color)) {
 		int hp = MAX(player->chp,0);
 		hp = (hp * 10 / MAX(player->mhp,1)) & 0x0F;
-		a |= ((0x20 + hp) << 8);
+		/* Bits 8 and 9 are reserved for solid and hybrid walls */
+		a |= ((0x20 + hp) << 10);
 	}
 	if (g->m_idx > 0 && !g->hallucinate
 		&& !monster_is_mimicking(cave_monster(cave, g->m_idx))) {
 		struct monster *mon = cave_monster(cave, g->m_idx);
 		int hp = MAX(mon->hp,0);
 		hp = (hp * 10 / MAX(mon->maxhp,1)) & 0x0F;
-		a |= ((0x10 + hp) << 8);
+		/* Bits 8 and 9 are reserved for solid and hybrid walls */
+		a |= ((0x10 + hp) << 10);
 	}
 	/* Hack -- Always a tile */
 	a |= 0x80;

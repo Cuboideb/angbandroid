@@ -51,6 +51,10 @@ final public class Plugins {
 		{
 			return this == angband || this == faangband;
 		}
+		public boolean canHybridWalls()
+		{
+			return this == angband || this == faangband;
+		}
 		public boolean canHandleKeymaps()
 		{
 			return this == angband;
