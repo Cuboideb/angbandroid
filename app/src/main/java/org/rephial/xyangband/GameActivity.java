@@ -91,6 +91,7 @@ public class GameActivity extends Activity {
 	public static final int TERM_CONTROL_CONTEXT = 2;
 	public static final int TERM_CONTROL_VISUAL_STATE = 4;
 	public static final int TERM_CONTROL_SHOW_CURSOR = 5;
+	public static final int TERM_CONTROL_DEBUG = 6;
 
 	protected Handler handler = null;
 
@@ -347,6 +348,9 @@ public class GameActivity extends Activity {
 				// In graphics thread
 				state.nativew.configureVisuals(rows, cols, graf);
 			}
+		}
+		if (what == TERM_CONTROL_DEBUG) {
+			Log.d("Angband", "Native: " + msg);
 		}
 		if (what == TERM_CONTROL_SHOW_CURSOR) {
 			//Log.d("Angband", "Big cursor: " + msg);

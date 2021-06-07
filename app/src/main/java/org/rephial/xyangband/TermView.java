@@ -127,8 +127,8 @@ public class TermView extends View implements OnGestureListener {
 
     public static char BIG_PAD = 0x1E00;
 
-    public static int PLAYER_MASK = 0x2000;
-    public static int MONSTER_MASK = 0x1000;
+    public static int PLAYER_MASK = (0x20 << 10);
+    public static int MONSTER_MASK = (0x10 << 10);
 
     public static int MIN_FONT = 6;
     public static int MAX_FONT = 64;
@@ -2013,6 +2013,8 @@ public class TermView extends View implements OnGestureListener {
         a &= 0x7F;
         c &= 0xFF;
 
+        int bg = (gxa >> 8) & 0x03;
+
         TermWindow.ColorPair pair = TermWindow.pairs.get(a);
         if (pair == null) return;
 
@@ -2201,7 +2203,7 @@ public class TermView extends View implements OnGestureListener {
 
     public void drawLifeColor(int a, Rect dst)
     {
-        int pct = (a >> 8) & 0x0F;
+        int pct = (a >> 10) & 0x0F;
         int color = 0;
 
         if ((a & PLAYER_MASK) != 0) {
