@@ -582,8 +582,25 @@ static errr Term_pict_android(int x, int y, int n,
 
 	for (i = 0; i < n; i++) {
 
-		resu = waddtile(td->win, x, y, ap[i], (byte)cp[i],
-			tap[i], (byte)tcp[i]);
+		int a = ap[i];
+		byte c = (byte)cp[i];
+
+		/* Ascii text */
+		if ((c & 0x80) == 0) {
+			int ta = COLOUR_DARK;
+			byte tc = (byte)' ';
+			switch ((a >> 8) & 0x03) {
+				case BG_SAME: ta = a & 0x7F; break;
+				case BG_DARK: ta = COLOUR_SHADE; break;
+			}
+			resu = waddtile(td->win, x, y, a, c,
+				ta, tc);
+		}
+		/* Graphic tile */
+		else {
+			resu = waddtile(td->win, x, y, a, c,
+				tap[i], (byte)tcp[i]);
+		}
 		if (resu) break;
 	}
 	return resu;

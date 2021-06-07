@@ -130,10 +130,6 @@ public class TermView extends View implements OnGestureListener {
     public static int PLAYER_MASK = (0x20 << 10);
     public static int MONSTER_MASK = (0x10 << 10);
 
-    public static int BG_SAME = 0x01;
-    public static int BG_DARK = 0x02;
-    public static int COLOUR_SHADE = 28;
-
     public static int MIN_FONT = 6;
     public static int MAX_FONT = 64;
 
@@ -2010,16 +2006,14 @@ public class TermView extends View implements OnGestureListener {
 		}
 	}
 
-    public void drawText(int row, int col, int a, int c)
+    public void drawText(int row, int col, int a, int c, int ta, int tc)
     {
         int gxa = a;
 
         a &= 0x7F;
         c &= 0xFF;
 
-        // Bits 8 and 9 of Vanilla
-        int vmask = Preferences.getActivePlugin().canHybridWalls() ?
-            ((gxa >> 8) & (BG_SAME|BG_DARK)) : 0;
+        ta &= 0x7F;
 
         TermWindow.ColorPair pair = TermWindow.pairs.get(a);
         if (pair == null) return;
@@ -2040,16 +2034,14 @@ public class TermView extends View implements OnGestureListener {
         String str = Character.toString((char)c);
 
         Rect bg = new Rect(x, y, x+tw, y+th);
-        setBackColor(Color.BLACK);        
-        if ((vmask & BG_SAME) != 0) {            
-            setBackColor(pair.fColor);
-        }        
-        else if ((vmask & BG_DARK) != 0) {
-            TermWindow.ColorPair pair2 = TermWindow.pairs.get(COLOUR_SHADE);
-            if (pair2 != null) {
-                setBackColor(pair2.fColor);
-            }
-        }        
+
+        TermWindow.ColorPair pair2 = TermWindow.pairs.get(ta);
+        if (pair2 != null) {
+            setBackColor(pair2.fColor);
+        }
+        else {
+            setBackColor(Color.BLACK);
+        }
         canvas.drawRect(bg, back);
 
         if (c == ' ') return;
@@ -2505,7 +2497,7 @@ public class TermView extends View implements OnGestureListener {
 
         // Ascii ?
         if ((c & 0x80) == 0) {
-            drawText(row, col, a, c);
+            drawText(row, col, a, c, ta, tc);
             return;
         }
 
