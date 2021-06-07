@@ -348,8 +348,6 @@ void grid_data_as_text(struct grid_data *g, int *ap, wchar_t *cp, int *tap,
 	}
 	/* Hack -- Always a tile */
 	a |= 0x80;
-
-	/*if (a & 0x100) Term_control(TERM_CONTROL_DEBUG, "Special wall");*/
 #endif
 
 	/* Result */

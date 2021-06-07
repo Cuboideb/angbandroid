@@ -508,17 +508,17 @@ static errr Term_text_android(int x, int y, int n, byte a, cptr cp)
 {
 	term_data *td = (term_data*)(Term->data);
 
-	int fg = GET_BASE_COLOR(a);
+	int fg = a % MAX_COLORS;
 	int bg = TERM_DARK;
 
-	/* Handle background */
-	/*
-	switch (a / MAX_COLOR) {
-		case BG_BLACK:  bg = COLOUR_DARK;  break;
-		case BG_SAME:   bg = fg;           break;
-		case BG_DARK:	bg = COLOUR_SHADE; break;
-	}
-	*/
+	/* Handle background */	
+	switch (a / MAX_COLORS) {
+		case BG_BLACK:  bg = TERM_DARK;  break;
+		case BG_SAME:   bg = fg;         break;		
+		case BG_DARK:	bg = TERM_SHADE; break;
+	}	
+
+	/*LOGD("CHARACTER %X", a);*/
 
 	wmove(td->win, y, x);
 	wattrset(td->win, fg);
@@ -683,9 +683,9 @@ errr init_android(void)
 void init_colors(void)
 {
 	int i;
-	uint32_t color_data[MAX_BASE_COLORS];
+	uint32_t color_data[MAX_COLORS];
 
-	for (i = 0; i < MAX_BASE_COLORS; i++) {
+	for (i = 0; i < MAX_COLORS; i++) {
 		color_data[i] = ((uint32_t)(0xFF << 24))
 			| ((uint32_t)(angband_color_table[i][1] << 16))
 			| ((uint32_t)(angband_color_table[i][2] << 8))
@@ -693,10 +693,10 @@ void init_colors(void)
 	}
 
 	initscr();
-	for (i = 0; i < MAX_BASE_COLORS; i++) {
+	for (i = 0; i < MAX_COLORS; i++) {
 		init_color(i, color_data[i]);
 	}
-	for (i = 0; i < MAX_BASE_COLORS; i++) {
+	for (i = 0; i < MAX_COLORS; i++) {
 		init_pair(i, i, 0);
 	}
 }
@@ -1003,6 +1003,8 @@ void angdroid_main()
 
 	ANGBAND_SYS = "android";
 	ANGBAND_GRAF = "new";
+
+	use_background_colors = TRUE;
 
 	/* Initialize some stuff */
 	init_android_stuff();
