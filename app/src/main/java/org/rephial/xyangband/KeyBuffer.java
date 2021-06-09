@@ -157,7 +157,7 @@ public class KeyBuffer {
 		synchronized (keybuffer) {
 
 			int check = getSpecialKey();
-			if (check >= 0) {
+			if (check != -1) {
 				key = check;
 				// we have a key, so we're done.
 			}
@@ -238,17 +238,25 @@ public class KeyBuffer {
 		return signal_game_exit;
 	}
 
-	public int getSpecialKey() {
+	public int getSpecialKey()
+	{
+		int key = -1;
 		if (signal_game_exit) {
-			//Log.d("Angband", "getch.exit game sequence");
-			switch((quit_key_seq++)%4) {
-			case 0: return state.getKeyEsc(); // Esc
-			case 1: return 0;
-			case 2: return state.getKeyQuitAndSave(); // Ctrl-X (Quit)
-			case 3: return 0;
-			}
+
+			int[] keys = {
+				state.getKeyEsc(), // Esc
+				0,
+				state.getKeyQuitAndSave(), // Ctrl-X (Quit)
+				0,
+				state.getKeyEsc(), // Esc
+				0,
+				state.getKeyKill() // Kill
+			};
+
+			key = keys[quit_key_seq];
+			quit_key_seq = (quit_key_seq+1) % keys.length;
 		}
-		return -1;
+		return key;
 	}
 
 	private KeyMap getKeyMapFromKeyCode(int keyCode, KeyEvent event)

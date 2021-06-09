@@ -213,6 +213,11 @@ void send_key_to_term(int key) {
 			LOGD("Quit and save");
 		}
 
+		if (key == -2) {
+			LOGD("Quitting");
+			quit(NULL);
+		}
+
 		// Translate key
 		if (key == 0x9c) key = '\r';
 		else if (key == 0x9d) key = '\t';

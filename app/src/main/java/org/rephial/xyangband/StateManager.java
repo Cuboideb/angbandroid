@@ -388,6 +388,9 @@ public class StateManager {
 	public int getKeyDelete() {
 		return Plugins.getKeyDelete(currentPlugin);
 	}
+	public int getKeyKill() {
+		return Plugins.getKeyKill(currentPlugin);
+	}
 
 	public void clearKeys() {
 		if (this.keyBuffer != null)

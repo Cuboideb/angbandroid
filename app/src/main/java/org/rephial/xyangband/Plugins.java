@@ -78,13 +78,13 @@ final public class Plugins {
 	public static int getKeyUp(Plugin p)          { return 0x83; }
 	public static int getKeyLeft(Plugin p)        { return 0x81; }
 	public static int getKeyRight(Plugin p)       { return 0x82; }
-
 	public static int getKeyEnter(Plugin p)       { return 0x9c; }
 	public static int getKeyTab(Plugin p)         { return 0x9d; }
 	public static int getKeyDelete(Plugin p)      { return 0x9e; }
 	public static int getKeyBackspace(Plugin p)   { return 0x9f; }
 	public static int getKeyEsc(Plugin p)         { return 0xE000; }
 	public static int getKeyQuitAndSave(Plugin p) { return 0x18; }
+	public static int getKeyKill(Plugin p)        { return -2; }
 
 	public static ZipInputStream getPluginZip(int plugin) {
 		InputStream is = null;
