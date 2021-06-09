@@ -82,7 +82,7 @@ typedef struct {
 	int button;
 } mouse_data_t;
 
-#define PLAYER_PLAYING (character_generated && p_ptr && p_ptr->playing)
+#define PLAYER_PLAYING (character_generated && p_ptr && p_ptr->playing && !p_ptr->is_dead)
 
 #define IN_THE_DUNGEON (PLAYER_PLAYING \
 && character_dungeon && (character_icky == 0))

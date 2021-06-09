@@ -81,7 +81,7 @@ typedef struct {
 	int button;
 } mouse_data_t;
 
-#define PLAYER_PLAYING (player && player->upkeep && player->upkeep->playing)
+#define PLAYER_PLAYING (player && player->upkeep && player->upkeep->playing && !player->is_dead)
 
 #define IN_THE_DUNGEON (PLAYER_PLAYING && character_dungeon \
 && screen_save_depth == 0 && !player->is_dead)
@@ -241,7 +241,7 @@ int process_special_command(int key)
 	if (sscanf(buf, "graphics:%d:%d:%d:%d",
 		&graf, &trows, &tcols, &top_bar) == 4) {
 
-		if (!PLAYER_PLAYING) return 0;
+		//if (!PLAYER_PLAYING) return 0;
 
 		if (only_text_variant()) graf = 0;
 
