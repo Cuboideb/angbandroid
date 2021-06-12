@@ -1,0 +1,2498 @@
+# File: e_info.txt
+
+
+# This file is used to initialize the "lib/data/e_info.raw" file, which is
+# used to initialize the "ego-item" information for the Angband game.
+
+# Do not modify this file unless you know exactly what you are doing,
+# unless you wish to risk possible system crashes and broken savefiles.
+
+# After modifying this file, delete the "lib/data/e_info.raw" file.
+
+# The ego-item indexes are defined in "defines.h", and must not be changed.
+
+# Note that every "ego-item" type has a different "index", and can only be
+# created from items that belong to a certain "slot" in the equipment, if
+# one assumes that "ammo" belongs to an imaginary slot (23).  However, it
+# is possible for several "ego-item" types to have the same "textual name",
+# such as with "Armor of Resistance" and "Shield of Resistance".
+
+# === Understanding e_info.txt ===
+
+# N: serial number : ego type
+# D: description
+# T: tval : min sval : max sval
+# R: rarity
+# X: position : slot : rating
+# W: depth : rarity1 : rarity2 : cost
+# C: to-hit : to-dam : to-ac : pval
+# r:N:needed flags on the base object
+# r:F:forbidden flags on the base object
+# Z: granted_power
+# F: flags
+
+# 'N' indicated the beginning of an entry. The serial number must increase
+# for each new item.
+
+# 'D' contains description. This field is currently not supported.
+
+# 'T' is for possible tval and sval value of the base item.
+# Up to 5 entries are possible.
+
+# 'R' stands for rarity, or randomness. It specifies percentual chance
+# of generated item to have following 'F' flags. I.e. 'R:40' followed
+# by 'F:SPEED' means, that 40% of item of this ego type will boost speed.
+
+# 'X' is for extra information. Position value 'A' means that ego-type name
+# will appear after base-item name ('Robe of Permanence'), value 'B' means
+# that ego-type name will appear before base-item name ('Elven Plate Mail').
+# Slot is determining in which equipment slots item could be equipped. This
+# value is currently ignored. Rating determines how level feeling will be
+# affected.
+
+# 'W' is for extra information. Depth is the depth the object is normally
+# found at, rarity determines how common the object is and cost is the items
+# value.
+
+# 'C' stands for 'creation'. It determines maximal to-hit, to-damage, AC and
+# stats (pval) values item can get.
+
+# 'Z' is granted power. See tables.c, array powers_type_init (lines 4511-4943).
+
+# 'F' contains flags. Most are self explaining, rest could be found in source.
+
+
+
+### Mage Staff ###
+
+N:1:of Mana
+X:A:24:20
+T:6:0:255
+W:5:3:8:10000
+C:-30:-30:0:3
+R:100
+F:MANA
+f:MANA
+R:70
+F:PVAL_M2
+
+N:2:of Power
+X:A:24:30
+T:6:0:255
+W:5:5:8:20000
+C:-30:-30:0:10
+R:100
+F:SPELL
+f:SPELL
+R:70
+F:PVAL_M2
+
+N:3:of Wizardry
+X:A:24:60
+T:6:0:255
+W:10:1:8:50000
+C:-40:-40:0:3
+R:100
+F:MANA
+F:SPELL
+R:50
+F:PVAL_M2
+
+### Body Armor ###
+
+N:5:of Resist Acid
+T:36:0:255
+T:37:0:255
+X:A:30:16
+W:0:4:20:1000
+R:100
+F:IGNORE_ACID
+F:RES_ACID
+f:IGNORE_ACID
+f:RES_ACID
+
+N:6:of Resist Lightning
+T:36:0:255
+T:37:0:255
+X:A:30:10
+W:0:4:20:400
+R:100
+F:IGNORE_ELEC
+F:RES_ELEC
+f:IGNORE_ELEC
+f:RES_ELEC
+
+N:7:of Resist Fire
+T:36:0:15
+T:36:17:255
+T:37:0:255
+X:A:30:14
+W:0:4:20:800
+R:100
+F:IGNORE_FIRE
+F:RES_FIRE
+f:IGNORE_FIRE
+f:RES_FIRE
+
+N:8:of Resist Cold
+T:36:0:15
+T:36:17:255
+T:37:0:255
+X:A:30:12
+W:0:4:20:600
+R:100
+F:IGNORE_COLD
+F:RES_COLD
+f:IGNORE_COLD
+f:RES_COLD
+
+N:9:of Resistance
+T:36:0:255
+T:37:0:255
+X:A:30:20
+W:0:2:20:12500
+C:0:0:10:0
+R:100
+F:IGNORE_ACID
+F:IGNORE_COLD
+F:IGNORE_ELEC
+F:IGNORE_FIRE
+F:RES_ACID
+F:RES_COLD
+F:RES_ELEC
+F:RES_FIRE
+f:RES_ACID
+f:RES_COLD
+f:RES_ELEC
+f:RES_FIRE
+R:25
+F:R_HIGH
+
+N:10:Elven
+T:36:0:255
+T:37:0:255
+X:B:30:25
+W:0:2:20:15000
+C:0:0:10:3
+R:100
+F:ESP_ORC
+F:IGNORE_ACID
+F:IGNORE_COLD
+F:IGNORE_ELEC
+F:IGNORE_FIRE
+F:OLD_RESIST
+F:RES_ACID
+F:RES_COLD
+F:RES_ELEC
+F:RES_FIRE
+F:STEALTH
+f:STEALTH
+R:25
+F:RES_POIS
+
+# Robe
+N:11:of Permanence
+T:36:2:2
+X:A:30:30
+W:0:1:10:30000
+C:0:0:10:0
+R:100
+F:HOLD_LIFE
+F:IGNORE_ACID
+F:IGNORE_COLD
+F:IGNORE_ELEC
+F:IGNORE_FIRE
+F:OLD_RESIST
+F:RES_ACID
+F:RES_COLD
+F:RES_ELEC
+F:RES_FIRE
+F:SUST_CHR
+F:SUST_CON
+F:SUST_DEX
+F:SUST_INT
+F:SUST_STR
+F:SUST_WIS
+R:2
+F:R_IMMUNITY
+
+# Filthy rags of leprousness
+N:12:of Leprousness
+T:36:1:1
+X:A:30:0
+W:0:1:10:0
+C:0:0:0:-6
+R:100
+F:CON
+F:CURSED
+F:R_STAT
+F:STR
+# No CURSE_NO_DROP here, players seems to unlike surprises
+
+# Mithirl & Adamantite mails & PDSM
+N:13:of Immunity
+T:37:25:25
+T:37:30:30
+T:38:30:30
+X:A:30:40
+W:60:10:100:30000
+C:0:0:5:0
+R:100
+F:R_IMMUNITY
+
+# Ego DSM
+N:14:of Defense
+T:38:0:255
+X:A:30:5
+W:20:40:100:1000
+C:0:0:8:0
+R:100
+F:SUSTAIN
+
+# Boots of Jumping
+N:15:of Jumping
+T:30:0:255
+X:A:35:16
+W:0:3:27:500
+C:0:0:0:3
+Z:blink
+R:100
+F:ACTIVATE
+a:JUMP
+
+### Shields ###
+
+N:16:of Resist Acid
+T:115:56:56
+T:34:0:5
+T:34:7:255
+X:A:32:16
+W:0:6:22:1000
+R:100
+F:IGNORE_ACID
+F:RES_ACID
+f:IGNORE_ACID
+f:RES_ACID
+
+N:17:of Resist Lightning
+T:34:0:5
+T:34:7:255
+T:115:56:56
+X:A:32:10
+W:0:6:22:400
+R:100
+F:IGNORE_ELEC
+F:RES_ELEC
+f:IGNORE_ELEC
+f:RES_ELEC
+
+N:18:of Resist Fire
+T:34:0:5
+T:34:7:255
+T:115:56:56
+X:A:32:14
+W:0:6:22:800
+R:100
+F:IGNORE_FIRE
+F:RES_FIRE
+f:IGNORE_FIRE
+f:RES_FIRE
+
+N:19:of Resist Cold
+T:115:56:56
+T:34:0:5
+T:34:7:255
+X:A:32:12
+W:0:6:22:600
+R:100
+F:IGNORE_COLD
+F:RES_COLD
+f:IGNORE_COLD
+f:RES_COLD
+
+N:20:of Resistance
+T:115:56:56
+T:34:0:5
+T:34:7:255
+X:A:32:20
+W:0:2:22:12500
+C:0:0:10:0
+R:100
+F:IGNORE_ACID
+F:IGNORE_COLD
+F:IGNORE_ELEC
+F:IGNORE_FIRE
+F:RES_ACID
+F:RES_COLD
+F:RES_ELEC
+F:RES_FIRE
+f:RES_ACID
+f:RES_COLD
+f:RES_ELEC
+f:RES_FIRE
+
+N:21:of Reflection
+T:115:56:56
+T:34:0:5
+T:34:7:255
+X:A:32:20
+W:0:2:22:15000
+C:0:0:5:0
+R:100
+F:IGNORE_ACID
+F:IGNORE_COLD
+F:IGNORE_ELEC
+F:IGNORE_FIRE
+F:REFLECT
+f:REFLECT
+
+# Metal shields only
+N:22:of Electricity
+T:34:3:3
+T:34:5:5
+T:34:10:10
+X:A:32:10
+W:0:2:22:400
+R:100
+F:IGNORE_ELEC
+F:RES_ELEC
+F:SH_ELEC
+f:SH_ELEC
+
+### Crowns and Helms ###
+
+N:23:of the Noldor
+T:115:57:57
+T:32:0:6
+T:32:8:99
+X:A:33:13
+C:0:0:0:2
+W:0:1:8:500
+R:100
+F:ACTIVATE
+F:DEX
+F:ESP_ORC
+F:SUST_DEX
+a:NOLDOR
+
+N:24:of Intelligence
+X:A:33:13
+C:0:0:0:2
+W:0:2:15:500
+T:32:0:6
+T:32:8:99
+T:115:57:57
+R:100
+F:INT
+F:SUST_INT
+f:INT
+
+N:25:of Wisdom
+X:A:33:13
+W:0:2:15:500
+C:0:0:0:2
+T:32:0:6
+T:32:8:99
+T:115:57:57
+R:100
+F:SUST_WIS
+F:WIS
+f:WIS
+
+N:26:of Beauty
+X:A:33:8
+W:0:2:15:1000
+C:0:0:0:4
+T:32:0:6
+T:32:8:99
+T:115:57:57
+R:100
+F:CHR
+F:SUST_CHR
+f:CHR
+
+# 40% chance of increase spell power
+N:27:of the Magi
+X:A:33:15
+W:0:1:8:7500
+C:0:0:0:3
+T:33:0:99
+R:100
+F:ABILITY
+F:IGNORE_ACID
+F:IGNORE_COLD
+F:IGNORE_ELEC
+F:IGNORE_FIRE
+F:INT
+F:RES_ACID
+F:RES_COLD
+F:RES_ELEC
+F:RES_FIRE
+F:R_HIGH
+F:SUST_INT
+R:40
+F:SPELL
+R:50
+F:SPELL_CONTAIN
+F:WIELD_CAST
+
+N:28:of Might
+X:A:33:19
+W:0:1:8:2000
+C:0:0:0:3
+T:33:0:99
+R:100
+F:CON
+F:DEX
+F:FREE_ACT
+F:R_HIGH
+F:STR
+F:SUST_CON
+F:SUST_DEX
+F:SUST_STR
+
+N:29:of Lordliness
+X:A:33:17
+W:0:1:8:2000
+C:0:0:0:3
+T:33:0:99
+R:100
+F:CHR
+F:R_HIGH
+F:SUST_CHR
+F:SUST_WIS
+F:WIS
+
+N:30:of Seeing
+X:A:33:8
+W:0:1:8:1000
+C:0:0:0:5
+T:32:0:6
+T:32:8:99
+T:33:0:99
+T:115:57:57
+R:100
+F:RES_BLIND
+F:SEE_INVIS
+R:20
+F:ESP_ALL
+
+N:31:of Infravision
+X:A:33:11
+W:0:1:15:500
+C:0:0:0:5
+T:32:0:6
+T:32:8:99
+T:115:57:57
+R:100
+F:HIDE_TYPE
+F:INFRA
+f:INFRA
+
+N:32:of Light
+X:A:33:6
+W:0:2:15:500
+T:32:0:6
+T:32:8:99
+T:115:57:57
+R:100
+F:LITE1
+F:RES_LITE
+f:LITE1
+
+N:33:of Telepathy
+X:A:33:20
+W:0:1:8:50000
+T:33:0:99
+R:100
+F:ESP_ALL
+f:ESP_ALL
+
+N:34:of Regeneration
+X:A:33:10
+W:0:1:8:1500
+T:32:0:6
+T:32:8:99
+T:33:0:99
+T:115:57:57
+R:100
+F:REGEN
+f:REGEN
+
+N:35:of Teleportation
+X:A:33:0
+W:0:1:7:50
+T:32:0:6
+T:32:8:99
+T:115:57:57
+R:100
+F:TELEPORT
+f:TELEPORT
+R:90
+F:CURSED
+
+N:36:of Stupidity
+X:A:33:0
+C:0:0:0:-5
+W:0:2:7:0
+T:32:0:6
+T:32:8:99
+T:115:57:57
+R:100
+F:CURSED
+F:INT
+f:INT
+# No CURSE_NO_DROP here, players seems to unlike surprises
+
+N:37:of Naivety
+X:A:33:0
+C:0:0:0:-5
+W:0:2:7:0
+T:32:0:6
+T:32:8:99
+T:115:57:57
+R:100
+F:WIS
+f:WIS
+
+N:38:of Ugliness
+X:A:33:0
+C:0:0:0:-5
+W:0:1:7:0
+T:32:0:6
+T:32:8:99
+T:115:57:57
+R:100
+F:CHR
+f:CHR
+
+N:39:of Sickliness
+X:A:33:0
+C:0:0:0:-5
+W:0:1:7:0
+T:33:0:99
+R:100
+F:CON
+F:DEX
+F:STR
+
+N:40:Dwarven
+T:32:0:6
+T:32:8:99
+X:B:33:13
+C:0:0:0:2
+W:0:1:8:500
+R:100
+F:CON
+F:ESP_DRAGON
+F:ESP_TROLL
+F:INFRA
+F:RES_FIRE
+
+
+### Cloaks ###
+
+N:41:of Protection
+X:A:31:10
+W:0:4:19:1500
+C:0:0:10:0
+T:35:0:255
+R:100
+F:IGNORE_ACID
+F:IGNORE_COLD
+F:IGNORE_ELEC
+F:IGNORE_FIRE
+F:RES_SHARDS
+
+N:42:of Stealth
+X:A:31:10
+W:0:8:18:500
+C:0:0:0:3
+T:35:0:99
+R:100
+F:STEALTH
+f:STEALTH
+
+N:43:of Aman
+X:A:31:20
+W:0:1:28:4000
+C:0:0:20:3
+T:35:0:255
+R:100
+F:IGNORE_ACID
+F:IGNORE_COLD
+F:IGNORE_ELEC
+F:IGNORE_FIRE
+F:OLD_RESIST
+F:STEALTH
+f:STEALTH
+
+# Aura, Fire
+N:44:of Immolation
+X:A:31:16
+W:0:1:18:4000
+C:0:0:4:0
+T:35:0:255
+R:100
+F:IGNORE_ACID
+F:IGNORE_FIRE
+F:RES_FIRE
+F:SH_FIRE
+f:SH_FIRE
+
+N:45:of Enveloping
+X:A:31:0
+W:0:1:3:0
+C:-10:-10:0:0
+T:35:0:255
+R:100
+F:SHOW_MODS
+
+N:46:of Vulnerability
+X:A:31:0
+W:0:1:3:0
+C:0:0:-50:0
+T:35:0:255
+R:100
+F:AGGRAVATE
+
+N:47:of Irritation
+X:A:31:0
+W:0:1:3:0
+C:-15:-15:0:0
+T:35:0:255
+R:100
+F:AGGRAVATE
+F:SHOW_MODS
+
+# Aura, Electricity
+N:48:of Electricity
+X:A:31:16
+W:0:1:18:4000
+C:0:0:4:0
+T:35:0:255
+R:100
+F:IGNORE_ACID
+F:IGNORE_ELEC
+F:RES_ELEC
+F:SH_ELEC
+
+### Gloves ###
+
+N:49:of Free Action
+X:A:34:11
+W:0:4:10:1000
+T:31:0:99
+R:100
+F:FREE_ACT
+f:FREE_ACT
+
+N:50:of Slaying
+X:A:34:17
+W:0:3:10:1500
+C:6:6:0:0
+T:31:0:99
+R:100
+F:SHOW_MODS
+
+N:51:of Agility
+X:A:34:14
+W:0:2:10:1000
+C:0:0:0:5
+T:31:0:99
+R:100
+F:DEX
+F:HIDE_TYPE
+f:DEX
+
+N:52:of Power
+T:31:0:99
+X:A:34:22
+W:0:1:10:2500
+C:5:5:0:5
+R:100
+F:HIDE_TYPE
+F:R_HIGH
+F:SHOW_MODS
+F:STR
+f:STR
+
+# 53 Gauntlets only
+N:53:of Peace
+X:A:34:0
+W:0:1:3:0
+C:-10:-10:0:0
+T:31:2:2
+R:100
+F:CURSED
+F:HEAVY_CURSE
+
+# 54 Gloves only
+N:54:of Charming
+X:A:34:5
+T:31:1:1
+W:0:1:11:400
+C:0:0:0:6
+R:100
+F:CHR
+R:33
+F:STEALTH
+f:STEALTH
+
+N:55:of Weakness
+T:31:0:99
+X:A:34:0
+W:0:1:3:0
+C:0:0:0:-10
+R:100
+F:STR
+
+N:56:of Clumsiness
+X:A:34:0
+W:0:1:3:0
+C:0:0:0:-10
+R:100
+F:DEX
+T:31:0:99
+
+
+### Boots ###
+
+N:57:of Levitation
+X:A:35:7
+W:0:8:27:250
+T:30:0:99
+R:100
+F:FEATHER
+f:FEATHER
+R:40
+F:R_HIGH
+
+N:58:of Stealth
+X:A:35:16
+W:0:8:27:500
+C:0:0:0:3
+T:30:0:99
+R:100
+F:STEALTH
+f:STEALTH
+
+N:59:of Free Action
+X:A:35:15
+W:0:5:27:1000
+T:30:0:99
+R:100
+F:FREE_ACT
+f:FREE_ACT
+
+N:60:of Speed
+X:A:35:25
+W:0:1:27:200000
+C:0:0:0:10
+T:30:0:99
+R:100
+F:HIDE_TYPE
+F:SPEED
+f:SPEED
+R:10
+F:PVAL_M3
+
+# 61 Metal boots only
+
+N:61:of Dwarvish Endurance
+X:A:35:15
+W:0:1:20:5000
+C:0:0:0:6
+T:30:6:6
+R:100
+F:CON
+F:INFRA
+F:RES_DARK
+R:33
+F:STR
+
+N:62:of Noise
+X:A:35:0
+W:0:1:3:0
+T:30:0:99
+R:100
+F:AGGRAVATE
+f:AGGRAVATE
+
+N:63:of Slowness
+X:A:35:0
+W:0:1:3:0
+C:0:0:0:-5
+T:30:0:99
+R:100
+F:SPEED
+f:SPEED
+
+N:64:of Annoyance
+X:A:35:0
+W:0:1:3:0
+C:0:0:0:-10
+T:30:0:99
+R:100
+F:AGGRAVATE
+F:SPEED
+
+
+### Weapons ###
+
+N:65:of Aman
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+X:A:24:30
+W:0:2:44:20000
+C:6:6:4:3
+R:100
+F:BLESSED
+F:ESP_EVIL
+F:LIMIT_BLOWS
+F:RES_FEAR
+F:SEE_INVIS
+F:SLAY_DEMON
+F:SLAY_EVIL
+F:SLAY_UNDEAD
+F:SUSTAIN
+F:WIS
+R:10
+F:BLOWS
+R:1
+F:PVAL_M1
+
+N:66:(Defender)
+T:125:0:255
+T:15:0:255
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+X:A:24:25
+W:0:2:44:15000
+C:4:4:8:4
+R:100
+F:FEATHER
+F:FREE_ACT
+F:IGNORE_ACID
+F:IGNORE_COLD
+F:IGNORE_ELEC
+F:IGNORE_FIRE
+F:REGEN
+F:RES_ACID
+F:RES_COLD
+F:RES_ELEC
+F:RES_FIRE
+F:R_HIGH
+F:SEE_INVIS
+F:STEALTH
+F:SUSTAIN
+f:STEALTH
+R:33
+F:RES_POIS
+
+N:67:Blessed
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+X:B:24:20
+W:0:1:44:5000
+C:0:0:0:3
+R:100
+F:ABILITY
+F:BLESSED
+F:ESP_GOOD
+F:WIS
+f:BLESSED
+
+N:68:of Greater Life
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+T:115:55:55
+X:A:24:20
+W:0:1:50:30000
+C:5:5:0:3
+r:N:MUST2H
+R:100
+F:HOLD_LIFE
+F:LIFE
+f:LIFE
+
+N:69:of Westernesse
+T:15:0:255
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+X:A:24:20
+W:0:2:44:20000
+C:5:5:0:2
+R:100
+F:CON
+F:DEX
+F:ESP_GIANT
+F:ESP_ORC
+F:ESP_TROLL
+F:FREE_ACT
+F:SEE_INVIS
+F:SLAY_GIANT
+F:SLAY_ORC
+F:SLAY_TROLL
+F:STR
+R:33
+F:RES_FEAR
+R:50
+F:RES_MORGUL
+
+N:70:of Extra Attacks
+T:125:0:255
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+T:115:55:55
+X:A:24:20
+W:0:1:44:10000
+C:0:0:0:3
+R:100
+F:BLOWS
+f:BLOWS
+
+N:71:of Slaying
+T:125:0:255
+T:15:0:255
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+T:115:55:55
+X:A:24:15
+W:0:2:44:2500
+C:0:0:0:0
+R:100
+F:SLAY_WEAP
+F:WOUNDING
+
+N:72:of Spinning
+T:125:0:255
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+T:115:55:55
+X:A:24:18
+W:0:1:44:9000
+C:8:8:0:2
+R:100
+F:ACTIVATE
+F:DEX
+F:STR
+F:VORPAL
+a:SPIN
+
+# The "Elemental" brands (4) (6)
+
+N:73:Acidic
+T:125:0:255
+T:15:0:255
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+T:115:55:55
+X:B:24:15
+W:0:4:44:5000
+R:100
+F:BRAND_ACID
+F:IGNORE_ACID
+F:RES_ACID
+f:BRAND_ACID
+
+N:74:Shocking
+T:125:0:255
+T:15:0:255
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+T:115:55:55
+X:B:24:20
+W:0:4:44:4500
+R:100
+F:BRAND_ELEC
+F:IGNORE_ELEC
+F:RES_ELEC
+f:BRAND_ELEC
+
+N:75:Fiery
+T:125:0:255
+T:15:0:255
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+T:115:55:55
+X:B:24:20
+W:0:4:44:3500
+R:100
+F:BRAND_FIRE
+F:IGNORE_FIRE
+F:LITE1
+F:RES_FIRE
+f:BRAND_FIRE
+
+N:76:Frozen
+T:125:0:255
+T:15:0:255
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+T:115:55:55
+X:B:24:15
+W:0:4:44:3000
+R:100
+F:BRAND_COLD
+F:IGNORE_COLD
+F:RES_COLD
+f:BRAND_COLD
+
+N:77:Venomous
+T:125:0:255
+T:15:0:255
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+T:115:55:55
+X:B:24:20
+W:0:4:44:4000
+R:100
+F:BRAND_POIS
+F:RES_POIS
+f:BRAND_POIS
+
+N:78:Chaotic
+T:125:0:255
+T:21:0:255
+T:22:0:255
+T:23:0:29
+T:23:31:255
+T:24:0:255
+T:115:55:55
+X:B:24:28
+W:0:1:44:10000
+R:100
+F:CHAOTIC
+F:IGNORE_ACID
+F:IGNORE_ELEC
+F:IGNORE_FIRE
+F:RES_CHAOS
+F:R_ANY
+f:CHAOTIC
+
+N:79:Sharp
+T:125:0:255
+T:23:0:255
+T:24:0:255
+T:115:55:55
+X:B:24:20
+W:0:2:44:5000
+R:100
+F:VORPAL
+f:VORPAL
+
+N:80:of Earthquakes
+T:125:0:255
+T:21:0:255
+T:115:55:55
+X:A:24:20
+W:0:1:44:4000
+C:10:10:0:6
+R:100
+F:HIDE_TYPE
+F:IMPACT
+F:STR
+F:TUNNEL
+f:IMPACT
+
+# The "Slay" brands (8)
+
+N:81:of Slay Animal
+T:15:0:255
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+T:115:55:55
+X:A:24:18
+W:0:6:44:3500
+R:100
+F:SLAY_ANIMAL
+f:SLAY_ANIMAL
+
+N:82:of Slay Evil
+T:15:0:255
+T:125:0:255
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+T:115:55:55
+X:A:24:18
+W:0:6:44:3500
+R:100
+F:SLAY_EVIL
+f:SLAY_EVIL
+
+N:83:of Slay Undead
+T:15:0:255
+T:21:0:19
+T:21:21:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+T:115:55:55
+X:A:24:18
+W:0:6:44:3500
+R:100
+F:SLAY_UNDEAD
+f:SLAY_UNDEAD
+
+N:84:of Slay Demon
+T:15:0:255
+T:125:0:255
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+T:115:55:55
+X:A:24:14
+W:0:6:44:2500
+R:100
+F:SLAY_DEMON
+f:SLAY_DEMON
+
+N:85:of Slay Orc
+T:15:0:255
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+T:115:55:55
+X:A:24:10
+W:0:6:44:2500
+R:100
+F:SLAY_ORC
+f:SLAY_ORC
+
+N:86:of Slay Troll
+T:15:0:255
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+T:115:55:55
+X:A:24:10
+W:0:6:44:2500
+R:100
+F:SLAY_TROLL
+f:SLAY_TROLL
+
+N:87:of Slay Giant
+T:15:0:255
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+T:115:55:55
+X:A:24:14
+W:0:6:44:2500
+R:100
+F:SLAY_GIANT
+f:SLAY_GIANT
+
+N:88:of Slay Dragon
+T:15:0:255
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+T:115:55:55
+X:A:24:18
+W:0:6:44:3500
+R:100
+F:SLAY_DRAGON
+f:SLAY_DRAGON
+
+# The "Kill" brands (8)
+
+N:89:of *Slay Animal*
+T:15:0:255
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+T:115:55:55
+X:A:24:20
+W:0:2:44:6000
+C:0:0:0:2
+R:100
+F:ESP_ANIMAL
+F:INT
+F:SLAY_ANIMAL
+F:SLOW_DIGEST
+F:STEALTH
+f:SLAY_ANIMAL
+f:STEALTH
+
+N:90:of *Slay Evil*
+T:125:0:255
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+T:115:55:55
+X:A:24:20
+W:0:2:44:6000
+C:0:0:0:2
+R:100
+F:ABILITY
+F:BLESSED
+F:ESP_EVIL
+F:RES_FEAR
+F:SLAY_EVIL
+F:WIS
+f:SLAY_EVIL
+
+N:91:of *Slay Undead*
+T:125:0:255
+T:15:0:255
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+T:115:55:55
+X:A:24:24
+W:0:2:44:8000
+C:0:0:0:2
+R:100
+F:ESP_UNDEAD
+F:KILL_UNDEAD
+F:RES_NETHER
+F:SEE_INVIS
+F:WIS
+f:KILL_UNDEAD
+
+N:92:of *Slay Demon*
+T:125:0:255
+T:15:0:255
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+T:115:55:55
+X:A:24:16
+W:0:2:44:8000
+C:0:0:0:2
+R:100
+F:ESP_DEMON
+F:INT
+F:KILL_DEMON
+F:RES_CHAOS
+F:RES_FIRE
+f:KILL_DEMON
+
+N:93:of *Slay Orc*
+T:15:0:255
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+T:115:55:55
+X:A:24:14
+W:0:2:44:4000
+C:0:0:0:2
+R:100
+F:DEX
+F:ESP_ORC
+F:SLAY_ORC
+F:SUST_DEX
+f:SLAY_ORC
+
+N:94:of *Slay Troll*
+T:15:0:255
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+T:115:55:55
+X:A:24:14
+W:0:2:44:4000
+C:0:0:0:2
+R:100
+F:ESP_TROLL
+F:REGEN
+F:SLAY_TROLL
+F:STR
+F:SUST_STR
+f:SLAY_TROLL
+
+N:95:of *Slay Giant*
+T:15:0:255
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+T:115:55:55
+X:A:24:16
+W:0:2:44:4000
+C:0:0:0:2
+R:100
+F:ESP_GIANT
+F:RES_SHARDS
+F:SLAY_GIANT
+F:STR
+F:SUST_STR
+f:SLAY_GIANT
+
+N:96:of *Slay Dragon*
+T:15:0:255
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+T:115:55:55
+X:A:24:24
+W:0:2:44:8000
+C:0:0:0:2
+R:100
+F:CON
+F:ESP_DRAGON
+F:KILL_DRAGON
+F:RES_FEAR
+F:R_ELEM
+F:R_LOW
+f:KILL_DRAGON
+R:20
+F:RES_POIS
+
+N:97:Vampiric
+T:125:0:255
+T:23:0:255
+T:115:55:55
+X:B:24:25
+W:0:2:44:10000
+C:0:0:0:-2
+R:100
+F:HOLD_LIFE
+F:LIFE
+F:VAMPIRIC
+f:LIFE
+f:VAMPIRIC
+
+N:98:(*Defender*)
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+X:A:24:35
+W:0:1:100:50000
+C:-15:-15:20:4
+R:100
+F:CON
+F:DEX
+F:FEATHER
+F:FREE_ACT
+F:HOLD_LIFE
+F:IGNORE_ACID
+F:IGNORE_COLD
+F:IGNORE_ELEC
+F:IGNORE_FIRE
+F:REGEN
+F:RES_ACID
+F:RES_COLD
+F:RES_ELEC
+F:RES_FIRE
+F:RES_POIS
+F:R_ANY
+F:R_LOW
+F:SEE_INVIS
+F:STEALTH
+F:SUSTAIN
+F:WIS
+f:STEALTH
+R:30
+F:R_ANY
+F:R_LOW
+F:SUSTAIN
+R:20
+F:R_ANY
+F:R_HIGH
+F:R_LOW
+F:SUSTAIN
+R:10
+F:R_ANY
+F:R_IMMUNITY
+
+N:99:of the Thunderlords
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+X:A:24:22
+W:0:1:100:7000
+C:4:4:0:2
+a:TELEPORT
+R:100
+F:ACTIVATE
+F:BRAND_ELEC
+F:ESP_DRAGON
+F:FLY
+F:FREE_ACT
+F:KILL_DRAGON
+F:REGEN
+F:RES_NEXUS
+F:R_HIGH
+F:SLAY_EVIL
+F:SLOW_DIGEST
+F:TELEPORT
+R:12
+F:ABILITY
+R:2
+F:LIMIT_BLOWS
+F:PVAL_M3
+F:R_P_ABILITY
+
+N:100:of Gondolin
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+X:A:24:26
+W:0:1:44:25000
+C:7:7:0:3
+R:100
+F:ABILITY
+F:CON
+F:ESP_EVIL
+F:FREE_ACT
+F:IGNORE_ACID
+F:IGNORE_FIRE
+F:LITE1
+F:RES_DARK
+F:RES_FEAR
+F:SEE_INVIS
+F:SLAY_DEMON
+F:SLAY_DRAGON
+F:SLAY_EVIL
+F:SLAY_TROLL
+F:STR
+R:33
+F:R_HIGH
+R:33
+F:HOLD_LIFE
+R:22
+F:DEX
+
+# Diggers only
+
+N:101:of Digging
+T:20:0:255
+X:A:24:4
+W:0:1:2:500
+C:0:0:0:5
+R:100
+F:IGNORE_ACID
+F:IGNORE_COLD
+F:IGNORE_ELEC
+F:IGNORE_FIRE
+F:TUNNEL
+f:TUNNEL
+
+# More weapons
+
+N:102:Spectral
+T:125:0:255
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+T:115:55:55
+X:B:24:30
+W:0:1:5:5000
+R:100
+F:ACTIVATE
+F:DRAIN_HP
+F:HOLD_LIFE
+F:SEE_INVIS
+F:SLAY_UNDEAD
+a:SPECTRAL
+
+N:103:of Morgul
+T:125:0:255
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+T:115:55:55
+X:A:24:0
+W:0:1:1:0
+C:-20:-20:-10:-10
+R:100
+F:AGGRAVATE
+F:AUTO_CURSE
+F:BLACK_BREATH
+F:CURSED
+F:DRAIN_EXP
+F:HEAVY_CURSE
+F:LUCK
+F:SEE_INVIS
+F:WOUNDING
+# No CURSE_NO_DROP here, players seems to unlike surprises
+
+N:104:of Nothingness
+T:125:0:255
+T:15:0:255
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+X:A:24:0
+W:0:1:2:0
+C:-100:-100:0:0
+R:100
+F:AUTO_CURSE
+F:CURSED
+F:HEAVY_CURSE
+F:NEVER_BLOW
+
+
+### Missile Launchers ###
+
+N:105:of Accuracy
+T:19:0:255
+T:15:0:255
+X:A:25:10
+W:0:8:21:1000
+C:15:5:0:0
+
+N:106:of Power
+T:19:0:255
+T:15:0:255
+X:A:25:10
+W:0:8:21:1000
+C:5:15:0:0
+
+N:107:of Extra Might
+T:19:0:255
+X:A:25:20
+W:0:4:21:10000
+C:5:10:0:1
+R:100
+F:PVAL_M3
+F:R_ANY
+F:XTRA_MIGHT
+f:XTRA_MIGHT
+
+N:108:of Extra Shots
+T:19:0:255
+X:A:25:20
+C:10:5:0:1
+W:0:4:21:10000
+R:100
+F:PVAL_M2
+F:XTRA_SHOTS
+f:XTRA_SHOTS
+
+# Bows only
+N:109:of Lothlorien
+T:19:12:13
+X:A:25:20
+W:50:2:21:30000
+C:10:10:0:2
+R:100
+F:ABILITY
+F:BLESSED
+F:DEX
+F:FREE_ACT
+F:HIDE_TYPE
+F:IGNORE_ACID
+F:IGNORE_FIRE
+F:XTRA_MIGHT
+
+# Crossbows only
+N:110:of the Haradrim
+T:19:23:24
+X:A:25:30
+W:50:2:21:20000
+C:5:15:0:1
+R:100
+F:HIDE_TYPE
+F:IGNORE_ACID
+F:IGNORE_FIRE
+F:XTRA_MIGHT
+F:XTRA_SHOTS
+
+# Slings only
+N:111:of Buckland
+X:A:25:25
+W:40:2:21:20000
+C:8:8:0:2
+T:19:2:2
+R:100
+F:DEX
+F:HIDE_TYPE
+F:IGNORE_ACID
+F:IGNORE_FIRE
+F:XTRA_MIGHT
+F:XTRA_SHOTS
+
+
+### Ammo ###
+
+N:112:of Slay Animal
+T:16:0:99
+T:17:0:99
+T:18:0:99
+X:A:23:10
+W:0:2:12:25
+R:100
+F:SLAY_ANIMAL
+f:SLAY_ANIMAL
+
+N:113:of Slay Evil
+T:16:0:99
+T:17:0:99
+T:18:0:99
+X:A:23:10
+W:0:2:12:25
+R:100
+F:SLAY_EVIL
+f:SLAY_EVIL
+
+N:114:of Slay Undead
+T:16:0:99
+T:17:0:99
+T:18:0:99
+X:A:23:10
+W:0:1:12:35
+R:100
+F:SLAY_UNDEAD
+f:SLAY_UNDEAD
+
+N:115:of Venom
+T:16:0:99
+T:17:0:2
+T:18:0:2
+X:A:23:10
+R:100
+F:BRAND_POIS
+f:BRAND_POIS
+W:0:2:12:25
+
+N:116:of Acid
+T:16:0:99
+T:17:0:99
+T:18:0:99
+X:A:23:10
+R:100
+F:BRAND_ACID
+F:IGNORE_ACID
+f:BRAND_ACID
+W:0:1:12:30
+
+# 117 All Elements at once - melee weapon
+N:117:Elemental
+X:B:24:30
+W:10:1:50:26000
+T:21:0:99
+T:22:0:99
+T:23:0:99
+T:24:0:99
+R:100
+F:BRAND_ACID
+F:BRAND_COLD
+F:BRAND_ELEC
+F:BRAND_FIRE
+F:BRAND_POIS
+F:DRAIN_MANA
+F:IGNORE_ACID
+F:IGNORE_COLD
+F:IGNORE_ELEC
+F:IGNORE_FIRE
+F:RES_ACID
+F:RES_COLD
+F:RES_ELEC
+F:RES_FIRE
+F:RES_POIS
+f:BRAND_ACID
+f:BRAND_COLD
+f:BRAND_ELEC
+f:BRAND_FIRE
+f:BRAND_POIS
+
+N:118:of Slay Demon
+T:16:0:99
+T:17:0:99
+T:18:0:99
+X:A:23:10
+W:0:1:12:35
+R:100
+F:SLAY_DEMON
+f:SLAY_DEMON
+
+N:119:of Slay Dragon
+T:16:0:99
+T:17:0:99
+T:18:0:99
+X:A:23:10
+R:100
+F:SLAY_DRAGON
+f:SLAY_DRAGON
+W:0:1:12:35
+
+N:120:of Slaying
+X:A:23:15
+W:0:1:12:20
+C:12:12:0:0
+R:100
+F:DAM_DIE
+
+N:121:of Lightning
+T:16:0:99
+T:17:0:99
+T:18:0:99
+X:A:23:10
+R:100
+F:BRAND_ELEC
+F:IGNORE_ELEC
+f:BRAND_ELEC
+W:0:1:12:30
+
+N:122:of Flame
+T:16:0:99
+T:17:0:99
+T:18:0:99
+X:A:23:10
+R:100
+F:BRAND_FIRE
+F:IGNORE_FIRE
+f:BRAND_FIRE
+W:0:2:12:25
+
+N:123:of Frost
+T:16:0:99
+T:17:0:99
+T:18:0:99
+X:A:23:10
+R:100
+F:BRAND_COLD
+F:IGNORE_COLD
+f:BRAND_COLD
+W:0:2:12:25
+
+N:124:of Wounding
+T:16:0:99
+T:17:0:99
+T:18:0:99
+X:A:23:5
+W:0:3:12:20
+C:6:6:0:0
+
+N:125:of Backbiting
+T:16:0:99
+T:17:0:99
+T:18:0:99
+X:A:23:0
+W:0:1:2:0
+C:-50:-50:0:0
+
+
+### Special Broken Items ###
+
+# Destroyed Weapon
+N:126:Shattered
+T:16:0:99
+T:17:0:99
+T:18:0:99
+X:B:24:0
+W:0:1:2:0
+C:-5:-5:0:0
+
+# Destroyed Body Armor
+
+N:127:Blasted
+T:16:0:99
+T:17:0:99
+T:18:0:99
+X:B:30:0
+W:0:1:2:0
+C:0:0:-10:0
+
+
+# Instruments
+
+N:128:of the Eldar
+T:14:0:59
+T:14:61:255
+X:A:25:20
+W:0:2:3:1000
+C:0:0:0:0
+R:100
+F:CHR
+F:IGNORE_ACID
+F:IGNORE_COLD
+F:IGNORE_ELEC
+F:IGNORE_FIRE
+F:PVAL_M2
+F:RES_ACID
+F:R_ANY
+F:SEE_INVIS
+R:25
+F:PVAL_M1
+
+N:129:of Power
+T:14:0:59
+T:14:61:255
+X:A:25:20
+W:0:1:3:2000
+C:0:0:0:0
+R:100
+F:CHR
+F:IGNORE_ACID
+F:IGNORE_COLD
+F:IGNORE_ELEC
+F:IGNORE_FIRE
+F:PVAL_M3
+F:RES_ACID
+F:RES_COLD
+F:RES_ELEC
+F:RES_FIRE
+F:R_ANY
+F:SEE_INVIS
+F:SUST_CHR
+R:50
+F:PVAL_M1
+R:35
+F:PVAL_M1
+
+# Horn, now four different ego items (for different GF_ values)
+# see items 181, 182 & 183.
+N:130:Dragon
+T:14:60:60
+X:B:25:20
+W:0:1:2:2000
+C:0:0:0:0
+R:100
+F:ACTIVATE
+F:IGNORE_ACID
+F:IGNORE_COLD
+F:IGNORE_ELEC
+F:IGNORE_FIRE
+F:PVAL_M2
+F:R_ANY
+R:50
+F:PVAL_M1
+R:25
+F:PVAL_M1
+a:BA_ACID_H
+
+# Rods ego
+N:131:Capacity of 
+T:67:0:255
+X:A:51:10
+W:0:2:10:1000
+C:0:0:0:0
+R:100
+F:CAPACITY
+f:CAPACITY
+
+N:132:Cheapness of 
+T:67:0:255
+X:A:51:10
+W:0:2:10:700
+C:0:0:0:0
+R:100
+F:CHEAPNESS
+f:CHEAPNESS
+
+N:133:Quickness of 
+T:67:0:255
+X:A:51:15
+W:0:3:10:1100
+C:0:0:0:0
+R:100
+F:FAST_CAST
+f:FAST_CAST
+
+N:134:Charging of 
+T:67:0:255
+X:A:51:15
+W:0:2:10:1500
+C:0:0:0:0
+R:100
+F:CHARGING
+f:CHARGING
+
+N:135:the Istari of 
+T:67:0:255
+X:A:51:10
+W:0:1:10:10000
+C:0:0:0:0
+R:100
+F:CAPACITY
+F:CHARGING
+F:CHEAPNESS
+F:FAST_CAST
+
+### Lights ###
+
+N:136:of Boldness
+X:A:0:5
+T:39:0:99
+W:0:1:5:1000
+Z:remove fear
+
+N:137:of Fearlessness
+X:A:0:5
+T:39:0:99
+W:0:1:10:1500
+R:100
+F:RES_FEAR
+
+N:138:of Illumination
+X:A:0:5
+T:39:0:99
+W:0:3:10:1000
+Z:illuminate
+R:10
+F:LITE1
+R:5
+F:LITE2
+R:2
+F:LITE3
+
+N:139:of Brightness
+X:A:0:5
+T:39:0:99
+W:0:3:10:1000
+R:100
+F:LITE1
+f:LITE1
+R:60
+F:LITE2
+R:30
+F:LITE3
+R:30
+F:RES_DARK
+
+N:140:of *Brightness*
+X:A:0:9
+T:39:0:99
+W:0:1:40:5000
+R:100
+F:LITE1
+F:LITE2
+F:LITE3
+F:RES_DARK
+f:LITE1
+f:LITE2
+f:LITE3
+
+N:141:of the Shadows
+X:A:0:6
+T:39:0:99
+W:0:1:20:3000
+C:0:0:0:2
+R:100
+F:INVIS
+R:70
+F:RES_DARK
+R:50
+F:RES_LITE
+
+N:142:of Infravision
+X:A:0:3
+T:39:0:99
+W:0:1:10:700
+C:0:0:0:3
+R:100
+F:INFRA
+f:INFRA
+
+N:143:of the Eternal Eye
+X:A:0:7
+T:39:0:99
+W:0:3:40:4000
+C:0:0:0:0
+R:100
+F:RES_BLIND
+F:SEE_INVIS
+
+N:144:of the Ethereal Eye
+X:A:0:7
+T:39:0:99
+W:0:3:40:4000
+C:0:0:0:0
+Z:magic map
+
+N:145:of Fading
+X:A:0:0
+T:39:2:99
+W:0:1:1:0
+C:0:0:0:0
+R:100
+F:FUEL_LITE
+
+# Armor (dwarven): must be heavy metal, and not rusty chain mail
+
+N:146:Dwarven
+T:37:2:255
+X:B:30:18
+W:0:2:20:5000
+C:0:0:15:2
+R:100
+F:CON
+F:FREE_ACT
+F:HIDE_TYPE
+F:IGNORE_ACID
+F:IGNORE_COLD
+F:IGNORE_ELEC
+F:IGNORE_FIRE
+F:INFRA
+F:RES_DARK
+F:RES_FEAR
+F:STR
+F:SUST_CON
+F:SUST_STR
+
+# Ring and Amulet egos
+
+N:147:Indestructible
+X:B:0:2
+T:40:0:255
+T:45:0:255
+W:0:1:10:1000
+C:0:0:0:0
+R:100
+F:IGNORE_ACID
+F:IGNORE_COLD
+F:IGNORE_ELEC
+F:IGNORE_FIRE
+f:IGNORE_ACID
+f:IGNORE_COLD
+f:IGNORE_ELEC
+f:IGNORE_FIRE
+
+N:148:Cursed
+X:B:0:0
+T:40:0:255
+T:45:0:255
+W:0:1:10:0
+C:0:0:0:0
+R:100
+F:AUTO_CURSE
+f:AUTO_CURSE
+
+# Scrolls & school spellbooks & staves
+N:149:Fireproof
+X:B:0:1
+T:70:0:255
+T:111:0:255
+T:55:0:255
+W:0:1:10:1000
+C:0:0:0:0
+R:100
+F:IGNORE_FIRE
+f:IGNORE_FIRE
+
+# Wands & Staffs(NOT wishing nor nothing)
+N:150:of Plenty
+X:A:0:1
+T:55:0:29
+T:55:32:255
+T:65:0:29
+T:65:31:255
+W:0:1:20:1000
+C:0:0:0:3
+R:100
+F:PVAL_M3
+F:PVAL_M5
+R:50
+F:PVAL_M3
+F:PVAL_M5
+R:10
+F:PVAL_M3
+F:PVAL_M5
+R:1
+F:PVAL_M3
+F:PVAL_M5
+
+# Lite ego
+N:163:of the Magi
+X:A:0:0
+T:39:1:99
+W:0:1:150:2000
+C:0:0:0:3
+Z:magic map
+R:100
+F:CHR
+F:INT
+F:WIS
+R:60
+F:INVIS
+F:RES_BLIND
+R:30
+F:R_HIGH
+R:30
+F:PVAL_M2
+R:50:
+F:SPELL_CONTAIN
+F:WIELD_CAST
+
+### New ego-items added by JLE
+
+# Armor of Vulnerability (the only cursed armor)
+N:164:of Vulnerability
+X:A:30:0
+W:0:2:20:0
+C:0:0:-50:0
+T:36:0:99
+T:37:0:99
+R:100
+F:AGGRAVATE
+F:CURSED
+
+# Shield of Vulnerability (the only cursed shield)
+N:165:of Vulnerability
+X:A:32:0
+W:0:2:22:0
+C:0:0:-50:0
+T:115:56:56
+T:34:0:99
+R:100
+F:AGGRAVATE
+F:CURSED
+
+# Shield of Preservation -  
+N:166:of Preservation
+X:A:32:25
+W:40:2:44:20000
+C:-10:-10:20:0
+T:115:56:56
+T:34:0:99
+R:100
+F:HOLD_LIFE
+F:IGNORE_ACID
+F:IGNORE_COLD
+F:IGNORE_ELEC
+F:IGNORE_FIRE
+F:RES_DISEN
+F:R_HIGH
+F:SUST_CON
+F:SUST_DEX
+F:SUST_STR
+R:33
+F:R_LOW
+R:33
+F:R_LOW
+
+# Helm/Crown of Serenity
+N:167:of Serenity
+X:A:33:20
+W:35:1:15:4000
+T:32:0:6
+T:32:8:99
+T:33:0:99
+R:100
+F:RES_CONF
+F:RES_FEAR
+F:RES_SOUND
+
+# Crown of Night and Day
+N:168:of Night and Day
+X:A:33:18
+W:35:1:15:4000
+T:33:0:99
+R:100
+F:IGNORE_ACID
+F:LITE1
+F:RES_BLIND
+F:RES_DARK
+F:RES_LITE
+F:SEE_INVIS
+
+# Cloak of the Magi
+N:169:of the Magi
+X:A:31:15
+W:30:1:18:2000
+C:-5:-5:5:3
+T:35:0:99
+R:100
+F:FREE_ACT
+F:HIDE_TYPE
+F:IGNORE_ACID
+F:INT
+F:SPEED
+F:STEALTH
+F:SUST_INT
+R:30
+F:SPELL_CONTAIN
+F:WIELD_CAST
+
+# Cloak of Invisibility
+N:170:of Invisibility
+X:A:31:20
+W:40:1:18:3000
+C:0:0:10:5
+T:35:0:99
+R:100
+F:HIDE_TYPE
+F:INVIS
+F:STEALTH
+f:INVIS
+
+# Cloak of the Bat
+N:171:of the Bat
+X:A:31:15
+W:50:1:35:3000
+C:-10:-10:10:3
+T:35:0:99
+R:100
+F:FLY
+F:HIDE_TYPE
+F:INFRA
+F:RES_DARK
+F:SEE_INVIS
+F:SPEED
+F:STEALTH
+
+# Leather Gloves of Thievery
+N:172:of Thievery
+X:A:34:22
+W:40:1:15:5000
+C:8:3:0:5
+T:31:1:1
+R:100
+F:DEX
+F:FEATHER
+F:FREE_ACT
+F:HIDE_TYPE
+F:IGNORE_ACID
+F:SHOW_MODS
+R:10
+F:SPEED
+
+# Gauntlets and Cesti of Combat
+N:173:of Combat
+X:A:34:22
+W:50:1:15:7000
+C:6:8:-20:2
+T:31:2:99
+R:100
+F:AGGRAVATE
+F:CON
+F:DRAIN_HP
+F:HIDE_TYPE
+F:IGNORE_ACID
+F:RES_FEAR
+F:SHOW_MODS
+F:STR
+R:25
+F:BLOWS
+
+# Boots of Stability
+N:174:of Stability
+X:A:35:20
+W:0:3:27:5000
+T:30:0:99
+R:100
+F:FEATHER
+F:RES_NEXUS
+
+# Boots of Elvenkind (leather boots only)
+N:175:of Elvenkind
+X:A:35:30
+W:60:1:36:200000
+C:0:0:0:5
+T:30:2:3
+R:100
+F:ABILITY
+F:FEATHER
+F:HIDE_TYPE
+F:IGNORE_ACID
+F:IGNORE_FIRE
+F:SPEED
+F:STEALTH
+
+# Weapon of Fury (must be big heavy type of weapon, no daggers or whips)
+N:176:of Fury
+X:A:24:30
+W:40:1:66:20000
+T:21:12:99
+T:22:10:99
+T:23:16:99
+T:24:8:99
+T:125:0:99
+C:10:10:-20:2
+R:100
+F:AGGRAVATE
+F:BLOWS
+F:DRAIN_MANA
+F:HIDE_TYPE
+F:IGNORE_ACID
+F:IGNORE_FIRE
+F:RES_FEAR
+F:STR
+
+# Staffs of wishing
+N:177:of Plenty
+X:A:0:1
+T:55:31:31
+W:0:1:20:1000
+C:0:0:0:2
+R:100
+F:PVAL_M2
+
+
+# Diggers only
+
+N:178:Magical
+T:20:0:255
+X:B:24:4
+W:0:1:10:500
+C:0:0:0:0
+Z:stone to mud
+R:100
+
+# Rod
+N:179:Simplicity of 
+T:67:0:255
+X:A:51:8
+W:3:2:8:1000
+C:0:0:0:0
+R:100
+F:EASY_USE
+f:EASY_USE
+
+# Lite ego
+N:180:of Warmth
+X:A:0:0
+T:39:1:99
+W:0:1:10:500
+C:0:0:0:0
+R:100
+F:RES_COLD
+
+#Three more horn types, for different activation types...
+N:181:Dragon
+T:14:7:7
+X:B:25:20
+W:0:1:2:2000
+C:0:0:0:0
+a:BA_COLD_3
+R:100
+F:IGNORE_ACID
+F:IGNORE_COLD
+F:IGNORE_ELEC
+F:IGNORE_FIRE
+
+N:182:Dragon
+T:14:7:7
+X:B:25:20
+W:0:1:2:2000
+C:0:0:0:0
+a:BA_ELEC_3
+R:100
+F:IGNORE_ACID
+F:IGNORE_COLD
+F:IGNORE_ELEC
+F:IGNORE_FIRE
+
+N:183:Dragon
+T:14:7:7
+X:B:25:20
+W:0:1:2:2000
+C:0:0:0:0
+a:BA_FIRE_H
+R:100
+F:IGNORE_ACID
+F:IGNORE_COLD
+F:IGNORE_ELEC
+F:IGNORE_FIRE
+
+# Helm of water breathing
+N:184:of Water Breathing
+X:A:33:13
+C:0:0:0:2
+W:15:1:25:1000
+T:32:5:10
+R:100
+F:IGNORE_ACID
+F:WATER_BREATH
+f:WATER_BREATH
+
+# A second of life for non MUST2H weapons, much lower value tho
+N:185:of Life
+T:21:0:255
+T:22:0:255
+T:23:0:255
+T:24:0:255
+T:115:55:55
+X:A:24:20
+W:0:1:50:30000
+C:5:5:0:1
+r:F:MUST2H
+R:100
+F:HOLD_LIFE
+F:LIFE
+f:LIFE
+
+# Cloak of Air
+N:186:of Air
+X:A:31:10
+W:30:1:35:1500
+C:0:0:0:0
+T:35:0:255
+R:100
+F:MAGIC_BREATH
+
+# Ego DSM
+N:187:Polished
+T:38:0:255
+X:B:30:5
+W:40:25:100:25000
+C:0:0:0:0
+R:100
+F:REFLECT
+
+# Ego Heavy Crossbow
+N:188:of Siegecraft
+T:19:24:24
+X:A:25:30
+W:60:5:30:30000
+C:10:15:20:2
+R:120
+F:IMMOVABLE
+F:REFLECT
+F:XTRA_MIGHT
+F:XTRA_SHOTS
+
+# N: serial number : ego type
+# D: description
+# T: tval : min sval : max sval
+# R: rarity
+# X: position : slot : rating
+# W: depth : rarity1 : rarity2 : cost
+# C: to-hit : to-dam : to-ac : pval
+# r:N:needed flags on the base object
+# r:F:forbidden flags on the base object
+# Z: granted_power
+# F: flags

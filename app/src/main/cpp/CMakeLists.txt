@@ -23,3 +23,5 @@ add_subdirectory(npp041)
 add_subdirectory(npp054)
 
 add_subdirectory(silq)
+
+add_subdirectory(tome24x)

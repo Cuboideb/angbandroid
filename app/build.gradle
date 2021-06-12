@@ -1,5 +1,9 @@
 apply plugin: 'com.android.application'
 
+def my_boost_dir = local_props("boost.dir")
+def my_boost_dir_libs = my_boost_dir + "/libs"
+def my_boost_dir_inc  = my_boost_dir + "/include"
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
@@ -12,11 +16,26 @@ android {
         versionName "1.28.3"
         externalNativeBuild {
             cmake {
-                cppFlags ""
+                // flags for the c++ compiler eg "-std=c++14 -frtti -fexceptions"
+                // If you set cppFlags to "-std=c++14", you may need to build your boost libraries
+                // with the same flags, depending on your compiler defaults.
+                // cppFlags "-std=c++14"
+
+                // this causes libc++_shared.so to get packaged into .apk
+                arguments '-DANDROID_STL=c++_shared'
+
+                // This is used in CMakeLists.txt so our native code can find/use (prebuilt) boost
+                //arguments '-DMY_BOOST_LIBS_DIR=' + my_boost_dir_libs
+                arguments '-DMY_BOOST_INC_DIR='  + my_boost_dir_inc
             }
         }
     }
     buildTypes {
+        debug {
+            ndk {
+                abiFilters "armeabi-v7a"
+            }
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -35,4 +54,16 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
+}
+
+//------------------------------------------------------------
+def local_props(key) { // reads ~ value from local.properties file
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    def val = properties.getProperty(key, null)
+    if (val == null)
+        throw new GradleException("""\
+                cant find value '${key}' in file 'local.properties'.  """)
+
+    return val
 }

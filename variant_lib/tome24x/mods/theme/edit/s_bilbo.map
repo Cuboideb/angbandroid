@@ -1,0 +1,55 @@
+# Bilbo's Trail level with Thror's map and a few surprises. Copied from Cyclone vault and tweaked to suit the dungeon.
+# You NEED a digger to pass this level, though flight/climbing will do in a pinch. 
+# There is no excuse for being on BDw10 without a digger. :-P
+# Map by furiosity <furiosity@gmail.com>
+
+%:special.txt
+
+# Grass
+F:,:89:0
+
+F:+:33:0
+
+# Grass with Thror's Map
+F:1:89:0:0:0:0:209
+
+# Random monster and random object on grass
+F:2:89:0:*13:*15
+
+### Previous adventurers
+F:a:89:0:0:391
+F:b:89:0:0:392
+F:c:89:0:0:393
+F:d:89:0:0:394
+F:e:89:0:0:395
+F:f:89:0:0:396
+F:g:89:0:0:397
+F:h:89:0:0:398
+
+### Dungeon Design
+
+D:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+D:XMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMX
+D:XMMMM,g*,,,,,,MMM2,,,,,,,,MMM,,,TMMM,,M,,,M,,,M,,,M+,,,,,,,,,,,,,MM,,,,,,,,,,,,,,,,,,,,T,MX
+D:XMM,,,MMM,,,MMM,,,MMM,,,MMM,,,MMM,,M,,M,M,M,M,M,M,,MMMMMMMMMMMMM,,MM,,MMMMMMMMMMMMMMMMMMTMX
+D:XM,,MMM,,,MMM,,,MMM,,,MMM,,,MMM,,,,M,,M,M,M,M,M,M,,,MM,,,*,,,,,MM,,MM,,,,,a,,,,,,,c,,,*M,MX
+D:XMMMM,,,MMM,,,MMM,,,MMM,,,MMM,,,,,,M,,M,M,M,M,M,M,,,,M,a,b,c,,,,M,,,M,,,,,,,,,,,,,,,,,,M,MX
+D:XMM,,,MMM,,,MMM,,,MMM,,,MMM,,,,,,,,M,,M,M,M,M,M,M,,,,M,,,,,,,,,MM,,MMMM,,,,,,,,,2,,,,,,M,MX
+D:XM,,MMM,,,MMM,,,MMM,,,MMM,,,,,,,,,,M,,,,M,,,M,,,M,,,MM,,,2,,,MMM,MMM,,MMM,,,,,,,,,,,,,,M,MX
+D:XM,MM,,,MMM,,,MMM,,,MMM,,,,,,,,,MM+MMMMMMMMMMMMMM,,MM,,,,,,,MMM,MMMMMM,,MMM,,,,,,,,,,,,M,MX
+D:XM,,,,MMM,,,,,,,,,MMM,,,,,,,,,,MM,,M,,,,,,,,,,TM,,MM,,,,,,MMM,,MMM,,MTM,,,MM,,,,b,,,,,*M,MX
+D:XMMMM,MMMMMMMMMMMMM,,,,,,,,,,,,M,h,M,MMMMMMMMMM,,MM,,,,,MMM,,MMM,,h,,MMM,,,MMMMMMMMMMMMM,MX
+D:XM>1M,,,,,,,,,,,,,MMM,*g,,2,,,,M,2,T,,,,,,h,,MMMMM,,,,MMT,,MMT,,,,*,,,MMM,,+,,,,,,,,,,,+,MX
+D:XMM,MMMMMMMMMMMM,MM,,,,,,,,,,,,M,*,M,MMMMMMMMMM,,MM,,,,,MMM,,MMM,,2,,MMM,,,MMMMMMMMMMMMM,MX
+D:XM,,,,MMM,,,,,,,,,MMM,,,,,,,,,,MM,,M,,,,,,,,,,TM,,MM,,,,,,MMM,,MMM,,MTM,,,MM,,,,e,,,,,*M,MX
+D:XM,MMM,,MMM,,,MMM,,,MMM,,,,,,,,,MM+MMMMMMMMMMMMMM,,MM,,,,,,,MMM,MMMMMM,,MMM,,,,,,,,,,,,M,MX
+D:XM,,MMM,,,MMM,,,MMM,,,MMM,,,,,,,,,,M,,,,M,,,M,,,M,,,MM,,,2,,,MMM,MMM,,MMM,,,,,,,2,,,,,,M,MX
+D:XMM,,,MMM,,,MMM,,,MMM,,,MMM,,,,,,,,M,,M,M,M,M,M,M,,,,M,,,,,,,,,MM,,MMMM,,,,,,,,,,,,,,,,M,MX
+D:XMMMM,,,MMM,,,MMM,,,MMM,,,MMM,,,,,,M,,M,M,M,M,M,M,,,,M,d,e,f,,,,M,,,+,,,,,,,,,,,,,,,,,,M,MX
+D:XMg,MMM,,,MMM,,,MMM,,,MMM,,,MMM,,,,M,,M,M,M,M,M,M,,,MM,,,*,,,,,MM,,MM,,,,d,,,,,,,f,,,,*M,MX
+D:XMM*,,MMM,,,MMM,,,MMM,,,MMM,,,MMM,,M,,M,M,M,M,M,M,,MMMMMMMMMMMMM,,MM,,MMMMMMMMMMMMMMMMMM,MX
+D:XMMMM2,,,,,,,,MMM,,,,,,,,,MMM,,,MMMM,,M,,,M,,,M,,,M+,,,,,,,,,,,,,MM,,,,,,,,,,,,,,,,,,,,M,MX
+D:XMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMX
+D:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+P:22:90

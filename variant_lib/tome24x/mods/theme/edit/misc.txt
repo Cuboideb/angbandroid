@@ -1,0 +1,19 @@
+# File: misc.txt
+
+# Maximum number of towns
+M:T:100
+
+# Maximum number of non random towns(must be < 20)
+M:t:17
+
+# Maximum x size of the wilderness
+M:X:101
+
+# Maximum y size of the wilderness
+M:Y:66
+
+# Maximum size for "o_list[]"
+M:O:1024
+
+# Maximum size for "m_list[]"
+M:M:768
