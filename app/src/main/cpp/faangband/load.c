@@ -170,6 +170,7 @@ static struct object *rd_item(void)
 
 	rd_byte(&obj->origin);
 	rd_byte(&obj->origin_depth);
+	rd_s16b(&obj->origin_place);
 	rd_string(buf, sizeof(buf));
 	if (buf[0]) {
 		obj->origin_race = lookup_monster(buf);
@@ -1079,6 +1080,15 @@ int rd_misc(void)
 		world->levels[j].visited = tmp8u ? true : false;
 	}
 
+	/* Check underworld and mountain top way back */
+	if (world->levels[player->place].locality == LOC_UNDERWORLD) {
+		world->levels[player->place].up =
+			string_make(level_name(&world->levels[player->last_place]));
+	} else if (world->levels[player->place].locality == LOC_MOUNTAIN_TOP) {
+		world->levels[player->place].down =
+			string_make(level_name(&world->levels[player->last_place]));
+	}
+
 	/* Read the randart seed */
 	rd_u32b(&seed_randart);
 
@@ -1474,6 +1484,10 @@ static int rd_dungeon_aux(struct chunk **c)
 	c1->feeling_squares = tmp16u;
 	rd_s32b(&c1->turn);
 
+	/* Read bones selector */
+	rd_byte(&tmp8u);
+	c1->ghost->bones_selector = tmp8u;
+
 	/* Read connector info */
 	if (OPT(player, birth_levels_persist)) {
 		rd_byte(&tmp8u);
@@ -1569,6 +1583,11 @@ static int rd_monsters_aux(struct chunk *c)
 		if (!rd_monster(c, mon)) {
 			note(format("Cannot read monster %d", i));
 			return (-1);
+		}
+
+		/* If a player ghost, some special features need to be added. */
+		if (rf_has(mon->race->flags, RF_PLAYER_GHOST)) {
+			prepare_ghost(c, mon->race->ridx, mon, true);
 		}
 
 		/* Place monster in dungeon */
@@ -1768,6 +1787,7 @@ int rd_chunks(void)
 			u16b tmp16u;
 
 			rd_string(buf, sizeof(buf));
+			string_free(c->name);
 			c->name = string_make(buf);
 			rd_s32b(&c->turn);
 			rd_u16b(&tmp16u);
@@ -1786,6 +1806,8 @@ int rd_chunks(void)
 				rd_u16b(&tmp16u);
 				c->feat_count[i] = tmp16u;
 			}
+			rd_byte(&tmp8u);
+			c->ghost->bones_selector = tmp8u;
 		}
 
 		chunk_list_add(c);

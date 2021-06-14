@@ -16,8 +16,6 @@
  *    are included in all such copies.  Other copyrights may also apply.
  */
 
-#include <string.h>
-
 #include "angband.h"
 #include "init.h"
 #include "savefile.h"
@@ -194,6 +192,7 @@ static const struct {
 	{ "user", &ANGBAND_DIR_USER, true },
 	{ "save", &ANGBAND_DIR_SAVE, false },
 	{ "archive", &ANGBAND_DIR_ARCHIVE, true },
+	{ "bone", &ANGBAND_DIR_BONE, false },
 };
 
 /**
@@ -520,8 +519,6 @@ int main(int argc, char *argv[])
 
 #endif /* UNIX */
 
-	/* Commented out for android */
-#if !defined(ANDROID)
 	/* Try the modules in the order specified by modules[] */
 	for (i = 0; i < (int)N_ELEMENTS(modules); i++) {
 		/* User requested a specific module? */
@@ -536,7 +533,6 @@ int main(int argc, char *argv[])
 
 	/* Make sure we have a display! */
 	if (!done) quit("Unable to prepare any 'display module'!");
-#endif
 
 	/* Catch nasty signals */
 	signals_init();

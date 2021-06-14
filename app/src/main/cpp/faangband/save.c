@@ -128,6 +128,7 @@ static void wr_item(const struct object *obj)
 
 	wr_byte(obj->origin);
 	wr_byte(obj->origin_depth);
+	wr_s16b(obj->origin_place);
 	if (obj->origin_race) {
 		wr_string(obj->origin_race->name);
 	} else {
@@ -180,7 +181,7 @@ static void wr_item(const struct object *obj)
 
 	/* Held by monster index */
 	wr_s16b(obj->held_m_idx);
-
+	
 	wr_s16b(obj->mimicking_m_idx);
 
 	/* Activation and effects*/
@@ -206,7 +207,7 @@ static void wr_item(const struct object *obj)
 static void wr_monster(const struct monster *mon)
 {
 	size_t j;
-	struct object *obj = mon->held_obj;
+	struct object *obj = mon->held_obj; 
 	struct object *dummy = object_new();
 
 	wr_u16b(mon->midx);
@@ -919,6 +920,9 @@ static void wr_dungeon_aux(struct chunk *c)
 	wr_u16b(c->feeling_squares);
 	wr_s32b(c->turn);
 
+	/* Write bones selector */
+	wr_byte(c->ghost->bones_selector);
+
 	/* Write connector info */
 	if (OPT(player, birth_levels_persist)) {
 		if (c->join) {
@@ -949,7 +953,7 @@ static void wr_objects_aux(struct chunk *c)
 
 	if (player->is_dead)
 		return;
-
+	
 	/* Write the objects */
 	wr_u16b(c->obj_max);
 	for (y = 0; y < c->height; y++) {
@@ -1112,6 +1116,7 @@ void wr_chunks(void)
 			for (i = 0; i < z_info->f_max + 1; i++) {
 				wr_u16b(c->feat_count[i]);
 			}
+			wr_byte(c->ghost->bones_selector);
 		}
 	}
 }

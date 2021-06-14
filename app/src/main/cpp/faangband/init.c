@@ -38,6 +38,7 @@
 #include "mon-init.h"
 #include "mon-list.h"
 #include "mon-lore.h"
+#include "mon-make.h"
 #include "mon-msg.h"
 #include "mon-summon.h"
 #include "mon-util.h"
@@ -97,6 +98,7 @@ char *ANGBAND_DIR_SAVE;
 char *ANGBAND_DIR_SCORES;
 char *ANGBAND_DIR_INFO;
 char *ANGBAND_DIR_ARCHIVE;
+char *ANGBAND_DIR_BONE;
 
 static const char *localities[] = {
 	#define LOC(a, b) #a,
@@ -343,6 +345,7 @@ void init_file_paths(const char *configpath, const char *libpath, const char *da
 	string_free(ANGBAND_DIR_SCORES);
 	string_free(ANGBAND_DIR_INFO);
 	string_free(ANGBAND_DIR_ARCHIVE);
+	string_free(ANGBAND_DIR_BONE);
 
 	/*** Prepare the paths ***/
 
@@ -405,6 +408,7 @@ void init_file_paths(const char *configpath, const char *libpath, const char *da
 	BUILD_DIRECTORY_PATH(ANGBAND_DIR_SCORES, userpath, "scores");
 	BUILD_DIRECTORY_PATH(ANGBAND_DIR_SAVE, userpath, "save");
 	BUILD_DIRECTORY_PATH(ANGBAND_DIR_ARCHIVE, userpath, "archive");
+	BUILD_DIRECTORY_PATH(ANGBAND_DIR_BONE, userpath, "bone");
 
 #undef BUILD_DIRECTORY_PATH
 }
@@ -440,6 +444,8 @@ void create_needed_dirs(void)
 	path_build(dirpath, sizeof(dirpath), ANGBAND_DIR_ARCHIVE, "");
 	if (!dir_create(dirpath)) quit_fmt("Cannot create '%s'", dirpath);
 
+	path_build(dirpath, sizeof(dirpath), ANGBAND_DIR_BONE, "");
+	if (!dir_create(dirpath)) quit_fmt("Cannot create '%s'", dirpath);
 }
 
 /**
@@ -4194,6 +4200,7 @@ static struct {
 	{ "blow effects", &eff_parser },
 	{ "monster spells", &mon_spell_parser },
 	{ "monsters", &monster_parser },
+	{ "player ghosts", &ghost_parser },
 	{ "monster pits" , &pit_parser },
 	{ "monster lore" , &lore_parser },
 	{ "traps", &trap_parser },
@@ -4322,17 +4329,20 @@ bool init_angband(void)
 void cleanup_angband(void)
 {
 	int i;
+
+	/* Free the chunk list */
+	for (i = 0; i < chunk_list_max; i++) {
+		wipe_mon_list(chunk_list[i], player);
+		cave_free(chunk_list[i]);
+	}
+	mem_free(chunk_list);
+	chunk_list = NULL;
+
 	for (i = 0; modules[i]; i++)
 		if (modules[i]->cleanup)
 			modules[i]->cleanup();
 
 	event_remove_all_handlers();
-
-	/* Free the chunk list */
-	for (i = 0; i < chunk_list_max; i++)
-		cave_free(chunk_list[i]);
-	mem_free(chunk_list);
-	chunk_list = NULL;
 
 	/* Free the main cave */
 	if (cave) {
@@ -4365,4 +4375,6 @@ void cleanup_angband(void)
 	string_free(ANGBAND_DIR_SAVE);
 	string_free(ANGBAND_DIR_SCORES);
 	string_free(ANGBAND_DIR_INFO);
+	string_free(ANGBAND_DIR_ARCHIVE);
+	string_free(ANGBAND_DIR_BONE);
 }

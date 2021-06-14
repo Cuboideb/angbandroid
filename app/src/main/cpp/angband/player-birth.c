@@ -193,8 +193,8 @@ static void load_roller_data(birther *saved, birther *prev_player)
 	player->race     = saved->race;
 	player->class    = saved->class;
 	player->age      = saved->age;
-	player->wt       = player->wt_birth = player->wt;
-	player->ht       = player->ht_birth = player->ht;
+	player->wt       = player->wt_birth = saved->wt;
+	player->ht       = player->ht_birth = saved->ht;
 	player->au_birth = saved->au;
 	player->au       = z_info->start_gold;
 
@@ -1281,6 +1281,12 @@ void do_cmd_accept_character(struct command *cmd)
 
 	/* Disable repeat command, so we don't try to be born again */
 	cmd_disable_repeat();
+
+	/* No longer need the cached history. */
+	string_free(prev.history);
+	prev.history = NULL;
+	string_free(quickstart_prev.history);
+	quickstart_prev.history = NULL;
 
 	/* Now we're really done.. */
 	event_signal(EVENT_LEAVE_BIRTH);

@@ -1167,7 +1167,12 @@ static void display_monster(int col, int row, bool cursor, int oid)
 		a = COLOUR_VIOLET;
 
 	/* Display the name */
+	if (rf_has(race->flags, RF_PLAYER_GHOST)) {
+		c_prt(attr, format("%s, the %s", cave->ghost->name, race->name),
+			  row, col);
+	} else {
 	c_prt(attr, race->name, row, col);
+	}
 
 	/* Display symbol */
 	big_pad(66, row, a, c);
@@ -3195,6 +3200,11 @@ static void do_cmd_knowledge_shapechange(const char *name, int row)
  * Main knowledge menus
  * ------------------------------------------------------------------------ */
 
+static void do_cmd_knowledge_home(const char *name, int row)
+{
+	textui_store_knowledge(store_home(player));
+}
+
 static void do_cmd_knowledge_scores(const char *name, int row)
 {
 	show_scores();
@@ -3223,6 +3233,7 @@ static menu_action knowledge_actions[] =
 { 0, 0, "Display feature knowledge",  	   do_cmd_knowledge_features  },
 { 0, 0, "Display trap knowledge",          do_cmd_knowledge_traps  },
 { 0, 0, "Display shapechange effects",     do_cmd_knowledge_shapechange },
+{ 0, 0, "Display contents of home",        do_cmd_knowledge_home },
 { 0, 0, "Display hall of fame",       	   do_cmd_knowledge_scores    },
 { 0, 0, "Display character history",  	   do_cmd_knowledge_history   },
 { 0, 0, "Display equippable comparison",   do_cmd_knowledge_equip_cmp },
@@ -3929,7 +3940,7 @@ void do_cmd_query_symbol(void)
 	who = mem_zalloc(z_info->r_max * sizeof(u16b));
 
 	/* Collect matching monsters */
-	for (num = 0, idx = 1; idx < z_info->r_max - 1; idx++) {
+	for (num = 0, idx = 1; idx < z_info->r_max; idx++) {
 		struct monster_race *race = &r_info[idx];
 		struct monster_lore *lore = &l_list[idx];
 
