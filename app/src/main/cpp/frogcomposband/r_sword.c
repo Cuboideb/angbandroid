@@ -437,7 +437,7 @@ static void _calc_weapon_bonuses(object_type *o_ptr, weapon_info_t *info_ptr)
 static void _calc_bonuses(void) 
 {
     int i;
-    int to_a = py_prorata_level(150);
+    int to_a = py_prorata_level(135);
 
     to_a += _calc_amount(_essences[_ESSENCE_AC], 2, 10);
     if (p_ptr->current_r_idx == MON_DEATH_SCYTHE)
@@ -445,8 +445,6 @@ static void _calc_bonuses(void)
     p_ptr->to_a += to_a;
     p_ptr->dis_to_a += to_a;
 
-    p_ptr->pspeed += 1;
-    
     p_ptr->levitation = TRUE;
     p_ptr->no_cut = TRUE;
     res_add(RES_BLIND);
@@ -586,6 +584,7 @@ static void _get_flags(u32b flgs[OF_ARRAY_SIZE])
     add_flag(flgs, OF_RES_POIS);
     add_flag(flgs, OF_HOLD_LIFE);
     add_flag(flgs, OF_LEVITATION);
+    if (p_ptr->lev >= 45) add_flag(flgs, OF_AURA_REVENGE);
 
     for (i = 0; i < 6; i++) /* Assume in order */
     {
@@ -980,7 +979,7 @@ static void _character_dump(doc_ptr doc)
             blows ? format("+%d.%2.2d", blows / 100, blows % 100) : ""
         );
     }
-    _dump_bonus_flag(doc, _ESSENCE_XTRA_DICE, _rank_decay(64), 1, "Slaying");
+    _dump_bonus_flag(doc, _ESSENCE_XTRA_DICE, _rank_decay(64), 1, "Extra Dice");
     _dump_bonus_flag(doc, OF_LIFE, 7, 1, "Life");
     _dump_bonus_flag(doc, OF_SEARCH, 2, 1, "Searching");
     _dump_bonus_flag(doc, OF_INFRA, 2, 1, "Infravision");
@@ -1051,7 +1050,7 @@ race_t *mon_sword_get_race(void)
     if (!init)
     {           /* dis, dev, sav, stl, srh, fos, thn, thb */
     skills_t bs = { 25,  24,  40,   4,  14,   5,  56,  20};
-    skills_t xs = { 12,  10,  12,   0,   0,   0,  20,   7};
+    skills_t xs = { 12,   8,  12,   0,   0,   0,  20,   7};
 
         me.skills = bs;
         me.extra_skills = xs;
@@ -1061,7 +1060,12 @@ race_t *mon_sword_get_race(void)
                     "they are unable to use equipment the way other players can; instead, "
                     "they simply are a weapon of their current form. But never fear: Death "
                     "Swords have the power to absorb magical essences from the weapons they "
-                    "find, gaining power in the process.";
+                    "find, gaining power in the process.\n\n"
+                    "As a Death-Sword gains levels, it will evolve into stronger and stronger weapons. "
+                    "More advanced weapons require more essences to enchant, sometimes causing a "
+                    "temporary loss of abilities; but magical weapons also become easier to "
+                    "find as you descend deeper into the pits, and so any lost powers are usually "
+                    "quickly recovered.";
 
         me.infra = 3;
         me.exp = 150;

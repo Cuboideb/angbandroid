@@ -158,6 +158,7 @@ static gf_info_t _gf_tbl[GF_COUNT] = {
     { GF_BOMB, "Bomb", TERM_SLATE, RES_INVALID, "BOMB", GFF_ATTACK | GFF_STATUS },
     { GF_AIR, "Air", TERM_L_BLUE, RES_INVALID, "AIR", GFF_ATTACK | GFF_STATUS },
     { GF_BABY_SLOW, "Slow", TERM_SLATE, RES_INVALID, "BABY_SLOW", GFF_STATUS },
+    { GF_GAIN_EXP, "Experience", TERM_L_GREEN, RES_INVALID, "GAIN_EXP", GFF_STATUS },
 };
 
 typedef struct {
@@ -818,8 +819,8 @@ int gf_affect_p(int who, int type, int dam, int flags)
             sanity_blast(m_ptr, FALSE);
         break;
     case GF_STUN:
-        if ((p_ptr->stun < STUN_KNOCKED_OUT) && (!bunshin_save))
-            set_stun(p_ptr->stun + dam, FALSE);
+        if (!bunshin_save)
+            set_stun(MIN(STUN_KNOCKED_OUT + 25, p_ptr->stun + dam), FALSE);
         break;
     case GF_AMNESIA:
         if (bunshin_save)
@@ -937,9 +938,24 @@ int gf_affect_p(int who, int type, int dam, int flags)
         result = take_hit(damage_type, dam, m_name_real);
         break;
     case GF_OLD_HEAL:
-        if (fuzzy) msg_print("You are hit by something invigorating!");
+    case GF_STAR_HEAL:
+        if ((fuzzy) && (dam)) msg_print("You are hit by something invigorating!");
 
         hp_player(dam);
+        break;
+    case GF_GAIN_EXP:
+        if (p_ptr->prace == RACE_ANDROID) break;
+        if (fuzzy) msg_print("You are hit by memories!");
+        if (p_ptr->exp < PY_MAX_EXP)
+        {
+            s32b ee = MIN(dam, p_ptr->exp / 2 + 10);
+            if (mut_present(MUT_FAST_LEARNER))
+            {
+                ee = ee * 5/3;
+            }
+            msg_print("You feel more experienced.");
+            gain_exp(ee);
+        }
         break;
     case GF_OLD_SPEED:
         if (fuzzy) msg_print("You are hit by something!");
@@ -1098,9 +1114,7 @@ int gf_affect_p(int who, int type, int dam, int flags)
 
             if (who > 0 && m_ptr->hp < m_ptr->maxhp)
             {
-                m_ptr->hp += (6 * dam);
-                if (m_ptr->hp > m_ptr->maxhp) m_ptr->hp = m_ptr->maxhp;
-                check_mon_health_redraw(who);
+                (void)hp_mon(m_ptr, 6 * dam, FALSE);
                 if (m_ptr->ml)
                     msg_format("%^s appears healthier.", m_name);
             }
@@ -1512,6 +1526,7 @@ bool gf_affect_m(int who, mon_ptr mon, int type, int dam, int flags)
         case GF_OLD_SPEED:
         case GF_STAR_HEAL:
         case GF_CRUSADE:
+        case GF_GAIN_EXP:
         case GF_UNHOLY_WORD:
             break;
         default:
@@ -2007,6 +2022,7 @@ bool gf_affect_m(int who, mon_ptr mon, int type, int dam, int flags)
             mon_lore_r(mon, RFR_RES_NEXU);
         }
         break;
+    case GF_AIR:
     case GF_FORCE:
         if (seen) obvious = TRUE;
         _BABBLE_HACK()
@@ -2063,6 +2079,23 @@ bool gf_affect_m(int who, mon_ptr mon, int type, int dam, int flags)
         else if (m_inc_minislow(mon, 1))
             note = " starts moving <color:s>slightly slower</color>.";
         if (type == GF_BABY_SLOW) dam = 0; /* no real damage */
+        break;
+    case GF_GAIN_EXP:
+        if (touch && seen_msg) msg_format("%^s is <color:G>leveled</color>!", m_name);
+        if (seen) obvious = TRUE;
+        _BABBLE_HACK()
+
+        if (dam > 0)
+        {
+            (void)set_monster_csleep(mon->id, 0); /* Wake up */
+            mon_gain_exp(mon, dam);
+            if (!who)
+            {
+                virtue_add(VIRTUE_PATIENCE, -3);
+            }
+        }
+
+        dam = 0; /* no real damage */
         break;
     case GF_TIME:
         if (touch && seen_msg) msg_format("%^s is <color:B>chronosmashed</color>!", m_name);
@@ -2744,10 +2777,11 @@ bool gf_affect_m(int who, mon_ptr mon, int type, int dam, int flags)
         _BABBLE_HACK()
         (void)set_monster_csleep(mon->id, 0);
 
-        if (mon->maxhp < mon->max_maxhp)
+        if ((mon->maxhp < mon->max_maxhp) || (mon->mpower < 1000))
         {
             if (seen_msg) msg_format("%^s recovers %s vitality.", m_name, m_poss);
             mon->maxhp = mon->max_maxhp;
+            mon->mpower = MAX(1000, mon->mpower);
         }
 
         if (!dam)
@@ -2783,10 +2817,7 @@ bool gf_affect_m(int who, mon_ptr mon, int type, int dam, int flags)
             dam = dam * (625 + virtue_current(VIRTUE_COMPASSION))/625;
 
         /* Heal */
-        if (mon->hp < 30000) mon->hp += dam;
-
-        /* No overflow */
-        if (mon->hp > mon->maxhp) mon->hp = mon->maxhp;
+        if (hp_mon(mon, dam, FALSE)) note = " looks healthier.";
 
         if (!who)
         {
@@ -2814,12 +2845,6 @@ bool gf_affect_m(int who, mon_ptr mon, int type, int dam, int flags)
             heal_leper = TRUE;
             if (!who) virtue_add(VIRTUE_COMPASSION, 5);
         }
-
-        /* Redraw (later) if needed */
-        check_mon_health_redraw(mon->id);
-
-        /* Message */
-        note = " looks healthier.";
 
         /* No "real" damage */
         dam = 0;
@@ -2888,8 +2913,7 @@ bool gf_affect_m(int who, mon_ptr mon, int type, int dam, int flags)
                 set_monster_monfear(mon->id, 0);
             }
 
-            if (mon->hp < 30000) mon->hp += dam;
-            if (mon->hp > mon->maxhp) mon->hp = mon->maxhp;
+            (void)hp_mon(mon, dam, FALSE);
             set_monster_fast(mon->id, MON_FAST(mon) + 100);
             note = " fights with renewed vigor!";
         }
@@ -3753,9 +3777,7 @@ bool gf_affect_m(int who, mon_ptr mon, int type, int dam, int flags)
             {
                 if (caster_ptr->hp < caster_ptr->maxhp)
                 {
-                    caster_ptr->hp += 6 * dam;
-                    if (caster_ptr->hp > caster_ptr->maxhp) caster_ptr->hp = caster_ptr->maxhp;
-                    check_mon_health_redraw(who);
+                    (void)hp_mon(caster_ptr, 6 * dam, FALSE);
                     monster_desc(killer, caster_ptr, 0);
                     if (mon_show_msg(caster_ptr)) msg_format("%^s appears healthier.", killer);
                 }
@@ -3763,7 +3785,7 @@ bool gf_affect_m(int who, mon_ptr mon, int type, int dam, int flags)
             else if (!no_harm)
             {
                 msg_format("You draw psychic energy from %s.", m_name_object);
-                hp_player(dam);
+                hp_player(MIN(dam, mon->hp));
             }
         }
         else if (seen_msg) msg_format("%^s is unaffected.", m_name);

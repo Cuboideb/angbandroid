@@ -1,0 +1,20 @@
+The Speed System
+
+Please choose one of the following help topics:
+
+    [a] The Speed System
+    [b] Quick Overview for Newbies
+    [c] Technical Explanation
+    [d] Speed/Energy Conversion Table
+    [e] Energy Randomness
+    [f] Energy Cost of Actions
+    [g] Temporary Haste and Slowness
+    [h] Monster Speed
+    [i] Where Do I Get More Speed?
+    [j] Overburdening
+    [k] Speed Display
+    [l] Duration of Timed Effects
+
+    (?) Help System Commands
+
+

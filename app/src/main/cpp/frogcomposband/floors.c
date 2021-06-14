@@ -44,8 +44,6 @@ void init_saved_floors(bool force)
         /* File name */
         sprintf(floor_savefile, "%s.F%02d", savefile, i);
 
-        //msg_print(floor_savefile);
-
         /* Grab permissions */
         safe_setuid_grab();
 
@@ -1393,7 +1391,7 @@ void change_floor(void)
                 }
 
                 /* No stairs up when ironman_downward */
-                else if ((change_floor_mode & CFM_DOWN) && !ironman_downward)
+                else if ((change_floor_mode & CFM_DOWN) && !only_downward())
                 {
                     c_ptr->feat = (change_floor_mode & CFM_SHAFT) ? feat_state(feat_up_stair, FF_SHAFT) : feat_up_stair;
                 }
@@ -1499,7 +1497,7 @@ void stair_creation(bool down_only)
 
 
     /* Forbid up staircases on Ironman mode */
-    if (ironman_downward || down_only) up = FALSE;
+    if (only_downward() || down_only) up = FALSE;
 
     /* Forbid down staircases on quest level */
     if (quests_get_current() || (dun_level >= d_info[dungeon_type].maxdepth)) down = FALSE;

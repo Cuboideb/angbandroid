@@ -1993,16 +1993,8 @@ bool mon_attack_mon(int m_idx, int t_idx)
                     case BLOW_EFFECT_TYPE_HEAL:
                         if ((monster_living(tr_ptr)) && (damage > 2))
                         {
-                            bool did_heal = FALSE;
-
-                            if (m_ptr->hp < m_ptr->maxhp) did_heal = TRUE;
-
                             /* Heal */
-                            m_ptr->hp += damroll(4, damage / 6);
-                            if (m_ptr->hp > m_ptr->maxhp) m_ptr->hp = m_ptr->maxhp;
-
-                            /* Redraw (later) if needed */
-                            check_mon_health_redraw(m_idx);
+                            bool did_heal = hp_mon(m_ptr, damroll(4, damage / 6), FALSE);
 
                             /* Special message */
                             if (see_m && did_heal)
@@ -2448,14 +2440,18 @@ static void process_monster(int m_idx)
             bool skip = FALSE;
             monster_desc(m_name, m_ptr, 0);
 
-            for (i = 0; i < MAX_MON_BLOWS; i++)
+            if (m_ptr->r_idx != MON_DAWN)
             {
-                if (r_ptr->blows[i].method == RBM_EXPLODE)
+                for (i = 0; i < MAX_MON_BLOWS; i++)
                 {
-                    skip = TRUE;
-                    break;
+                    if (r_ptr->blows[i].method == RBM_EXPLODE)
+                    {
+                        skip = TRUE;
+                        break;
+                    }
                 }
             }
+            else skip = TRUE;
 
             if (skip) {} /* Kamikaze pets fight to death */
             else if (is_riding_mon && riding_pinch < 2)

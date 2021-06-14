@@ -960,7 +960,8 @@ static bool project_f(int who, int r, int y, int x, int dam, int typ)
                         break;
                 }
             }
-            else message = "burns up!";break;
+            else message = "burns up!";
+            break;
         }
         case GF_METEOR:
         case GF_CHAOS:
@@ -2031,7 +2032,7 @@ static bool project_p(int who, cptr who_name, int r, int y, int x, int dam, int 
             _lukko = TRUE;
         }
 
-        project(0, 0, t_y, t_x, dam, typ, (PROJECT_STOP|PROJECT_KILL|PROJECT_REFLECTABLE));
+        project((typ == GF_ATTACK) ? who : 0, 0, t_y, t_x, dam, typ, (PROJECT_STOP|PROJECT_KILL|PROJECT_REFLECTABLE));
 
         _lukko = FALSE;
 
@@ -2041,7 +2042,7 @@ static bool project_p(int who, cptr who_name, int r, int y, int x, int dam, int 
 
     /* XXX XXX XXX */
     /* Limit maximum damage */
-    if (dam > 1600) dam = 1600;
+    if ((dam > 1600) && (typ != GF_GAIN_EXP)) dam = 1600;
 
     p_ptr->spell_turned = FALSE;
 
@@ -2817,6 +2818,7 @@ bool project(int who, int rad, int y, int x, int dam, int typ, int flg)
         if (p_ptr->no_air)
         {
             if (who == PROJECT_WHO_PLAYER) msg_print("The sound fizzles out in the airless dungeon!");
+            project_length = 0;
             return TRUE;
         }
         break;

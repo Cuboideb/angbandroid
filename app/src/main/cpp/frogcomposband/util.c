@@ -188,7 +188,7 @@ void user_name(char *buf, int id)
 #else /* ACORN */
 
 
-#if defined(SET_UID) //&& !defined(ANGBAND_ANDROID)
+#ifdef SET_UID
 
 /*
  * Extract a "parsed" path from an initial filename
@@ -337,7 +337,7 @@ void strnfcat(char *str, size_t max, size_t *end, const char *fmt, ...)
 
 static void path_process(char *buf, size_t len, size_t *cur_len, const char *path)
 {
-#if defined(SET_UID) //&& !defined(ANGBAND_ANDROID)
+#if defined(SET_UID)
 
 	/* Home directory on Unixes */
 	if (path[0] == '~')

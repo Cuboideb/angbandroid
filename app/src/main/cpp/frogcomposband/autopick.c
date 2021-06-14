@@ -575,7 +575,8 @@ bool object_is_icky(object_type *o_ptr, bool assume_id)
         class_t *class_ptr = get_class();
         if ((o_ptr->tval == TV_GLOVES) && (class_ptr->caster_info) && ((assume_id) || (obj_is_identified(o_ptr)) || (o_ptr->feeling == FEEL_AVERAGE) || (o_ptr->feeling == FEEL_GOOD)))
         {
-            if (get_caster_info()->options & CASTER_GLOVE_ENCUMBRANCE)
+            caster_info *caster_ptr = get_caster_info();
+            if ((caster_ptr) && (caster_ptr->options & CASTER_GLOVE_ENCUMBRANCE))
             {
                 u32b flgs[OF_ARRAY_SIZE];
                 obj_flags(o_ptr, flgs);

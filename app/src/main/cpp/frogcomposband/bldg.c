@@ -259,7 +259,7 @@ static void arena_comm(int cmd)
                     msg_print("You enter the arena briefly and bask in your glory.");
                 }
             }
-            else if (p_ptr->riding && p_ptr->pclass != CLASS_BEASTMASTER && p_ptr->pclass != CLASS_CAVALRY && p_ptr->prace != RACE_MON_RING)
+            else if (p_ptr->riding && p_ptr->pclass != CLASS_BEASTMASTER && p_ptr->pclass != CLASS_CAVALRY && p_ptr->prace != RACE_MON_RING && !warlock_is_(WARLOCK_DRAGONS))
             {
                 msg_print("You don't have permission to enter with pet.");
             }
@@ -3261,7 +3261,7 @@ static void _enchant_menu_fn(int cmd, int which, vptr cookie, variant *res)
         {
             var_set_int(res, TERM_L_DARK);
             break;
-        }
+        } /* Fall through */
     default:
         default_menu(cmd, which, cookie, res);
     }
@@ -4008,11 +4008,7 @@ static void bldg_process_command(building_type *bldg, int i)
         if (p_ptr->riding)
         {
             monster_type *m_ptr = &m_list[p_ptr->riding];
-            int           amt = 500;
-
-            if (m_ptr->hp < 30000) m_ptr->hp += amt;
-            if (m_ptr->hp > m_ptr->maxhp) m_ptr->hp = m_ptr->maxhp;
-            p_ptr->redraw |= PR_HEALTH_BARS;
+            (void)hp_mon(m_ptr, 500, FALSE);
         }
 
         paid = TRUE;
@@ -4208,12 +4204,11 @@ void do_cmd_quest(void)
             ((danger > 33) && (danger < 46) && (p_ptr->lev < (danger / 2) + 11)) ||
             ((danger > 45) && (p_ptr->lev < (danger * 4 / 5) - 3) && (p_ptr->lev < 46)))
         {
-            char c, buf[255];
+            char buf[255];
 
-            strcpy(buf, format("\n<color:R>WARNING:</color> This is a level <color:o>%d</color> quest. Really enter? <color:y>[Y/n]</color>\n", danger));
-            c = msg_prompt(buf, "nY", PROMPT_ESCAPE_DEFAULT | PROMPT_CASE_SENSITIVE | PROMPT_FORCE_CHOICE);
             sound(SOUND_WARN);
-            if (c == 'n') return;
+            strcpy(buf, format("\n<color:R>WARNING:</color> This is a level <color:o>%d</color> quest. Really enter? <color:y>[Y/n]</color>\n", danger));
+            if (!paranoid_msg_prompt(buf, PROMPT_FORCE_CHOICE)) return;
         }
         else if (!get_check("Do you enter? ")) return;
 

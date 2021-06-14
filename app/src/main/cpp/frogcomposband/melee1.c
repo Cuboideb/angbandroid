@@ -171,11 +171,7 @@ bool drain_random_object(int who, int drain_amt, bool *drained)
         if (who > 0)
         {
             monster_type *m_ptr = &m_list[who];
-            m_ptr->hp += drain_amt;
-            if (m_ptr->hp > m_ptr->maxhp)
-                m_ptr->hp = m_ptr->maxhp;
-            /* Redraw (later) if needed */
-            check_mon_health_redraw(who);
+            (void)hp_mon(m_ptr, drain_amt, FALSE);
         }
 
         /* Window stuff */
@@ -645,6 +641,7 @@ bool make_attack_normal(int m_idx)
 
                         if (!obj) continue;
                         if (object_is_artifact(obj)) continue;
+                        if ((obj->tval == TV_CAPTURE) && (obj->pval > 0) && (r_info[obj->pval].ball_num)) continue;
 
                         object_desc(o_name, obj, OD_OMIT_PREFIX);
 
@@ -702,9 +699,9 @@ bool make_attack_normal(int m_idx)
                         if (object_is_artifact(obj)) continue;
 
                         object_desc(o_name, obj, OD_OMIT_PREFIX | OD_NAME_ONLY | OD_COLOR_CODED);
-                        msg_format("%sour %s was eaten!",
+                        msg_format("%sour %s %s eaten!",
                                ((obj->number > 1) ? "One of y" : "Y"),
-                               o_name);
+                               o_name, (((obj->number == 1) && (have_flag(obj->flags, OF_PLURAL))) ? "were" : "was"));
 
                         obj->number--;
                         obj_release(obj, OBJ_RELEASE_QUIET);

@@ -536,7 +536,6 @@ static int _choose_spell(power_info* spells, int ct, cptr verb, cptr desc, int m
     bool describe = force_browsing;
     bool inscribe = FALSE;
     char labels[100] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#$%&'()*+,-./:;<=>{|}...............";
-    static char multicase[64] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     bool rage_hack = ((desc) && (!power) && (streq("rage", desc)) && (ct == 8));
 
     if (power)
@@ -922,6 +921,7 @@ int get_spell_table(power_info* spells, int max, bool with_class)
     }
     else if ((with_class) && (p_ptr->pclass == CLASS_WILD_TALENT))
     {
+        inkey_xtra = FALSE;
         ct = wild_talent_get_spells(spells);
     }
     else if ((with_class) && (class_ptr->get_spells != NULL))
@@ -1051,6 +1051,9 @@ void do_cmd_spell(void)
                 break;
             case CLASS_WEAPONMASTER:
                 msg_print("You need more experience. Why not kill something?");
+                break;
+            case CLASS_WARLOCK:
+                msg_print("You have not learned any spells yet. Go kill something for more experience!");
                 break;
             default: break;
         }
@@ -1429,7 +1432,10 @@ int spell_stats_fail(spell_stats_ptr stats)
     return result;
 }
 
-void dump_spells_aux(FILE *fff, power_info *table, int ct)
+/*
+ * Currently unused
+ *
+ * void dump_spells_aux(FILE *fff, power_info *table, int ct)
 {
     int i;
     variant vn, vd, vc, vfm;
@@ -1473,7 +1479,7 @@ void dump_spells_aux(FILE *fff, power_info *table, int ct)
     var_clear(&vd);
     var_clear(&vc);
     var_clear(&vfm);
-}
+} */
 
 static void _dump_book(doc_ptr doc, int realm, int book)
 {

@@ -262,6 +262,7 @@ static void _scroll_cave(int dx, int dy)
     forget_view();
     forget_lite();
     forget_flow();
+    clear_mon_lite();
 
     if (dy <= 0 && dx <= 0)
     {
@@ -325,7 +326,7 @@ static void _scroll_cave(int dx, int dy)
     else
         _scroll_panel(dx, dy);
 
-    p_ptr->update |= PU_DISTANCE | PU_VIEW | PU_LITE | PU_FLOW;
+    p_ptr->update |= PU_DISTANCE | PU_VIEW | PU_LITE | PU_MON_LITE | PU_FLOW;
     p_ptr->redraw |= PR_MAP;
     p_ptr->window |= PW_OVERHEAD | PW_DUNGEON;
 }
@@ -2147,6 +2148,23 @@ bool change_wild_mode(void)
         {
             energy_use = 0;
             return FALSE;
+        }
+    }
+
+    if (p_ptr->word_recall)
+    {
+        char c, buf[255] = "You cannot enter the global map with Word of Recall active! Cancel recall? <color:y>[y/n]</color>\n";
+        c = msg_prompt(buf, "ny", PROMPT_ESCAPE_DEFAULT | PROMPT_FORCE_CHOICE);
+        sound(SOUND_WARN);
+        if (c == 'n')
+        {
+            energy_use = 0;
+            return FALSE;
+        }
+        else
+        {
+            p_ptr->word_recall = 0;
+            p_ptr->redraw |= (PR_STATUS);
         }
     }
 

@@ -860,7 +860,7 @@ void do_cmd_options_aux(int page, cptr info)
 
 
         /* HACK -- description for easy-auto-destroy options */
-        if (page == OPT_PAGE_AUTODESTROY) c_prt(TERM_YELLOW, "Following options will protect items from easy auto-destroyer.", 10, 3);
+        if (page == OPT_PAGE_AUTODESTROY) c_prt(TERM_YELLOW, "Following options will protect items from easy auto-destroyer.", 11, 3);
 
         /* Display the options */
         for (i = option_offset; i < n; i++)
@@ -938,14 +938,14 @@ void do_cmd_options_aux(int page, cptr info)
                     (*option_info[opt[i]].o_var ? "yes" : "no "),
                     option_info[opt[i]].o_text);
             }
-            if ((page == OPT_PAGE_AUTODESTROY) && i > 6) rivi = i + 5 - option_offset;
+            if ((page == OPT_PAGE_AUTODESTROY) && i > 7) rivi = i + 5 - option_offset;
             else rivi = i + 2 - option_offset;
             if ((scroll_mode) && (rivi == Term->hgt - 1) && (i < n - 1)) c_prt(TERM_YELLOW, " (scroll down for more options)", rivi, 0);
             else if ((scroll_mode) && (rivi == 2) && (i > 0)) c_prt(TERM_YELLOW, " (scroll up for more options)", rivi, 0);
             else if (((rivi >= 2) && (rivi < Term->hgt - 1)) || ((rivi == Term->hgt - 1) && ((i == n - 1) || (!scroll_mode)))) c_prt(a, buf, rivi, 0);
         }
 
-        if ((page == OPT_PAGE_AUTODESTROY) && (k > 6)) l = 3;
+        if ((page == OPT_PAGE_AUTODESTROY) && (k > 7)) l = 3;
         else l = 0;
 
         /* Hilite current option */
@@ -3580,9 +3580,9 @@ static cptr monster_group_text[] =
     "Uniques",
     "Ridable monsters",
     "Wanted monsters",
+    "Dungeon guardians",
     "Amberite",
-    "Olympian",
-    "Egyptian",
+    "God",
     "Ant",
     "Bat",
     "Centipede",
@@ -3760,9 +3760,9 @@ static int collect_monsters(int grp_cur, s16b mon_idx[], byte mode)
     bool        grp_unique = (monster_group_char[grp_cur] == (char *) -2L);
     bool        grp_riding = (monster_group_char[grp_cur] == (char *) -3L);
     bool        grp_wanted = (monster_group_char[grp_cur] == (char *) -4L);
-    bool        grp_amberite = (monster_group_char[grp_cur] == (char *) -5L);
-    bool        grp_olympian = (monster_group_char[grp_cur] == (char *) -6L);
-    bool        grp_egyptian = (monster_group_char[grp_cur] == (char *) -7L);
+    bool        grp_guardian = (monster_group_char[grp_cur] == (char *) -5L);
+    bool        grp_amberite = (monster_group_char[grp_cur] == (char *) -6L);
+    bool        grp_god = (monster_group_char[grp_cur] == (char *) -7L);
     int_map_ptr available_corpses = NULL;
 
     if (grp_corpses)
@@ -3861,14 +3861,18 @@ static int collect_monsters(int grp_cur, s16b mon_idx[], byte mode)
             if (!(r_ptr->flags3 & RF3_AMBERITE)) continue;
         }
 
-        else if (grp_olympian)
+        else if (grp_god)
         {
-            if (!(r_ptr->flags3 & RF3_OLYMPIAN)) continue;
+            if (!(r_ptr->flags1 & RF1_UNIQUE)) continue;
+            if (!monster_pantheon(r_ptr)) continue;
         }
 
-        else if (grp_egyptian)
+        else if (grp_guardian)
         {
-            if ((!(r_ptr->flags3 & RF3_EGYPTIAN)) && (!(r_ptr->flags3 & RF3_EGYPTIAN2))) continue;
+            if (!(r_ptr->flags7 & RF7_GUARDIAN)) continue;
+            if ((d_info[DUNGEON_MYSTERY].final_guardian == i) &&
+                (!(d_info[DUNGEON_MYSTERY].flags1 & DF1_SUPPRESSED)) &&
+                (d_info[DUNGEON_MYSTERY].maxdepth > max_dlv[DUNGEON_MYSTERY])) continue;
         }
 
         else

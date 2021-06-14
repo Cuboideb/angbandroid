@@ -2807,7 +2807,7 @@ P:0:1d1:0:0:0
 M:100:2d3
 
 N:*:Blindness:Indigo
-G:!:v
+G:!:C
 I:75:7:0
 W:0:0:20:4:0
 A:0/1
@@ -2931,7 +2931,7 @@ F:TOWN
 M:100:1d5
 
 N:*:Boldness:Purple
-G:!:v
+G:!:C
 I:75:28:0
 W:1:0:0:4:200
 A:1/1
@@ -2940,7 +2940,7 @@ F:TOWN
 M:100:2d3
 
 N:*:Speed:Magenta
-G:!:r
+G:!:v
 I:75:29:0
 W:1:0:0:4:120
 A:1/1:40/1
@@ -2948,7 +2948,7 @@ P:0:1d1:0:0:0
 M:100:2d4
 
 N:*:Resist Heat and Cold:Red Speckled
-G:!:r
+G:!:R
 I:75:30:0
 W:1:0:60:4:120
 A:1/1
@@ -2965,7 +2965,7 @@ P:0:1d1:0:0:0
 M:70:1d6
 
 N:*:Heroism:Pink Speckled
-G:!:R
+G:!:P
 I:75:32:0
 W:1:0:0:4:35
 A:1/1
@@ -2974,7 +2974,7 @@ F:TOWN
 M:100:2d3
 
 N:*:Berserk Strength:Puce
-G:!:v
+G:!:p
 I:75:33:0
 W:20:0:0:4:100
 A:20/3
@@ -3089,7 +3089,7 @@ F:TOWN
 M:100:1d5
 
 N:*:Restore Constitution:Metallic Purple
-G:!:v
+G:!:C
 I:75:46:0
 W:25:0:60:4:220
 A:25/1
@@ -3107,7 +3107,7 @@ F:TOWN
 M:100:1d5
 
 N:*:Strength:Azure
-G:!:B
+G:!:I
 I:75:48:0
 W:30:0:0:4:25000
 A:20/6:30/3
@@ -3160,8 +3160,8 @@ P:0:1d1:0:0:0
 F:NO_SHUFFLE
 M:25:1d2
 
-N:*:Restoring:Cyan
-G:!:B
+N:*:Restoring:Teal
+G:!:t
 I:75:54:0
 W:20:0:60:4:3000
 A:40/1
@@ -3170,7 +3170,7 @@ F:NO_SHUFFLE
 M:50:1d3
 
 N:*:Augmentation:Viscous Pink
-G:!:R
+G:!:P
 I:75:55:0
 W:60:0:0:4:150000
 A:40/12
@@ -3178,7 +3178,7 @@ F:NO_SHUFFLE
 P:0:1d1:0:0:0
 
 N:*:Enlightenment:Pink
-G:!:R
+G:!:P
 I:75:56:0
 W:25:0:0:4:800
 A:25/1:50/1
@@ -3202,7 +3202,7 @@ P:0:1d1:0:0:0
 M:10:1d2
 
 N:*:Experience:Green Speckled
-G:!:g
+G:!:L
 I:75:59:0
 W:65:0:0:4:25000
 A:65/1
@@ -3235,8 +3235,8 @@ A:90/9
 F:NO_SHUFFLE
 P:0:1d1:0:0:0
 
-N:*:New Life:Dark Red
-G:!:r
+N:*:New Life:Bright Red
+G:!:R
 I:75:63:100
 W:30:0:0:4:25000
 A:30/4
@@ -3253,14 +3253,14 @@ P:0:1d1:0:0:0
 M:100:1d5
 
 N:*:Tsuyoshi Special:Silver
-G:!:w
+G:!:W
 I:75:65:0
 W:10:0:40:4:0
 A:10/2
 P:0:1d1:0:0:0
 
 N:*:Polymorph:Bronze
-G:!:r
+G:!:U
 I:75:66:0
 W:50:0:0:4:5000
 A:50/16
@@ -3290,7 +3290,7 @@ P:0:1d1:0:0:0
 M:20:1d3
 
 N:*:Clarity:Metallic
-G:!:w
+G:!:K
 I:75:70:100
 W:20:0:60:4:180
 A:10/1:40/1

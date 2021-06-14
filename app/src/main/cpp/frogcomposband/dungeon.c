@@ -45,7 +45,7 @@ byte value_check_aux1(object_type *o_ptr, bool remote)
 
     if (object_is_cursed(o_ptr)) return FEEL_BAD;
     if (object_is_broken(o_ptr)) return FEEL_BROKEN;
-    if (o_ptr->tval == TV_RING || o_ptr->tval == TV_AMULET || object_is_(o_ptr, TV_LITE, SV_LITE_FEANOR))
+    if (object_known_on_average(o_ptr))
     {
         obj_identify(o_ptr);
         return (remote ? FEEL_NONE : FEEL_AVERAGE);
@@ -90,7 +90,7 @@ static byte value_check_aux2(object_type *o_ptr)
     /* Good weapon bonuses */
     if (o_ptr->to_h + o_ptr->to_d > 0) return FEEL_ENCHANTED;
 
-    if (o_ptr->tval == TV_RING || o_ptr->tval == TV_AMULET || object_is_(o_ptr, TV_LITE, SV_LITE_FEANOR))
+    if (object_known_on_average(o_ptr))
     {
         obj_identify(o_ptr);
     }
@@ -313,7 +313,7 @@ static void pattern_teleport(void)
         char    tmp_val[160];
 
         /* Only downward in ironman mode */
-        if (ironman_downward)
+        if (only_downward())
             min_level = dun_level;
 
         /* Maximum level */
@@ -871,13 +871,7 @@ static void regen_monsters(void)
             if (frac >= 400) frac = 400;
 
             /* Regenerate */
-            m_ptr->hp += frac;
-
-            /* Do not over-regenerate */
-            if (m_ptr->hp > m_ptr->maxhp) m_ptr->hp = m_ptr->maxhp;
-
-            /* Redraw (later) if needed */
-            check_mon_health_redraw(i);
+            (void)hp_mon(m_ptr, frac, FALSE);
         }
     }
 }
@@ -1224,7 +1218,7 @@ void do_alter_reality(void)
 
 
     /* Determine the level */
-    if ((ironman_downward) || (p_ptr->inside_arena) || ((!dungeon_type) && (quests_get_current())))
+    if ((only_downward()) || (p_ptr->inside_arena) || ((!dungeon_type) && (quests_get_current())))
     {
         msg_print("The world seems to change for a moment!");
         p_ptr->alter_reality = 0;
@@ -2187,7 +2181,7 @@ static void process_world_aux_light(void)
     if (slot)
     {
         object_type *lite = equip_obj(slot);
-        if ( !(lite->name1 || lite->name3 || lite->art_name || lite->sval == SV_LITE_FEANOR)
+        if ( !(lite->name1 || lite->name3 || lite->art_name || !object_needs_fuel(lite))
           && lite->xtra4 > 0 )
         {
             if (lite->name2 == EGO_LITE_DURATION)
@@ -2647,8 +2641,6 @@ static void process_world_aux_recharge(void)
  */
 void process_world_aux_movement(void)
 {
-    recall_stairs_hack = FALSE;
-
     /* Delayed Word-of-Recall */
     if (p_ptr->word_recall)
     {
@@ -2995,6 +2987,7 @@ static void process_world(void)
 
     const s32b A_DAY = TURNS_PER_TICK * TOWN_DAWN;
     s32b prev_turn_in_today = ((game_turn - TURNS_PER_TICK) % A_DAY + A_DAY / 4) % A_DAY;
+    static s32b world_proc_hack_turn = 0;
     int prev_min = (1440 * prev_turn_in_today / A_DAY) % 60;
 
     extract_day_hour_min(&day, &hour, &min);
@@ -3070,6 +3063,14 @@ static void process_world(void)
 
     /* Every 10 game turns */
     if (game_turn % TURNS_PER_TICK) return;
+
+    /* Needs to be processed every 10 turns */
+    recall_stairs_hack = FALSE;
+
+    /* Paranoia - only once per turn */
+    if (game_turn == world_proc_hack_turn) return;
+    if ((game_turn == old_turn) && (cave_have_flag_bold(py, px, FF_STAIRS))) return;
+    world_proc_hack_turn = game_turn;
 
     /*** Check the Time and Load ***/
 
@@ -4999,7 +5000,7 @@ static void process_player(void)
              * won't be completely broken by any minor tweaks in the future */
             if ((alert_poison) && (p_ptr->poisoned > pienempi(p_ptr->mhp * 4 / 5, MIN(499, p_ptr->chp))))
             {
-                if ((!poison_warning_hack) || ((int)poison_warning_hack < (p_ptr->poisoned + 9) / 10) || (p_ptr->poisoned / 4 > p_ptr->chp))
+                if ((!poison_warning_hack) || ((int)poison_warning_hack < (MIN(255, (p_ptr->poisoned + 9) / 10))) || (p_ptr->poisoned / 4 > p_ptr->chp))
                 {
                     msg_boundary();
                     msg_format("<color:G>*** POISON WARNING! ***</color>");
@@ -5270,14 +5271,16 @@ static void dungeon(bool load_game)
     command_arg = 0;
     command_dir = 0;
 
+    if (!load_game)
+    {
+        /* Cancel the target */
+        target_who = 0;
+        pet_t_m_idx = 0;
+        riding_t_m_idx = 0;
 
-    /* Cancel the target */
-    target_who = 0;
-    pet_t_m_idx = 0;
-    riding_t_m_idx = 0;
-
-    /* Cancel the health bar */
-    health_track(0);
+        /* Cancel the health bar */
+        health_track(0);
+    }
 
     /* Check visual effects */
     shimmer_monsters = TRUE;
@@ -5308,8 +5311,12 @@ static void dungeon(bool load_game)
 
     (void)calculate_upkeep();
 
+    redraw_hack = load_game;
+
     /* Verify the panel */
     viewport_verify();
+
+    redraw_hack = load_game;
 
     /* Flush messages
     msg_print(NULL);*/
@@ -5400,6 +5407,7 @@ static void dungeon(bool load_game)
     object_level = base_level;
 
     hack_mind = TRUE;
+    redraw_hack = FALSE;
 
     if (p_ptr->energy_need > 0 && !p_ptr->inside_battle &&
         (dun_level || p_ptr->leaving_dungeon || p_ptr->inside_arena))
@@ -5493,10 +5501,30 @@ static void dungeon(bool load_game)
         if (!p_ptr->playing || p_ptr->is_dead) break;
 
         /* Handle "leaving" */
-        if (p_ptr->leaving) break;
+        if ((p_ptr->leaving) && (!advance_time_hack)) break;
 
         /* Count game turns */
         game_turn++;
+
+        /* Hack - time does not advance normally on taking stairs.
+         * Manually advance it by equivalent of consuming 200 energy
+         * upon taking upstairs, to compensate for taking downstairs
+         * consuming zero turns */
+        if (advance_time_hack)
+        {
+            int nopeus = SPEED_TO_ENERGY(p_ptr->pspeed);
+            int kaytto = MIN(25, (200 + randint0(nopeus)) / nopeus);
+            int new_day, prev_day, prev_hour, prev_min;
+            extract_day_hour_min(&prev_day, &prev_hour, &prev_min);
+            advance_time_hack = FALSE;
+            game_turn += kaytto;
+            extract_day_hour_min(&new_day, &prev_hour, &prev_min);
+            if (new_day != prev_day) /* Check midnight */
+            {
+                 determine_today_mon(FALSE);
+                 if (p_ptr->prace == RACE_WEREWOLF) werewolf_check_midnight();
+            }
+        }
 
         if (dungeon_turn < dungeon_turn_limit)
         {
@@ -5505,6 +5533,8 @@ static void dungeon(bool load_game)
         }
 
         prevent_turn_overflow();
+
+        if (p_ptr->leaving) break;
 
         if (wild_regen) wild_regen--;
     }
@@ -6077,6 +6107,7 @@ void play_game(bool new_game)
         Rand_quick = TRUE;
 
         /* Initialize the saved floors data */
+        /* In ANDROID always clear old files */
         init_saved_floors(TRUE);
     }
 
@@ -6158,6 +6189,7 @@ void play_game(bool new_game)
         /* After the last opportunity to modify birth options... */
         birth_location();
 
+        /* Android platform */
         window_flag[1] = PW_MONSTER_LIST;
         window_flag[2] = PW_OBJECT_LIST;
         window_flag[3] = PW_MESSAGE;
@@ -6478,12 +6510,12 @@ void play_game(bool new_game)
 
         character_xtra = FALSE;
 
-        /* Cancel the target */
-        target_who = 0;
-
-        /* Cancel the health bar */
-        health_track(0);
-
+        /* Cancel the target and health bar */
+        if (p_ptr->playing)
+        {
+            target_who = 0;
+            health_track(0);
+        }
 
         /* Forget the lite */
         forget_lite();

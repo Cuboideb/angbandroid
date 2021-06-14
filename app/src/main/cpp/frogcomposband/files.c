@@ -41,8 +41,6 @@ bool arg_lock_name;
 void safe_setuid_drop(void)
 {
 
-#ifndef ANGBAND_ANDROID
-
 #ifdef SET_UID
 
 # ifdef SAFE_SETUID
@@ -79,8 +77,6 @@ void safe_setuid_drop(void)
 
 #endif
 
-#endif /* ANGBAND_ANDROID */
-
 }
 
 
@@ -89,8 +85,6 @@ void safe_setuid_drop(void)
  */
 void safe_setuid_grab(void)
 {
-
-#ifndef ANGBAND_ANDROID
 
 #ifdef SET_UID
 
@@ -127,8 +121,6 @@ void safe_setuid_grab(void)
 # endif /* SAFE_SETUID */
 
 #endif /* SET_UID */
-
-#endif /* ANGBAND_ANDROID */
 
 }
 

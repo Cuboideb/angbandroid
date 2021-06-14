@@ -6420,7 +6420,7 @@ cptr do_effect(effect_t *effect, int mode, int boost)
     {
         int dam = _extra(effect, 150);
         if (name) return "Star Ball";
-        if (desc) return "It fires a multitude of lightning balls in random directions.";
+        if (desc) return "It fires a multitude of lightning balls in random open directions.";
         if (info) return info_damage(0, 0, _BOOST(dam));
         if (value) return format("%d", 50*dam);
         if (color) return format("%d", TERM_YELLOW);
@@ -6879,7 +6879,7 @@ cptr do_effect(effect_t *effect, int mode, int boost)
     case EFFECT_CONFUSE_MONSTER:
     {
 //        int power = _extra(effect, MIN(98, MAX(21, effect->power * 7 - 52)));
-        int power = _extra(effect, 25 + _power_curve_offset(75, effect->power + 75, 80));
+        int power = _extra(effect, MIN(105, 25 + _power_curve_offset(75, effect->power + 75, 80)));
         if (name) return "Confuse Monster";
         if (desc) return "It confuses a monster when you use it.";
         if (info) return format("power %d", _BOOST(power));
@@ -6925,7 +6925,7 @@ cptr do_effect(effect_t *effect, int mode, int boost)
     {
         int dd = _extra(effect, 6 + effect->power / 10);
         if (name) return "Starlight";
-        if (desc) return "It fires a line of light directed randomly for multiple times when you use it.";
+        if (desc) return "It fires multiple beams of weak light in random open directions when you use it.";
         if (value) return format("%d", 750);
         if (color) return format("%d", TERM_YELLOW);
         if (cast)

@@ -52,6 +52,7 @@ extern s16b ddy_cdd[8];
 extern char hexsym[16];
 extern char listsym[];
 extern char color_char[];
+extern char multicase[84];
 extern byte adj_mag_study[];
 extern byte adj_mag_mana[];
 extern byte adj_mag_fail[];
@@ -219,6 +220,9 @@ extern bool temporary_name_hack;
 extern bool online_macro_hack;
 extern bool recall_stairs_hack;
 extern bool silent_drop_hack;
+extern bool check_useless_pickup_hack;
+extern bool drop_near_stack_hack;
+extern bool advance_time_hack;
 extern byte attack_spell_hack;
 enum
 {
@@ -443,6 +447,7 @@ extern bool leave_junk;    /* Auto-destroyer leaves junk */
 extern bool leave_special;    /* Auto-destroyer leaves items your race/class needs */
 extern bool leave_mogaminator; /* Read "destroy" as "leave" */
 extern bool no_mogaminator;
+extern bool check_full_pack; /* Check for full pack before manual pickup */
 
 extern bool cheat_peek;
 extern bool cheat_hear;
@@ -806,6 +811,7 @@ extern bool floor_find_obj(int y, int x, int tval, int sval);
 /* cmd1.c */
 extern void death_scythe_miss(object_type *o_ptr, int hand, int mode);
 extern void rune_sword_kill(object_type *o_ptr, monster_race *r_ptr);
+extern bool attack_mode_allows_innate(int mode);
 extern void touch_zap_player(int m_idx);
 extern bool test_hit_fire(int chance, int ac, int vis);
 extern bool random_opponent(int *y, int *x);
@@ -1041,6 +1047,7 @@ extern cptr info_range(int range);
 extern cptr info_heal(int dice, int sides, int base);
 extern cptr info_radius(int rad);
 extern cptr info_power(int power);
+extern cptr info_level(int base, int sides);
 extern cptr info_delay(int base, int sides);
 extern cptr info_weight(int weight);
 extern cptr info_dist(int dist);
@@ -1182,6 +1189,7 @@ extern void display_news(void);
 /* load.c */
 extern errr rd_savefile_new(void);
 extern bool load_floor(saved_floor_type *sf_ptr, u32b mode);
+extern void handle_tmp_indices(bool save_data, bool do_redraw);
 extern void rd_item(savefile_ptr file, object_type *o_ptr);
 extern void wr_item(savefile_ptr file, object_type *o_ptr); /* save.c */
 extern void updatecharinfoS(void);
@@ -1825,6 +1833,7 @@ extern void str_tolower(char *str);
 extern int inkey_special(bool numpad_cursor);
 extern unsigned int strpos(const char *mika, const char *missa);
 extern unsigned int chrpos(const char mika, const char *missa);
+extern void string_clip(char *apu, unsigned int paikka, int pituus);
 extern bool clip_and_locate(char *poista, char *mista);
 
 /* xtra1.c */
@@ -2298,6 +2307,9 @@ extern bool object_is_dragon_armor(object_type *o_ptr);
 extern bool object_is_nameless(object_type *o_ptr);
 extern bool object_allow_two_hands_wielding(object_type *o_ptr);
 extern bool object_is_suitable_ammo(object_type *o_ptr);
+extern bool object_needs_fuel(object_type *o_ptr);
+extern bool object_known_on_average(object_type *o_ptr);
+
 
 /* wild.c */
 extern bool py_on_surface(void);
@@ -2622,7 +2634,7 @@ extern caster_info *get_caster_info(void);
 extern int get_spell_stat(void);
 extern int get_powers_aux(power_info* spells, int max, power_info* table, bool calc_fail);
 extern int get_spells_aux(power_info* spells, int max, spell_info* table, bool calc_fail);
-extern void dump_spells_aux(FILE *fff, power_info *table, int ct);
+/* extern void dump_spells_aux(FILE *fff, power_info *table, int ct); */
 
 /* alky.c */
 extern void     alchemist_cast(int tval);

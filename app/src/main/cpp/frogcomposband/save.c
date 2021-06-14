@@ -83,6 +83,7 @@ void updatecharinfoS(void)
 	if (p_ptr->dragon_realm > 0)fprintf(oFile, "mRealm1: \"%s\",\n", drealm->name);
 	fprintf(oFile, "cLvl: \"%i\",\n", p_ptr->lev);
 	fprintf(oFile, "isDead: \"%i\",\n", p_ptr->is_dead);
+	fprintf(oFile, "isThrall: \"%i\",\n", thrall_mode ? 1 : 0);
 	fprintf(oFile, "killedBy: \"%s\"\n", p_ptr->died_from);
 	fprintf(oFile, "}");
 	fclose(oFile);
@@ -106,6 +107,7 @@ static void wr_monster(savefile_ptr file, monster_type *m_ptr)
     savefile_write_s16b(file, m_ptr->max_maxhp);
     savefile_write_byte(file, m_ptr->mspeed);
     savefile_write_s16b(file, m_ptr->energy_need);
+    savefile_write_byte(file, m_ptr->ml);
 
     if (!is_original_ap(m_ptr))
     {
@@ -764,6 +766,10 @@ static void wr_extra(savefile_ptr file)
     savefile_write_s16b(file, p_ptr->entrench_ct);
     savefile_write_byte(file, p_ptr->sense_artifact);
     savefile_write_s16b(file, p_ptr->duelist_target_idx);
+    savefile_write_s16b(file, p_ptr->health_who);
+    savefile_write_s16b(file, target_who);
+    savefile_write_s16b(file, pet_t_m_idx);
+    savefile_write_s16b(file, riding_t_m_idx);
 
     /* by henkma */
     savefile_write_s16b(file, p_ptr->tim_reflect);
@@ -1352,14 +1358,9 @@ static bool save_player_aux(char *name)
     if (file)
     {
         /* Hack: Wiping the monster list clears the current duel! */
-        int tmp_ix = p_ptr->duelist_target_idx;
-
+        handle_tmp_indices(TRUE, TRUE);
         ok = wr_savefile_new(file);
-        if (tmp_ix)
-        {
-            p_ptr->duelist_target_idx = tmp_ix;
-            p_ptr->redraw |= PR_STATUS;
-        }
+        handle_tmp_indices(FALSE, TRUE);
 
         if (!savefile_close(file)) ok = FALSE;
     }

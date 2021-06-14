@@ -1,0 +1,31 @@
+Equipment Properties
+
+    This help file should be considered reference material. 
+    There is no need to read it before starting play, and 
+    it may contain spoilers about items you have not seen.
+
+Please choose one of the following help sections:
+
+    [a] Overview of Equipment Properties
+    [b] Basic Properties
+      [c] Damage Dice
+      [d] Damage Multiplier
+      [e] Combat Bonuses
+      [f] Armor Class
+      [g] Pval
+      [h] Weight
+      [i] Activations
+    [j] Flag Attributes
+      [k] Bonuses and Penalties
+      [l] Resistances, Immunities and Vulnerabilities
+      [m] Miscellaneous Abilities
+      [n] Auras and Shells
+      [o] Slays and Brands
+      [p] Telepathies
+      [q] Sustains
+      [r] Attributes Visible on Inspection
+    [s] Equipment Curses
+
+    (?) Help System Commands
+
+

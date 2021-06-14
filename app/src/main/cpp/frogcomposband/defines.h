@@ -19,8 +19,8 @@
 #define VER_MAJOR 7
 #define VER_MINOR 1
 #define VER_PATCH "salmiak"
-#define VER_EXTRA 2
-#define VERSION_IS_DEVELOPMENT (FALSE)
+#define VER_EXTRA 4
+#define VERSION_IS_DEVELOPMENT (TRUE)
 
 #define GAME_MODE_BEGINNER  0
 #define GAME_MODE_NORMAL    1
@@ -1341,6 +1341,7 @@ enum {
 #define ART_HEAVENLY_MAIDEN     233
 #define ART_FREYJA              373
 #define ART_FRIGG               376
+#define ART_UNLIGHT             397
 
 /* Gloves */
 #define ART_CAMBELEG            52
@@ -2806,6 +2807,7 @@ enum summon_specific_e {
 #define MFLAG2_DIRECT_PY_SUMMON 0x00200000   /* Monster was summoned by the player */
 #define MFLAG2_SPAWN            0x00400000   /* Monster was randomly spawned mid-level */
 #define MFLAG2_NATIVE           0x00800000   /* Monster is a quest native */
+#define MFLAG2_KNOWN            0x01000000   /* Player is or has been aware of monster's identity */
 
 /*
  * Object Flags (OF_*)
@@ -5217,8 +5219,9 @@ enum mon_save_fields_e {
      !quests_allow_all_spells() || \
      (((TARGET) <= 0) && (quests_get_current() || (dun_level >= d_info[dungeon_type].maxdepth) || \
      ((coffee_break) && (coffeebreak_recall_level(FALSE) == dun_level))) && \
-      (dun_level >= 1) && ironman_downward))
+      (dun_level >= 1) && only_downward()))
 
+#define only_downward() ((coffee_break) || (ironman_downward))
 
 /*
  * Max numbers of macro trigger names

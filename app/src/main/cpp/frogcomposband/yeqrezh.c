@@ -831,7 +831,7 @@ static void _power_sorcery_mut(int cmd, variant *res)
         msg_print("You pour your soul into your magic!");
         break;
     case SPELL_HELP_DESC:
-        var_set_string(res, "Increases your spellpower by +15%, but decreases your life rating by 3 points.");
+        var_set_string(res, "Increases your spellpower by +15%, but decreases your life multiplier by 3 points.");
         break;
     case SPELL_CALC_BONUS:
         p_ptr->spell_power += 2;
@@ -1218,7 +1218,7 @@ static int _yeqrezh_get_spells_unlearned(power_info* spells, bool check_lv)
         dest = &spells[ct++];
         dest->spell.level = src->level;
         dest->spell.cost = src->cost;
-        dest->spell.fail = calculate_fail_rate(src->level, src->fail, p_ptr->stat_ind[A_INT]);
+        dest->spell.fail = _my_calculate_fail_rate((check_lv ? p_ptr->max_plv : src->level), src->fail, p_ptr->stat_ind[A_INT]);
         dest->spell.fn = src->fn;
         dest->stat = A_NONE;
     }

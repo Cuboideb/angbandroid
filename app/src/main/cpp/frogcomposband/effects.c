@@ -859,7 +859,7 @@ bool set_mimic(int v, int p, bool do_dec)
     p_ptr->redraw |= (PR_BASIC | PR_STATUS | PR_MAP | PR_EQUIPPY | PR_EFFECTS);
 
     /* Recalculate bonuses */
-    p_ptr->update |= (PU_BONUS | PU_HP | PU_TORCH);
+    p_ptr->update |= (PU_BONUS | PU_HP | PU_MANA | PU_TORCH);
     handle_stuff();
 
     /* Result */
@@ -6172,9 +6172,8 @@ void change_race(int new_race, cptr effect_msg)
     /* Check changes to body template (e.g. Centaurs) */
     equip_on_change_race();
 
-    p_ptr->redraw |= (PR_BASIC);
-
-    p_ptr->update |= (PU_BONUS);
+    p_ptr->redraw |= (PR_BASIC | PR_STATUS | PR_MAP | PR_EQUIPPY | PR_EFFECTS);
+    p_ptr->update |= (PU_BONUS | PU_HP | PU_MANA | PU_TORCH);
 
     handle_stuff();
 

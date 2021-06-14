@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html>
+<body text="#ffffff" bgcolor="#000000"><pre>
+<font color="#00ffff">Objects
+
+</font><font color="#ffffff">Objects are a key aspect of the game; much of your effort will be 
+devoted to acquiring better, and then even better, objects. Whether 
+they are potions to heal you during a difficult fight, scrolls to 
+teleport you out of danger, armor to protect you from fire-breathing 
+dragons, or swords to slay the minions of evil, objects permeate every 
+aspect of your journey from the safety of towns to the dread lair of 
+the Serpent of Chaos. Naked, you are nothing; be well-equipped, and 
+perhaps, just maybe, you will stand a chance.
+
+There are various types of objects, each with its own symbol for 
+display, and often with its own command for use. These will be 
+described fully in the reference section near the end of this document 
+(<a href="objects.html#Reference"></font><font color="#00ff00">[a]</a> </font><font color="#ffffff">to skip there); for now, here is an overview.
+
+First, there are objects you may wield or wear as </font><font color="#ff0000">equipment</font><font color="#ffffff">. This 
+includes melee weapons (swords, axes, pikes, lances, etc.); armor such 
+as suits of chain mail, shields, helmets, cloaks, gloves and boots; 
+jewelry (rings and amulets); and light sources like torches and 
+lanterns. All of these objects must be equipped with the </font><font color="#ff8000">w </font><font color="#ffffff">command to 
+wield or wear them, but your equipment slots are limited; generally, 
+you only have one or two slots for any one type of item. Your equipment 
+is never going to be perfect; you will spend the entire game trying to 
+fill these slots with better and better (and better) gear.
+
+Next, there are objects you carry around in your </font><font color="#ff0000">pack </font><font color="#ffffff">for utility 
+purposes, or as provisions. Of course, you need to eat: killing stuff 
+is hard work! Equally, you need spare torches (or oil for your lantern) 
+to ensure illumination in the dark, dank places where evil lurks. But 
+even more, you need magical objects to survive: </font><font color="#ff0000">spellbooks </font><font color="#ffffff">(if you are 
+playing a book class); </font><font color="#ff0000">scrolls </font><font color="#ffffff">which all but the stupidest may read; 
+magical </font><font color="#ff0000">potions </font><font color="#ffffff">which any may drink; and </font><font color="#ff0000">magic devices </font><font color="#ffffff">(wands, rods and 
+staves). Each scroll and magic device produces its own particular spell 
+effect when used; most of these effects are good in one way or another 
+(offense, healing, speed, teleportation etc.), but some are bad or only 
+useful in rare circumstances.
+
+Finally, there are precious metals such as </font><font color="#ff0000">gold</font><font color="#ffffff">. If you are a dwarf, 
+you will barely resist singing of your longing for the lost, ancient 
+treasures of yore; but other players will find gold just as useful, for 
+it is the currency of the realm, accepted by shopkeepers everywhere. 
+You can dig for gold or kill monsters for what they have in their 
+pockets, but don't lose sight of your real purpose: your ultimate 
+objective is to slay the Serpent of Chaos, and gold is but a tool that 
+will help you get there.
+
+The next chapters will explain objects in more detail; we will begin 
+with how you get objects, then discuss how you learn about their 
+powers, and finally discuss how to use them. At the end, we will give a 
+table of all the types of objects you might encounter, at a broad 
+level. This is a helpfile, and not a spoiler page (and also only 10 
+times as long as you'd like, not 100 times), so we won't be listing 
+everything that objects might do...
+
+<a name="Acquisition"></a></font><font color="#c00000">Where Can I Get Stuff?
+
+</font><font color="#ffffff">Every player is born with a starting kit of a few objects to get them 
+started on their adventures. The starting kit depends on which class 
+you play, but usually it includes a cheap weapon, some torches and 
+armor, a few rations of food, and maybe some items particularly 
+suitable for your race or class (like spellbooks on a mage). You also 
+begin with enough gold to let you buy additional supplies (like </font><font color="#00ff00">Scrolls 
+of Teleportation </font><font color="#ffffff">or </font><font color="#00ff00">Potions of Cure Serious Wounds</font><font color="#ffffff">) from the various 
+shops in the town. Most shops specialize in a particular class of 
+objects (like weapons, bows and arrows at the Weapon Shop); but there 
+is also the Black Market, an unregulated forum to buy and sell just 
+about anything... at exorbitant prices. Often, you can buy a really 
+great object there, but you need to be pretty rich! See <a href="town.html#Shopping"></font><font color="#00ff00">[b]</a> </font><font color="#ffffff">for the 
+basics of shopping, and <a href="town.html#TheShops"></font><font color="#00ff00">[c]</a> </font><font color="#ffffff">for a list of shops.
+
+So </font><font color="#ff0000">town stores </font><font color="#ffffff">are the first place you will get items from, and they 
+remain a useful source of basic supplies throughout the game. The most 
+valuable objects, though, can only be found deep in the dungeons. 
+Sometimes you get lucky and spot something valuable just lying on the 
+ground for anyone to take - left behind by previous adventurers, maybe? 
+But this is not very common: monsters, too, like to pick up treasures. 
+Indeed, it is mostly by </font><font color="#ff0000">killing monsters </font><font color="#ffffff">that you will acquire items; 
+many monsters carry objects or money, which you can retrieve should you 
+prove skillful enough to defeat them.
+
+</font><font color="#ff0000">Town quests </font><font color="#ffffff">(<a href="town.html#TownQuests"></font><font color="#00ff00">[d]</a></font><font color="#ffffff">) are also a good source of valuable items; often, you 
+will both find something useful in the quest itself and then get a nice 
+object as a reward for your good work. Finally, there is one place in 
+the dungeons where good floor items can be relied on: </font><font color="#ff0000">treasure vaults</font><font color="#ffffff">. 
+Vaults are usually well-guarded, both by traps and by highly dangerous 
+monsters - but as any adventurous hobbit will tell you, sneaking and 
+burglary can still go a long way...
+
+Objects can be picked up by moving on top of them and using the </font><font color="#ff8000">g</font><font color="#ffffff">et 
+command. Turning on the </font><font color="#ff0000">always_pickup </font><font color="#ffffff">option automatizes picking up at 
+no extra cost to you - indeed, it allows you to move to a square and 
+pick up the items there in a single turn! But indiscriminately picking 
+everything up soon fills your inventory with useless dead weight; so 
+many players prefer to pick things up manually in combination with use 
+of the </font><font color="#ff0000">Mogaminator </font><font color="#ffffff">(<a href="editor.html"></font><font color="#00ff00">[e]</a></font><font color="#ffffff">), an automatic system based on modifiable rules 
+that (hopefully) picks up useful items while destroying junk. During 
+your quest to defeat the Serpent you may find tens of thousands of 
+objects, so it is nice to have an automatic way to deal with them; and 
+if you find the Mogaminator overeager to destroy things, you can turn 
+on </font><font color="#ff0000">always_pickup </font><font color="#ffffff">or the </font><font color="#ff0000">leave_mogaminator </font><font color="#ffffff">option (<a href="option.html#leave_mogaminator"></font><font color="#00ff00">[f]</a></font><font color="#ffffff">) to make sure 
+only true junk is eliminated.
+
+<a name="Knowledge"></a></font><font color="#c00000">OK, I Found Something. What Does It Do?
+
+</font><font color="#ffffff">When you find an object, you won't know much about it. For example, it 
+might be described simply as "a Long Sword", with no other information 
+given. You can tell it's a weapon, and therefore that you can wield it 
+if you are so inclined... but, is this particular long sword any good? 
+Is it magical? Cursed? What other bonuses might it have? This object is 
+what we call </font><font color="#ff0000">unidentified</font><font color="#ffffff">, and you will usually want to learn a bit 
+more about it before deciding to wield it.
+
+Given time, your character will sense the quality of most unidentified 
+objects in their pack. This ability is called pseudo-identification or 
+more simply </font><font color="#ff0000">pseudo-ID</font><font color="#ffffff">, and its strength (how much it reveals) and speed 
+(whether it kicks in immediately or with some delay) will depend on 
+your class, wisdom, character level and mode of play. Pseudo-ID is your 
+first line of defense against the onslaught of junk objects; pick stuff 
+up, wait a bit if needed (while continuing to play, of course), and 
+learn which objects are junk and which might be worthy of further 
+investigation. Note that </font><font color="#ffff00">pseudo-ID works best on wearable items</font><font color="#ffffff">; it is 
+less useful for magic devices, and does not work for scrolls, potions 
+or edibles at all. See <a href="objects.html#Pseudo-ID"></font><font color="#00ff00">[g]</a> </font><font color="#ffffff">below for more information, and a list and 
+explanation of all pseudo-ID object feelings.
+
+If this rough object feeling is promising, you will probably want to 
+</font><font color="#ff0000">Identify </font><font color="#ffffff">the object. The ideal way to do this is with either a spell or 
+with a </font><font color="#c08040">Staff of Identify</font><font color="#ffffff">; but most characters never get an Identify 
+spell, and Staves of Identify are expensive. Until you can afford one, 
+you can use Scrolls of Identify or the town service provided by Count 
+Uldrik as a stopgap; and magical devices can often be identified simply 
+by trying them out.
+
+Identifying an object reveals its full name, damage dice or multipliers 
+(if any), and magical bonuses to accuracy, deadliness and armor class. 
+The object's name tells you whether the item is a valuable </font><font color="#ff0000">ego </font><font color="#ffffff">or even 
+an </font><font color="#ff0000">artifact</font><font color="#ffffff">; and Identify will also tell you if the object has a curse 
+on it. </font><font color="#ff8000">I</font><font color="#ffffff">nspecting an identified item will show everything you learned, 
+as well as provide a rough estimate of the object's monetary value.
+
+In the case of ego items and artifacts Identify may not be enough; 
+special powers might remain hidden. Sometimes those extra powers can be 
+learned simply by equipping and using the object (though this is risky 
+with cursed items!); for example, you will notice if the item increases 
+your stats. Other attributes might take much longer to learn, though; 
+if the item grants resistance to fire, you would need to get hit with a 
+fire attack to find out.
+
+It is possible to learn everything about an object this way, but doing 
+so is much too time-consuming, especially as the game progresses. There 
+are two much quicker ways to learn everything: </font><font color="#ff0000">*Identify* </font><font color="#ffffff">and </font><font color="#ff0000">selling</font><font color="#ffffff">. 
+The first is available as a spell, scroll, device or town service, and 
+is somewhat expensive; but it instantly reveals everything about the 
+item. The second method is to simply sell an item to a shop; this 
+produces the same result (the item is *Identified* by the shopkeeper) 
+and is the opposite of expensive (you're the one who makes money!); but 
+if the item turned out to be actually good, </font><font color="#ffff00">getting it back </font><font color="#ffffff">could be 
+very expensive indeed...
+
+<a name="Quality"></a></font><font color="#c00000">How Good is this Object, Anyway?
+
+</font><font color="#ffffff">The broad quality of equipment is given by the strong version of 
+pseudo-ID: objects are, in increasing order of quality, either </font><font color="#ff0000">average</font><font color="#ffffff">, 
+</font><font color="#ff0000">good</font><font color="#ffffff">/</font><font color="#ff0000">bad</font><font color="#ffffff">, </font><font color="#ff0000">excellent</font><font color="#ffffff">/</font><font color="#ff0000">awful </font><font color="#ffffff">or </font><font color="#ff0000">special</font><font color="#ffffff">/</font><font color="#ff0000">terrible</font><font color="#ffffff">. What does this mean?
+
+If you did some shopping, then you probably saw what average equipment 
+looks like. For example, you might have seen this inventory at the 
+Weapon Smiths:
+
+    </font><font color="#c08040">Solvistani the Ranger (Wood-Elf)                     </font><font color="#00ff00">Weapon Smiths </font><font color="#ffffff">(</font><font color="#c00000">25000</font><font color="#ffffff">)  
+                                                                                
+    Item Description                                               Weight  Price
+ a) </font><font color="#ff00ff">? </font><font color="#00ffff">a Rage Spellbook [Northern Frights]                         </font><font color="#ffffff">3.0 lbs   </font><font color="#404040">1610
+ </font><font color="#ffffff">b) </font><font color="#c08040">~ a Quiver [100]                                              </font><font color="#ffffff">1.0 lbs    423
+ c) </font><font color="#c08040">~ a Quiver [70]                                               </font><font color="#ffffff">1.0 lbs     61
+ d) </font><font color="#c0c0c0">| </font><font color="#ffffff">a Rapier (1d8) (+0,+0) {25% off}                            4.0 lbs     35
+ e) </font><font color="#c0c0c0">| </font><font color="#ffffff">a Small Sword (1d8) (+0,+0)                                 7.5 lbs     89
+ f) </font><font color="#c0c0c0">| </font><font color="#ffffff">a Short Sword (1d8) (+0,+0)                                 8.0 lbs     95
+ g) </font><font color="#c0c0c0">| </font><font color="#ffffff">a Sabre (1d9) (+0,+0)                                       5.0 lbs     68
+ h) </font><font color="#c0c0c0">| </font><font color="#ffffff">a Broad Sword (2d6) (+0,+0)                                15.0 lbs    330
+ i) </font><font color="#c0c0c0">| </font><font color="#ffffff">a Bastard Sword (3d5) (+0,+0)                              14.0 lbs    411
+ j) </font><font color="#808080">/ </font><font color="#ffffff">a Sickle (2d4) (+0,+0)                                      7.0 lbs    182
+ k) </font><font color="#ffff00">/ </font><font color="#ffffff">2 Tridents (1d10) (+0,+0)                                   7.0 lbs    192
+ l) </font><font color="#808080">/ </font><font color="#ffffff">a Fauchard (1d12) (+0,+0)                                  15.5 lbs    319
+ m) </font><font color="#808080">/ </font><font color="#ffffff">a Broad Axe (2d7) (+5,+2)                                  13.0 lbs   </font><font color="#404040">1340
+ </font><font color="#ffffff">n) </font><font color="#808080">/ </font><font color="#ffffff">a Lance (2d10) (+0,+0)                                     30.0 lbs    </font><font color="#404040">750
+ </font><font color="#ffffff">o) </font><font color="#808080">/ </font><font color="#ffffff">a Battle Axe (2d9) (+4,+3)                                 17.0 lbs   </font><font color="#404040">1700
+ </font><font color="#ffffff">p) </font><font color="#804000">} a Short Bow (x2.50) (+3,+6)                                 </font><font color="#ffffff">3.0 lbs   </font><font color="#404040">1540
+ </font><font color="#ffffff">q) </font><font color="#808080">{ </font><font color="#c08040">43 Bolts (3d5) (+0,+0)                                      </font><font color="#ffffff">0.3 lbs      6
+ r) </font><font color="#c08040">{ 39 Arrows (3d4) (+0,+0)                                     </font><font color="#ffffff">0.2 lbs      3
+ 
+Here, we see a bunch of different types of weapons, each of which is 
+fully *Identified* (as objects in town shops always are). They don't 
+look very impressive, though! First of all, you can notice that each 
+type of weapon has different </font><font color="#ff0000">damage dice</font><font color="#ffffff">: 3d5 or the like. These work 
+in a very simple way: for example, a 3d5 Bastard Sword means rolling 
+three five-sided dice (which gives an average of 9 damage per strike), 
+while a 1d9 Sabre (roll a single nine-sided die, if such a thing could 
+be imagined!) gives an average of 5 damage per blow.
+
+Next, you may notice that (+0,+0) is repeated over and over again. 
+That's because all of these objects are </font><font color="#ff0000">average</font><font color="#ffffff">. Hey, this small-town 
+Weapon Smith is no wizard; he just forges weapons of average quality, 
+and might occasionally buy something more interesting from intrepid 
+adventurers (like yourself!). The (+0,+0) simply gives the object's 
+combat bonuses: the first +0 is the accuracy (</font><font color="#ff0000">to-hit</font><font color="#ffffff">) bonus, which 
+affects your chance to hit monsters with that weapon; the second +0 is 
+the damage bonus (</font><font color="#ff0000">to-dam</font><font color="#ffffff">), which gets added to the total rolled by the 
+damage dice if you land a blow with that weapon.
+
+Objects can be magically enhanced, at which point they become </font><font color="#ff0000">good 
+</font><font color="#ffffff">objects. This means nothing more than that (+0,+0) becomes something 
+non-zero, giving you bonuses either to hit, or to damage, or both. For 
+example, you might have noticed that </font><font color="#804000">Short Bow (x2.50) (+3,+6)</font><font color="#ffffff">. The 
+(x2.50) is part of every average short bow, and is called the </font><font color="#ff0000">damage 
+multiplier</font><font color="#ffffff">; see <a href="attack.html#MissileLaunch"></font><font color="#00ff00">[h]</a> </font><font color="#ffffff">for an explanation of that. But bows have </font><font color="#ff0000">combat 
+bonuses </font><font color="#ffffff">just as melee weapons do, and they mean the same thing here: 
+the bow gives +3 to hit (making you more accurate with it), and +6 to 
+damage (making you more deadly as well). That would be a nice starting 
+bow - but alas, it costs 1540 gold pieces, which is more than I have.
+
+<a name="EgoItems"></a></font><font color="#c08040">Excellent Objects
+
+</font><font color="#ffffff">So that's average and good objects. What about excellent objects? And 
+special objects? Excellent objects are called </font><font color="#ff0000">ego items </font><font color="#ffffff">(a term of 
+mysterious origin), and each ego item represents a particular ego type. 
+For example, a </font><font color="#ffff00">Long Sword of Slaying (2d6) (+7,+3) {/o} </font><font color="#ffffff">represents the 
+</font><font color="#ff0000">Slaying </font><font color="#ffffff">weapon ego type! Ego types vary greatly; some egos predictably 
+always give the same bonuses to an item, while others are much more 
+random. The Slaying ego is somewhat random within limits - </font><font color="#ffff00">what exactly 
+does that weapon slay? </font><font color="#ffffff">Our example long sword, for instance, slays orcs 
+(I can tell without inspection by the </font><font color="#ff0000">{/o}</font><font color="#ffffff">); but the next Slaying 
+weapon you find might slay demons and animals instead.
+
+Our example sword is not a particularly powerful or exciting ego item; 
+it is simply more deadly against orcs. More precisely, it will do 2.8 
+times as much damage from the base damage dice against orcs: roll two 
+six-sided dice (2d6), add up the result, and multiply by 2.8 if the 
+monster struck is an orc; then add in the +3 damage bonus, and maybe 
+other damage bonuses from elsewhere. Slays are a fairly common ego 
+weapon effect; but ego items can do many other things as well, like 
+boost your stats, give you resistances or other important abilities, or 
+even activate for various magical effects.
+
+Initially, your character will not know very much about ego items; so 
+some of their effects might remain hidden after simple Identify. For 
+example, the Long Sword might show as </font><font color="#ffff00">a Long Sword of Slaying (2d6) 
+(+7,+3) {?} </font><font color="#ffffff">until we discovered (through selling, *Identify* or by 
+hitting an orc) that it slays orcs. But learning this new fact also 
+teaches us something new about the Slaying ego: the next time we find a 
+Slaying weapon that slays orcs, simple Identify will let us recognize 
+the orc slay, although other slays on the weapon might still be hidden.
+
+<a name="SpecialItems"></a></font><font color="#c08040">Special Objects
+
+</font><font color="#ffffff">Special objects are </font><font color="#ff0000">artifacts</font><font color="#ffffff">. Think of these as unique objects: you 
+can only find any one artifact once in a particular game, and they can 
+be substantially more powerful than an ordinary ego item. Like egos, 
+artifacts can give combat bonuses, armor bonuses, stat bonuses, 
+resistances, abilities, slays and other (generally) nice stuff. There 
+are two basic types of artifact: </font><font color="#ff0000">standard artifacts</font><font color="#ffffff">, which are the same 
+in every game, and </font><font color="#ff0000">random artifacts</font><font color="#ffffff">, which are highly unpredictable. 
+Generally, you will want to *Identify* every artifact you find; even if 
+you have played the game before and recognize a familiar standard 
+artifact, it might have some random bonus.
+
+Artifacts are almost indestructible; they cannot be harmed by the base 
+elements, are more resistant to disenchantment than other items, and 
+can only be completely destroyed in exotic circumstances.
+
+<a name="CursedItems"></a></font><font color="#c08040">Cursed Objects
+
+</font><font color="#ffffff">What about the evil end of the pseudo-ID spectrum (bad -&gt; awful -&gt; 
+terrible)? These objects are </font><font color="#ff0000">cursed</font><font color="#ffffff">, but they need not be junk. Well, 
+bad objects are just the opposite of good ones, so they genuinely are 
+junk; but awful objects are ego items that happen to have some bad 
+attributes (either because of a random curse or because the ego type is 
+inherently cursed), and terrible items are artifacts that similarly 
+have bad attributes on top of the good. Whether or not these items 
+remain useful is up to you to determine: sometimes they are junk, 
+sometimes the good can outweigh the bad. In either case, you will need 
+*identify* to discover everything.
+
+All cursed items have one thing in common: </font><font color="#ffff00">you cannot take off cursed 
+equipment while it is still cursed</font><font color="#ffffff">. Most equipment can be uncursed; 
+this will allow you to take it off, but will not necessarily remove all 
+of its other downsides.
+
+We've talked a lot about equipment; it is time to move on to utility 
+objects you might want to carry in your inventory.
+
+<a name="Flavors"></a></font><font color="#c00000">Object Flavors
+
+</font><font color="#ffffff">Mushrooms, potions and scrolls have </font><font color="#ff0000">flavors</font><font color="#ffffff">: you might find a </font><font color="#c08040">Black 
+Spotted Mushroom </font><font color="#ffffff">or a </font><font color="#00ffff">Bubbling Potion</font><font color="#ffffff">. Flavors and item effects go 
+hand-in-hand; if the bubbling potion turns out to be a Potion of 
+Healing, then all other bubbling potions are also Potions of Healing 
+and all Potions of Healing will be bubbling potions.
+
+Flavored items can be fully identified with normal Identify (you can 
+also try to identify them by using them... if you are very brave). By 
+default, flavors are only displayed for unidentified items; once you 
+have identified one Bubbling Potion, both it and all future Bubbling 
+Potions will be displayed simply as </font><font color="#00ffff">Potions of Healing</font><font color="#ffffff">.
+
+You only need to identify any given flavor once per game; but </font><font color="#00ff00">flavors 
+change between games. </font><font color="#ffffff">Next game you play, Bubbling Potions might be 
+Potions of Salt Water instead!
+
+<a name="Jewelry"></a></font><font color="#c00000">Jewelry
+
+</font><font color="#ffffff">While rings and amulets are wearable objects, they differ from weapons 
+and armor in an important way: there is no such thing as </font><font color="#ff0000">good </font><font color="#ffffff">jewelry. 
+Rings and amulets are always either average, ego or artifacts; average 
+jewelry has no effect at all, and is only useful for reforging.
+
+There aren't very many different jewelry ego types, but those that do 
+exist allow high variability; the ego type is essentially a theme that 
+allows a particular set of attributes, but which of those attributes 
+any one piece of jewelry generates with is very random.
+
+<a name="Lore"></a></font><font color="#c00000">Object Lore
+
+</font><font color="#ffffff">Every time you identify any attribute on an ego item or a standard 
+artifact, you also learn about the artifact or ego item type. This is 
+called </font><font color="#ff0000">object lore </font><font color="#ffffff">and will help you recognize the same attribute on 
+similar future items, without the need to *Identify*. By default, 
+object lore is kept in your savefile after death just like monster 
+lore, although you can change this with the </font><font color="#ff0000">empty_lore </font><font color="#ffffff">option (<a href="option.html#empty_lore"></font><font color="#00ff00">[i]</a></font><font color="#ffffff">).
+
+You can view your current artifact and ego lore at any time through the 
+</font><font color="#ff8000">~ </font><font color="#ffffff">Knowledge Menu. There is no real advantage to doing so, but it can be 
+a fun distraction!
+
+<a name="Devices"></a></font><font color="#c00000">Devices
+
+</font><font color="#ffffff">Magical devices include wands, staves and rods. Since these are 
+available in town, I'll talk you through one example in detail without 
+much of a guilty conscience over spoilers. Here's a basic wand:
+
+</font><font color="#008040">a Wand: </font><font color="#00ff00">Stinking Cloud
+  </font><font color="#c08040">This device has the following magical strength:
+  </font><font color="#ffffff">Power  : </font><font color="#00ff00">13
+  </font><font color="#ffffff">Mana   : </font><font color="#ffff00">10</font><font color="#ffffff">/</font><font color="#00ff00">39
+
+  </font><font color="#c08040">This device is loaded with a spell:
+  </font><font color="#ffffff">Spell  : </font><font color="#00ffff">Stinking Cloud
+  </font><font color="#ffffff">Info   : dam 15
+  Level  : </font><font color="#00ff00">8
+  </font><font color="#ffffff">Cost   : </font><font color="#00ff00">4
+  </font><font color="#ffffff">Charges: </font><font color="#ffff00">2</font><font color="#ffffff">/</font><font color="#00ff00">9
+  </font><font color="#ffffff">Fail   : </font><font color="#00ff00">2.4%
+  </font><font color="#ffffff">Desc   : It fires a ball of poison.
+
+It may help if you already familiar with spellcasting, since one way to 
+think of devices is as spellcasters with access to a single spell. The 
+device, just like a spellcaster, has a casting level (labelled as 
+</font><font color="#ff0000">Power</font><font color="#ffffff">) and spell points (</font><font color="#ff0000">Mana</font><font color="#ffffff">); and the spell it is loaded with has a 
+</font><font color="#ff0000">spell level</font><font color="#ffffff">, </font><font color="#ff0000">mana cost </font><font color="#ffffff">and </font><font color="#ff0000">fail rate </font><font color="#ffffff">just as normal spells do.
+
+The </font><font color="#ff0000">Power </font><font color="#ffffff">of a device determines how much mana the device can have, 
+which spell effects it had a chance to generate with, and how difficult 
+it is to use. Power also determines how strong the spell is; sometimes 
+this has no practical meaning at all, but in our Stinking Cloud example 
+the </font><font color="#ff0000">dam 15 </font><font color="#ffffff">is a direct result of the device's power.
+
+The </font><font color="#ff0000">Mana </font><font color="#ffffff">of the device indicates how many times the device can be used 
+before it needs to "rest" a bit. Traditionally, this has been displayed 
+as </font><font color="#ff0000">charges</font><font color="#ffffff">; our example device has 2 charges right now, but 9 when 
+fully charged. You can see this matches the device's mana and the 
+spell's mana cost: with its current </font><font color="#ffff00">10 </font><font color="#ffffff">mana, the wand has 10/4 = 2 (and 
+a half) charges, and at full </font><font color="#00ff00">39 </font><font color="#ffffff">mana it would have 9 charges and a bit.
+
+There is no need to throw a device away once all of its charges have 
+been spent: devices also resemble spellcasters in that their mana 
+regenerates. This happens much faster on rods than on wands or staves.
+
+The </font><font color="#ff0000">Fail Rate </font><font color="#ffffff">of the device indicates the probability that you fail to 
+use it successfully. This depends on the device's power, the player's 
+</font><font color="#ff0000">device skill</font><font color="#ffffff">, and the inherent difficulty of the spell effect itself. 
+Fail rates never hit zero, but our example wand comes pretty close at 
+</font><font color="#00ff00">2.4%</font><font color="#ffffff">; due to its low level and fairly unimpressive effect, it is very 
+easy to use. Devices differ from spellcasters in that failed attempts 
+to use a device do not consume mana.
+
+Devices, like equipment, can be ego; but the difference between average 
+devices and ego devices is much smaller than that between average and 
+ego equipment. The ego type simply gives the device one of a handful of 
+special attributes:
+   
+   </font><font color="#c08040">Power         </font><font color="#ffffff">The device's spells are more powerful than its casting 
+                 level would indicate.
+   </font><font color="#c08040">Simplicity    </font><font color="#ffffff">The device is easier to use than its effect and 
+                 casting level would indicate.
+   </font><font color="#c08040">Holding       </font><font color="#ffffff">The device is resistant to having its charges drained 
+                 by monsters.
+   </font><font color="#c08040">Regeneration  </font><font color="#ffffff">The device's mana regenerates much faster than 
+                 normally (+100% regen per pval point).
+   </font><font color="#c08040">Resistance    </font><font color="#ffffff">The device cannot be destroyed by the base elements.
+   </font><font color="#c08040">Capacity      </font><font color="#ffffff">The device has an unusually large mana pool.
+   </font><font color="#c08040">Quickness     </font><font color="#ffffff">Using the device consumes less than a full turn (-10% 
+                 energy cost per pval point).
+   
+See <a href="faq.html#DeviceTypes"></font><font color="#00ff00">[j]</a> </font><font color="#ffffff">for an overview of the differences between wands, rods and 
+staves, as well as the somewhat similar scrolls and potions.
+
+<a name="Spellbooks"></a></font><font color="#c00000">Spellbooks
+
+</font><font color="#ffffff">Many spellcasters need books in order to learn and cast spells. Books 
+do not require identification, and each spellbook of the same type is 
+exactly the same. No issues of object knowledge or quality to worry 
+about! See <a href="magic.html#Spellbook"></font><font color="#00ff00">[k]</a> </font><font color="#ffffff">for more on spellbooks and the magic system.
+
+<a name="Inscriptions"></a></font><font color="#c00000">Object Inscriptions
+
+</font><font color="#ffffff">This is an advanced topic which you may want to skip if you are just 
+getting started; but </font><font color="#ff0000">inscriptions</font><font color="#ffffff">, once learned, are very powerful and 
+useful. The Mogaminator automatically inscribes some items, so 
+activating it is a good way to both get easy utility out of 
+inscriptions and to see how they work in practice.
+
+Inscriptions are text appended to individual objects; the game uses 
+inscriptions on an object to communicate information to you, and you 
+can use inscriptions to communicate back to the game.
+
+To add an inscription, use the </font><font color="#ff8000">{ </font><font color="#ffffff">command, then type whatever you like. 
+If you later decide to remove that inscription, use </font><font color="#ff8000">}</font><font color="#ffffff">. Note that 
+inscriptions are displayed to you inside curly braces as {inscription}, 
+so the inscription commands themselves should be easy to remember. In 
+the original keyset, the </font><font color="#ff8000">Z </font><font color="#ffffff">key is functionally identical with </font><font color="#ff8000">{</font><font color="#ffffff">, and 
+can be used as a convenient substitute if </font><font color="#ff8000">{ </font><font color="#ffffff">is hard to access on your 
+system or keyboard.
+
+<a name="FakeInsc"></a>  </font><font color="#ff8000">Fake Inscriptions
+  
+  </font><font color="#ffffff">These are added by the game to communicate information to the player. 
+  Pseudo-ID, for example, communicates the quality of an item through a 
+  fake inscription; so you might have "a Long Sword {special}" where 
+  the object feeling is displayed as an inscription between curly 
+  braces. These inscriptions are "fake" in that no literal inscription 
+  is involved; the game simply displays the information as if it were 
+  an inscription. Fake inscriptions include the following:
+  
+  </font><font color="#00ff00">Type             Comment
+  </font><font color="#ffffff">Pseudo-ID        Displays the quality of the object as average, good, 
+                   excellent, etc. These inscriptions will be removed 
+                   once the player identifies the object.
+  Discount         If an item is purchased at a discount, this fake 
+                   inscription displays that discount. You can turn it 
+                   off with the <a href="option.html#show_discounts"></font><font color="#00ff00">[l]</a> </font><font color="#ffffff">show_discounts option.
+  Abbreviations    Indicate the resistances, slays, stat bonuses and 
+                   other attributes an item has. See <a href="objects.html#InscriptionAbbrev"></font><font color="#00ff00">[m]</a> </font><font color="#ffffff">below for a 
+                   list of the abbreviations that might appear.
+  
+<a name="RealInsc"></a>  </font><font color="#ff8000">Useful Inscriptions
+  
+  </font><font color="#ffffff">"Real" inscriptions include those you type in yourself, using the </font><font color="#ff8000">{ 
+  </font><font color="#ffffff">command, as well as those added by the Mogaminator. These 
+  inscriptions can be any text you like, maybe a note to yourself "this 
+  potion is probably Speed" before you have officially identified it. 
+  Alternatively, you can use special syntax to communicate your 
+  preferences to the game; let's call these </font><font color="#ff0000">useful inscriptions</font><font color="#ffffff">.
+  
+  The most useful use of the useful inscriptions (sorry!) is to control 
+  object selection when entering a given command. For example, when a 
+  Mage goes to cast a spell (using the </font><font color="#ff8000">m </font><font color="#ffffff">command), they are prompted 
+  for a spellbook, which they must select from their inventory. By 
+  default, this choice is made through a letter label corresponding to 
+  the book's position in a list of all available books, for example:
+  
+  </font><font color="#00ff00">Inventory
+   </font><font color="#ffffff">a) </font><font color="#ff0000">? a Chaos Spellbook [Sign of Chaos]
+   </font><font color="#ffffff">b) </font><font color="#ff0000">? a Chaos Spellbook [Chaos Mastery]
+   </font><font color="#ffffff">c) </font><font color="#00ffff">? a Sorcery Spellbook [Beginner's Handbook]
+   </font><font color="#ffffff">d) </font><font color="#00ffff">? a Sorcery Spellbook [Master Sorcerer's Handbook]
+  
+  </font><font color="#ffffff">I only have 4 spellbooks at the moment, so this choice is not too 
+  bad. But let's say I get very used to casting spells from my [Chaos 
+  Mastery] book with something like </font><font color="#ff8000">mbe</font><font color="#ffffff">, where </font><font color="#ff8000">e </font><font color="#ffffff">corresponds to a 
+  particular spell in that book. Now, along comes an arch-vile who 
+  burns up one of my books, perhaps my [Sign of Chaos]. Now, the prompt 
+  for a spellbook looks like:
+  
+  </font><font color="#00ff00">Inventory
+   </font><font color="#ffffff">a) </font><font color="#ff0000">? a Chaos Spellbook [Chaos Mastery]
+   </font><font color="#ffffff">b) </font><font color="#00ffff">? a Sorcery Spellbook [Beginner's Handbook]
+   </font><font color="#ffffff">c) </font><font color="#00ffff">? a Sorcery Spellbook [Master Sorcerer's Handbook]
+  
+  </font><font color="#ffffff">If I fail to notice that the letters for my books changed, or if I am 
+  so darned used to typing </font><font color="#ff8000">mbe </font><font color="#ffffff">for the spell I want - or if I built a 
+  macro for the spell I wanted - I am in for a nasty surprise. Instead 
+  of casting the spell I want from [Chaos Mastery], I'll be casting 
+  something else entirely from my [Beginner's Handbook]!
+  
+  This type of reordering happens with all kinds of objects: your 
+  inventory sorts itself as you find stuff, and objects move around. As 
+  they move, the letters you enter to select them move around as well. 
+  To deal with these situations, use the special inscription of the 
+  form: @</font><font color="#00ff00">Command-Letter</font><font color="#ff0000">Choice-Label</font><font color="#ffffff">. For example, perhaps I should try 
+  adding </font><font color="#ff00ff">@mb </font><font color="#ffffff">to my [Chaos Mastery]? And to illustrate a point, I will 
+  actually inscribe it with "Master of @mb Chaos" (the point being that 
+  @mb just needs to be part of the inscription, not the entire 
+  inscription). Now, here is what I see:
+  
+  </font><font color="#00ff00">Inventory
+   </font><font color="#ffffff">b) </font><font color="#ff0000">? a Chaos Spellbook [Chaos Mastery] {Master of @mb Chaos}
+   </font><font color="#ffffff">a) </font><font color="#00ffff">? a Sorcery Spellbook [Beginner's Handbook]
+   </font><font color="#ffffff">c) </font><font color="#00ffff">? a Sorcery Spellbook [Master Sorcerer's Handbook]
+  
+  </font><font color="#ffffff">Better, but not ideal; my copy of [Beginner's Handbook] has 
+  unexpectedly moved to the a) slot, which will likely also throw me 
+  off! This illustrates an important principle with regard to 
+  spellbooks: if you inscribe one spellbook, it is a good idea to 
+  inscribe all of them. Most players use @ma through @md for their 
+  first realm of magic (each realm has four spellbooks) and @me through 
+  @mh for their second realm; the Mogaminator even does this 
+  automatically. Let's see what effect this has:
+  
+  </font><font color="#00ff00">Inventory
+   </font><font color="#ffffff">b) </font><font color="#ff0000">? a Chaos Spellbook [Chaos Mastery] {Master of @mb Chaos}
+   </font><font color="#ffffff">e) </font><font color="#00ffff">? a Sorcery Spellbook [Beginner's Handbook] {@me}
+   </font><font color="#ffffff">f) </font><font color="#00ffff">? a Sorcery Spellbook [Master Sorcerer's Handbook] {@mf}
+  
+  </font><font color="#ffffff">That's better. My inventory, you remember, still looks like this:
+  
+  </font><font color="#00ff00">Inventory </font><font color="#0000ff">| </font><font color="#404040">Equipment                                                         
+   </font><font color="#ffffff">a) </font><font color="#ff0000">? a Chaos Spellbook [Chaos Mastery] {Master of @mb Chaos}
+   </font><font color="#ffffff">b) </font><font color="#00ffff">? a Sorcery Spellbook [Beginner's Handbook] {@me}
+   </font><font color="#ffffff">c) </font><font color="#00ffff">? a Sorcery Spellbook [Master Sorcerer's Handbook] {@mf}
+   </font><font color="#ffffff">d) </font><font color="#c08040">, 9 Rations of Food
+   </font><font color="#ffffff">e) </font><font color="#804000">~ </font><font color="#ffff00">4 Wooden Torches (with 3500 turns of light)
+  
+  </font><font color="#ffffff">All we are doing is using inscriptions to change the lettering of 
+  choices, and then, only for the </font><font color="#ff8000">m </font><font color="#ffffff">command. If I </font><font color="#ff8000">b</font><font color="#ffffff">rowse my spellbooks, 
+  I am back in my original situation. Of course, I can rectify this by 
+  appending inscriptions of the form @ba through @bh to all of my 
+  books; or, since I don't use the Browse command that often, I can 
+  simply slow down and read the prompt.
+  
+  There is another option, though: instead of using the format 
+  @</font><font color="#00ff00">Command-Letter</font><font color="#ff0000">Choice-Label</font><font color="#ffffff">, I could use @</font><font color="#ff0000">Choice-Digit </font><font color="#ffffff">where the 
+  label is a single digit between 0 and 9 and the command-letter is 
+  omitted. For example, I could inscribe my books with </font><font color="#ff00ff">@1 </font><font color="#ffffff">through </font><font color="#ff00ff">@8</font><font color="#ffffff">:
+  
+  </font><font color="#00ff00">Inventory
+   </font><font color="#ffffff">1) </font><font color="#ff0000">? a Chaos Spellbook [Sign of Chaos] {@1}
+   </font><font color="#ffffff">2) </font><font color="#ff0000">? a Chaos Spellbook [Chaos Mastery] {@2}
+   </font><font color="#ffffff">5) </font><font color="#00ffff">? a Sorcery Spellbook [Beginner's Handbook] {@5}
+   </font><font color="#ffffff">6) </font><font color="#00ffff">? a Sorcery Spellbook [Master Sorcerer's Handbook] {@6}
+  
+  </font><font color="#ffffff">Now, I can cast my desired spell with </font><font color="#ff8000">m2e</font><font color="#ffffff">, browse my [Master 
+  Sorcerer's Handbook] with </font><font color="#ff8000">b6 </font><font color="#ffffff">and learn a new spell from [Sign of 
+  Chaos] with </font><font color="#ff8000">G1</font><font color="#ffffff">; the same numbers apply for all commands.
+  
+<a name="WhatElse"></a>  </font><font color="#c08040">What Else Can Inscriptions Do?
+  
+  </font><font color="#ffffff">Controlling object selection letters is not the only useful 
+  inscription; you can also have the game prompt for confirmation when 
+  attempting to use an object with a given command. For example, 
+  suppose you just found </font><font color="#00ffff">a Potion of Super-Duper Healing</font><font color="#ffffff">, and you 
+  really want to make sure you do not quaff it by mistake. To protect 
+  this potion from accidental quaffing, add the inscription </font><font color="#ff00ff">!q</font><font color="#ffffff">, which 
+  is of the form !</font><font color="#00ff00">Command-Letter</font><font color="#ffffff">. Now, whenever I try to </font><font color="#ff8000">q</font><font color="#ffffff">uaff the 
+  potion - whether accidentally or intentionally - the game will prompt 
+  me for confirmation.
+  
+  If I am paranoid, I can increase the prompting with the inscription 
+  !q!q, or even !q!q!q!q; the game will prompt me once for each !q in 
+  the inscription, making extra-sure that I only have myself to blame 
+  when I still quaff this potion by mistake.
+  
+  A related inscription is </font><font color="#ff00ff">!*</font><font color="#ffffff">; it works on the same principle as </font><font color="#ff00ff">!q</font><font color="#ffffff">, 
+  but uses the wild-card </font><font color="#ff00ff">* </font><font color="#ffffff">to have the game prompt you for every 
+  command that uses the object. You cannot quaff it by accident, sell 
+  it by accident, drop it by accident, destroy it by accident... we 
+  cater to the most paranoid of players!
+  
+  So we have @</font><font color="#00ff00">Command-Letter</font><font color="#ff0000">Choice-Label </font><font color="#ffffff">as well as @</font><font color="#ff0000">Choice-Digit </font><font color="#ffffff">to 
+  control object labeling; and !</font><font color="#00ff00">Command-Letter </font><font color="#ffffff">to add confirmation 
+  prompts before using an object in various ways. What else can we do? 
+  Quite a bit actually. Try the following:
+  
+  </font><font color="#00ff00">Inscription  Meaning
+      </font><font color="#ffffff">!!       Disturb the player when the inscribed object (typically 
+               a magical device, but this also works for equipment 
+               activations) is fully recharged. This means you can 
+               issue a long rest command like </font><font color="#ff8000">R777\r </font><font color="#ffffff">to rest for 777 
+               turns, and the game will interrupt your dozing once your 
+               device is ready for use again (unless it still hasn't 
+               finished recharging, which is a real possibility...)
+      !1       Disturb the player when the inscribed device has 
+               recharged enough to have 1 charge again.
+      =g       Automatically pick this object up. Use this on your 
+               arrows and such, and you can quickly regather discharged 
+               ammunition after a lengthy shooting battle.
+      .        Suppress the prompt for random teleportation on objects 
+               with this attribute.
+      $        Suppress the warning prompt for items that warn you 
+               before taking dangerous actions. Of course, this defeats 
+               the warning altogether, but sometimes you are confident 
+               enough in your own decisions to forgo second-guessing by 
+               pretentious jewelry.
+      !?       Request confirmation of melee attacks, a handy 
+               inscription if you are so weak in physical combat that 
+               any melee you might engage in would likely be 
+               accidental. The inscription can be combined with a 
+               monster level, e.g. !?40, to only request confirmation 
+               for attacks against monsters of (in this example) level 
+               40 or above.
+  
+  Finally, there is also a special inscription form ^</font><font color="#00ff00">Command-Letter</font><font color="#ffffff">. 
+  Adding this to a worn piece of equipment causes the game to prompt 
+  for verification every time you attempt the indicated command, even 
+  if the command is one not involving the object in question. If you 
+  like, you could inscribe (say) </font><font color="#ff00ff">^&lt;^&gt; </font><font color="#ffffff">on your boots; and the game will 
+  now prompt for confirmation every time you attempt to use the </font><font color="#ff8000">&lt; </font><font color="#ffffff">and </font><font color="#ff8000">&gt; 
+  </font><font color="#ffffff">commands!
+  
+    </font><font color="#00ff00">Command letters used in inscriptions must always match 
+    the commands of the </font><font color="#ff8000">underlying keyset</font><font color="#00ff00">. If you use the 
+    default Original Keyset this is not a problem, but if 
+    you have switched to the roguelike keyset, stay alert, 
+    as you may need to use unfamiliar command-letters.
+  
+<a name="Reference"></a></font><font color="#00ffff">The Reference Section
+
+<a name="ObjectSymbols"></a></font><font color="#c00000">Object Symbols
+
+  </font><font color="#00ffff">!   </font><font color="#ffffff">Potions, flasks                 </font><font color="#ff8000">/   </font><font color="#ffffff">Polearms
+  ?   Scrolls, spellbooks             </font><font color="#c0c0c0">|   </font><font color="#ffffff">Edged weapons
+  </font><font color="#c08040">,   </font><font color="#ffffff">Mushrooms/food                  </font><font color="#00ffff">\   </font><font color="#ffffff">Hafted weapons
+  </font><font color="#c00000">-   </font><font color="#ffffff">Rods (</font><font color="#c00000">always dark red</font><font color="#ffffff">)          </font><font color="#c08040">}   </font><font color="#ffffff">Ranged weapons
+  </font><font color="#00ffff">-   </font><font color="#ffffff">Wands (</font><font color="#00ffff">always light blue)       </font><font color="#808080">{   </font><font color="#ffffff">Ammunition
+  </font><font color="#c08040">_   </font><font color="#ffffff">Staves                          </font><font color="#c08040">(   </font><font color="#ffffff">Soft armor, cloaks
+  </font><font color="#008040">=   </font><font color="#ffffff">Rings                           </font><font color="#808080">[   </font><font color="#ffffff">Hard armor
+  </font><font color="#ffff00">"   </font><font color="#ffffff">Amulets                         </font><font color="#c08040">]   </font><font color="#ffffff">Misc. armor
+  </font><font color="#ffff00">$   </font><font color="#ffffff">Gold or gems                    </font><font color="#808080">)   </font><font color="#ffffff">Shields
+  </font><font color="#ff8000">~   </font><font color="#ffffff">Lamps, spikes, quivers          </font><font color="#ff8000">&amp;   </font><font color="#ffffff">Chests
+  </font><font color="#c00000">~   </font><font color="#ffffff">Junk, sticks, skeletons, etc    </font><font color="#0000ff">*   </font><font color="#ffffff">Unusual objects
+  </font><font color="#0000ff">`   </font><font color="#ffffff">Statues, figurines
+
+<a name="ObjectCommands"></a></font><font color="#c00000">Commands for Using Objects
+
+</font><font color="#ffffff">Where two commands separated by a </font><font color="#ff00ff">/ </font><font color="#ffffff">are indicated, the first is the 
+command in the standard keyset and the second the command in the 
+roguelike keyset.
+
+  </font><font color="#00ffff">!  </font><font color="#ffffff">Potion        </font><font color="#ff8000">q</font><font color="#ffffff">uaff
+  ?  Scroll        </font><font color="#ff8000">r</font><font color="#ffffff">ead
+  </font><font color="#ff0000">?  </font><font color="#ffffff">Spellbook     </font><font color="#ff8000">b</font><font color="#ffffff">rowse</font><font color="#ff00ff">/</font><font color="#ff8000">p</font><font color="#ffffff">eruse, </font><font color="#ff8000">G</font><font color="#ffffff">ain a spell, </font><font color="#ff8000">m </font><font color="#ffffff">to cast
+  </font><font color="#c08040">,  </font><font color="#ffffff">Food/Mushroom </font><font color="#ff8000">E</font><font color="#ffffff">at
+  </font><font color="#00ffff">-  </font><font color="#ffffff">Wand          </font><font color="#ff8000">a</font><font color="#ffffff">im</font><font color="#ff00ff">/</font><font color="#ff8000">z</font><font color="#ffffff">ap
+  </font><font color="#c00000">-  </font><font color="#ffffff">Rod           </font><font color="#ff8000">z</font><font color="#ffffff">ap</font><font color="#ff00ff">/</font><font color="#ff8000">a</font><font color="#ffffff">ctivate
+  </font><font color="#c08040">_  </font><font color="#ffffff">Staff         </font><font color="#ff8000">u</font><font color="#ffffff">se</font><font color="#ff00ff">/</font><font color="#ff8000">Z</font><font color="#ffffff">ap
+  </font><font color="#ff8000">&amp;  </font><font color="#ffffff">Chest         </font><font color="#ff8000">s</font><font color="#ffffff">earch for trap, </font><font color="#ff8000">D</font><font color="#ffffff">isarm, </font><font color="#ff8000">o</font><font color="#ffffff">pen
+  </font><font color="#808080">{  </font><font color="#ffffff">Ammo          </font><font color="#ff8000">f</font><font color="#ffffff">ire</font><font color="#ff00ff">/</font><font color="#ffffff">shoot at </font><font color="#ff8000">t</font><font color="#ffffff">arget, </font><font color="#ff8000">w</font><font color="#ffffff">ield to put in quiver
+
+With most equipment, you simply need to use the </font><font color="#ff8000">w</font><font color="#ffffff">ear command:
+</font><font color="#ff8000">/</font><font color="#c0c0c0">|</font><font color="#00ffff">\</font><font color="#c08040">} </font><font color="#ffffff">Weapons/Bows  </font><font color="#ff8000">w</font><font color="#ffffff">ield, </font><font color="#ff8000">t</font><font color="#ff00ff">/</font><font color="#ff8000">T</font><font color="#ffffff">ake off
+</font><font color="#c08040">(</font><font color="#808080">[</font><font color="#c08040">]</font><font color="#808080">) </font><font color="#ffffff">Armor         </font><font color="#ff8000">w</font><font color="#ffffff">ear, </font><font color="#ff8000">t</font><font color="#ff00ff">/</font><font color="#ff8000">T</font><font color="#ffffff">ake off
+  </font><font color="#008040">=  </font><font color="#ffffff">Ring          </font><font color="#ff8000">w</font><font color="#ffffff">ear, </font><font color="#ff8000">t</font><font color="#ff00ff">/</font><font color="#ff8000">T</font><font color="#ffffff">ake off
+  </font><font color="#ffff00">"  </font><font color="#ffffff">Amulet        </font><font color="#ff8000">w</font><font color="#ffffff">ear, </font><font color="#ff8000">t</font><font color="#ff00ff">/</font><font color="#ff8000">T</font><font color="#ffffff">ake off
+  </font><font color="#c08040">~  </font><font color="#ffffff">Quiver        </font><font color="#ff8000">w</font><font color="#ffffff">ear, </font><font color="#ff8000">d</font><font color="#ffffff">rop ammo, </font><font color="#ff8000">t</font><font color="#ff00ff">/</font><font color="#ff8000">T</font><font color="#ffffff">ake off
+  </font><font color="#c08040">~  </font><font color="#ffffff">Lantern       </font><font color="#ff8000">w</font><font color="#ffffff">ear, </font><font color="#ff8000">t</font><font color="#ff00ff">/</font><font color="#ff8000">T</font><font color="#ffffff">ake off, </font><font color="#ff8000">F</font><font color="#ffffff">uel
+
+<a name="WeirdNumbers"></a></font><font color="#c00000">Numbers on Items
+
+     </font><font color="#ffffff">(2d6)            Damage dice
+     </font><font color="#804000">(x2.50)          </font><font color="#ffffff">Damage multiplier (shooters only)
+     (+4,+6)          Accuracy and damage bonuses
+     </font><font color="#808080">(-2)             </font><font color="#ffffff">Accuracy penalty (armor only)
+     </font><font color="#c08040">(+2)             </font><font color="#ffffff">Damage bonus (boots and gloves only)
+     [15,+10]         Base AC (Armor Class) and bonus AC
+     [+10]            Bonus AC (items with no base AC)
+     (+2)             Pval (size of stat and ability bonuses)
+     {+15%}           Device power bonus
+     &lt;+15%&gt;           Spell power bonus
+     [+15%]           Spell capacity bonus
+
+<a name="Equipment"></a></font><font color="#c00000">Equipment
+
+</font><font color="#ffffff">The number and kinds of equipment you may wear depends on your racial 
+body type. The usual body type is humanoid:
+
+ a) </font><font color="#c0c0c0">| </font><font color="#ffffff">Right Hand: a Dagger (1d5) (+0,+0)
+ b) </font><font color="#c08040">) </font><font color="#ffffff">Left Hand : </font><font color="#c08040">a Small Leather Shield [3,+0]
+ </font><font color="#ffffff">c) </font><font color="#c08040">} </font><font color="#ffffff">Shooting  : </font><font color="#804000">a Short Bow (x2.50) (+3,+6)
+ </font><font color="#ffffff">d) </font><font color="#c08040">~ </font><font color="#ffffff">Quiver    : </font><font color="#c08040">a Quiver [0 of 80]
+ </font><font color="#ffffff">e) </font><font color="#008040">= </font><font color="#ffffff">Right Ring: </font><font color="#c00000">a Ring of Combat (+5,+0) {Fe A:Earthquake}
+ </font><font color="#ffffff">f) </font><font color="#008040">= </font><font color="#ffffff">Left Ring : </font><font color="#c00000">a Ring of Protection [+1] {Wr~L(Wi}
+ </font><font color="#ffffff">g) </font><font color="#ffff00">" </font><font color="#ffffff">Neck      : </font><font color="#ff8000">an Amulet
+ </font><font color="#ffffff">h) </font><font color="#804000">~ </font><font color="#ffffff">Light     : </font><font color="#ffff00">a Wooden Torch (with 1999 turns of light)
+ </font><font color="#ffffff">i) </font><font color="#c08040">( </font><font color="#ffffff">Body      : </font><font color="#808080">Soft Leather Armour [4,+0]
+ </font><font color="#ffffff">j) </font><font color="#008040">( </font><font color="#ffffff">Cloak     : </font><font color="#c08040">a Cloak [1,+3]
+ </font><font color="#ffffff">k) </font><font color="#808080">] </font><font color="#ffffff">Head      : </font><font color="#c08040">an Iron Helm [5,+5]
+ </font><font color="#ffffff">l) </font><font color="#c08040">] </font><font color="#ffffff">Hands     : </font><font color="#c08040">a Set of Leather Gloves [1,+5]
+ </font><font color="#ffffff">m) </font><font color="#c08040">] </font><font color="#ffffff">Feet      : </font><font color="#c08040">a Pair of Soft Leather Boots [2,+3]
+
+</font><font color="#ffffff">Many </font><font color="#c00000">Monster </font><font color="#ffffff">mode races have unique body types, and adapting to 
+different equipment possibilities is part of the fun of playing as a 
+monster!
+
+<a name="Inventory"></a></font><font color="#c00000">Inventory/Pack
+
+</font><font color="#ffffff">The size of your pack also slightly varies, but most characters have 26 
+slots in their inventory. You can place any object you like in your 
+pack, and objects here will sort and stack as allowed; however, should 
+your pack grow too heavy, your character will become </font><font color="#ff0000">encumbered </font><font color="#ffffff">and 
+will gradually move slower and slower. View your equipment with the 
+</font><font color="#ff8000">e</font><font color="#ffffff">quipment command, and your inventory with the </font><font color="#ff8000">i</font><font color="#ffffff">nventory command. 
+Examine items in detail with the </font><font color="#ff8000">I</font><font color="#ffffff">nspect command. Add objects to your 
+pack with the </font><font color="#ff8000">g</font><font color="#ffffff">et command and equip objects for use with the </font><font color="#ff8000">w</font><font color="#ffffff">ear 
+command. You can remove an equipped object with the </font><font color="#ff8000">t</font><font color="#ffffff">ake off command, 
+and discard an item with either the </font><font color="#ff8000">d</font><font color="#ffffff">rop command, which places the item 
+on the ground, or the </font><font color="#ff8000">k</font><font color="#ffffff">ill command, which destroys the object.
+
+<a name="Pseudo-ID"></a></font><font color="#c00000">Pseudo-ID
+
+</font><font color="#ffffff">To recap, pseudo-ID is the ability to roughly sense the quality of 
+unidentified objects in your pack (or equipment!), and it comes in two 
+forms: strong and weak. The speed and strength of the sensing varies 
+with class, wisdom, and virtue of the player. From birth in 
+coffee-break mode, and from CL20 otherwise, players automatically sense 
+the quality of objects underfoot, and this sensing is always strong 
+regardless of class; so weak pseudo-ID is only relevant in the early 
+game.
+
+Pseudo-ID communicates the quality of an object via a fake inscription 
+on that object. For example, you might have a Long Sword {excellent} or 
+Hard Studded Leather {terrible}. The meanings of these object feelings 
+are indicated by the tables below:
+  
+  </font><font color="#ff8000">Table 1 - Strong Pseudo-ID
+  </font><font color="#00ff00">Inscription    Meaning
+  </font><font color="#ffffff">Terrible       a cursed artifact
+  Awful          a cursed ego item
+  Bad            a cursed nameless item
+  Average        an average item
+  Good           an enchanted item
+  Excellent      a non-cursed ego item
+  Special        a non-cursed artifact
+  
+  Or, to put this another way:
+  
+                     </font><font color="#00ff00">Egos         Artifacts
+  </font><font color="#ffffff">Average -&gt; Good -&gt; Excellent -&gt; Special
+          -&gt; Bad  -&gt; Awful     -&gt; Terrible
+  
+  </font><font color="#ff8000">Table 2 - Weak Pseudo-ID
+  </font><font color="#00ff00">Inscription    Meaning
+  </font><font color="#ffffff">Average        an average item
+  Cursed         a cursed item (includes cursed ego items and 
+                 artifacts)
+  Enchanted      an enchanted item (includes good ego items and 
+                 artifacts)
+  
+<a name="InscriptionAbbrev"></a></font><font color="#c00000">List of Abbreviations
+
+  </font><font color="#ffffff">At : extra blows                    Ac : resistance to acid
+  Sp : affects speed                  El : resistance to electricity
+  St : affects strength               Fi : resistance to fire
+  In : affects intelligence           Co : resistance to cold
+  Wi : affects wisdom                 Po : resistance to poison
+  Dx : affects dexterity              Li : resistance to light
+  Cn : affects constitution           Dk : resistance to darkness
+  Ch : affects charisma               Cf : resistance to confusion
+  Md : affects magic devices          Nt : resistance to nether
+  Sl : affects stealth                Nx : resistance to nexus
+  Sr : affects searching ability      So : resistance to sound
+  If : affects infravision            Sh : resistance to shards
+  Dg : affects tunneling ability      Ca : resistance to chaos
+  Lf : affects your life rating       Di : resistance to disenchantment
+  *Ac: immune to acid                 Ti : resistance to time
+  *El: immune to electricity          Bl : resistance to blindness
+  *Fi: immune to fire                 Fe : resistance to fear
+  *Co: immune to cold
+
+  Es : easy spell                     [F : fiery sheath
+  Dm : decreases mana consumption     [E : electric sheath
+  Th : suitable for throwing          [C : cold sheath
+  Rf : reflection                     [Sh: aura of shards
+  Fa : free action                    [At: aura of retaliation
+  Si : see invisible                  [M : anti-magic shell
+  Hl : hold life                      [T : prevents teleportation
+  Sd : slow digestion                 [Mr: magic resistance
+  Id : loremastery (auto-identify)    [Sm: anti-summoning shell
+  Rg : regeneration                   |A : acid brand
+  Lv : levitation                     |E : electricity brand
+  Lu : extra light                    |F : fire brand
+  Wr : provides warning               |Co: cold brand
+  Xm : extra might when shooting      |P : poison brand
+  Xs : extra shots (shooting speed)   |Dk: darkness brand
+  Te : random teleportaion            |V : vampiric weapon
+  Ag : aggravate monsters             |Q : impact weapon
+  Bs : blessed                        |S : sharp weapon
+  Ty : ancient foul curse             |SS: really sharp weapon
+  Ds : darkness                       |M : mana brand
+  Nv : night vision                   |Ca: mark of chaos
+  Wm : weaponmastery (extra dice)     |St: hits to stun
+
+  /* : slay evil                      /X* : *slay* evil
+  /p : slay human                     /Xp : *slay* human
+  /D : slay dragon                    /XD : *slay* dragon
+  /o : slay orc                       /Xo : *slay* orc
+  /T : slay troll                     /XT : *slay* troll
+  /P : slay giant                     /XP : *slay* giant
+  /U : slay demon                     /XU : *slay* demon
+  /L : slay undead                    /XL : *slay* undead
+  /Z : slay animal                    /XZ : *slay* animal
+  /A : slay good
+  /Lv: slay living
+
+  ~Tele : telepathy                   (St : sustain strength
+  ~Evil : ESP evil                    (In : sustain intelligence
+  ~Good : ESP good                    (Wi : sustain wisdom
+  ~Nolv : ESP non-living              (Dx : sustain dexterity
+  ~Lvng : ESP living                  (Cn : sustain constitution
+  ~p : ESP human                      (Cn : sustain charisma
+  ~D : ESP dragon
+  ~o : ESP orc
+  ~T : ESP troll
+  ~P : ESP giant
+  ~U : ESP demon
+  ~L : ESP undead
+  ~Z : ESP animal
+
+For example, armor with base resistance would display as {AcElFiCo} 
+while a really good weapon might display as {Cn;LuAg|VS/XU/*~U}, 
+meaning it gives a bonus to Constitution, grants increased light 
+radius, aggravates monsters, is both vampiric and sharp (|V and |S; 
+notice the second | does not repeat), has *slay* demons, also slays 
+evil and grants ESP demons as well. (Quick quiz: which item is it?)
+
+<a name="InscriptionSummary"></a></font><font color="#c00000">Inscriptions: Summary
+
+</font><font color="#c08040">Inscription Form     Meaning
+</font><font color="#ffffff">@</font><font color="#00ff00">Command-Letter</font><font color="#ff0000">Choice-Label
+                     </font><font color="#ffffff">Use the given choice label (a-z, A-Z or 0-9) to 
+                     select the inscribed object whenever the 
+                     Command-Letter command is issued.
+
+@</font><font color="#ff0000">Choice-Digit        </font><font color="#ffffff">Use the given choice digit (0-9) to select the 
+                     inscribed object whenever any command is issued.
+
+!</font><font color="#00ff00">Command-Letter      </font><font color="#ffffff">Prompt for verification whenever attempting to use 
+                     the inscribed object with the Command-Letter 
+                     command.
+
+!*                   Prompt for verification whenever attempting to use 
+                     the inscribed object with any command.
+
+!!                   Disturb the player whenever the inscribed object 
+                     is fully recharged.
+
+!1                   Disturb the player whenever the inscribed object 
+                     has recharged enough to have 1 charge.
+
+=g                   Automatically pick up the inscribed object.
+.                    Disable prompt for random teleportation.
+$                    Disable warning prompt.
+!?                   Request confirmation for melee attacks.
+
+^</font><font color="#00ff00">Command-Letter      </font><font color="#ffffff">Prompt for verification whenever the 
+                     Command-Letter command is issued, provided the 
+                     inscribed object is currently being worn.
+
+Be sure to read <a href="objects.html#Inscriptions"></font><font color="#00ff00">[n]</a> </font><font color="#ffffff">if this is unclear to you.
+
+</font><font color="#404040">--
+Original   : (??)
+Updated    : (??)
+Updated    : Zangband DevTeam
+Updated    : Hengband 1.3.0
+Updated    : PosChengband 4.0.0
+Updated    : FrogComposband 7.1.chocolate
+Updated    : FrogComposband 7.1.liquorice
+
+
+</font></pre></body></html>

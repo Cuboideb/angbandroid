@@ -835,6 +835,15 @@ int queryInt(const char* argv0) {
 	else if (strcmp(argv0, "life_pct") == 0 && p_ptr) {
 		result = p_ptr->chp * 10 / MAX(p_ptr->mhp, 1);
 	}
+	else if (strcmp(argv0, "cant_run") == 0) {
+		result = 0;
+		if (!IN_THE_DUNGEON ||
+			command_cmd != 0 ||
+			p_ptr->confused ||
+			p_ptr->paralyzed) {
+		 	result = 1;
+		}
+	}
 	else if (strcmp(argv0, "msg_subw") == 0) {
 		result = 0;
 		if (PLAYER_PLAYING) {

@@ -968,6 +968,7 @@ void monster_death(int m_idx, bool drop_item)
 
             q_ptr->origin_type = ORIGIN_ARENA_REWARD;
             q_ptr->origin_xtra = m_ptr->r_idx;
+            identify_item(q_ptr);
             (void)drop_near(q_ptr, -1, y, x);
         }
 
@@ -2024,7 +2025,7 @@ void monster_death(int m_idx, bool drop_item)
             chance = 5;
             break;
         case MON_UNGOLIANT:
-            a_idx = ART_UNGOLIANT;
+            a_idx = ((one_in_(2)) ? ART_UNGOLIANT : ART_UNLIGHT);
             if (warlock_is_(WARLOCK_SPIDERS))
                 chance = 50;
             else
@@ -2681,10 +2682,10 @@ static void get_exp_from_mon(int dam, monster_type *m_ptr, bool mon_dead)
         (((r_ptr->level < 55) && (!(r_ptr->flags1 & RF1_UNIQUE))) ||
          (m_ptr->r_idx == MON_CYBER)))
     {
-        int exp_div = ironman_downward ? 220 : 110;
+        int exp_div = only_downward() ? 220 : 110;
         if ((mon_dead) && (p_ptr->py_summon_kills < 200) && (!(r_ptr->flags2 & RF2_MULTIPLY)) &&
            (((long)(r_ptr->mexp * r_ptr->level / p_ptr->lev) > (p_ptr->max_exp / ((m_ptr->mflag2 & MFLAG2_DIRECT_PY_SUMMON) ? (1694L * (10 + r_ptr->level) / exp_div) : 1000))) || (one_in_(10))) &&
-           ((m_ptr->mflag2 & MFLAG2_DIRECT_PY_SUMMON) || (ironman_downward) || (one_in_(2)))) p_ptr->py_summon_kills++;
+           ((m_ptr->mflag2 & MFLAG2_DIRECT_PY_SUMMON) || (only_downward()) || (one_in_(2)))) p_ptr->py_summon_kills++;
         s64b_mul(&new_exp, &new_exp_frac, 0, 20);
         s64b_div(&new_exp, &new_exp_frac, 0, 20 + p_ptr->py_summon_kills);
         if (m_ptr->mflag2 & MFLAG2_DIRECT_PY_SUMMON)
@@ -3578,6 +3579,7 @@ void viewport_verify_aux(u32b options)
         p_ptr->update |= PU_MONSTERS;
         p_ptr->redraw |= PR_MAP;
         p_ptr->window |= PW_OVERHEAD | PW_DUNGEON;
+        redraw_hack = TRUE;
     }
 }
 
@@ -3587,6 +3589,11 @@ void viewport_verify(void)
     if (center_player && (center_running || (!running && !travel.run)))
         options |= VIEWPORT_FORCE_CENTER;
     viewport_verify_aux(options);
+    if (redraw_hack)
+    {
+        handle_stuff();
+        redraw_hack = FALSE;
+    }
 }
 
 
@@ -4483,7 +4490,7 @@ static int target_set_aux(int y, int x, int mode, cptr info)
 
         /* Pick a prefix */
         if (*s2 &&
-            ((!have_flag(f_ptr->flags, FF_MOVE) && !have_flag(f_ptr->flags, FF_CAN_FLY)) ||
+            ((!have_flag(f_ptr->flags, FF_MOVE) && !have_flag(f_ptr->flags, FF_CAN_FLY) && !have_flag(f_ptr->flags, FF_CAN_CLIMB)) ||
              (!have_flag(f_ptr->flags, FF_LOS) && !have_flag(f_ptr->flags, FF_TREE)) ||
              have_flag(f_ptr->flags, FF_TOWN)))
         {

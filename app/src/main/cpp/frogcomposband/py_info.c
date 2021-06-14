@@ -1184,22 +1184,22 @@ void py_display_spells_aux(doc_ptr doc, power_info *table, int ct)
 
         spell->fn(SPELL_NAME, &vn);
         spell->fn(SPELL_INFO, &vd);
-        spell->fn(SPELL_COST_EXTRA, &vc);
+/*      spell->fn(SPELL_COST_EXTRA, &vc); */
         spell->fn(SPELL_FAIL_MIN, &vfm);
 
         if (prace_is_(RACE_MON_MUMMY))
         {
             doc_printf(doc, " %c) %-25.25s %3d %4d %3d%% %-18.18s %5d %4d %3d%%\n",
-            I2A(i),
+            multicase[i],
             var_get_string(&vn),
-            spell->level, calculate_cost(spell->cost + var_get_int(&vc)), MAX(spell->fail, var_get_int(&vfm)),
+            spell->level, spell->cost, MAX(spell->fail, var_get_int(&vfm)),
             var_get_string(&vd),
             stats->ct_cast, stats->ct_fail, spell_stats_fail(stats));
         }
         else doc_printf(doc, " %c) %-25.25s %3d %4d %3d%% %-15.15s %5d %4d %3d%%\n",
-            I2A(i),
+            multicase[i],
             var_get_string(&vn),
-            spell->level, calculate_cost(spell->cost + var_get_int(&vc)), MAX(spell->fail, var_get_int(&vfm)),
+            spell->level, spell->cost, MAX(spell->fail, var_get_int(&vfm)),
             var_get_string(&vd),
             stats->ct_cast, stats->ct_fail,
             spell_stats_fail(stats)
@@ -2363,8 +2363,10 @@ static void _build_statistics(doc_ptr doc)
 typedef dungeon_info_type *dun_ptr;
 static int _cmp_d_lvl(dun_ptr l, dun_ptr r)
 {
-    if (l->maxdepth < r->maxdepth) return -1;
-    if (l->maxdepth > r->maxdepth) return 1;
+    int ld = (l->id == DUNGEON_MYSTERY) ? max_dlv[l->id] : l->maxdepth;
+    int rd = (r->id == DUNGEON_MYSTERY) ? max_dlv[r->id] : r->maxdepth;
+    if (ld < rd) return -1;
+    if (ld > rd) return 1;
     if (l->id < r->id) return -1;
     if (l->id > r->id) return 1;
     return 0;
@@ -2436,6 +2438,8 @@ void py_display_dungeons(doc_ptr doc)
             doc_printf(doc, "Now, you are in the quest '%s'.\n", lyhytnimi(quests_get_current(), &quest_name));
             free((vptr)quest_name);
         }
+        else if (p_ptr->inside_arena)
+            doc_printf(doc, "Now, you are in the %s %s.\n", town_name(p_ptr->town_num), map_name());
         else
             doc_insert(doc, "Hmmm ... Where are you?");
     }
