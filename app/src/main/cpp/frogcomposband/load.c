@@ -1081,7 +1081,8 @@ static errr rd_dungeon(savefile_ptr file)
     int i;
 
     /* Initialize saved_floors array and temporal files */
-    init_saved_floors(FALSE);
+    /* Android: clear all temp files */
+    init_saved_floors(TRUE);
 
     /*** Meta info ***/
 
