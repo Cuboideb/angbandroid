@@ -2545,7 +2545,6 @@ static bool easy_open_door(int y, int x)
 
 	auto r_ptr = &r_info[p_ptr->body_monster];
 
-
 	if ((p_ptr->body_monster != 0) && !(r_ptr->flags & RF_OPEN_DOOR))
 	{
 		msg_print("You cannot open doors.");
@@ -3811,17 +3810,33 @@ void run_step(int dir)
 	if (dir)
 	{
 		/* Hack -- do not start silly run */
-		if (see_obstacle(dir, p_ptr->py, p_ptr->px) &&
-		                (cave[p_ptr->py + ddy[dir]][p_ptr->px + ddx[dir]].feat != FEAT_TREES))
+		if (see_obstacle(dir, p_ptr->py, p_ptr->px))
 		{
-			/* Message */
-			msg_print("You cannot run in that direction.");
+			int y = p_ptr->py + ddy[dir];
+			int x = p_ptr->px + ddx[dir];
+			byte feat = cave[y][x].feat;
 
-			/* Disturb */
-			disturb();
+			/* Closed doors */
+			if (easy_open_door(y, x))
+			{
+				/* Disturb */
+				disturb();
 
-			/* Done */
-			return;
+				/* Done */
+				return;
+			}
+
+			if (feat != FEAT_TREES)
+			{
+				/* Message */
+				msg_print("You cannot run in that direction.");
+
+				/* Disturb */
+				disturb();
+
+				/* Done */
+				return;
+			}
 		}
 
 		/* Calculate torch radius */
