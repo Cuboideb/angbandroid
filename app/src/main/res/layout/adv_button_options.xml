@@ -27,7 +27,7 @@
             android:layout_weight="0"
             android:ems="7"
             android:inputType="text"
-            android:maxLength="20" />
+            android:maxLength="@string/def_keymap_len" />
 
     </LinearLayout>
 

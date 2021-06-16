@@ -214,11 +214,14 @@ class AdvButton extends View
     	public EditText etext = null;
     	public CheckBox ckAlwaysVisible = null;
 
-    	public int max = 20;
+    	public int max = 0;
 
     	public OptionPopup()
     	{
     		super(context);
+
+    		String s = context.getResources().getString(R.string.def_keymap_len);
+        	max = Integer.parseInt(s);
 
     		setFocusable(true);
         	setWidth(LayoutParams.WRAP_CONTENT);

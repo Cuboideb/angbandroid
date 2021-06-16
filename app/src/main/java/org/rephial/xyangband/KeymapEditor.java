@@ -28,7 +28,7 @@ public class KeymapEditor extends PopupWindow
     ButtonRow row2;
     ButtonRow curRow;
 
-    static int max = 20;
+    int max = 0;
 
     class ButtonRow {
         ArrayList<String> actionLst = null;
@@ -86,6 +86,9 @@ public class KeymapEditor extends PopupWindow
 
         ctxt = p_ctxt;
         parent = p_parent;
+
+        String s = ctxt.getResources().getString(R.string.def_keymap_len);
+        max = Integer.parseInt(s);
 
         mainView = ctxt.getLayoutInflater().inflate
                 (R.layout.keymapeditor, null);

@@ -3810,14 +3810,11 @@ void run_step(int dir)
 	if (dir)
 	{
 		/* Hack -- do not start silly run */
-		if (see_obstacle(dir, p_ptr->py, p_ptr->px))
+		if (see_obstacle(dir, p_ptr->py, p_ptr->px) &&
+		                (cave[p_ptr->py + ddy[dir]][p_ptr->px + ddx[dir]].feat != FEAT_TREES))
 		{
-			int y = p_ptr->py + ddy[dir];
-			int x = p_ptr->px + ddx[dir];
-			byte feat = cave[y][x].feat;
-
 			/* Closed doors */
-			if (easy_open_door(y, x))
+			if (easy_open_door(p_ptr->py + ddy[dir], p_ptr->px + ddx[dir]))
 			{
 				/* Disturb */
 				disturb();
@@ -3826,17 +3823,14 @@ void run_step(int dir)
 				return;
 			}
 
-			if (feat != FEAT_TREES)
-			{
-				/* Message */
-				msg_print("You cannot run in that direction.");
+			/* Message */
+			msg_print("You cannot run in that direction.");
 
-				/* Disturb */
-				disturb();
+			/* Disturb */
+			disturb();
 
-				/* Done */
-				return;
-			}
+			/* Done */
+			return;
 		}
 
 		/* Calculate torch radius */

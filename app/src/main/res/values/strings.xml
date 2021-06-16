@@ -83,6 +83,7 @@
     <string name="def_rows_subwindows">40</string>
     <string name="def_cols_subwindows">48</string>
     <string name="def_font_subwindows">50</string>
+    <string name="def_keymap_len">50</string>
 
     <string-array name="orientationDescriptions">
       <item>Sensor</item>
