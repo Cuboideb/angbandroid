@@ -315,13 +315,16 @@ void delete_monster_idx(int m_idx)
 	grid = mon->grid;
 
 	/* Hack -- Reduce the racial counter */
-     if (mon->original_race) mon->original_race->cur_num--;
-     else mon->race->cur_num--;
+	if (mon->original_race) mon->original_race->cur_num--;
+	else mon->race->cur_num--;
 
 	/* Count the number of "reproducers" */
 	if (rf_has(mon->race->flags, RF_MULTIPLY)) {
 		cave->num_repro--;
 	}
+
+	/* Affect light? */
+	if (mon->race->light != 0) player->upkeep->update |= PU_UPDATE_VIEW;
 
 	/* Hack -- remove target monster */
 	if (target_get_monster() == mon)
@@ -583,7 +586,7 @@ void wipe_mon_list(struct chunk *c, struct player *p)
 		}
 
 		/* Reduce the racial counter */
-           if (mon->original_race) mon->original_race->cur_num--;
+		if (mon->original_race) mon->original_race->cur_num--;
 		else mon->race->cur_num--;
 
 		/* Monster is gone from square */
@@ -725,7 +728,6 @@ int mon_create_drop_count(const struct monster_race *race, bool maximize,
 	if (specific_count) {
 		*specific_count = specnum;
 	}
-
 	return number;
 }
 
@@ -741,7 +743,7 @@ static bool mon_create_drop(struct chunk *c, struct monster *mon, byte origin)
 	struct monster_lore *lore = get_lore(mon->race);
 
 	bool great, good, gold_ok, item_ok;
-    bool extra_roll = false;
+	bool extra_roll = false;
 	bool any = false;
 
 	int number = 0, level, j, monlevel;
@@ -759,21 +761,21 @@ static bool mon_create_drop(struct chunk *c, struct monster *mon, byte origin)
 	number = mon_create_drop_count(mon->race, false, false, NULL);
 
 	/* Uniques that have been stolen from get their quantity reduced */
-    if (rf_has(mon->race->flags, RF_UNIQUE)) {
+	if (rf_has(mon->race->flags, RF_UNIQUE)) {
 		number = MAX(0, number - lore->thefts);
 	}
 
-    /* Give added bonus for unique monsters */
-    monlevel = mon->race->level;
-    if (rf_has(mon->race->flags, RF_UNIQUE)) {
-        monlevel = MIN(monlevel + 15, monlevel * 2);
-        extra_roll = true;
-    }
+	/* Give added bonus for unique monsters */
+	monlevel = mon->race->level;
+	if (rf_has(mon->race->flags, RF_UNIQUE)) {
+		monlevel = MIN(monlevel + 15, monlevel * 2);
+		extra_roll = true;
+	}
 
 	/* Take the best of (average of monster level and current depth)
 	   and (monster level) - to reward fighting OOD monsters */
 	level = MAX((monlevel + player->depth) / 2, monlevel);
-    level = MIN(level, 100);
+	level = MIN(level, 100);
 
 	/* Morgoth currently drops all artifacts with the QUEST_ART flag */
 	if (rf_has(mon->race->flags, RF_QUESTOR) && (mon->race->level == 100)) {
@@ -865,7 +867,7 @@ static bool mon_create_drop(struct chunk *c, struct monster *mon, byte origin)
 			any = true;
 		} else {
 			if (obj->artifact) {
-			obj->artifact->created = false;
+				obj->artifact->created = false;
 			}
 			object_wipe(obj);
 			mem_free(obj);
@@ -1021,8 +1023,8 @@ s16b place_monster(struct chunk *c, struct loc grid, struct monster *mon,
 	if (rf_has(new_mon->race->flags, RF_MULTIPLY)) c->num_repro++;
 
 	/* Count racial occurrences */
-     if (new_mon->original_race) new_mon->original_race->cur_num++; 
-     else new_mon->race->cur_num++;
+	if (new_mon->original_race) new_mon->original_race->cur_num++;
+	else new_mon->race->cur_num++;
 
 	/* Create the monster's drop, if any */
 	if (origin)

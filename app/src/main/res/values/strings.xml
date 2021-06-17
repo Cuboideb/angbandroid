@@ -9,8 +9,10 @@
       <item>NPPAngband 0.4.1</item>
       <item>NPPAngband 0.5.4</item>
       <item>Sil-Q 1.4.2</item>
-      <item>ToME 2.4.0</item>
+      <!--
+      <item>ToME 2.4.1</item>
       <item>FAangband 2.0 (BETA)</item>
+        -->
     </string-array>
     <string-array name="gamePluginNames">
       <item>angband</item>
@@ -18,8 +20,10 @@
       <item>npp041</item>
       <item>npp054</item>
       <item>silq</item>
+      <!--
       <item>tome24x</item>
       <item>faangband</item>
+        -->
     </string-array>
     <string-array name="gamePlugins">
       <item>0</item>
@@ -27,8 +31,10 @@
       <item>2</item>
       <item>3</item>
       <item>4</item>
+      <!--
       <item>5</item>
       <item>6</item>
+        -->
     </string-array>
 
     <string name="version">0.0.0.1</string>

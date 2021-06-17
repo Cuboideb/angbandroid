@@ -382,17 +382,26 @@ struct chunk *cave_new(int height, int width) {
 }
 
 /**
+ * Free a linked list of cave connections.
+ */
+void cave_connectors_free(struct connector *join)
+{
+	while (join) {
+		struct connector *current = join;
+
+		join = current->next;
+		mem_free(current->info);
+		mem_free(current);
+	}
+}
+
+/**
  * Free a chunk
  */
 void cave_free(struct chunk *c) {
 	int y, x, i;
 
-	while (c->join) {
-		struct connector *current = c->join;
-		mem_free(current->info);
-		c->join = current->next;
-		mem_free(current);
-	}
+	cave_connectors_free(c->join);
 
 	/* Look for orphaned objects and delete them. */
 	for (i = 1; i < c->obj_max; i++) {
@@ -500,24 +509,24 @@ void object_lists_check_integrity(struct chunk *c, struct chunk *c_k)
 {
 	int i;
 	if (c_k) {
-	assert(c->obj_max == c_k->obj_max);
-	for (i = 0; i < c->obj_max; i++) {
-		struct object *obj = c->objects[i];
-		struct object *known_obj = c_k->objects[i];
-		if (obj) {
-			assert(obj->oidx == i);
-			if (!loc_is_zero(obj->grid))
-				assert(pile_contains(square_object(c, obj->grid), obj));
-		}
-		if (known_obj) {
-			assert (obj);
-			if (player->upkeep->playing) {
-				assert(known_obj == obj->known);
+		assert(c->obj_max == c_k->obj_max);
+		for (i = 0; i < c->obj_max; i++) {
+			struct object *obj = c->objects[i];
+			struct object *known_obj = c_k->objects[i];
+			if (obj) {
+				assert(obj->oidx == i);
+				if (!loc_is_zero(obj->grid))
+					assert(pile_contains(square_object(c, obj->grid), obj));
 			}
-			if (!loc_is_zero(known_obj->grid))
-				assert (pile_contains(square_object(c_k, known_obj->grid),
-									  known_obj));
-			assert (known_obj->oidx == i);
+			if (known_obj) {
+				assert (obj);
+				if (player->upkeep->playing) {
+					assert(known_obj == obj->known);
+				}
+				if (!loc_is_zero(known_obj->grid))
+					assert (pile_contains(square_object(c_k, known_obj->grid),
+										  known_obj));
+				assert (known_obj->oidx == i);
 			}
 		}
 	} else {
