@@ -50,6 +50,9 @@ final public class Preferences {
 	static final String KEY_COLS_SUBW = "angband.cols_subwindows";
 	static final String KEY_HORIZ_SUBW = "angband.horiz_subwindows";
 
+	static final String KEY_FAB_MULT = "angband.fab_mult";
+	static final String KEY_FAB_ALPHA = "angband.fab_alpha";
+
 	static final String KEY_TOP_BAR = "angband.top_bar";
 	static final String KEY_MULT_TOP_BAR = "angband.mult_top_bar";
 
@@ -318,6 +321,26 @@ final public class Preferences {
 	public static void setKeyboardWidth(int value) {
 		SharedPreferences.Editor ed = pref.edit();
 		ed.putInt(Preferences.KEY_KBD_WIDTH, value);
+		ed.commit();
+	}
+
+	public static int getFabMult() {
+		return pref.getInt(Preferences.KEY_FAB_MULT, 0);
+	}
+
+	public static void setFabMult(int value) {
+		SharedPreferences.Editor ed = pref.edit();
+		ed.putInt(Preferences.KEY_FAB_MULT, value);
+		ed.commit();
+	}
+
+	public static int getFabAlpha() {
+		return pref.getInt(Preferences.KEY_FAB_ALPHA, 50);
+	}
+
+	public static void setFabAlpha(int value) {
+		SharedPreferences.Editor ed = pref.edit();
+		ed.putInt(Preferences.KEY_FAB_ALPHA, value);
 		ed.commit();
 	}
 

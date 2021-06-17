@@ -52,8 +52,9 @@ import java.util.LinkedHashMap;
 
 public class GameActivity extends Activity {
 
-    public static Typeface monoFont = null;
+	public static Typeface monoFont = null;
 	public static Typeface monoBoldFont = null;
+	public static Typeface iconFont = null;
 
 	public static StateManager state = null;
 	private AngbandDialog dialog = null;
@@ -66,7 +67,7 @@ public class GameActivity extends Activity {
 	public AdvKeyboard advKeyboard = null;
 
 	private LinearLayout ribbonZone = null;
-    private ButtonRibbon bottomRibbon = null;
+	private ButtonRibbon bottomRibbon = null;
 	private ButtonRibbon topRibbon = null;
 
 	public String coreKeymaps = "";
@@ -86,6 +87,8 @@ public class GameActivity extends Activity {
 	protected final int CONTEXTMENU_RUNNING = 13;
 	protected final int CONTEXTMENU_RESET_DPAD = 14;
 	protected final int CONTEXTMENU_RESET_LAYOUT = 15;
+	protected final int CONTEXTMENU_ADD_FAB = 16;
+	protected final int CONTEXTMENU_FIX_FAB = 17;
 
 	public static final int TERM_CONTROL_LIST_KEYS = 1;
 	public static final int TERM_CONTROL_CONTEXT = 2;
@@ -111,8 +114,8 @@ public class GameActivity extends Activity {
 			version = pinfo.versionName;
 		} catch (Exception e) {}
 
-	   	Preferences.init (
-	    		this,
+		Preferences.init (
+				this,
 			getFilesDir(),
 			getResources(),
 			getSharedPreferences(Preferences.NAME, MODE_PRIVATE),
@@ -121,7 +124,7 @@ public class GameActivity extends Activity {
 
 		//Log.d("Angband", "onCreate");
 
-	   	// Testing
+		// Testing
 		//Preferences.setSize(80,24);
 
 		if (state == null) {
@@ -137,11 +140,15 @@ public class GameActivity extends Activity {
 		}
 
 		if (monoFont == null) {
-           	monoFont = Typeface.createFromAsset(getAssets(),"VeraMono.ttf");
-        }
+			monoFont = Typeface.createFromAsset(getAssets(),"VeraMono.ttf");
+		}
 
 		if (monoBoldFont == null) {
 			monoBoldFont = Typeface.createFromAsset(getAssets(),"VeraMono-Bold.ttf");
+		}
+
+		if (iconFont == null) {
+			iconFont = Typeface.createFromAsset(getAssets(),"ui-cmd.ttf");
 		}
 
 		if (keyRunnable == null) {
@@ -492,7 +499,7 @@ public class GameActivity extends Activity {
 			}
 
 			virtualKeyboard = null;
-            virtualKeyboardView = null;
+			virtualKeyboardView = null;
 
 			ribbonZone = null;
 			bottomRibbon = null;
@@ -709,6 +716,8 @@ public class GameActivity extends Activity {
 				(landscapeNow() ? "(Landscape)": "(Portrait)"));
 		}
 
+		menu.add(0, CONTEXTMENU_ADD_FAB, 0, "Add Floating Button");
+
 		if (topRibbon != null) {
 			menu.add(0, CONTEXTMENU_VKEY_ITEM, 0, "Show Full Keyboard");
 			menu.add(0, CONTEXTMENU_RIBBON_STYLE, 0, "Change Ribbon Style");
@@ -728,6 +737,11 @@ public class GameActivity extends Activity {
 				(state.getRunningMode() ? "OFF": "ON"));
 		}
 		menu.add(0, CONTEXTMENU_RESET_DPAD, 0, "Reset D-Pad Position");
+
+		if (term != null && term.getButtons().size() > 0) {
+			menu.add(0, CONTEXTMENU_FIX_FAB, 0, "Rearrange Floating Buttons");
+		}
+
 		menu.add(0, CONTEXTMENU_PREFERENCES_ITEM, 0, "Preferences");
 		menu.add(0, CONTEXTMENU_PROFILES_ITEM, 0, "Profiles");
 		menu.add(0, CONTEXTMENU_HELP_ITEM, 0, "Help");
@@ -737,7 +751,7 @@ public class GameActivity extends Activity {
 	public void showKeymapEditor()
 	{
 		KeymapEditor editor = new KeymapEditor(this, screenLayout);
-	    editor.show();
+		editor.show();
 	}
 
 	@Override
@@ -745,38 +759,44 @@ public class GameActivity extends Activity {
 		Intent intent;
 		switch (aItem.getItemId()) {
 		case CONTEXTMENU_FITWIDTH_ITEM:
-            if (term != null && state.nativew.lockWithTimer.reserveLock()) {
-			    adjustSize(true);
-                state.nativew.lockWithTimer.waitAndRelease();
+			if (term != null && state.nativew.lockWithTimer.reserveLock()) {
+				adjustSize(true);
+				state.nativew.lockWithTimer.waitAndRelease();
 			}
 			return true;
 		case CONTEXTMENU_FITHEIGHT_ITEM:
-            if (term != null && state.nativew.lockWithTimer.reserveLock()) {
+			if (term != null && state.nativew.lockWithTimer.reserveLock()) {
 				adjustSize(false);
-                state.nativew.lockWithTimer.waitAndRelease();
+				state.nativew.lockWithTimer.waitAndRelease();
 			}
 			return true;
 		case CONTEXTMENU_RUNNING:
 			state.setRunningMode(!state.getRunningMode());
 			return true;
-	    case CONTEXTMENU_KEYMAPS:
-	    	showKeymapEditor();
-	    	return true;
-	    case CONTEXTMENU_RESET_DPAD:
-	    	if (term != null) term.resetDragOffset();
-	    	return true;
-	    case CONTEXTMENU_RESET_LAYOUT:
-	    	this.resetGameLayout();
-	    	return true;
-	    case CONTEXTMENU_TOGGLE_SUBW:
-	    	state.showSubWindows = !state.showSubWindows;
-	    	if (term != null) term.invalidate();
-	    	return true;
+		case CONTEXTMENU_KEYMAPS:
+			showKeymapEditor();
+			return true;
+		case CONTEXTMENU_RESET_DPAD:
+			if (term != null) term.resetDragOffset();
+			return true;
+		case CONTEXTMENU_RESET_LAYOUT:
+			this.resetGameLayout();
+			return true;
+		case CONTEXTMENU_TOGGLE_SUBW:
+			state.showSubWindows = !state.showSubWindows;
+			if (term != null) term.invalidate();
+			return true;
 		case CONTEXTMENU_VKEY_ITEM:
 			toggleKeyboard();
 			return true;
 		case CONTEXTMENU_RIBBON_STYLE:
 			if (bottomRibbon != null) bottomRibbon.toggleCommandMode();
+			return true;
+		case CONTEXTMENU_ADD_FAB:
+			if (term != null) term.createFloatingButton();
+			return true;
+		case CONTEXTMENU_FIX_FAB:
+			if (term != null) term.rearrangeFloatingButtons();
 			return true;
 		case CONTEXTMENU_LOWER_RIBBON:
 			if (bottomRibbon != null) bottomRibbon.changeOpacity(-1);
@@ -819,12 +839,25 @@ public class GameActivity extends Activity {
 			.show();
 	}
 
+	public void refreshInputWidgets()
+	{
+		if (term != null) term.invalidate();
+
+		/*
+		if (advKeyboard != null) advKeyboard.mainView.requestLayout();
+
+		if (topRibbon != null) topRibbon.rootView.requestLayout();
+
+		if (bottomRibbon != null) bottomRibbon.rootView.requestLayout();
+		*/
+	}
+
 	public void infoAlert(String msg) {
 		new AlertDialog.Builder(this)
-				//.setTitle("Angband")
-				.setMessage(msg)
-				.setCancelable(true)
-				.show();
+			//.setTitle("Angband")
+			.setMessage(msg)
+			.setCancelable(true)
+			.show();
 	}
 
 	public void setFixedRibbonOpacity(int value)
@@ -933,16 +966,16 @@ public class GameActivity extends Activity {
 			h += advKeyboard.mainView.getHeight();
 		}
 
-    	if (Preferences.isKeyboardVisible() &&
+		if (Preferences.isKeyboardVisible() &&
 			virtualKeyboardView != null) {
 			h += virtualKeyboardView.getHeight();
 		}
 
-    	if (ribbonZone != null) {
-    		h += ribbonZone.getHeight();
+		if (ribbonZone != null) {
+			h += ribbonZone.getHeight();
 		}
 
-    	return h;
+		return h;
 	}
 
 	public int getKeyboardWidth() {
@@ -952,6 +985,6 @@ public class GameActivity extends Activity {
 			w += advKeyboard.mainView.getWidth();
 		}
 
-    	return w;
+		return w;
 	}
 }

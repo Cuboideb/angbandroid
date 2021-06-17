@@ -310,7 +310,7 @@ public class TermWindow {
 		n = str.length();
 
 		for (int i = 0; i < n; i++) {
-		    addch(str.charAt(i));
+			addch(str.charAt(i));
 		}
 	}
 

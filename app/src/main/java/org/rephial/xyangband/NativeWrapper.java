@@ -34,11 +34,11 @@ public class NativeWrapper {
 	}
 
 	public void unlink()
-    {
-        synchronized (display_lock) {
-            term = null;
-        }
-    }
+	{
+		synchronized (display_lock) {
+			term = null;
+		}
+	}
 
 	public class LockWithTimer {
 		public boolean locked = false;
@@ -119,13 +119,13 @@ public class NativeWrapper {
 
 	public boolean onGameStart() {
 		synchronized (display_lock) {
-		    if (term == null) return false;
+			if (term == null) return false;
 			return term.onGameStart();
 		}
 	}
 
 	public void increaseFontSize() {
-        if (term == null) return;
+		if (term == null) return;
 
 		if (!lockWithTimer.reserveLock()) return;
 
@@ -137,7 +137,7 @@ public class NativeWrapper {
 	}
 
 	public void decreaseFontSize() {
-        if (term == null) return;
+		if (term == null) return;
 
 		if (!lockWithTimer.reserveLock()) return;
 
@@ -180,7 +180,7 @@ public class NativeWrapper {
 
 	public void resize() {
 		Log.d("Angband", "Native resize");
-        if (term == null) return;
+		if (term == null) return;
 
 		synchronized (display_lock) {
 			term.onGameStart(); // recalculate TermView canvas dimension
@@ -199,18 +199,18 @@ public class NativeWrapper {
 				+ cols + " x " + rows);
 
 			if (state.stdscr != null) {
-            	state.stdscr.resize(cols, rows);
-        	}
-        	if (state.virtscr != null) {
-            	state.virtscr.resize(cols, rows);
-        	}
+				state.stdscr.resize(cols, rows);
+			}
+			if (state.virtscr != null) {
+				state.virtscr.resize(cols, rows);
+			}
 
-        	if (true || state.gameThread.gameRunning()) {
-        		//Log.d("Angband", "RESIZE TO CORE");
-        		String cmd = "resize:" + cols + ":" + rows;
-        		state.addSpecialCommand(cmd);
-        		state.addKey(' ');
-        	}
+			if (true || state.gameThread.gameRunning()) {
+				//Log.d("Angband", "RESIZE TO CORE");
+				String cmd = "resize:" + cols + ":" + rows;
+				state.addSpecialCommand(cmd);
+				state.addKey(' ');
+			}
 		}
 	}
 
@@ -250,6 +250,14 @@ public class NativeWrapper {
 				term.atlas = null;
 				frosh(null);
 			}
+		}
+	}
+
+	public void clearTileCache()
+	{
+		Log.d("Angband", "Clear Tile Cache");
+		synchronized (display_lock) {
+			state.tileCache.evictAll();
 		}
 	}
 
@@ -354,10 +362,10 @@ public class NativeWrapper {
 				v.overwrite(w);
 			}
 
-    		if (term == null) {
-    	    	v.quiet();
-            	return;
-    		}
+			if (term == null) {
+				v.quiet();
+				return;
+			}
 
 			// mark ugly points, i.e. those clobbered by anti-alias overflow
 
@@ -670,28 +678,28 @@ public class NativeWrapper {
 			return 0;
 	}
 
-    public int wctomb(byte[] pmb, byte character) {
-	    byte[] ba = new byte[1];
-	    ba[0] = character;
-	    byte[] wc;
-	    int wclen = 0;
-	    //Log.d("Angband","wctomb("+pmb+","+character+")");
-	    try {
+	public int wctomb(byte[] pmb, byte character) {
+		byte[] ba = new byte[1];
+		ba[0] = character;
+		byte[] wc;
+		int wclen = 0;
+		//Log.d("Angband","wctomb("+pmb+","+character+")");
+		try {
 		String str = new String(ba, "ISO-8859-1");
 		wc = str.getBytes("UTF-8");
 		for(int i=0; i<wc.length; i++) {
-		    pmb[i] = wc[i];
-		    wclen++;
+			pmb[i] = wc[i];
+			wclen++;
 		}
-	    } catch(java.io.UnsupportedEncodingException e) {
+		} catch(java.io.UnsupportedEncodingException e) {
 			Log.d("Angband","wctomb: " + e);
-	    }
-	    return wclen;
-    }
+		}
+		return wclen;
+	}
 
-    public int mbstowcs(final byte[] wcstr, final byte[] mbstr, final int max) {
-	    //Log.d("Angband","mbstowcs("+wcstr+","+mbstr+","+max+")");
-	    try {
+	public int mbstowcs(final byte[] wcstr, final byte[] mbstr, final int max) {
+		//Log.d("Angband","mbstowcs("+wcstr+","+mbstr+","+max+")");
+		try {
 		String str = new String(mbstr, "UTF-8");
 		//Log.d("Angband", "str = |" + str + "|");
 		byte[] wc = str.getBytes("ISO-8859-1");
@@ -699,23 +707,23 @@ public class NativeWrapper {
 		//Log.d("Angband", "wcstr.length = " + wcstr.length);
 		int i;
 		if(max == 0) {
-		    // someone just wants to check the length
-		    return wc.length;
+			// someone just wants to check the length
+			return wc.length;
 		}
 		for(i=0; i<wc.length && i<max; i++) {
-		    //Log.d("Angband", "i = " + i);
-		    wcstr[i] = wc[i];
+			//Log.d("Angband", "i = " + i);
+			wcstr[i] = wc[i];
 		}
 		return i;
-	    } catch(java.io.UnsupportedEncodingException e) {
+		} catch(java.io.UnsupportedEncodingException e) {
 			Log.d("Angband","mbstowcs: " + e);
-	    }
-	    return -1;
-    }
+		}
+		return -1;
+	}
 
-    public int wcstombs(final byte[] mbstr, final byte[] wcstr, final int max) {
-	    //Log.d("Angband","mcstombs("+mbstr+","+wcstr+","+max+")");
-	    try {
+	public int wcstombs(final byte[] mbstr, final byte[] wcstr, final int max) {
+		//Log.d("Angband","mcstombs("+mbstr+","+wcstr+","+max+")");
+		try {
 		String str = new String(wcstr, "ISO-8859-1");
 		//Log.d("Angband", "str = |" + str + "|");
 		byte[] mb = str.getBytes("UTF-8");
@@ -723,23 +731,23 @@ public class NativeWrapper {
 		//Log.d("Angband", "mbstr.length = " + mbstr.length);
 		int i;
 		if(max == 0) {
-		    // someone just wants to check the length
-		    return mb.length;
+			// someone just wants to check the length
+			return mb.length;
 		}
 		for(i=0; i<mb.length && i<max; i++) {
-		    //Log.d("Angband", "i = " + i);
-		    mbstr[i] = mb[i];
+			//Log.d("Angband", "i = " + i);
+			mbstr[i] = mb[i];
 		}
 		return i;
-	    } catch(java.io.UnsupportedEncodingException e) {
+		} catch(java.io.UnsupportedEncodingException e) {
 			Log.d("Angband","wcstombs: " + e);
-	    }
-	    return -1;
-    }
+		}
+		return -1;
+	}
 
-    ScoreContainer curScore;
+	ScoreContainer curScore;
 
-    public void score_submit(final byte[] score, final byte[] level) {
+	public void score_submit(final byte[] score, final byte[] level) {
 		if (curScore == null) curScore = new ScoreContainer();
 		curScore.score = 0.0;
 		curScore.level = 0;
@@ -754,13 +762,13 @@ public class NativeWrapper {
 			Log.d("Angband","score: " + e);
 		}
 		state.handler.sendMessage(state.handler.obtainMessage(AngbandDialog.Action.Score.ordinal(), 0, 0, curScore));
-    }
+	}
 
-    public void score_start() {
-	    curScore = new ScoreContainer();
-    }
+	public void score_start() {
+		curScore = new ScoreContainer();
+	}
 
-    public void score_detail(final byte[] name, final byte[] value) {
+	public void score_detail(final byte[] name, final byte[] value) {
 		try {
 			String strName = new String(name, "UTF-8");
 			String strValue = new String(value, "UTF-8");
@@ -770,5 +778,5 @@ public class NativeWrapper {
 		} catch(java.io.UnsupportedEncodingException e) {
 			Log.d("Angband","score: " + e);
 		}
-    }
+	}
 }

@@ -6,11 +6,12 @@ public class Profile {
 
 	protected int id = 0;
 	protected String name = "";
-    protected String saveFile = "";
+	protected String saveFile = "";
 	protected int flags = 0;
-    protected int plugin = 0;
-    protected String keymaps = "";
-    protected String advBtnKeymaps = "";   
+	protected int plugin = 0;
+	protected String keymaps = "";
+	protected String advBtnKeymaps = "";
+	protected String fab = "";
 	protected static String dl = "~";
 	protected static String dlEscaped = "¿@?";	
 
@@ -81,6 +82,14 @@ public class Profile {
 	{
 		keymaps = value;
 	}	
+	public void setFloatingButtons(String value)
+	{
+		fab = value;
+	}
+	public String getFloatingButtons()
+	{
+		return fab;
+	}
 	public static String escape(String str)
 	{
 		return str.replace(dl, dlEscaped);
@@ -99,7 +108,7 @@ public class Profile {
 	}
 	public String serialize() {		
 		return id+dl+name+dl+saveFile+dl+flags+dl+plugin+dl+
-			escape(keymaps)+dl+escape(advBtnKeymaps);
+			escape(keymaps)+dl+escape(advBtnKeymaps)+dl+fab;
 	}
 	public static Profile deserialize(String value) {
 		String[] tk = value.split(dl);
@@ -109,12 +118,19 @@ public class Profile {
 		if (tk.length>2) try {p.saveFile = tk[2];} catch (Exception ex) {}
 		if (tk.length>3) try {p.flags = Integer.parseInt(tk[3]);} catch (Exception ex) {}
 		if (tk.length>4) try {p.plugin = Integer.parseInt(tk[4]);} catch (Exception ex) {}
+
 		if (tk.length>5) try {
 			p.keymaps = unescape(tk[5]);
 		} catch(Exception ex) {};
+
 		if (tk.length>6) try {
 			p.advBtnKeymaps = unescape(tk[6]);
 		} catch(Exception ex) {};
+
+		if (tk.length>7) {
+			p.fab = tk[7];
+		}
+
 		return p;
 	}
 }

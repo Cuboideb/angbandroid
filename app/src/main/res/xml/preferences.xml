@@ -5,7 +5,7 @@
   <PreferenceCategory android:title="@string/game_category">
 	<Preference android:title="Game Profile"
 		android:key="angband.gameprofile">
-	  	<intent android:action="org.rephial.xyangband.PROFILES" />
+		<intent android:action="org.rephial.xyangband.PROFILES" />
 	</Preference>
 		<org.rephial.xyangband.ProfileListPreference
 		   android:title="@string/preferences_gameplugin_title"
@@ -18,8 +18,8 @@
 		   android:key="angband.skipwelcome"
 		   android:defaultValue="false"
 		   android:summary="@string/preferences_skipwelcome_summary" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/display_category">
+	</PreferenceCategory>
+	<PreferenceCategory android:title="@string/display_category">
 		<CheckBoxPreference
 		   android:key="angband.vibrate"
 		   android:defaultValue="false"
@@ -84,8 +84,8 @@
 			android:title="Show Mouse Icon"
 			android:summary="It allows you to execute actions on a grid" />
 		<PreferenceScreen
-	   		android:title="Sub-Windows settings"
-	   		android:summary="(Map views in graphics mode are not supported)">
+			android:title="Sub-Windows settings"
+			android:summary="(Map views in graphics mode are not supported)">
 			<ListPreference
 				android:key="angband.n_subwindows"
 				android:title="Number of sub-windows"
@@ -116,10 +116,10 @@
 				android:key="angband.horiz_subwindows"
 				android:defaultValue="true"
 				android:title="Layout sub-windows horizontally" />
-	   	</PreferenceScreen>
-  	</PreferenceCategory>
-    <PreferenceCategory android:title="@string/control_category">
-      <CheckBoxPreference
+		</PreferenceScreen>
+	</PreferenceCategory>
+	<PreferenceCategory android:title="@string/control_category">
+	  <CheckBoxPreference
 			android:key="angband.enable_soft_input"
 			android:defaultValue="true"
 			android:title="Enable Software Input"
@@ -173,7 +173,7 @@
 			android:dependency="angband.use_adv_keyboard"
 			android:title="Hide keys after 5 seconds" />
 
-      <org.rephial.xyangband.SeekBarPreference
+	  <org.rephial.xyangband.SeekBarPreference
 		  android:key="angband.keyboard_width"
 		  android:title="Keyboard Width"
 		  android:dependency="angband.use_adv_keyboard"
@@ -188,8 +188,8 @@
 		  seekBar:max="100"
 		  seekBar:defaultVal="0" />
 
-    <PreferenceScreen android:title="Button Ribbon options"
-    	android:summary="Configure things like button size or management of long lists">
+	<PreferenceScreen android:title="Button Ribbon options"
+		android:summary="Configure things like button size or management of long lists">
 
 	  <org.rephial.xyangband.SeekBarPreference
 		  android:key="angband.ribbonbuttonmult"
@@ -209,7 +209,7 @@
 		  android:title="Auto display long lists"
 		  android:summary="When you are prompted for selection" />
 
-      <CheckBoxPreference
+	  <CheckBoxPreference
 		  android:key="angband.useicons"
 		  android:defaultValue="true"
 		  android:title="Use Icons"
@@ -358,15 +358,15 @@
 		android:title="Directional Pad (D-Pad)"
 		android:summary="Configure options for the D-Pad">
 		<CheckBoxPreference
-		   android:key="angband.enabletouch"
-		   android:defaultValue="true"
-		   android:title="@string/preferences_enabletouch_title"
-		   android:summary="@string/preferences_enabletouch_summary" />
+			android:key="angband.enabletouch"
+			android:defaultValue="true"
+			android:title="@string/preferences_enabletouch_title"
+			android:summary="@string/preferences_enabletouch_summary" />
 		<CheckBoxPreference
-			 android:key="angband.touchright"
-			 android:defaultValue="true"
-			 android:title="@string/preferences_touchright_title"
-			 android:summary="@string/preferences_touchright_summary" />
+			android:key="angband.touchright"
+			android:defaultValue="true"
+			android:title="@string/preferences_touchright_title"
+			android:summary="@string/preferences_touchright_summary" />
 		<org.rephial.xyangband.SeekBarPreference
 			android:key="angband.touchmultiplier"
 			android:title="Touch directional size multiplier"
@@ -380,24 +380,24 @@
 			android:dependency="angband.touchright"
 			android:title="Allow drag-and-drop of the touch directionals"	/>
 		<ListPreference
-		    android:title="Center screen tap action"
-		    android:summary="Select functionality for center screen tap"
-		    android:key="angband.centerscreentap"
-		    android:defaultValue="Five"
-		    android:entries="@array/virtKeyActionDescriptions"
-		    android:entryValues="@array/virtKeyActions"/>
+			android:title="Center screen tap action"
+			android:summary="Select functionality for center screen tap"
+			android:key="angband.centerscreentap"
+			android:defaultValue="Five"
+			android:entries="@array/virtKeyActionDescriptions"
+			android:entryValues="@array/virtKeyActions"/>
 		<ListPreference
-		    android:title="D-Pad Color 1"
-		    android:key="angband.dpad_color1"
-		    android:defaultValue="@string/def_dpad_color1"
-		    android:entries="@array/DPadColors"
-		    android:entryValues="@array/DPadColors"/>
+			android:title="D-Pad Color 1"
+			android:key="angband.dpad_color1"
+			android:defaultValue="@string/def_dpad_color1"
+			android:entries="@array/DPadColors"
+			android:entryValues="@array/DPadColors"/>
 		<ListPreference
-		    android:title="D-Pad Color 2"
-		    android:key="angband.dpad_color2"
-		    android:defaultValue="@string/def_dpad_color2"
-		    android:entries="@array/DPadColors"
-		    android:entryValues="@array/DPadColors"/>
+			android:title="D-Pad Color 2"
+			android:key="angband.dpad_color2"
+			android:defaultValue="@string/def_dpad_color2"
+			android:entries="@array/DPadColors"
+			android:entryValues="@array/DPadColors"/>
 	</PreferenceScreen>
 
 	<CheckBoxPreference

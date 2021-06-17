@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	android:padding="10dp">
+
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:layout_gravity="center_vertical">
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="0"
+			android:paddingLeft="5dp"
+			android:paddingRight="5dp"
+			android:text="Action:" />
+
+		<EditText
+			android:id="@+id/action"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="0"
+			android:ems="7"
+			android:inputType="text"
+			android:maxLength="@string/def_keymap_len" />
+
+		<ImageButton
+			android:id="@+id/delete_button"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="0"
+			android:src="@drawable/delete" />
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="0"
+			android:paddingLeft="5dp"
+			android:paddingRight="5dp"
+			android:text="Label:" />
+
+		<EditText
+			android:id="@+id/label"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="0"
+			android:ems="5"
+			android:inputType="text"
+			android:maxLength="4" />
+
+	</LinearLayout>
+
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:gravity="center_vertical">
+
+		<Button
+			android:id="@+id/run_button"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="0"
+			android:text="Run" />
+
+		<Button
+			android:id="@+id/ret_button"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="0"
+			android:text="Return" />
+
+		<Button
+			android:id="@+id/esc_button"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="0"
+			android:text="Escape" />
+
+		<Button
+			android:id="@+id/spc_button"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="0"
+			android:text="Space" />
+
+		<Button
+			android:id="@+id/tab_button"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="0"
+			android:text="Tab" />
+
+	</LinearLayout>
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_weight="0"
+		android:paddingLeft="5dp"
+		android:paddingRight="5dp"
+		android:text="Icon:" />
+
+	<TableLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" >
+		<TableRow
+			android:id="@+id/row1"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:gravity="center_vertical" />
+		<TableRow
+			android:id="@+id/row2"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:gravity="center_vertical" />
+		<TableRow
+			android:id="@+id/row3"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:gravity="center_vertical" />
+		<TableRow
+			android:id="@+id/row4"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:gravity="center_vertical" />
+	</TableLayout>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:gravity="center_vertical">
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="0"
+			android:paddingLeft="5dp"
+			android:paddingRight="5dp"
+			android:text="Size:" />
+
+		<SeekBar
+			android:id="@+id/size_mult"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:progress="0" />
+
+	</LinearLayout>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:gravity="center_vertical">
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="0"
+			android:paddingLeft="5dp"
+			android:paddingRight="5dp"
+			android:text="Opacity:" />
+
+		<SeekBar
+			android:id="@+id/alpha"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:progress="0" />
+
+	</LinearLayout>
+
+</LinearLayout>

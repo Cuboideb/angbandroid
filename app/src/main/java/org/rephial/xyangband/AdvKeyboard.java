@@ -138,21 +138,21 @@ class AdvKeyboard implements OnTouchListener
 	public void createHandler()
 	{
 		handler = new Handler(Looper.myLooper()) {
-        	public void handleMessage(Message msg)
-        	{
-        		if (msg.what == LONG_PRESS && lastButton != null) {
-        			lastButton.longPress();
-        			lastButton = null;
-        			setFlashText(null);
-        			// Discard input until new down or cancel events
-        			skipInput = true;
-        		}
+			public void handleMessage(Message msg)
+			{
+				if (msg.what == LONG_PRESS && lastButton != null) {
+					lastButton.longPress();
+					lastButton = null;
+					setFlashText(null);
+					// Discard input until new down or cancel events
+					skipInput = true;
+				}
 
-        		if (msg.what == AUTO_HIDE && opacityMode != 2) {
-        			setOpacityMode(1);
-        		}
-        	}
-        };
+				if (msg.what == AUTO_HIDE && opacityMode != 2) {
+					setOpacityMode(1);
+				}
+			}
+		};
 	}
 
 	public void unpressAll()
@@ -378,14 +378,14 @@ class AdvKeyboard implements OnTouchListener
 			btnHeight = Math.max(btnHeight, 16);
 		}
 
-        int fs = (int)Math.min(btnHeight * 0.65f,
-        	btnWidth * 0.40f);
-        fs = Math.max(fs, 10);
+		int fs = (int)Math.min(btnHeight * 0.65f,
+			btnWidth * 0.40f);
+		fs = Math.max(fs, 10);
 		fore.setTextSize(fs);
 
 		int fs2 = (int)Math.min(btnHeight * 0.65f,
-        	btnWidth * 0.5f);
-        fs2 = Math.max(fs2, 10);
+			btnWidth * 0.5f);
+		fs2 = Math.max(fs2, 10);
 		foreBold.setTextSize(fs2);
 	}
 

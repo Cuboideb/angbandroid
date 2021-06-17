@@ -169,7 +169,7 @@ class AdvButton extends View
 
 		if (action.equals(InputUtils.Menu)) {
 			context.handler.sendEmptyMessage(AngbandDialog.Action.
-                OpenContextMenu.ordinal());
+				OpenContextMenu.ordinal());
 			return;
 		}
 
@@ -181,6 +181,7 @@ class AdvButton extends View
 		if (action.equals("run")) {
 			state.setRunningMode(!state.getRunningMode());
 			invalidate();
+			context.refreshInputWidgets();
 			return;
 		}
 
@@ -190,133 +191,133 @@ class AdvButton extends View
 	}
 
 	public static void closeSoftKeyboard(Activity ctxt, View v)
-    {
-        InputMethodManager imm = (InputMethodManager)ctxt
-            .getSystemService(Activity.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-    }
+	{
+		InputMethodManager imm = (InputMethodManager)ctxt
+			.getSystemService(Activity.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+	}
 
-    public void configure(String action, boolean visible)
-    {
-    	if (!action.equals(keymap) ||
-    		visible != alwaysVisible) {
+	public void configure(String action, boolean visible)
+	{
+		if (!action.equals(keymap) ||
+			visible != alwaysVisible) {
 			keymap = action;
 			alwaysVisible = visible;
 			invalidate();
 			parent.updateKey(defaultValue, action, visible);
 			parent.persistKeymaps();
 		}
-    }
+	}
 
-    public class OptionPopup extends PopupWindow
-    	implements View.OnClickListener
-    {
-    	public EditText etext = null;
-    	public CheckBox ckAlwaysVisible = null;
+	public class OptionPopup extends PopupWindow
+		implements View.OnClickListener
+	{
+		public EditText etext = null;
+		public CheckBox ckAlwaysVisible = null;
 
-    	public int max = 0;
+		public int max = 0;
 
-    	public OptionPopup()
-    	{
-    		super(context);
+		public OptionPopup()
+		{
+			super(context);
 
-    		String s = context.getResources().getString(R.string.def_keymap_len);
-        	max = Integer.parseInt(s);
+			String s = context.getResources().getString(R.string.def_keymap_len);
+			max = Integer.parseInt(s);
 
-    		setFocusable(true);
-        	setWidth(LayoutParams.WRAP_CONTENT);
-        	setHeight(LayoutParams.WRAP_CONTENT);
+			setFocusable(true);
+			setWidth(LayoutParams.WRAP_CONTENT);
+			setHeight(LayoutParams.WRAP_CONTENT);
 
-        	LinearLayout content = (LinearLayout)
-        		context.getLayoutInflater().inflate
-            	(R.layout.adv_button_options, null);
+			LinearLayout content = (LinearLayout)
+				context.getLayoutInflater().inflate
+				(R.layout.adv_button_options, null);
 
-        	etext = (EditText)content.findViewById
-        		(R.id.keymap_action);
+			etext = (EditText)content.findViewById
+				(R.id.keymap_action);
 
-        	assignText(keymap);
+			assignText(keymap);
 
 			ckAlwaysVisible = (CheckBox)content.findViewById
-        		(R.id.always_visible);
-        	ckAlwaysVisible.setChecked(alwaysVisible);
+				(R.id.always_visible);
+			ckAlwaysVisible.setChecked(alwaysVisible);
 
-        	Button btn = content.findViewById(R.id.esc_button);
-	        btn.setTag("action:esc");
-	        btn.setOnClickListener(this);
+			Button btn = content.findViewById(R.id.esc_button);
+			btn.setTag("action:esc");
+			btn.setOnClickListener(this);
 
-	        btn = content.findViewById(R.id.spc_button);
-	        btn.setTag("action:spc");
-	        btn.setOnClickListener(this);
+			btn = content.findViewById(R.id.spc_button);
+			btn.setTag("action:spc");
+			btn.setOnClickListener(this);
 
-	        btn = content.findViewById(R.id.tab_button);
-	        btn.setTag("action:tab");
-	        btn.setOnClickListener(this);
+			btn = content.findViewById(R.id.tab_button);
+			btn.setTag("action:tab");
+			btn.setOnClickListener(this);
 
-	        btn = content.findViewById(R.id.ret_button);
-	        btn.setTag("action:ret");
-	        btn.setOnClickListener(this);
+			btn = content.findViewById(R.id.ret_button);
+			btn.setTag("action:ret");
+			btn.setOnClickListener(this);
 
-        	setContentView(content);
-    	}
+			setContentView(content);
+		}
 
-    	public void addText(String txt)
-	    {
-	        txt = etext.getText()+txt;
-	        if (txt.length() <= max) assignText(txt);
-	    }
+		public void addText(String txt)
+		{
+			txt = etext.getText()+txt;
+			if (txt.length() <= max) assignText(txt);
+		}
 
-	    public void assignText(String txt)
-	    {
-	        etext.setText(txt);
-	        etext.setSelection(etext.getText().length());
-	    }
+		public void assignText(String txt)
+		{
+			etext.setText(txt);
+			etext.setSelection(etext.getText().length());
+		}
 
-    	@Override
-    	public void onClick(View v) {
+		@Override
+		public void onClick(View v) {
 
-    		String tag = (String)v.getTag();
+			String tag = (String)v.getTag();
 
-	        if (tag.equals("action:ret")) {
-	            addText("\\n");
-	            return;
-	        }
+			if (tag.equals("action:ret")) {
+				addText("\\n");
+				return;
+			}
 
-	        if (tag.equals("action:esc")) {
-	            addText("\\e");
-	            return;
-	        }
+			if (tag.equals("action:esc")) {
+				addText("\\e");
+				return;
+			}
 
-	        if (tag.equals("action:spc")) {
-	            addText("\\s");
-	            return;
-	        }
+			if (tag.equals("action:spc")) {
+				addText("\\s");
+				return;
+			}
 
-	        if (tag.equals("action:tab")) {
-	            addText("\\t");
-	            return;
-	        }
-    	}
+			if (tag.equals("action:tab")) {
+				addText("\\t");
+				return;
+			}
+		}
 
-    	@Override
-    	public void dismiss()
-    	{
-    		String action = etext.getText().toString().trim();
+		@Override
+		public void dismiss()
+		{
+			String action = etext.getText().toString().trim();
 
-    		closeSoftKeyboard(context, etext);
+			closeSoftKeyboard(context, etext);
 
-    		configure(action, ckAlwaysVisible.isChecked());
+			configure(action, ckAlwaysVisible.isChecked());
 
-    		super.dismiss();
-    	}
-    }
+			super.dismiss();
+		}
+	}
 
 	public void showOptions()
 	{
 		OptionPopup win = new OptionPopup();
 
-        int gravity = Gravity.TOP
-        	| Gravity.CENTER_HORIZONTAL;
-        win.showAtLocation(this, gravity, 0, 10);
+		int gravity = Gravity.TOP
+			| Gravity.CENTER_HORIZONTAL;
+		win.showAtLocation(this, gravity, 0, 10);
 	}
 
 	public boolean atCenter()
@@ -465,21 +466,21 @@ class AdvButton extends View
 		int th = getHeight() - pad * 2;
 
 		float w2 = fore.measureText(label);
-        float padx = Math.max((tw - w2) / 2, 0);
-        float h2 = fore.descent() - fore.ascent();
-        float pady = Math.max((th - h2) / 2, 0)	+ fore.descent();
+		float padx = Math.max((tw - w2) / 2, 0);
+		float h2 = fore.descent() - fore.ascent();
+		float pady = Math.max((th - h2) / 2, 0)	+ fore.descent();
 
-        /*
-        // Move the label to the top
-        if (pressed) {
-        	// ascent is negative
-        	pady = th + fore.ascent();
-        }
-        */
+		/*
+		// Move the label to the top
+		if (pressed) {
+			// ascent is negative
+			pady = th + fore.ascent();
+		}
+		*/
 
-        setFgColor(fore);
-        fore.setShadowLayer(10f, 0, 0, Color.CYAN);
-        fore.setAlpha(calculateAlphaFg());
+		setFgColor(fore);
+		fore.setShadowLayer(10f, 0, 0, Color.CYAN);
+		fore.setAlpha(calculateAlphaFg());
 
 		canvas.drawText(label,
 			bounds.left + padx,
