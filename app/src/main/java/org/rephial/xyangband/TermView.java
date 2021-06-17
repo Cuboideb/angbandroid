@@ -768,6 +768,9 @@ public class TermView extends View implements OnGestureListener {
 
                 TermWindow.TermPoint p = w.buffer[r][c];
 
+                // Ignore graphics
+                if (p.isGraphicTile() || p.isBigPad()) continue;
+
                 char ch = p.ch;
 
                 if (c >= columns) continue;
@@ -803,6 +806,9 @@ public class TermView extends View implements OnGestureListener {
             for(int c = 0; c < w.cols; c++) {
 
                 TermWindow.TermPoint p = w.buffer[r2][c];
+
+                // Ignore graphics
+                if (p.isGraphicTile() || p.isBigPad()) continue;
 
                 char ch = p.ch;
 

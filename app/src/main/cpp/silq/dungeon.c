@@ -606,7 +606,8 @@ static void process_world(void)
             }
 
             /* The light is getting dim */
-            else if ((o_ptr->timeout <= 100) && (!(o_ptr->timeout % 20)))
+            else if ((o_ptr->timeout <= 100) && (!(o_ptr->timeout % 20))
+                && o_ptr->sval != SV_LIGHT_MALLORN)
             {
                 // disturb the first time
                 if (o_ptr->timeout == 100)
@@ -2536,7 +2537,7 @@ static void dungeon(void)
                 // do_cmd_note(format("exp:%d = s:5000 + e:%d + k:%d + d:%d +
                 // i:%d",
                 //		    p_ptr->exp, p_ptr->encounter_exp,
-                //p_ptr->kill_exp, p_ptr->descent_exp, p_ptr->ident_exp), i);
+                // p_ptr->kill_exp, p_ptr->descent_exp, p_ptr->ident_exp), i);
             }
         }
         p_ptr->max_depth = p_ptr->depth;

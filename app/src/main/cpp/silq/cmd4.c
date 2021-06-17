@@ -238,8 +238,8 @@ void do_cmd_redraw(void)
     p_ptr->window |= (PW_INVEN | PW_EQUIP | PW_PLAYER_0);
 
     /* Window stuff */
-    p_ptr->window |= (PW_MESSAGE | PW_OVERHEAD | PW_MONSTER | PW_OBJECT |
-        PW_MONLIST);
+    p_ptr->window
+        |= (PW_MESSAGE | PW_OVERHEAD | PW_MONSTER | PW_OBJECT | PW_MONLIST);
 
     /* Clear screen */
     Term_clear();
@@ -11003,6 +11003,7 @@ void apply_magic_fake(object_type* o_ptr)
         switch (o_ptr->sval)
         {
         case SV_LIGHT_TORCH:
+        case SV_LIGHT_MALLORN:
         case SV_LIGHT_LANTERN:
         {
             o_ptr->timeout = 0;

@@ -3,6 +3,7 @@ apply plugin: 'com.android.application'
 def my_boost_dir = local_props("boost.dir")
 def my_boost_dir_libs = my_boost_dir + "/libs"
 def my_boost_dir_inc  = my_boost_dir + "/include"
+def my_abi_filters = local_props("ABI_FILTERS")
 
 android {
     compileSdkVersion 29
@@ -33,7 +34,8 @@ android {
     buildTypes {
         debug {
             ndk {
-                abiFilters "armeabi-v7a"
+                abiFilters = []
+                abiFilters.addAll(my_abi_filters.split(';').collect{it as String})
             }
         }
         release {

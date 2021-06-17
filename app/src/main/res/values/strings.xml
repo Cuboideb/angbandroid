@@ -4,37 +4,37 @@
     <string name="app_name">Angband</string>
 
     <string-array name="gamePluginDescriptions">
-      <item>Angband 4.2.2</item>
-      <item>FrogComposband 7.1.salmiak</item>
-      <item>NPPAngband 0.4.1</item>
-      <item>NPPAngband 0.5.4</item>
-      <item>Sil-Q 1.4.2</item>
-      <!--
-      <item>ToME 2.4.1</item>
-      <item>FAangband 2.0 (BETA)</item>
-        -->
+        <item>Angband 4.2.2</item>
+        <item>FrogComposband 7.1.salmiak</item>
+        <item>NPPAngband 0.4.1</item>
+        <item>NPPAngband 0.5.4</item>
+        <item>Sil-Q 1.4.2</item>
+    <!--
+        <item>ToME 2.4.1</item>
+        <item>FAangband 2.0 (BETA)</item>
+    -->
     </string-array>
     <string-array name="gamePluginNames">
-      <item>angband</item>
-      <item>frogcomposband</item>
-      <item>npp041</item>
-      <item>npp054</item>
-      <item>silq</item>
-      <!--
-      <item>tome24x</item>
-      <item>faangband</item>
-        -->
+        <item>angband</item>
+        <item>frogcomposband</item>
+        <item>npp041</item>
+        <item>npp054</item>
+        <item>silq</item>
+    <!--
+        <item>tome24x</item>
+        <item>faangband</item>
+    -->
     </string-array>
     <string-array name="gamePlugins">
-      <item>0</item>
-      <item>1</item>
-      <item>2</item>
-      <item>3</item>
-      <item>4</item>
-      <!--
-      <item>5</item>
-      <item>6</item>
-        -->
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    <!--
+        <item>5</item>
+        <item>6</item>
+    -->
     </string-array>
 
     <string name="version">0.0.0.1</string>

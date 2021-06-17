@@ -896,10 +896,10 @@ static void do_cmd_search_skeleton(int y, int x, s16b o_idx)
     switch (o_ptr->sval)
     {
     case SV_SKELETON_ELF:
-        drop_result = dieroll(6);
+        drop_result = dieroll(10);
         break;
     case SV_SKELETON_HUMAN:
-        drop_result = dieroll(6) + 1;
+        drop_result = dieroll(10) + 6;
         break;
     case SV_SKELETON_ORC:
         drop_result = 6;
@@ -909,18 +909,26 @@ static void do_cmd_search_skeleton(int y, int x, s16b o_idx)
     switch (drop_result)
     {
     case 1:
-        search_failed = !make_object(i_ptr, FALSE, FALSE, DROP_TYPE_BOW);
-        break;
     case 2:
-        search_failed = !make_object(i_ptr, FALSE, FALSE, DROP_TYPE_CLOAK);
-        break;
     case 3:
-        search_failed = !make_object(i_ptr, FALSE, FALSE, DROP_TYPE_BOOTS);
-        break;
     case 4:
-        search_failed = !make_object(i_ptr, FALSE, FALSE, DROP_TYPE_WEAPON);
+        object_prep(i_ptr, lookup_kind(TV_LIGHT, SV_LIGHT_MALLORN));
+        i_ptr->timeout = rand_range(20, 50);
+        search_failed = FALSE;
         break;
     case 5:
+        search_failed = !make_object(i_ptr, FALSE, FALSE, DROP_TYPE_BOW);
+        break;
+    case 6:
+        search_failed = !make_object(i_ptr, FALSE, FALSE, DROP_TYPE_CLOAK);
+        break;
+    case 7:
+        search_failed = !make_object(i_ptr, FALSE, FALSE, DROP_TYPE_BOOTS);
+        break;
+    case 8:
+        search_failed = !make_object(i_ptr, FALSE, FALSE, DROP_TYPE_WEAPON);
+        break;
+    case 9:
         search_failed = !make_object(i_ptr, FALSE, FALSE, DROP_TYPE_GLOVES);
         break;
     default:
@@ -3713,6 +3721,16 @@ void do_cmd_fire(int quiver)
         }
     }
 
+    /* Handle player fear */
+    if (p_ptr->afraid)
+    {
+        /* Message */
+        msg_print("You are too afraid to aim properly!");
+
+        /* Done */
+        return;
+    }
+
     /* Get a direction (or cancel) */
     if (!get_aim_dir(&dir, tdis))
         return;
@@ -3725,42 +3743,25 @@ void do_cmd_fire(int quiver)
     ty = p_ptr->py + 99 * ddy[dir];
     tx = p_ptr->px + 99 * ddx[dir];
 
-    /* Check for "target request" */
-    if ((dir == 5) && target_okay(tdis))
-    {
-        ty = p_ptr->target_row;
-        tx = p_ptr->target_col;
-    }
-
     if ((dir == DIRECTION_UP) || (dir == DIRECTION_DOWN))
     {
         ty = p_ptr->py;
         tx = p_ptr->px;
     }
 
-    m_ptr = &mon_list[cave_m_idx[ty][tx]];
-    r_ptr = &r_info[m_ptr->r_idx];
-
-    /* Handle player fear */
-    if (p_ptr->afraid)
+    /* Check for "target request" */
+    if ((dir == 5) && target_okay(tdis))
     {
-        /* Message */
-        msg_print("You are too afraid to aim properly!");
+        ty = p_ptr->target_row;
+        tx = p_ptr->target_col;
 
-        /* Done */
-        return;
-    }
+        m_ptr = &mon_list[cave_m_idx[ty][tx]];
+        r_ptr = &r_info[m_ptr->r_idx];
 
-    if (r_ptr->flags1 & (RF1_PEACEFUL))
-    {
-        msg_format("You lower your bow.");
-
-        return;
-    }
-
-    if (abort_for_mercy_or_honour(m_ptr))
-    {
-        return;
+        if (abort_for_mercy_or_honour(m_ptr))
+        {
+            return;
+        }
     }
 
     /* Get local object */
@@ -3949,6 +3950,11 @@ void do_cmd_fire(int quiver)
             {
                 m_ptr = &mon_list[cave_m_idx[y][x]];
                 r_ptr = &r_info[m_ptr->r_idx];
+
+                if (abort_for_mercy_or_honour(m_ptr))
+                {
+                    return;
+                }
 
                 // record the co-ordinates of the first monster in line of fire
                 if (first_y == 0)
