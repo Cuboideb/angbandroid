@@ -1099,15 +1099,15 @@ void calc_inventory(struct player_upkeep *upkeep, struct object *gear,
 					upkeep->quiver_cnt +=
 						to_quiver->number * mult;
 
-						/* In the quiver counts as worn */
+					/* In the quiver counts as worn */
 					object_learn_on_wield(player, to_quiver);
 
-						/* Done with this slot */
-						break;
-					}
+					/* Done with this slot */
+					break;
 				}
 			}
 		}
+	}
 
 	/* Now fill the rest of the slots in order */
 	for (i = 0; i < z_info->quiver_size; i++) {
@@ -1160,7 +1160,7 @@ void calc_inventory(struct player_upkeep *upkeep, struct object *gear,
 			upkeep->quiver[i] = to_quiver;
 			upkeep->quiver_cnt += to_quiver->number;
 
-		/* In the quiver counts as worn */
+			/* In the quiver counts as worn */
 			object_learn_on_wield(player, to_quiver);
 		}
 	}
@@ -2234,7 +2234,7 @@ void calc_bonuses(struct player *p, struct player_state *state, bool known_only,
 		if (!state->heavy_shoot) {
 			state->num_shots += extra_shots;
 			state->ammo_mult += extra_might;
-			if (player_has(p, PF_FAST_SHOT) && (state->ammo_tval == TV_ARROW)) {
+			if (player_has(p, PF_FAST_SHOT)) {
 				state->num_shots += p->lev / 3;
 			}
 		}
@@ -2645,7 +2645,7 @@ void redraw_stuff(struct player *p)
 
 	/* Hack - rarely update while resting or running, makes it over quicker */
 	if (((player_resting_count(p) % 100) || (p->upkeep->running % 100))
-		&& !(redraw & (PR_MESSAGE|PR_MAP)))
+		&& !(redraw & (PR_MESSAGE | PR_MAP)))
 		return;
 
 	/* For each listed flag, send the appropriate signal to the UI */

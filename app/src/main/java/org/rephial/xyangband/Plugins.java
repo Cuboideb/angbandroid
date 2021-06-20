@@ -13,8 +13,8 @@ final public class Plugins {
 		npp041(2),
 		npp054(3),
 		silq(4),
-		tome24x(5),
-		faangband(6);
+		faangband(5),
+		tome24x(6);
 
 		private int id;
 
@@ -33,7 +33,7 @@ final public class Plugins {
 		}
 		public boolean only1x1()
 		{
-			return this != angband && this != faangband;
+			return this != angband; //&& this != faangband;
 		}
 		public boolean noMouse()
 		{

@@ -149,7 +149,6 @@ struct cmd_info cmd_info[] =
 	{ "Gain new spells", { 'G' }, CMD_STUDY, NULL, player_can_study_prereq, 0, NULL, NULL, NULL, 0 },
 	{ "View abilities", { 'S' }, CMD_NULL, do_cmd_abilities, NULL, 0, NULL, NULL, NULL, 0 },
 	{ "Cast a spell", { 'm' }, CMD_CAST, NULL, player_can_cast_prereq, 0, NULL, NULL, NULL, 0 },
-	{ "Cast a spell", { 'p' }, CMD_CAST, NULL, player_can_cast_prereq, 0, NULL, NULL, NULL, 0 },
 	{ "Full dungeon map", { 'M' }, CMD_NULL, do_cmd_view_map, NULL, 0, NULL, NULL, NULL, 0 },
 	{ "Toggle ignoring of items", { 'K', 'O' }, CMD_NULL, textui_cmd_toggle_ignore, NULL, 0, NULL, NULL, NULL, 0 },
 	{ "Display visible item list", { ']' }, CMD_NULL, do_cmd_itemlist, NULL, 0, NULL, NULL, NULL, 0 },
@@ -161,7 +160,8 @@ struct cmd_info cmd_info[] =
 	{ "Check knowledge", { '~' }, CMD_NULL, textui_browse_knowledge, NULL, 0, NULL, NULL, NULL, 0 },
 	{ "Repeat level feeling", { KTRL('F') }, CMD_NULL, do_cmd_feeling, NULL, 0, NULL, NULL, NULL, 0 },
 	{ "Show previous message", { KTRL('O') }, CMD_NULL, do_cmd_message_one, NULL, 0, NULL, NULL, NULL, 0 },
-	{ "Show previous messages", { KTRL('P') }, CMD_NULL, do_cmd_messages, NULL, 0, NULL, NULL, NULL, 0 }
+	{ "Show previous messages", { KTRL('P') }, CMD_NULL, do_cmd_messages, NULL, 0, NULL, NULL, NULL, 0 },
+	{ "Show the time of day", { '#' }, CMD_NULL, do_cmd_time, NULL, 0, NULL, NULL, NULL, 0 }
 };
 
 /**

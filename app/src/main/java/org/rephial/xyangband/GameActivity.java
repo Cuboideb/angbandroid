@@ -115,7 +115,7 @@ public class GameActivity extends Activity {
 		} catch (Exception e) {}
 
 		Preferences.init (
-				this,
+			this,
 			getFilesDir(),
 			getResources(),
 			getSharedPreferences(Preferences.NAME, MODE_PRIVATE),
@@ -736,12 +736,12 @@ public class GameActivity extends Activity {
 			menu.add(0, CONTEXTMENU_RUNNING, 0, "Toggle Running " +
 				(state.getRunningMode() ? "OFF": "ON"));
 		}
-		menu.add(0, CONTEXTMENU_RESET_DPAD, 0, "Reset D-Pad Position");
 
 		if (term != null && term.getButtons().size() > 0) {
 			menu.add(0, CONTEXTMENU_FIX_FAB, 0, "Rearrange Floating Buttons");
 		}
 
+		menu.add(0, CONTEXTMENU_RESET_DPAD, 0, "Reset D-Pad Position");
 		menu.add(0, CONTEXTMENU_PREFERENCES_ITEM, 0, "Preferences");
 		menu.add(0, CONTEXTMENU_PROFILES_ITEM, 0, "Profiles");
 		menu.add(0, CONTEXTMENU_HELP_ITEM, 0, "Help");

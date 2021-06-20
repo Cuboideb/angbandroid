@@ -632,7 +632,7 @@ void monster_swap(struct loc grid1, struct loc grid2)
 
 		/* Affect light? */
 		if (mon->race->light != 0)
-			player->upkeep->update |= PU_UPDATE_VIEW;
+			player->upkeep->update |= PU_UPDATE_VIEW | PU_MONSTERS;
 
 		/* Redraw monster list */
 		player->upkeep->redraw |= (PR_MONLIST);
@@ -681,7 +681,7 @@ void monster_swap(struct loc grid1, struct loc grid2)
 
 		/* Affect light? */
 		if (mon->race->light != 0)
-			player->upkeep->update |= PU_UPDATE_VIEW;
+			player->upkeep->update |= PU_UPDATE_VIEW | PU_MONSTERS;
 
 		/* Redraw monster list */
 		player->upkeep->redraw |= (PR_MONLIST);
@@ -1027,10 +1027,6 @@ void monster_death(struct monster *mon, bool stats)
 	/* Update monster list window */
 	player->upkeep->redraw |= PR_MONLIST;
 
-	/* Affect light? */
-	if (mon->race->light != 0)
-		player->upkeep->update |= PU_UPDATE_VIEW;
-
 	/* Check if we progressed in or finished a quest */
 	quest_monster_death_check(mon);
 }
@@ -1315,9 +1311,11 @@ bool mon_take_hit(struct monster *mon, int dam, bool *fear, const char *note)
 	if (player->upkeep->health_who == mon)
 		player->upkeep->redraw |= (PR_HEALTH);
 
-	/* Wake it up, make it aware of the player */
-	monster_wake(mon, false, 100);
-	mon_clear_timed(mon, MON_TMD_HOLD, MON_TMD_FLG_NOTIFY);
+	/* If the hit doesn't kill, wake it up, make it aware of the player */
+	if (dam <= mon->hp) {
+		monster_wake(mon, false, 100);
+		mon_clear_timed(mon, MON_TMD_HOLD, MON_TMD_FLG_NOTIFY);
+	}
 
 	/* Become aware of its presence */
 	if (monster_is_camouflaged(mon))

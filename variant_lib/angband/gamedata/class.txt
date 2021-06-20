@@ -329,14 +329,13 @@ desc:Produces a bolt that teleports away the first monster in its path.
 desc: Distance teleported increases with player level.
 
 spell:Resistance:20:20:65:20
+effect:SET_VALUE
+dice:20+d20
 effect:TIMED_INC:OPP_ACID
-dice:20+d20
 effect:TIMED_INC:OPP_ELEC
-dice:20+d20
 effect:TIMED_INC:OPP_COLD
-dice:20+d20
 effect:TIMED_INC:OPP_FIRE
-dice:20+d20
+effect:CLEAR_VALUE
 desc:Grants you resistance to acid, cold, fire and lightning for 20+1d20 turns.
 
 spell:Tap Magical Energy:22:2:30:12
@@ -387,7 +386,8 @@ effect:DETECT_INVISIBLE_MONSTERS
 effect-yx:22:40
 effect:DETECT_VISIBLE_MONSTERS
 effect-yx:22:40
-desc:Detects all treasure, objects and monsters in the immediate area.
+desc:Detects all traps, doors, stairs, treasure, objects and monsters in the
+desc: immediate area.
 
 spell:Dimension Door:35:30:80:40
 effect:TELEPORT_TO
@@ -628,7 +628,10 @@ effect:CURE:CUT
 effect:CURE:POISONED
 effect:CURE:STUN
 effect:CURE:BLACKBREATH
-desc:Cures all cuts, poison, stunning and black breath.
+effect:NOURISH:INC_TO
+dice:80
+desc:Cures all cuts, poison, stunning and black breath, and leaves you
+desc: well-nourished.
 
 book:nature book:dungeon:[Wild Forces]:5:nature
 book-graphics:?:o
@@ -1032,8 +1035,12 @@ spell:Crush:10:6:40:5
 effect:PROJECT_LOS:MON_CRUSH
 dice:$B
 expr:B:PLAYER_LEVEL:* 4
+effect:DAMAGE
+dice:d$S
+expr:S:PLAYER_LEVEL:* 2
 desc:Instantly kill any monster in line-of-sight with less than four times the
-desc: player's level in hitpoints.  Other monsters are unharmed.
+desc: player's level in hitpoints, also hurting the player.  Other monsters are
+desc: unharmed.
 
 spell:Sleep Evil:12:5:50:5
 effect:PROJECT_LOS:SLEEP_EVIL
@@ -1513,9 +1520,12 @@ effect:DETECT_LIVING_MONSTERS
 effect-yx:22:40
 desc:Detects all living monsters in the immediate area, for one turn only.
 
-spell:Cure Poison:9:4:30:4
+spell:Herbal Curing:9:6:30:4
+effect:CURE:CUT
 effect:CURE:POISONED
-desc:Neutralizes poison.
+effect:CURE:STUN
+effect:CURE:BLACKBREATH
+desc:Cures all cuts, poison, stunning and black breath.
 
 spell:Resist Poison:12:10:32:5
 effect:TIMED_INC:OPP_POIS
@@ -1561,12 +1571,13 @@ spell:Decoy:30:30:40:60
 effect:GLYPH:DECOY
 desc:Leaves a magical decoy that looks and sounds like the player.
 
-spell:Herbal Curing:40:20:90:200
-effect:CURE:CUT
-effect:CURE:POISONED
-effect:CURE:STUN
-effect:CURE:BLACKBREATH
-desc:Cures all cuts, poison, stunning and black breath.
+spell:Brand Ammunition:40:60:95:120
+effect:BRAND_AMMO
+desc:Brands one stack of ammunition with fire, cold, or poison
+desc: (selected at random) and at the same time attempts to improve
+desc: the to-hit bonus and the to-dam bonus of the same ammunition.
+desc:  The spell has no effect if the ammunition is already branded, has a
+desc: slay, is broken, or is cursed.
 
 
 ############### BLACKGUARD ###############
@@ -1649,10 +1660,11 @@ desc: melee blow.  You gain an additional blow at levels 25 and 40.  If you
 desc: moved, the number of blows is reduced by 25% for each space, then rounded.
 
 spell:Grim Purpose:13:8:30:12
+effect:SET_VALUE
+dice:12+d12
 effect:TIMED_INC:OPP_CONF
-dice:12+d12
 effect:TIMED_INC:FREE_ACT
-dice:12+d12
+effect:CLEAR_VALUE
 desc:Your mind becomes too focused to be slowed, paralyzed or confused
 desc: for 12+d12 turns.
 

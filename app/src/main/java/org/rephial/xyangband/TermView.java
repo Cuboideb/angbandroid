@@ -1185,14 +1185,17 @@ public class TermView extends View implements OnGestureListener {
 
 			int tw = Math.max(th, w2);
 
+			float pad = th * 0.2f;
+
+			tw += pad*2;
+			th += pad*2;
+
 			// Remember size
 			btn.w = tw;
 			btn.h = th;
 
 			float x = btn.x+getScrollX();
 			float y = btn.y+getScrollY();
-
-			float pad = th * 0.2f;
 
 			if (btn.isBeingDragged()) {
 				dirZoneFill.setColor(color_drag);
@@ -1201,7 +1204,7 @@ public class TermView extends View implements OnGestureListener {
 				dirZoneFill.setColor(AdvButton.DEFAULT_BG);
 			}
 			dirZoneFill.setAlpha(alpha);
-			RectF r = new RectF(x-pad, y-pad, x+pad+tw-1, y+pad+th-1);
+			RectF r = new RectF(x, y, x+tw-1, y+th-1);
 			p_canvas.drawRect(r, dirZoneFill);
 
 			dirZoneStroke.setColor(color1_stroke);
@@ -1933,7 +1936,7 @@ public class TermView extends View implements OnGestureListener {
 		for (ButtonView b: getButtons()) {
 			if (b.h > h) h = (int)b.h;
 		}
-		int pad = (int)(h * 0.7f);
+		int pad = (int)(h * 0.2f);
 
 		int x0 = getHorizontalGap() + pad;
 		int y0 = getHeight() - getVerticalGap() - h - pad;

@@ -865,6 +865,10 @@ void delete_monster_idx(int m_idx)
 		cave->num_repro--;
 	}
 
+	/* Affect light? */
+	if (mon->race->light != 0)
+		player->upkeep->update |= PU_UPDATE_VIEW | PU_MONSTERS;
+
 	/* Hack -- remove target monster */
 	if (target_get_monster() == mon)
 		target_set_monster(NULL);
@@ -1836,7 +1840,7 @@ static bool place_new_monster_one(struct chunk *c, struct loc grid,
 
 	/* Affect light? */
 	if (mon->race->light != 0)
-		player->upkeep->update |= PU_UPDATE_VIEW;
+		player->upkeep->update |= PU_UPDATE_VIEW | PU_MONSTERS;
 
 	/* Is this obviously a monster? (Mimics etc. aren't) */
 	if (rf_has(race->flags, RF_UNAWARE))
