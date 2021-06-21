@@ -46,6 +46,7 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -2057,6 +2058,7 @@ public class TermView extends View implements OnGestureListener {
 		String action = "";
 		String label = "";
 		String icon = "";
+		Boolean fixed = false;
 
 		public void fromJSON(JSONObject obj)
 		{
@@ -2065,6 +2067,7 @@ public class TermView extends View implements OnGestureListener {
 			action = obj.optString("action", "i");
 			label = obj.optString("label", "");
 			icon = obj.optString("icon", "");
+			fixed = obj.optBoolean("fixed", false);
 		}
 
 		public JSONObject toJSON()
@@ -2076,12 +2079,19 @@ public class TermView extends View implements OnGestureListener {
 				obj.put("label", label);
 				obj.put("x", x);
 				obj.put("y", y);
+				obj.put("fixed", fixed);
 			}
 			catch (JSONException ex) {
 				Log.d("Angband", ex.getMessage());
 				return null;
 			}
 			return obj;
+		}
+
+		@Override
+		public boolean draggingEnabled()
+		{
+			return !fixed;
 		}
 
 		@Override
@@ -2120,13 +2130,13 @@ public class TermView extends View implements OnGestureListener {
 		@Override
 		public void updatePosition(float dy, float dx)
 		{
-			if (x+dx < getHorizontalGap()) return;
+			if (dx < 0 && x+dx < getHorizontalGap()) return;
 
-			if (y+h+dy > getHeight()-getVerticalGap()) return;
+			if (dx > 0 && x+w+dx > getWidth()) return;
 
-			if (y+dy < 0) return;
+			if (dy < 0 && y+dy < 0) return;
 
-			if (x+w+dx > getWidth()) return;
+			if (dy > 0 && y+h+dy > getHeight()-getVerticalGap()) return;
 
 			x += dx;
 			y += dy;
@@ -2161,6 +2171,8 @@ public class TermView extends View implements OnGestureListener {
 	{
 		public EditText actionTxt = null;
 		public EditText labelTxt = null;
+
+		public CheckBox ckFixed = null;
 
 		public ButtonView target = null;
 
@@ -2205,6 +2217,9 @@ public class TermView extends View implements OnGestureListener {
 			alphaBar.setProgress(Preferences.getFabAlpha());
 
 			assignText(target.action);
+
+			ckFixed = content.findViewById(R.id.fixed);
+			ckFixed.setChecked(target.fixed);
 
 			Button btn = content.findViewById(R.id.run_button);
 			btn.setTag("action:run");
@@ -2338,6 +2353,8 @@ public class TermView extends View implements OnGestureListener {
 			target.action = actionTxt.getText().toString().trim();
 
 			target.label = labelTxt.getText().toString().trim();
+
+			target.fixed = ckFixed.isChecked();
 
 			AdvButton.closeSoftKeyboard(game_context, actionTxt);
 
