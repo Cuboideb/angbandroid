@@ -107,10 +107,10 @@ public class TermView extends View implements OnGestureListener {
 
 	Handler timerHandler;
 	private FloatingView lastView = null;
-	private boolean dragEnabled = false;
+	private int currentMode = 0;
 	private Point lastLocation = null;
-	private Point dragOffset = new Point(0, 0);
 	private long lastRefresh = 0;
+	private Point dragOffset = new Point(0, 0);
 
 	public int idPool = 0;
 	public ArrayList<FloatingView> views = new ArrayList<>();
@@ -369,11 +369,12 @@ public class TermView extends View implements OnGestureListener {
 				savedTime = currTime;
 
 				if (msg.what == LONG_PRESS) {
+					currentMode = LONG_PRESS;
 					lastView.executeLongPress(null);
 				}
 
 				if (msg.what == DRAGGING) {
-					dragEnabled = true;
+					currentMode = DRAGGING;
 					invalidate();
 				}
 
@@ -540,16 +541,16 @@ public class TermView extends View implements OnGestureListener {
 
 	public void stopTimers()
 	{
-		dragEnabled = false;
+		timerHandler.removeMessages(REPEAT_DIR);
+		timerHandler.removeMessages(LONG_PRESS);
+		timerHandler.removeMessages(DRAGGING);
+
+		currentMode = 0;
 		lastLocation = null;
 		lastRefresh = 0;
 
 		lastView = getView(SCREEN_VIEW);
 		savedTime = 0;
-
-		timerHandler.removeMessages(REPEAT_DIR);
-		timerHandler.removeMessages(LONG_PRESS);
-		timerHandler.removeMessages(DRAGGING);
 
 		invalidate();
 	}
@@ -1271,12 +1272,10 @@ public class TermView extends View implements OnGestureListener {
 			p_canvas.drawRect(cl, ct, cr, cb, cursor);
 		}
 
-		//if (!dragEnabled) {
-			if (origin_y > 0 && state.characterPlaying()) {
-				drawTopBar(p_canvas);
-			}
-			drawAllSubWindows(p_canvas);
-		//}
+		if (origin_y > 0 && state.characterPlaying()) {
+			drawTopBar(p_canvas);
+		}
+		drawAllSubWindows(p_canvas);
 
 		if (useSmallDPad()) {
 			this.drawDPadRight(p_canvas);
@@ -1659,7 +1658,7 @@ public class TermView extends View implements OnGestureListener {
 		int px = (int)fx;
 		int py = (int)fy;
 
-		if (!dragEnabled) return;
+		if (currentMode != DRAGGING) return;
 
 		Point newLocation = new Point(px, py);
 
@@ -1774,7 +1773,8 @@ public class TermView extends View implements OnGestureListener {
 
 		public boolean isBeingDragged()
 		{
-			return dragEnabled && draggingEnabled() && lastView == this;
+			return currentMode == DRAGGING
+				&& draggingEnabled() && lastView == this;
 		}
 
 		public boolean selectable()
@@ -2400,7 +2400,7 @@ public class TermView extends View implements OnGestureListener {
 		// 1. Reentrant event
 		// 2. Different view (unless dragging)
 		if (curEvent == MotionEvent.ACTION_DOWN
-			|| (!dragEnabled && view != lastView)) {
+			|| (view != lastView && currentMode != DRAGGING)) {
 
 			stopTimers();
 
@@ -2421,6 +2421,11 @@ public class TermView extends View implements OnGestureListener {
 			}
 			// Send the action now
 			if (lastView.repeatEnabled()) {
+				// Cancel these
+				timerHandler.removeMessages(LONG_PRESS);
+				timerHandler.removeMessages(DRAGGING);
+				// --
+				currentMode = REPEAT_DIR;
 				lastView.executeAction(me);
 				// And remember for repetition
 				timerHandler.sendEmptyMessageDelayed(REPEAT_DIR, longRepeatDelay);
@@ -2451,12 +2456,12 @@ public class TermView extends View implements OnGestureListener {
 			timerHandler.removeMessages(LONG_PRESS);
 			timerHandler.removeMessages(DRAGGING);
 
-			if (!dragEnabled && !lastView.repeatEnabled())  {
+			if (currentMode == 0)  {
 				lastView.executeAction(me);
 			}
 
 			// Remember position if needed
-			if (dragEnabled &&
+			if (currentMode == DRAGGING &&
 				lastEvent == MotionEvent.ACTION_MOVE) {
 				lastView.finishDragging();
 			}
