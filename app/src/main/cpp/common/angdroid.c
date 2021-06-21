@@ -52,7 +52,7 @@ static int initial_graphics = 0;
 static int initial_top_bar = 0;
 
 /*
- * Android's terms are boring
+ * Android's terms are boring.
  */
 typedef struct {
 	term t;

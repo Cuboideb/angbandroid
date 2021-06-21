@@ -58,7 +58,7 @@ final public class Plugins {
 		}
 		public boolean canHandleKeymaps()
 		{
-			return this == angband;
+			return this == angband || this == faangband;
 		}
 	}
 

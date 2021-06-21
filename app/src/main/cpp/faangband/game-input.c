@@ -19,6 +19,7 @@
 #include "angband.h"
 #include "cmd-core.h"
 #include "game-input.h"
+#include "ui-term.h"
 
 bool (*get_string_hook)(const char *prompt, char *buf, size_t len);
 int (*get_quantity_hook)(const char *prompt, int max);
@@ -52,11 +53,15 @@ bool (*map_is_visible_hook)(void);
  */
 bool get_string(const char *prompt, char *buf, size_t len)
 {
+	bool status;
 	/* Ask the UI for it */
 	if (get_string_hook)
-		return get_string_hook(prompt, buf, len);
+		status = get_string_hook(prompt, buf, len);
 	else
-		return false;
+		status = false;
+	// Clean
+	soft_kbd_clear(true);
+	return status;
 }
 
 /**

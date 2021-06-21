@@ -451,7 +451,7 @@ void display_message(game_event_type unused, game_event_data *data, void *user)
 	const char *msg;
 
 	if (!data) return;
-	if (OPT(player, auto_more) || keymap_auto_more) return;
+	//if (OPT(player, auto_more) || keymap_auto_more) return;
 
 	type = data->message.type;
 	msg = data->message.msg;
@@ -994,7 +994,7 @@ static bool textui_get_check(const char *prompt)
 	/* Hack -- Build a "useful" prompt */
 	strnfmt(buf, 78, "%.70s[y/n] ", prompt);
 
-	soft_kbd_flash("yn");
+	soft_kbd_flash("[^yes_no$]");
 
 	/* Prompt for it */
 	prt(buf, 0, 0);
@@ -1005,8 +1005,11 @@ static bool textui_get_check(const char *prompt)
 
 	/* Normal negation */
 	if (ke.type == EVT_MOUSE) {
+		/* Changed for android
 		if ((ke.mouse.button != 1) && (ke.mouse.y != 0))
 			return (false);
+		*/
+		return (false);
 	} else {
 		if ((ke.key.code != 'Y') && (ke.key.code != 'y'))
 			return (false);
@@ -1487,6 +1490,31 @@ static int textui_get_count(void)
  */
 static struct keypress request_command_buffer[256];
 
+void feed_keymap(const char *buf)
+{
+	int idx = 0;
+
+	inkey_next = NULL;
+
+	while (true) {
+		struct keypress *key = &request_command_buffer[idx];
+
+		key->type = EVT_KBRD;
+		key->code = buf[idx];
+		key->mods = 0;
+
+		if (!buf[idx]) {
+			key->type = EVT_NONE;
+			break;
+		}
+
+		++idx;
+	}
+
+	if (idx > 1) {
+		inkey_next = request_command_buffer;
+	}
+}
 
 /**
  * Request a command from the user.

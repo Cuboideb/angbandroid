@@ -1304,6 +1304,8 @@ void do_cmd_change_name(void)
 		/* Prompt */
 		Term_putstr(2, prompt_line, -1, COLOUR_WHITE, p);
 
+		soft_kbd_flash("cfh");
+
 		/* Query */
 		ke = inkey_ex();
 

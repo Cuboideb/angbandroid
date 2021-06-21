@@ -1183,6 +1183,14 @@ static size_t prt_terrain(int row, int col)
 	struct trap *trap = square_trap(cave, player->grid);
 	char buf[30];
 
+	if (square_isdownstairs(cave, player->grid)) {
+		soft_kbd_flash(">");
+	}
+
+	if (square_isupstairs(cave, player->grid)) {
+		soft_kbd_flash("<");
+	}
+
 	if (trap && !square_isinvis(cave, player->grid)) {
 		my_strcpy(buf, trap->kind->name, strlen(trap->kind->name) + 1);
 		my_strcap(buf);
