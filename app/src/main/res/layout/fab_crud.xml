@@ -100,7 +100,7 @@
 			android:id="@+id/fixed"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="Fixed" />
+			android:text="Fixed XY" />
 
 	</LinearLayout>
 
