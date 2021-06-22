@@ -50,6 +50,8 @@ While using the button ribbon, the Quick Settings menu gets the item "Manage key
 
 Also created from the Quick Settings menu, they allow you to place keymaps anywhere on the display. A floating buttons has a mandatory action (the sequence of keys that is sent to the core game), an optional label and an optional icon.
 
+![alt text](https://github.com/Cuboideb/angbandroid/blob/master/app/src/main/assets/floating_buttons.jpg?raw=true)
+
 ### The touch directionals (DPad)
 
 The game view can be configured to display 9 squares for moving the character in the dungeon. The action of the center square can be set to do different things.
