@@ -19,7 +19,7 @@
 #include "angband.h"
 #include "cmd-core.h"
 #include "game-input.h"
-#include "ui-term.h"
+#include "ui-input.h"
 
 bool (*get_string_hook)(const char *prompt, char *buf, size_t len);
 int (*get_quantity_hook)(const char *prompt, int max);

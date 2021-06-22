@@ -28,7 +28,7 @@ INTERFACE, false)
 OP(show_target,           "Highlight target with cursor",
 INTERFACE, true)
 OP(highlight_player,      "Highlight player with cursor between turns",
-INTERFACE, false)
+INTERFACE, true)
 OP(disturb_near,          "Disturb whenever viewable monster moves",
 INTERFACE, true)
 OP(solid_walls,           "Show walls as solid blocks",
@@ -40,7 +40,7 @@ INTERFACE, false)
 OP(animate_flicker,       "Color: Shimmer multi-colored things",
 INTERFACE, false)
 OP(center_player,         "Center map continuously",
-INTERFACE, false)
+INTERFACE, true)
 OP(purple_uniques,        "Color: Show unique monsters in purple",
 INTERFACE, false)
 OP(auto_more,             "Automatically clear '-more-' prompts",
