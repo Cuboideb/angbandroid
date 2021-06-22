@@ -8,33 +8,27 @@ The transparent keyboard was borrowed from [here](https://github.com/Shaosil/And
 
 To customize your game experience, please go to settings and preferences by long-pressing the screen. The port has many options and you have to play a bit with them to find your optimal setup.
 
-Recommended game experience: Landscape Orientation, duplicate tiles on, center_player option on (this one inside Angband).
+Recommended game experience: Landscape Orientation, button ribbon on, center_player option on (it must be set in the variant).
 
 The game has two input methods: the soft keyboard and the button ribbon.
 
 ### The soft keyboard
 
-It has three modes (alphanumeric, symbols and control-keys) and several opacity settings to make playing a bit easier on small devices.
+It has two tabs (alphanumeric and symbols) and some opacity opacity settings to make playing a bit easier on small devices.
+
+You can customize the height and width of the keyboard in the Preferences. A small width triggers the "vertical" display of the keyboard. You can then move the DPad (see below) to the bottom-right corner for a more compact input layout.
 
 Some keyboard shorcuts:
 
     Long-Press over game view -> Show Quick Settings
-    Long-Press "m" -> Show Quick Settings
-    "..." -> Hide some keys (pressing a hidden key displays the keyboard again)
-    Long-Press "..." -> Hide all keys excluding this one
-    Long-Press "Ctrl^" -> Make the keyboard almost opaque
-    Long-Press "Sym" -> Show the button ribbon
-    Long-Press "p" -> Ctrl+P (recall messages)
-    Long-Press "o" -> Ctrl+F (recall last message)
-    Long-Press "f" -> Ctrl+F (recall level feeling)
-    Long-Press "u" -> U (use item)
-    Long-Press "q" -> Escape
-    Long-Press "~" -> Escape
-    Long-Press over other keys (most of them) -> shorcut for Hide some keys
+    "shift" key -> Press once to capitalize letters. Press twice to send control-secuences (^P, ^F, ...)
+    Long-Press over most keys -> Define or remove a custom keymap     
+    "kmp" key -> It toggles visualization of custom keymaps    
+    "+/-" key -> Show the symbols tab, go back with "abc"
 
 ### The button ribbon
 
-Accessed when the soft keyboard is hidden, the button ribbon has two modes (command and full).
+It appears when the soft keyboard is hidden, and it has two modes (command and full).
 
 In command mode, the ribbon contains icons for the most used commands in the game. Some commands perhaps are missing in this mode (zap a rod, aim a wand, etc.), but most of them can be triggered using the Inventory, Alter and Use commands.
 
@@ -44,25 +38,29 @@ To reduce the number of buttons in command mode, the Alter command can also open
 
 ![alt text](https://github.com/Cuboideb/angbandroid/blob/master/app/src/main/assets/ribbon_help.jpg?raw=true)
 
-In the preferences section, you can find some useful options for the ribbon: "Ribbon button size multiplier" and "Auto display long lists".
+In the preferences section, you can find some useful options for the ribbon, like "Button size multiplier".
 
 ### Custom keymaps
 
-While using the button ribbon, the settings menu gets the item "Manage keymaps". It can be used to quickly define common keymaps shortcuts as you like.
+While using the button ribbon, the Quick Settings menu gets the item "Manage keymaps". It can be used to quickly define common keymaps shortcuts.
 
 ![alt text](https://github.com/Cuboideb/angbandroid/blob/master/app/src/main/assets/keymap_editor.jpg?raw=true)
 
-### The touch directionals
+### Floating buttons
+
+Also created from the Quick Settings menu, they allow you to place keymaps anywhere on the display. A floating buttons has a mandatory action (the sequence of keys that is sent to the core game), an optional label and an optional icon.
+
+### The touch directionals (DPad)
 
 The game view can be configured to display 9 squares for moving the character in the dungeon. The action of the center square can be set to do different things.
 
-The touch d. can be displayed to the right, all together. In that case the center square has another use. A long-press allows you to drag and drop the whole set to another zone of the screen.
+The DPad can be displayed in compact form to the right of the display. In that case the center square has another use. Long-pressing enables you to drag and drop the whole set to another zone of the screen.
 
-Besides the touch directionals, every touch in the term view is sent to the core as a mouse press, allowing movement and menu selection.
+Besides the touch directionals, every touch in the term view is sent to the core game as a mouse press, allowing movement and menu selection.
 
 ### Graphics modes
 
-This port support the usual graphic tilesets of Angband (go to Preferences). You can also set pseudo-ascii mode. In that mode monsters and player are shown as ascii letters and everything else with graphic tiles.
+This port support the usual graphic tilesets of Angband (go to Preferences). Try the "ascii helper" setting. In that mode monsters and player have small ascii letters in the right-bottom corner to easy the transition from ascii to graphics.
 
 Enjoy!
 
@@ -73,6 +71,12 @@ Forum and resources [http://angband.oook.cz](http://angband.oook.cz)
 Online manual [https://angband.readthedocs.io/en/latest/index.html](https://angband.readthedocs.io/en/latest/index.html)
 
 ### Changelog:
+
+Version 1.28.*
+- Floating buttons.
+- FAangband 2.0 Beta.
+- Graphics support for Sil-Q (MicroChasm tileset).
+- Two rows of keymaps for the ribbon.
 
 Version 1.26 - 2020-11-01
 - From now on, subwindows do not overlap the dungeon, this is useful for
