@@ -64,6 +64,8 @@ Besides the touch directionals, every touch in the term view is sent to the core
 
 This port support the usual graphic tilesets of Angband (go to Preferences). Try the "ascii helper" setting. In that mode monsters and player have small ascii letters in the right-bottom corner to easy the transition from ascii to graphics.
 
+![alt text](https://github.com/Cuboideb/angbandroid/blob/master/app/src/main/assets/ascii_helper.jpg?raw=true)
+
 Enjoy!
 
 Angband homepage [http://rephial.org](http://rephial.org)
