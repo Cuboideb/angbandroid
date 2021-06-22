@@ -50,6 +50,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.PopupWindow;
 import android.widget.SeekBar;
 import android.widget.TableRow;
@@ -2196,7 +2197,7 @@ public class TermView extends View implements OnGestureListener {
 			setWidth(LayoutParams.WRAP_CONTENT);
 			setHeight(LayoutParams.WRAP_CONTENT);
 
-			LinearLayout content = (LinearLayout)
+			ViewGroup content = (ViewGroup)
 				game_context.getLayoutInflater().inflate
 				(R.layout.fab_crud, null);
 
@@ -2215,6 +2216,34 @@ public class TermView extends View implements OnGestureListener {
 			alphaBar = content.findViewById(R.id.alpha);
 
 			alphaBar.setProgress(Preferences.getFabAlpha());
+
+			SeekBar.OnTouchListener listener = new SeekBar.OnTouchListener()
+			{
+				@Override
+				public boolean onTouch(View v, MotionEvent event)
+				{
+					int action = event.getAction();
+					switch (action)
+					{
+					case MotionEvent.ACTION_DOWN:
+						// Disallow ScrollView to intercept touch events.
+						v.getParent().requestDisallowInterceptTouchEvent(true);
+						break;
+					case MotionEvent.ACTION_CANCEL:
+					case MotionEvent.ACTION_UP:
+						// Allow ScrollView to intercept touch events.
+						v.getParent().requestDisallowInterceptTouchEvent(false);
+						break;
+					}
+
+					// Handle Seekbar touch events.
+					v.onTouchEvent(event);
+					return true;
+				}
+			};
+
+			sizeBar.setOnTouchListener(listener);
+			alphaBar.setOnTouchListener(listener);
 
 			assignText(target.action);
 
