@@ -1,154 +1,53 @@
-<html><head><title>Angband Help</title></head>
-<body style="background-color: #000; color: #fff">
-
-<p>If you have problems using this program (or you want to see the changelog), please go to
-<a href="https://github.com/Cuboideb/angbandroid">Angband for Android</a> or
-<a href="mailto:cuboideb@gmail.com">send email</a> to the developers.</p>
-
-<br>
-
-<p>
-Here you can find help and resources for playing Angband:<br>
-Official Angband site: <a href="http://rephial.org/">http://rephial.org</a><br>
-Manual: <a href="https://angband.readthedocs.io/en/latest/index.html">	https://angband.readthedocs.io/en/latest/index.html</a><br>
-Forum: <a href="http://angband.oook.cz/">http://angband.oook.cz</a><br>
-</p>
-
-<br>
-
-<p>If you report problems via feedback to the Android Market,
-we have no way to respond and address your issue.</p>
-
-<p>Press '?' in the game for instructions.</p>
-
-<br>
-<p><b>The Game Screen:</b></p>
-<p>A long press on the game screen will bring up a context menu for
-changing the font size and enabling the virtual keyboard.  The volume
-keys can also be used to change the font size.  The visible area can
-be scrolled by dragging.</p>
-
-<br>
-<p><b>Virtual Keyboard:</b></p>
-
-<p>The virtual keyboard can be enabled through preferences or long press. It has three modes (alphanumeric, symbols and control-keys) and several opacity
-settings to make playing a bit easier on small devices.
-<br><br>
-Some keyboard shorcuts:
-<br><br>
-Long-Press over game view -> Show Quick Settings<br>
-Long-Press "m" -> Show Quick Settings<br>
-"..." -> Hide some keys (pressing a hidden key displays the keyboard again)<br>
-Long-Press "..." -> Hide all keys excluding this one<br>
-Long-Press "Ctrl^" -> Make the keyboard almost opaque<br>
-Long-Press "Sym" -> Show the button ribbon<br>
-Long-Press "p" -> Ctrl+P (recall messages)<br>
-Long-Press "o" -> Ctrl+F (recall last message)<br>
-Long-Press "f" -> Ctrl+F (recall level feeling)<br>
-Long-Press "u" -> U (use item)<br>
-Long-Press "q" -> Escape<br>
-Long-Press "~" -> Escape<br>
-Long-Press over other keys (most of them) -> shorcut for Hide some keys
-</p>
-
-<br>
-
-<p>
-<b>The Advanced Keyboard</b><br>
-<br>
-An alternative new keyboard. It has only 2 pages, supports key resizing and custom keymaps actions. Includes an option for vertical layout. Ctrl sequences are activated by pressing the shift key for a second time.
-<br>
-
-<br>
-<img src='adv_kbd.jpg' border='0' />
-<br>
-
-<p>
-<b>The button ribbon</b><br>
-<br>
-Accessed when the soft keyboard is hidden, the button ribbon has two modes
-(command and full).<br>
-<br>
-In command mode, the ribbon contains icons for the most used commands in the
-game. Some commands perhaps are missing in this mode (zap a rod, aim a wand,
-etc.), but most of them can be triggered using the Inventory, Alter and Use
-commands.<br>
-<br>
-It's important to remember that directions can be used to cycle between equipment,
-inventory, floor and quiver.<br>
-<br>
-To reduce the number of buttons in command mode, the Alter command can also open
-chests and close doors.<br>
-<br>
-<img src='ribbon_help.jpg' border='0' />
-<br>
-<br>
-In the preferences section, you can find some useful options for the ribbon: "Ribbon button size multiplier" and "Auto display long lists".
-</p>
-
-<br>
-
-<p>
-<b>Custom keymaps</b><br>
-<br>
-While using the button ribbon, the settings menu gets the item "Manage keymaps". It can be used to quickly define common keymaps shortcuts as you like.<br>
-<br>
-<img src='keymap_editor.jpg' border='0' />
-</p>
-
-<br>
-
-<p>
-<b>The touch directionals</b><br>
-<br>
-The game view can be configured to display 9 squares for moving the character in the dungeon. The action of the center square can be set to do different things.<br>
-<br>
-The touch d. can be displayed to the right, all together. In that case the center square has another use. A long-press allows you to drag and drop the whole set to another zone of the screen.<br>
-<br>
-Besides the touch directionals, every touch in the term view is sent to the core as a mouse press, allowing movement and menu selection.<br>
-</p>
-
-<br>
-
-<p>
-<b>Graphics modes</b><br>
-<br>
-This port support the usual graphic tilesets of Angband (go to Preferences). You can also set pseudo-ascii mode. In that mode monsters and player are shown as ascii letters and everything else with graphic tiles.<br>
-</p>
-
-<br>
-<p><b>Hardware Keyboard and Other Keys:</b></p>
+<h2>Angband for Android 4.2.2</h2>
+<p>An unofficial port of the roguelike <strong>Angband</strong> to Android.</p>
+<p>Port homepage: <a href="https://github.com/Cuboideb/angbandroid" target="_blank">https://github.com/Cuboideb/angbandroid</a></p>
+<p>This work is based on the excellent port of Angband found <a href="https://github.com/takkaria/angband-android" target="_blank">here</a>.</p>
+<p>The transparent keyboard was borrowed from <a href="https://github.com/Shaosil/Android-Sil" target="_blank">here</a> (with modifications).</p>
+<p>To customize your game experience, please go to settings and preferences by long-pressing the screen. The port has many options and you have to play a bit with them to find your optimal setup.</p>
+<p>Recommended game experience: Landscape Orientation, button ribbon on, center_player option on (it must be set in the variant).</p>
+<p>The game has two input methods: the soft keyboard and the button ribbon.</p>
+<h3>The soft keyboard</h3>
+<p>It has two tabs (alphanumeric and symbols) and some opacity opacity settings to make playing a bit easier on small devices.</p>
+<p>You can customize the height and width of the keyboard in the Preferences. A small width triggers the "vertical" display of the keyboard. You can then move the DPad (see below) to the bottom-right corner for a more compact input layout.</p>
+<p>Some keyboard shorcuts:</p>
+<ul>
+<li>Long-Press over game view -&gt; Show Quick Settings</li>
+<li>"shift" key -&gt; Press once to capitalize letters. Press twice to send control-secuences (^P, ^F, ...)</li>
+<li>Long-Press over most keys -&gt; Define or remove a custom keymap</li>
+<li>"kmp" key -&gt; It toggles visualization of custom keymaps</li>
+<li>"+/-" key -&gt; Show the symbols tab, go back with "abc"</li>
+</ul>
+<h3>The button ribbon</h3>
+<p>It appears when the soft keyboard is hidden, and it has two modes (command and full).</p>
+<p>In command mode, the ribbon contains icons for the most used commands in the game. Some commands perhaps are missing in this mode (zap a rod, aim a wand, etc.), but most of them can be triggered using the Inventory, Alter and Use commands.</p>
+<p>It's important to remember that directions can be used to cycle between equipment, inventory, floor and quiver.</p>
+<p>To reduce the number of buttons in command mode, the Alter command can also open chests and close doors.</p>
+<p>In the preferences section, you can find some useful options for the ribbon, like "Button size multiplier".</p>
+<p><img style="border-width: 0px;" src="ribbon_help.jpg" alt="" /></p>
+<h3>Custom keymaps</h3>
+<p>While using the button ribbon, the Quick Settings menu gets the item "Manage keymaps". It can be used to quickly define common keymaps shortcuts.</p>
+<p><img style="border-width: 0px;" src="keymap_editor.jpg" alt="" /></p>
+<h3>Floating buttons</h3>
+<p>Also created from the Quick Settings menu, they allow you to place keymaps anywhere on the display. A floating buttons has a mandatory action (the sequence of keys that is sent to the core game), an optional label and an optional icon.</p>
+<h3>The touch directionals (DPad)</h3>
+<p>The game view can be configured to display 9 squares for moving the character in the dungeon. The action of the center square can be set to do different things.</p>
+<p>The DPad can be displayed in compact form to the right of the display. In that case the center square has another use. Long-pressing enables you to drag and drop the whole set to another zone of the screen.</p>
+<p>Besides the touch directionals, every touch in the term view is sent to the core game as a mouse press, allowing movement and menu selection.</p>
+<h3>Graphics modes</h3>
+<p>This port support the usual graphic tilesets of Angband (go to Preferences). Try the "ascii helper" setting. In that mode monsters and player have small ascii letters in the right-bottom corner to easy the transition from ascii to graphics.</p>
+<h3>Hardware Keyboard and Other Keys</h3>
 <p>The Escape key can be entered by pressing the Back button.</p>
-
-<p>Detailed hardware key mapping can be changed in preferences. When assigning
-hardware keys, the interface will ask you to press a hardware key.  If the key
-you press was already assigned to another function, be aware that the original
-function will now be unassigned. </p>
-
-<p>If you configure your menu button for a function other than showing the menu,
-you will need to use a long screen press to access Preferences and other menu choices.
-Hardware key mapping can be reset to the default configuration in preferences.</p>
-
-<p>Pressing the home button on the phone will cause the program to go
-into the background. The game will automatically be saved when this
-happens, so you don't need to save the game first.</p>
-
-<br>
-
-<br>
-<p><b>Known Issues:</b></p>
-<p>Changing game plugins often can cause memory usage to increase.
-Usually this is not a problem since the game automatically saves on exit.
-Android will kill the app if the memory footprint gets too large.</p>
-<p>In Preferences, Hardware Key Mapping, there is a minor UI issue when assigning D-Pad directional buttons. You need to tap twice instead of once.
-</p>
-
-<br>
-<p><b>Credits:</b></p>
+<p>Detailed hardware key mapping can be changed in preferences. When assigning hardware keys, the interface will ask you to press a hardware key. If the key you press was already assigned to another function, be aware that the original function will now be unassigned.</p>
+<p>If you configure your menu button for a function other than showing the menu, you will need to use a long screen press to access Preferences and other menu choices. Hardware key mapping can be reset to the default configuration in preferences.</p>
+<p>Pressing the home button on the phone will cause the program to go into the background. The game will automatically be saved when this happens, so you don't need to save the game first.</p>
+<p>Enjoy!</p>
+<p>Angband homepage <a href="https://github.com/angband/angband" target="_blank">https://github.com/angband/angband</a></p>
+<p>Forum and resources <a href="http://angband.oook.cz" target="_blank">http://angband.oook.cz</a></p>
+<p>Online manual <a href="https://angband.readthedocs.io/en/latest/index.html" target="_blank">https://angband.readthedocs.io/en/latest/index.html</a></p>
+<h3>Previous Credits</h3>
 <p>Android Port by David Barr, Sergey Belinsky, Dan Vernon</p>
 <p>Angband Borg by Dr. Andrew P. White</p>
 <p>3.0.6 Squelch by Pete Mack</p>
 <p>Thanks to the Angband dev team for creating and maintaing the best game for so many years.</p>
 <p>Thanks also to Fredrik Farnstrom (Nethack for Android) for inspiration and shared code.</p>
-
-</body></html>
+<p>&nbsp;</p>
