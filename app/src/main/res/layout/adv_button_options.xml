@@ -50,14 +50,14 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_weight="0"
-			android:text="Return" />
+			android:text="Ret" />
 
 		<Button
 			android:id="@+id/esc_button"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_weight="0"
-			android:text="Escape" />
+			android:text="Esc" />
 
 		<Button
 			android:id="@+id/spc_button"

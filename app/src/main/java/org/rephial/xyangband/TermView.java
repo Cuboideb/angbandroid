@@ -129,6 +129,8 @@ public class TermView extends View implements OnGestureListener {
 	public static int REPEAT_DIR = 3;
 	public static int FLASH_TEXT = 4;
 
+	public static int MIN_OPACITY = 10;
+
 	private int lastEvent = -1000;
 	private int curEvent = -1000;
 
@@ -1135,9 +1137,9 @@ public class TermView extends View implements OnGestureListener {
 		fab_font_size = Math.max(fab_font_size, MIN_FONT);
 		fab_font_size = Math.min(fab_font_size, MAX_FONT);
 
-		min = 0;
+		min = MIN_OPACITY;
 		max = 255;
-		int _alphaFg = min + Preferences.getFabAlpha() * (max-min) / 100;
+		int _alphaFg = min + Preferences.getKeyboardOpacity() * (max-min) / 100;
 
 		for (FloatingView v: views) {
 
@@ -1152,6 +1154,9 @@ public class TermView extends View implements OnGestureListener {
 				icon = btn.icon;
 				if (icon.length() == 0 && btn.action.equals("run")) {
 					icon = ".";
+				}
+				if (icon.length() == 0 && btn.action.equals("opacity")) {
+					icon = "l";
 				}
 			}
 
@@ -2105,6 +2110,11 @@ public class TermView extends View implements OnGestureListener {
 				return;
 			}
 
+			if (action.equals("opacity")) {
+				game_context.runOpacityPopup();
+				return;
+			}
+
 			InputUtils.processAction(state, action);
 		}
 
@@ -2178,7 +2188,6 @@ public class TermView extends View implements OnGestureListener {
 		public ButtonView target = null;
 
 		public SeekBar sizeBar = null;
-		public SeekBar alphaBar = null;
 
 		public int max = 0;
 
@@ -2213,10 +2222,6 @@ public class TermView extends View implements OnGestureListener {
 
 			sizeBar.setProgress(Preferences.getFabMult());
 
-			alphaBar = content.findViewById(R.id.alpha);
-
-			alphaBar.setProgress(Preferences.getFabAlpha());
-
 			SeekBar.OnTouchListener listener = new SeekBar.OnTouchListener()
 			{
 				@Override
@@ -2243,7 +2248,6 @@ public class TermView extends View implements OnGestureListener {
 			};
 
 			sizeBar.setOnTouchListener(listener);
-			alphaBar.setOnTouchListener(listener);
 
 			assignText(target.action);
 
@@ -2252,6 +2256,12 @@ public class TermView extends View implements OnGestureListener {
 
 			Button btn = content.findViewById(R.id.run_button);
 			btn.setTag("action:run");
+			btn.setTypeface(game_context.iconFont);
+			btn.setOnClickListener(this);
+
+			btn = content.findViewById(R.id.opa_button);
+			btn.setTag("action:opa");
+			btn.setTypeface(game_context.iconFont);
 			btn.setOnClickListener(this);
 
 			btn = content.findViewById(R.id.esc_button);
@@ -2274,7 +2284,7 @@ public class TermView extends View implements OnGestureListener {
 			btn2.setTag("action:del");
 			btn2.setOnClickListener(this);
 
-			String icons = " imfvgdR+ewb,azul[F|p]CBJqU*~LM=?>Q" +
+			String icons = " imfvgdR+ewb,azuS[F|p]CBJqU*~LM=?>Q" +
 				Character.toString('\u00D4') +
 				Character.toString('\u00D2') +
 				Character.toString('\u00D3') +
@@ -2344,8 +2354,13 @@ public class TermView extends View implements OnGestureListener {
 				return;
 			}
 
+			if (tag.equals("action:opa")) {
+				assignText("opacity");
+				return;
+			}
+
 			if (tag.equals("action:run")) {
-				addText("run");
+				assignText("run");
 				return;
 			}
 
@@ -2390,8 +2405,6 @@ public class TermView extends View implements OnGestureListener {
 			AdvButton.closeSoftKeyboard(game_context, labelTxt);
 
 			Preferences.setFabMult(sizeBar.getProgress());
-
-			Preferences.setFabAlpha(alphaBar.getProgress());
 
 			serializeButtons();
 			resetFloatingButtons();

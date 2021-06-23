@@ -140,6 +140,7 @@ public class KeymapEditor extends PopupWindow
 
         Button btn2 = mainView.findViewById(R.id.run_button);
         btn2.setTag("action:run");
+        btn2.setTypeface(ctxt.iconFont);
         btn2.setOnClickListener(this);
 
         btn2 = mainView.findViewById(R.id.esc_button);
@@ -156,6 +157,7 @@ public class KeymapEditor extends PopupWindow
 
         btn2 = mainView.findViewById(R.id.opa_button);
         btn2.setTag("action:opa");
+        btn2.setTypeface(ctxt.iconFont);
         btn2.setOnClickListener(this);
 
         btn2 = mainView.findViewById(R.id.ret_button);
@@ -393,7 +395,7 @@ public class KeymapEditor extends PopupWindow
         }
 
         if (tag.equals("action:opa")) {
-            assignText("opa");
+            assignText("opacity");
             return;
         }
 

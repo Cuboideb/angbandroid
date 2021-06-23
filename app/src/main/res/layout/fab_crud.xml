@@ -72,25 +72,18 @@
 				android:gravity="center_vertical">
 
 				<Button
-					android:id="@+id/run_button"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_weight="0"
-					android:text="Run" />
-
-				<Button
 					android:id="@+id/ret_button"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_weight="0"
-					android:text="Return" />
+					android:text="Ret" />
 
 				<Button
 					android:id="@+id/esc_button"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_weight="0"
-					android:text="Escape" />
+					android:text="Esc" />
 
 				<Button
 					android:id="@+id/spc_button"
@@ -105,6 +98,20 @@
 					android:layout_height="wrap_content"
 					android:layout_weight="0"
 					android:text="Tab" />
+
+				<Button
+					android:id="@+id/run_button"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_weight="0"
+					android:text="." />
+
+				<Button
+					android:id="@+id/opa_button"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_weight="0"
+					android:text="l" />
 
 				<CheckBox
 					android:id="@+id/fixed"
@@ -170,28 +177,6 @@
 
 			</LinearLayout>
 
-			<LinearLayout
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:orientation="horizontal"
-				android:gravity="center_vertical">
-
-				<TextView
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_weight="0"
-					android:paddingLeft="5dp"
-					android:paddingRight="5dp"
-					android:text="Opacity:" />
-
-				<SeekBar
-					android:id="@+id/alpha"
-					android:layout_width="0dp"
-					android:layout_height="wrap_content"
-					android:layout_weight="1"
-					android:progress="0" />
-
-			</LinearLayout>
 		</LinearLayout>
 	</ScrollView>
 </HorizontalScrollView>

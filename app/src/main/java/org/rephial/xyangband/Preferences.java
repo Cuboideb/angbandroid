@@ -51,7 +51,6 @@ final public class Preferences {
 	static final String KEY_HORIZ_SUBW = "angband.horiz_subwindows";
 
 	static final String KEY_FAB_MULT = "angband.fab_mult";
-	static final String KEY_FAB_ALPHA = "angband.fab_alpha";
 
 	static final String KEY_TOP_BAR = "angband.top_bar";
 	static final String KEY_MULT_TOP_BAR = "angband.mult_top_bar";
@@ -78,7 +77,6 @@ final public class Preferences {
 	static final String KEY_USEICONS = "angband.useicons";
 
 	static final String KEY_COREKEYMAPS = "angband.corekeymaps";
-	static final String KEY_RIBBONALPHA = "angband.ribbonalpha";
 	static final String KEY_COMMANDMODE = "angband.commandmode";
 
 	static final String KEY_GAMEPLUGIN = "angband.gameplugin";
@@ -331,16 +329,6 @@ final public class Preferences {
 	public static void setFabMult(int value) {
 		SharedPreferences.Editor ed = pref.edit();
 		ed.putInt(Preferences.KEY_FAB_MULT, value);
-		ed.commit();
-	}
-
-	public static int getFabAlpha() {
-		return pref.getInt(Preferences.KEY_FAB_ALPHA, 50);
-	}
-
-	public static void setFabAlpha(int value) {
-		SharedPreferences.Editor ed = pref.edit();
-		ed.putInt(Preferences.KEY_FAB_ALPHA, value);
 		ed.commit();
 	}
 
@@ -632,17 +620,6 @@ final public class Preferences {
 	public static String getCoreKeymaps()
 	{
 		return pref.getString(Preferences.KEY_COREKEYMAPS, "");
-	}
-
-	public static void setRibbonAlpha(int k) {
-		SharedPreferences.Editor ed = pref.edit();
-		ed.putInt(Preferences.KEY_RIBBONALPHA, k);
-		ed.commit();
-	}
-
-	public static int getRibbonAlpha()
-	{
-		return pref.getInt(Preferences.KEY_RIBBONALPHA, 2);
 	}
 
 	public static void setCommandMode(boolean k) {

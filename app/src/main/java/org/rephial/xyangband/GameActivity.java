@@ -35,11 +35,13 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -80,8 +82,7 @@ public class GameActivity extends Activity {
 	protected final int CONTEXTMENU_HELP_ITEM = 5;
 	protected final int CONTEXTMENU_QUIT_ITEM = 6;
 	protected final int CONTEXTMENU_RIBBON_STYLE = 8;
-	protected final int CONTEXTMENU_RAISE_RIBBON = 9;
-	protected final int CONTEXTMENU_LOWER_RIBBON = 10;
+	protected final int CONTEXTMENU_OPACITY = 9;
 	protected final int CONTEXTMENU_KEYMAPS = 11;
 	protected final int CONTEXTMENU_TOGGLE_SUBW = 12;
 	protected final int CONTEXTMENU_RUNNING = 13;
@@ -216,6 +217,15 @@ public class GameActivity extends Activity {
 				Preferences.setLandscapeFontSize(0);
 		}
 		*/
+	}
+
+	public void runOpacityPopup()
+	{
+		if (term != null) {
+			OpacityPopup win = new OpacityPopup(this);
+			int gravity = Gravity.TOP | Gravity.RIGHT;
+			win.showAtLocation(term, gravity, 0, 0);
+		}
 	}
 
 	@Override
@@ -666,7 +676,7 @@ public class GameActivity extends Activity {
 		Preferences.setTouchRight(true);
 
 		Preferences.setCommandMode(false);
-		Preferences.setRibbonAlpha(2);
+		state.opaqueWidgets = false;
 
 		term.resetDragOffset();
 
@@ -722,8 +732,6 @@ public class GameActivity extends Activity {
 			menu.add(0, CONTEXTMENU_VKEY_ITEM, 0, "Show Full Keyboard");
 			menu.add(0, CONTEXTMENU_RIBBON_STYLE, 0, "Change Ribbon Style");
 			menu.add(0, CONTEXTMENU_KEYMAPS, 0, "Manage Keymaps");
-			menu.add(0, CONTEXTMENU_LOWER_RIBBON, 0, "Lower Ribbon Opacity");
-			menu.add(0, CONTEXTMENU_RAISE_RIBBON, 0, "Raise Ribbon Opacity");
 		}
 		else if (Preferences.getEnableSoftInput()) {
 			menu.add(0, CONTEXTMENU_VKEY_ITEM, 0, "Show Button Ribbon");
@@ -736,6 +744,8 @@ public class GameActivity extends Activity {
 			menu.add(0, CONTEXTMENU_RUNNING, 0, "Toggle Running " +
 				(state.getRunningMode() ? "OFF": "ON"));
 		}
+
+		menu.add(0, CONTEXTMENU_OPACITY, 0, "Change Opacity");
 
 		if (term != null && term.getButtons().size() > 0) {
 			menu.add(0, CONTEXTMENU_FIX_FAB, 0, "Rearrange Floating Buttons");
@@ -798,11 +808,8 @@ public class GameActivity extends Activity {
 		case CONTEXTMENU_FIX_FAB:
 			if (term != null) term.rearrangeFloatingButtons();
 			return true;
-		case CONTEXTMENU_LOWER_RIBBON:
-			if (bottomRibbon != null) bottomRibbon.changeOpacity(-1);
-			return true;
-		case CONTEXTMENU_RAISE_RIBBON:
-			if (bottomRibbon != null) bottomRibbon.changeOpacity(+1);
+		case CONTEXTMENU_OPACITY:
+			runOpacityPopup();
 			return true;
 		case CONTEXTMENU_PREFERENCES_ITEM:
 			intent = new Intent(this, PreferencesActivity.class);
@@ -839,17 +846,35 @@ public class GameActivity extends Activity {
 			.show();
 	}
 
+	public static void invalidateRecursive(ViewGroup layout) {
+    	int count = layout.getChildCount();
+    	View child;
+    	for (int i = 0; i < count; i++) {
+        	child = layout.getChildAt(i);
+        	if(child instanceof ViewGroup)
+            	invalidateRecursive((ViewGroup) child);
+        	else
+            	child.invalidate();
+    	}
+	}
+
 	public void refreshInputWidgets()
-	{
+	{		
 		if (term != null) term.invalidate();
+		
+		if (advKeyboard != null) {
+			advKeyboard.setOpacityMode(state.opaqueWidgets ? 2: 0);			
+			invalidateRecursive(advKeyboard.mainView);
+		}
 
-		/*
-		if (advKeyboard != null) advKeyboard.mainView.requestLayout();
+		if (bottomRibbon != null) {
+			setFixedRibbonOpacity(state.opaqueWidgets ? 3: 2);
+			invalidateRecursive(bottomRibbon.rootView);
+		}
 
-		if (topRibbon != null) topRibbon.rootView.requestLayout();
-
-		if (bottomRibbon != null) bottomRibbon.rootView.requestLayout();
-		*/
+		if (topRibbon != null) {		
+			invalidateRecursive(topRibbon.rootView);
+		}
 	}
 
 	public void infoAlert(String msg) {

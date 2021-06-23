@@ -39,7 +39,7 @@ public class ButtonRibbon implements OnClickListener,
 	static int count = 1;
 	static Typeface fontCmd = null;
 
-	View rootView = null;
+	ViewGroup rootView = null;
 	GameActivity context = null;
 	StateManager state = null;
 	LinearLayout atLeft = null;
@@ -81,7 +81,7 @@ public class ButtonRibbon implements OnClickListener,
 		fastMode = p_fastMode;
 		cloneMode = p_cloneMode;
 
-		rootView = context.getLayoutInflater().inflate(R.layout.buttonribbon, null);
+		rootView = (ViewGroup)context.getLayoutInflater().inflate(R.layout.buttonribbon, null);
 
 		//rootView.findViewById(R.id.scrollv).setFocusable(false);
 
@@ -94,7 +94,7 @@ public class ButtonRibbon implements OnClickListener,
 		siblings = new ArrayList();
 		clones = new ArrayList();
 
-		alphaLevel = Preferences.getRibbonAlpha();
+		alphaLevel = state.opaqueWidgets ? 3: 2;
 
 		fontCmd = context.iconFont;
 
@@ -666,7 +666,9 @@ public class ButtonRibbon implements OnClickListener,
 	public void updateAlphaCmd(Command cmd)
 	{
 		int alphaBg = 50;
-		int alphaFg = (255 * Preferences.getKeyboardOpacity()) / 100;
+		int min = TermView.MIN_OPACITY;
+		int max = 255;
+		int alphaFg = min + Preferences.getKeyboardOpacity() * (max-min) / 100;
 		int color = Color.WHITE;
 
 		if (cmd.action.equals("Ret")) {
@@ -704,8 +706,6 @@ public class ButtonRibbon implements OnClickListener,
 
 	public void updateAlpha()
 	{
-		Preferences.setRibbonAlpha(alphaLevel);
-
 		for (Command cmd: commands) {
 			updateAlphaCmd(cmd);
 			cmd.btn.invalidate();
@@ -1211,8 +1211,8 @@ public class ButtonRibbon implements OnClickListener,
 				context.refreshInputWidgets();
 				updateAlphaCmd(cmd);
 			}
-			else if (action.toUpperCase().equals("USER_OPA")) {
-				context.setFixedRibbonOpacity(alphaLevel+1);
+			else if (action.toUpperCase().equals("USER_OPACITY")) {
+				context.runOpacityPopup();
 			}
 			else {
 				procUserCommand(cmd);
@@ -1427,7 +1427,7 @@ public class ButtonRibbon implements OnClickListener,
 					convertToIcon('.');
 					return;
 				}
-				else if (action.toUpperCase().equals("USER_OPA")) {
+				else if (action.toUpperCase().equals("USER_OPACITY")) {
 					convertToIcon('l');
 					return;
 				}

@@ -40,6 +40,12 @@ To reduce the number of buttons in command mode, the Alter command can also open
 
 In the preferences section, you can find some useful options for the ribbon, like "Button size multiplier".
 
+### Opacity
+
+Clicking on "Change opacity" in Quick Settings shows a fast popup to adjust the opacity of the keyboard, ribbon and floating buttons. This functionality can be bound to a keymap too.
+
+![alt text](https://github.com/Cuboideb/angbandroid/blob/master/app/src/main/assets/opacity.jpg?raw=true)
+
 ### Custom keymaps
 
 While using the button ribbon, the Quick Settings menu gets the item "Manage keymaps". It can be used to quickly define common keymaps shortcuts.

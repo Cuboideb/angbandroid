@@ -356,7 +356,7 @@ class AdvButton extends View
 
 	public int calculateAlphaFg()
 	{
-		int min = 20;
+		int min = TermView.MIN_OPACITY;
 		int max = 255;
 
 		if (parent.opacityMode == 1 && !neverHidden()) {
@@ -368,7 +368,7 @@ class AdvButton extends View
 		}
 
 		int p = Preferences.getKeyboardOpacity();
-		p = (max * p) / 100;
+		p = min + p * (max-min) / 100;
 
 		if (atCenter()) {
 			p = (p * Preferences.getMiddleOpacity()) / 100;
@@ -500,11 +500,6 @@ class AdvButton extends View
 
 	public void longPress()
 	{
-		if (defaultValue.equals(InputUtils.Visibility)) {
-			parent.setOpacityMode(2);
-			return;
-		}
-
 		if (!neverKeymap()) {
 			showOptions();
 		}
