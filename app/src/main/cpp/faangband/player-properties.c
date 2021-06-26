@@ -465,8 +465,15 @@ void do_cmd_abilities(void)
 	/* Might want to gain a new ability or browse old ones */
 	if (player->upkeep->new_specialties > 0) {
 		/* Interact and choose. */
-		while (get_com_ex
-			   ("View abilities or Learn specialty (l/v/ESC)?", &answer)) {
+		while (true) {
+
+			soft_kbd_flash("lv");
+
+			if (!get_com_ex
+				("View abilities or Learn specialty (l/v/ESC)?", &answer)) {
+			   	break;
+			}
+
 			/* New ability */
 			if ((answer.key.code == 'L') || (answer.key.code == 'l')) {
 				gain_specialty();
