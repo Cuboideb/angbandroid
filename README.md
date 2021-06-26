@@ -10,7 +10,15 @@ To customize your game experience, please go to settings and preferences by long
 
 Recommended game experience: Landscape Orientation, button ribbon on, center_player option on (it must be set in the variant).
 
-The game has two input methods: the soft keyboard and the button ribbon.
+### Profiles and Variants
+
+Profiles are designed to play with different characters. Each profile has its own savefile name and more importantly, its own keymaps.
+
+Some variants of Angband are included in the port: FrogComposband, FAangband, Sil-Q and NPPAngband. They are accessed from the Preferences. Using a different profile for each variant/character is adviced.
+
+### Input methods
+
+The game has two input methods: the soft keyboard and the button ribbon. Also, an external keyboard can be plugged to the device.
 
 ### The soft keyboard
 
@@ -38,17 +46,19 @@ To reduce the number of buttons in command mode, the Alter command can also open
 
 ![alt text](https://github.com/Cuboideb/angbandroid/blob/master/app/src/main/assets/ribbon_help.jpg?raw=true)
 
-In the preferences section, you can find some useful options for the ribbon, like "Button size multiplier".
+In the preferences section, you can find some useful options for the ribbon, like "Button Size Multiplier".
 
 ### Opacity
 
-Clicking on "Change opacity" in Quick Settings shows a fast popup to adjust the opacity of the keyboard, ribbon and floating buttons. This functionality can be bound to a keymap too.
+Clicking on "Change Opacity" in Quick Settings shows a fast popup to adjust the opacity of the keyboard, ribbon and floating buttons. This functionality can be bound to a keymap too (the eye icon).
 
 ![alt text](https://github.com/Cuboideb/angbandroid/blob/master/app/src/main/assets/opacity.jpg?raw=true)
 
+![alt text](https://github.com/Cuboideb/angbandroid/blob/master/app/src/main/assets/eye_icon.jpg?raw=true)
+
 ### Custom keymaps
 
-While using the button ribbon, the Quick Settings menu gets the item "Manage keymaps". It can be used to quickly define common keymaps shortcuts.
+While using the button ribbon, the Quick Settings menu gets the item "Manage Keymaps". It can be used to quickly define common keymaps shortcuts.
 
 ![alt text](https://github.com/Cuboideb/angbandroid/blob/master/app/src/main/assets/keymap_editor.jpg?raw=true)
 
