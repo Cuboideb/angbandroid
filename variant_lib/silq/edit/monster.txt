@@ -291,9 +291,21 @@ V:1.5.0
 
 ##### Non-race (contains the player picture) #####
 
+# Noldor
 N:0:<player>
 G:@:w
 
+# Sindar
+N:1:<player>
+G:@:w
+
+# Naugrim
+N:2:<player>
+G:@:w
+
+# Edain
+N:3:<player>
+G:@:w
 
 
 ##### Dungeon monsters #####
@@ -941,7 +953,8 @@ D: of the black enemy for many years.
 
 
 
-##### 11 #####
+
+##### 11 #####
 
 
 N:111:Snow troll
@@ -1143,7 +1156,8 @@ D: of Morgoth's servants and widely feared. Before you stands
 D: Duruin, Flame of the Night, a great figure wrapped in fire
 D: and shadow. He wields fiery sword and whip.
 
-
+
+
 
 ##### 13 #####
 
@@ -1302,7 +1316,8 @@ D:Known as the giant of summer and the south, he towers above you
 D: like a great tree. In his right hand, he holds the longest
 D: sword you have ever beheld.
 
-
+
+
 ##### 15 #####
 
 N:151:Cave troll
