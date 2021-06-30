@@ -54,19 +54,19 @@ int dungeon_get_next_level(int dlev, int added)
 
 	/* Get target level */
 	target_level = dlev + added * z_info->stair_skip;
-	
+
 	/* Don't allow levels below max */
 	if (target_level > z_info->max_depth - 1)
 		target_level = z_info->max_depth - 1;
 
 	/* Don't allow levels above the town */
 	if (target_level < 0) target_level = 0;
-	
+
 	/* Check intermediate levels for quests */
 	for (i = dlev; i <= target_level; i++) {
 		if (is_quest(i)) return i;
 	}
-	
+
 	return target_level;
 }
 
@@ -180,8 +180,8 @@ void take_hit(struct player *p, int dam, const char *kb_str)
 	 * Unenviable task of separating what should and should not cause rage
 	 * If we eliminate the most exploitable cases it should be fine.
 	 * All traps and lava currently give mana, which could be exploited  */
-	if (player_has(p, PF_COMBAT_REGEN)  && strcmp(kb_str, "poison")
-		&& strcmp(kb_str, "a fatal wound") && strcmp(kb_str, "starvation")) {
+	if (player_has(p, PF_COMBAT_REGEN)  && !streq(kb_str, "poison")
+		&& !streq(kb_str, "a fatal wound") && !streq(kb_str, "starvation")) {
 		/* lose X% of hitpoints get X% of spell points */
 		s32b sp_gain = (MAX((s32b)p->msp, 10) << 16) / (s32b)p->mhp * dam;
 		player_adjust_mana_precise(p, sp_gain);
@@ -394,10 +394,10 @@ void player_regen_mana(struct player *p)
 
 	/* Various things speed up regeneration, but shouldn't punish healthy BGs */
 	if (!(player_has(p, PF_COMBAT_REGEN) && p->chp  > p->mhp / 2)) {
-	if (player_of_has(p, OF_REGEN))
-		percent *= 2;
-	if (player_resting_can_regenerate(p))
-		percent *= 2;
+		if (player_of_has(p, OF_REGEN))
+			percent *= 2;
+		if (player_resting_can_regenerate(p))
+			percent *= 2;
 	}
 
 	/* Some things slow it down */
@@ -861,9 +861,6 @@ bool player_get_resume_normal_shape(struct player *p, struct command *cmd)
 		strnfmt(prompt, sizeof(prompt),
 		        "Change back and %s (y/n) or (r)eturn to normal? ",
 		        cmd_verb(cmd->code));
-
-		soft_kbd_flash("[^yes_no$]");
-
 		char answer = get_char(prompt, "yrn", 3, 'n');
 
 		// Change back to normal shape
@@ -1199,8 +1196,7 @@ bool player_confuse_dir(struct player *p, int *dp, bool too)
 	}
 
 	if (*dp != dir) {
-			msg("You are confused.");
-
+		msg("You are confused.");
 		*dp = dir;
 		return true;
 	}
@@ -1329,24 +1325,24 @@ void player_resting_complete_special(struct player *p)
 	/* Complete resting */
 	if (!player_resting_is_special(p->upkeep->resting)) return;
 
-		if (p->upkeep->resting == REST_ALL_POINTS) {
-			if ((p->chp == p->mhp) && (p->csp == p->msp))
-				/* Stop resting */
+	if (p->upkeep->resting == REST_ALL_POINTS) {
+		if ((p->chp == p->mhp) && (p->csp == p->msp))
+			/* Stop resting */
 			disturb(p);
-		} else if (p->upkeep->resting == REST_COMPLETE) {
+	} else if (p->upkeep->resting == REST_COMPLETE) {
 		if ((p->chp == p->mhp) &&
 			(p->csp == p->msp || player_has(p, PF_COMBAT_REGEN)) &&
-				!p->timed[TMD_BLIND] && !p->timed[TMD_CONFUSED] &&
-				!p->timed[TMD_POISONED] && !p->timed[TMD_AFRAID] &&
-				!p->timed[TMD_TERROR] && !p->timed[TMD_STUN] &&
-				!p->timed[TMD_CUT] && !p->timed[TMD_SLOW] &&
-				!p->timed[TMD_PARALYZED] && !p->timed[TMD_IMAGE] &&
-				!p->word_recall && !p->deep_descent)
-				/* Stop resting */
+			!p->timed[TMD_BLIND] && !p->timed[TMD_CONFUSED] &&
+			!p->timed[TMD_POISONED] && !p->timed[TMD_AFRAID] &&
+			!p->timed[TMD_TERROR] && !p->timed[TMD_STUN] &&
+			!p->timed[TMD_CUT] && !p->timed[TMD_SLOW] &&
+			!p->timed[TMD_PARALYZED] && !p->timed[TMD_IMAGE] &&
+			!p->word_recall && !p->deep_descent)
+			/* Stop resting */
 			disturb(p);
-		} else if (p->upkeep->resting == REST_SOME_POINTS) {
-			if ((p->chp == p->mhp) || (p->csp == p->msp))
-				/* Stop resting */
+	} else if (p->upkeep->resting == REST_SOME_POINTS) {
+		if ((p->chp == p->mhp) || (p->csp == p->msp))
+			/* Stop resting */
 			disturb(p);
 	}
 }
@@ -1425,7 +1421,7 @@ void player_place(struct chunk *c, struct player *p, struct loc grid)
  * The second arg is currently unused, but could induce output flush.
  *
  * All disturbance cancels repeated commands, resting, and running.
- * 
+ *
  * XXX-AS: Make callers either pass in a command
  * or call cmd_cancel_repeat inside the function calling this
  */
