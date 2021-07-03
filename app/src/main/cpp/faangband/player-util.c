@@ -1078,6 +1078,9 @@ bool player_get_resume_normal_shape(struct player *p, struct command *cmd)
 		strnfmt(prompt, sizeof(prompt),
 		        "Change back and %s (y/n) or (r)eturn to normal? ",
 		        cmd_verb(cmd->code));
+
+		soft_kbd_flash("[^yes_no$]");
+
 		char answer = get_char(prompt, "yrn", 3, 'n');
 
 		// Change back to normal shape
