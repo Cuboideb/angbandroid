@@ -40,6 +40,6 @@
 %:user-acn.prf
 
 ?:[EQU $SYS android]
-%:user-android.prf
+%:android.prf
 
 ?:1
