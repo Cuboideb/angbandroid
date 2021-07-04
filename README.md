@@ -62,6 +62,10 @@ While using the button ribbon, the Quick Settings menu gets the item "Manage Key
 
 ![alt text](https://github.com/Cuboideb/angbandroid/blob/master/app/src/main/assets/keymap_editor.jpg?raw=true)
 
+### Android Pref file
+
+Every variant can load internally a new pref file, android.prf. The content of this file is defined by the user and isn't overwritten by port updates. Its location is the "customize" folder for Angband and FAangband and the "pref" folder for the rest of the variants.
+
 ### Floating buttons
 
 Also created from the Quick Settings menu, they allow you to place keymaps anywhere on the display. A floating buttons has a mandatory action (the sequence of keys that is sent to the core game), an optional label and an optional icon.
