@@ -30,5 +30,7 @@
 ?:[IOR [EQU $SYS win] [EQU $SYS dos] [EQU $SYS ibm]]
 %:user-win.prf
 
-?:1
+?:[EQU $SYS android]
+%:user-android.prf
 
+?:1

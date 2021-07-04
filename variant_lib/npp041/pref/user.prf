@@ -39,5 +39,7 @@
 ?:[EQU $SYS acn]
 %:user-acn.prf
 
-?:1
+?:[EQU $SYS android]
+%:user-android.prf
 
+?:1

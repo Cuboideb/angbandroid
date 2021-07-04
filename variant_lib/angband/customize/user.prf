@@ -67,6 +67,7 @@
 ?:[EQU $CLASS Paladin]
 %:Paladin.prf
 
+?:[EQU $SYS android]
+%:user-android.prf
 
 ?:1
-

@@ -33,5 +33,8 @@
 ?:[EQU $SYS emx]
 %:user-emx.prf
 
+?:[EQU $SYS android]
+%:user-android.prf
+
 ?:1
 
