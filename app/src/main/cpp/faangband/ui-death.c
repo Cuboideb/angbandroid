@@ -333,26 +333,24 @@ static void make_bones(void)
 					choice = 0;
 					break;
 				}
+			}
 
-				/* If requested, get the personalized string, and write it and
-				 * info on how it should be used in the bones file.  Otherwise,
-				 * indicate the absence of such a string. */
-				if (choice) {
-					char *string = get_personalized_string(choice);
-					if (string) {
-						file_putf(fp, "%d:%s\n", choice, string);
-					} else {
-						file_putf(fp, "0: \n");
-					}
+			/* If requested, get the personalized string, and write it and
+			 * info on how it should be used in the bones file.  Otherwise,
+			 * indicate the absence of such a string. */
+			if (choice) {
+				char *string = get_personalized_string(choice);
+				if (string) {
+					file_putf(fp, "%d:%s\n", choice, string);
 				} else {
 					file_putf(fp, "0: \n");
 				}
-
-				/* Close and save the Bones file */
-				file_close(fp);
-
-				return;
+			} else {
+				file_putf(fp, "0: \n");
 			}
+
+			/* Close and save the Bones file */
+			file_close(fp);
 		}
 	}
 }

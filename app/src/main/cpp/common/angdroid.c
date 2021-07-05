@@ -790,7 +790,7 @@ void init_android_stuff(void)
 		quit("The Angband 'lib' folder is probably missing or misplaced.");
 	}
 
-	savefile_set_name(android_savefile, false, false);
+	savefile_set_name(android_savefile, true, false);
 }
 
 static int translate_to_rogue(int key)
