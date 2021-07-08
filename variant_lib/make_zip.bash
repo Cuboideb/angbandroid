@@ -1,4 +1,4 @@
-MODULE=$1
+MODULE=$(echo "$1" | sed 's/[\/\\]//g')
 RAW_DIR=${PWD}/../app/src/main/res/raw
 ZIP_FILE=zip${MODULE}
 CRC_FILE=crc${MODULE}
