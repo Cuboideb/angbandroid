@@ -23,4 +23,6 @@ mv ${ZIP_FILE} ${ZIP_FILE}.old
 
 mv ${ZIP_FILE}.zip ${ZIP_FILE}
 
-echo `date` > $CRC_FILE
+TIMESTAMP=$(LANG=en_us; date)
+
+echo ${TIMESTAMP} > $CRC_FILE

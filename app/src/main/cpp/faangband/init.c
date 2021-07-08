@@ -99,6 +99,7 @@ char *ANGBAND_DIR_SCORES;
 char *ANGBAND_DIR_INFO;
 char *ANGBAND_DIR_ARCHIVE;
 char *ANGBAND_DIR_BONE;
+char *ANGBAND_DIR_GHOST;
 
 static const char *localities[] = {
 	#define LOC(a, b) #a,
@@ -346,6 +347,7 @@ void init_file_paths(const char *configpath, const char *libpath, const char *da
 	string_free(ANGBAND_DIR_INFO);
 	string_free(ANGBAND_DIR_ARCHIVE);
 	string_free(ANGBAND_DIR_BONE);
+	string_free(ANGBAND_DIR_GHOST);
 
 	/*** Prepare the paths ***/
 
@@ -363,6 +365,7 @@ void init_file_paths(const char *configpath, const char *libpath, const char *da
 	BUILD_DIRECTORY_PATH(ANGBAND_DIR_TILES, libpath, "tiles");
 	BUILD_DIRECTORY_PATH(ANGBAND_DIR_SOUNDS, libpath, "sounds");
 	BUILD_DIRECTORY_PATH(ANGBAND_DIR_ICONS, libpath, "icons");
+	BUILD_DIRECTORY_PATH(ANGBAND_DIR_GHOST, libpath, "ghost");
 
 #ifdef PRIVATE_USER_PATH
 
@@ -4172,7 +4175,6 @@ static struct {
 	{ "projections", &projection_parser },
 	{ "ui renderers", &ui_entry_renderer_parser },
 	{ "ui entries", &ui_entry_parser },
-	{ "timed effects", &player_timed_parser },
 	{ "player properties", &player_property_parser },
 	{ "player unarmed blows", &unarmed_blow_parser },
 	{ "features", &feat_parser },
@@ -4196,6 +4198,7 @@ static struct {
 	{ "artifacts", &artifact_parser },
 	{ "artifact sets", &artifact_set_parser },
 	{ "object properties", &object_property_parser },
+	{ "timed effects", &player_timed_parser },
 	{ "blow methods", &meth_parser },
 	{ "blow effects", &eff_parser },
 	{ "monster spells", &mon_spell_parser },
@@ -4377,4 +4380,5 @@ void cleanup_angband(void)
 	string_free(ANGBAND_DIR_INFO);
 	string_free(ANGBAND_DIR_ARCHIVE);
 	string_free(ANGBAND_DIR_BONE);
+	string_free(ANGBAND_DIR_GHOST);
 }
