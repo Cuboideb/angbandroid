@@ -10,3 +10,5 @@
 reset-author.bat
 *.aab
 /app/release
+*.old
+*.bkp
