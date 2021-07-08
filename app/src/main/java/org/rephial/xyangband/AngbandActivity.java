@@ -43,7 +43,7 @@ public class AngbandActivity extends Activity
 	protected int splashTime = 500;
 	protected ProgressDialog progressDialog = null;
 	protected Handler handler = null;
-	protected Installer installer = null;
+	protected Installer installer = null;	
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -51,22 +51,26 @@ public class AngbandActivity extends Activity
 		setContentView(R.layout.splash);
 
 		String version = "unknown";
+		long versionCode = 0;
+
 		try {
 			ComponentName comp = new ComponentName(this, AngbandActivity.class);
 			PackageInfo pinfo = this.getPackageManager().getPackageInfo(comp.getPackageName(), 0);
 			version = pinfo.versionName;
+			versionCode = pinfo.getLongVersionCode();
 		} catch (Exception e) {}
 
-	    Preferences.init (
-	    	this,
+		Preferences.init (
+			this,
 			getFilesDir(),
 			getResources(),
 			getSharedPreferences(Preferences.NAME, MODE_PRIVATE),
-			version
+			version,
+			versionCode
 		);
 
-	    // Simulate fresh install
-	    /*
+		// Simulate fresh install
+		/*
 		Preferences.setTermWidth(80);
 		Preferences.setTermHeight(24);
 		Preferences.setPortraitFontSize(0);
@@ -140,7 +144,7 @@ public class AngbandActivity extends Activity
 	public synchronized void checkInstall() {
 		final Activity splash = this;
 		Thread splashTread = new Thread() {
-		    @Override
+			@Override
 			public void run() {
 				Log.d("Angband", "splashThread.run");
 				installer = new Installer(splash);
@@ -179,7 +183,7 @@ public class AngbandActivity extends Activity
 					}
 				}
 			}
-	    };
+		};
 		splashTread.start();
 	}
 

@@ -109,10 +109,13 @@ public class GameActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		String version = "unknown";
+		long versionCode = 0;
+
 		try {
 			ComponentName comp = new ComponentName(this, AngbandActivity.class);
 			PackageInfo pinfo = this.getPackageManager().getPackageInfo(comp.getPackageName(), 0);
 			version = pinfo.versionName;
+			versionCode = pinfo.getLongVersionCode();
 		} catch (Exception e) {}
 
 		Preferences.init (
@@ -120,7 +123,8 @@ public class GameActivity extends Activity {
 			getFilesDir(),
 			getResources(),
 			getSharedPreferences(Preferences.NAME, MODE_PRIVATE),
-			version
+			version,
+			versionCode
 		);
 
 		//Log.d("Angband", "onCreate");

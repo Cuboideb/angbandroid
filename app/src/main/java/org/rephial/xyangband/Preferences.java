@@ -98,6 +98,7 @@ final public class Preferences {
 	private static String[] gamePluginDescriptions;
 	private static ProfileList profiles;
 	private static String version;
+	private static long versionCode;
 	private static int fontSize = 17;
 	private static Resources resources;
 
@@ -112,7 +113,8 @@ final public class Preferences {
 	Preferences() {}
 
 	public static void init(Context p_context, File filesDir,
-			Resources res, SharedPreferences sharedPrefs, String pversion) {
+			Resources res, SharedPreferences sharedPrefs,
+			String pVersion, long pVersionCode) {
 
 		context = p_context;
 
@@ -127,7 +129,9 @@ final public class Preferences {
 
 		gamePluginNames = resources.getStringArray(R.array.gamePluginNames);
 		gamePluginDescriptions = resources.getStringArray(R.array.gamePluginDescriptions);
-		version = pversion;
+
+		version = pVersion;
+		versionCode = pVersionCode;
 
 		keymapper = new KeyMapper(pref);
 	}
@@ -193,6 +197,14 @@ final public class Preferences {
 
 	public static String getVersion() {
 		return version;
+	}
+
+	public static long getVersionCode() {
+		return versionCode & 0x0FFFFL;
+	}
+
+	public static long getVersionCodeMajor() {
+		return (versionCode >> 32) & 0x0FFFFL;
 	}
 
 	public static Resources getResources() {
