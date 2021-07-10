@@ -52,7 +52,7 @@ const char *list_player_flag_names[] = {
 };
 
 struct timed_effect_data timed_effects[TMD_MAX] = {
-	#define TMD(a, b, c)	{ #a, b, c, 0, NULL, NULL, NULL, NULL, 0, 0, 0, NULL, OF_NONE, false, -1, -1, -1 },
+	#define TMD(a, b, c)	{ #a, b, c, 0, NULL, NULL, NULL, NULL, 0, 0, 0, false, NULL, OF_NONE, false, -1, -1, -1 },
 	#include "list-player-timed.h"
 	#undef TMD
 };
@@ -320,7 +320,7 @@ static enum parser_error parse_player_timed_slay(struct parser *p)
 		}
 	}
 	if (idx == z_info->slay_max) return PARSE_ERROR_UNRECOGNISED_SLAY;
-	t->temp_brand = idx;
+	t->temp_slay = idx;
 	return PARSE_ERROR_NONE;
 }
 
