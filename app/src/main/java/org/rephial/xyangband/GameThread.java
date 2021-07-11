@@ -14,7 +14,7 @@ public class GameThread implements Runnable {
 		{
 			return Request.class.getEnumConstants()[value];
 		}
-    };
+	};
 
 	/* game thread state */
 	private Thread thread = null;
@@ -76,7 +76,7 @@ public class GameThread implements Runnable {
 				running_plugin != null &&
 				running_profile != null && (
 				!running_plugin.equals(Preferences.getActivePluginName()) ||
-				  	!running_profile.equals(Preferences.getActiveProfile().getName())
+					!running_profile.equals(Preferences.getActiveProfile().getName())
 				)) {
 
 				/* plugin or profile has been changed */
@@ -101,7 +101,7 @@ public class GameThread implements Runnable {
 			/* notify wrapper game is about to start */
 			nativew.onGameStart();
 
- 			/* initialize keyboard buffer */
+			/* initialize keyboard buffer */
 			state.resetKeyBuffer();
 
 			game_thread_running = true;
@@ -195,7 +195,7 @@ public class GameThread implements Runnable {
 			/* this hackery is no longer needed after
 				serializing all access to GameThread
 				through the sync'd send() method and
-			 	use of handlers to initiate async actions.  */
+				use of handlers to initiate async actions.  */
 			/*
 			try {
 				// if restarting, pause for effect (and to let the
@@ -215,7 +215,9 @@ public class GameThread implements Runnable {
 			//nativew.term.serializeVisualState();
 		}
 
-	    //String pluginPath = Preferences.getActivityFilesDirectory()
+		Plugins.preparePlugin(Preferences.getActivePlugin());
+
+		//String pluginPath = Preferences.getActivityFilesDirectory()
 		//	+"/../lib/lib"+running_plugin+".so";
 
 		//String pluginPath = this.state.context.getApplicationInfo().nativeLibraryDir
@@ -245,10 +247,10 @@ public class GameThread implements Runnable {
 			new String[]{
 				Preferences.getAngbandFilesDirectory(),
 				Preferences.getActiveProfile().getSaveFile(),
-			  	width,
-			  	height,
-			  	visuals,
-			  	pluginName
+				width,
+				height,
+				visuals,
+				pluginName
 			}
 		);
 	}

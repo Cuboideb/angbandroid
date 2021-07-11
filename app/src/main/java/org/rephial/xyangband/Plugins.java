@@ -2,9 +2,15 @@ package org.rephial.xyangband;
 
 import org.rephial.xyangband.R;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.Scanner;
 import java.util.zip.ZipInputStream;
+
+import android.util.Log;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 final public class Plugins {
 	public enum Plugin {
@@ -146,5 +152,58 @@ final public class Plugins {
 		switch (p) {
 		default: return "";
 		}
+	}
+
+	public static Date parseDate(String txt)
+	{
+		try {
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			return formatter.parse(txt);
+		} catch (Exception e) {
+			Log.d("Angband", e.getMessage());
+			return new Date();
+		}
+	}
+
+	public static void prepareFAangband(Plugin p)
+	{
+		if (Preferences.getVersionCode() >= 59) return;
+
+		// Delete old bone files
+		try {
+
+			long minDate = parseDate("2021-07-10").getTime();
+
+			String path = Preferences.getAngbandFilesDirectory();
+
+			path += "/user/bone";
+
+			Log.d("Angband", "Examining " + path
+				+ " - " + minDate);
+
+			File f = new File(path);
+
+			File[] files = f.listFiles();
+
+			for (int i = 0; i < files.length; i++) {
+				File ff = files[i];
+
+				if (!ff.getName().startsWith("bone")) continue;
+
+				if (ff.lastModified() < minDate) {
+					Log.d("Angband", "Deleting " + ff.getName()
+						+ " - " + ff.lastModified());
+
+					ff.delete();
+				}
+
+			}
+		} catch (Exception e) {
+			Log.d("Angband", e.getMessage());
+		}
+	}
+
+	public static void preparePlugin(Plugin p) {
+		if (p == Plugin.faangband) prepareFAangband(p);
 	}
 }

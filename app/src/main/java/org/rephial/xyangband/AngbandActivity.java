@@ -57,7 +57,7 @@ public class AngbandActivity extends Activity
 			ComponentName comp = new ComponentName(this, AngbandActivity.class);
 			PackageInfo pinfo = this.getPackageManager().getPackageInfo(comp.getPackageName(), 0);
 			version = pinfo.versionName;
-			versionCode = pinfo.getLongVersionCode();
+			versionCode = pinfo.versionCode;
 		} catch (Exception e) {}
 
 		Preferences.init (
