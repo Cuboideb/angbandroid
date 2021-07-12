@@ -149,8 +149,8 @@ void do_cmd_uninscribe(struct command *cmd)
 	struct object *obj;
 
 	if (!player_get_resume_normal_shape(player, cmd)) {
-			return;
-		}
+		return;
+	}
 
 	/* Get arguments */
 	if (cmd_get_item(cmd, "item", &obj,
@@ -179,8 +179,8 @@ void do_cmd_inscribe(struct command *cmd)
 	char o_name[80];
 
 	if (!player_get_resume_normal_shape(player, cmd)) {
-			return;
-		}
+		return;
+	}
 
 	/* Get arguments */
 	if (cmd_get_item(cmd, "item", &obj,
@@ -235,8 +235,8 @@ void do_cmd_takeoff(struct command *cmd)
 	struct object *obj;
 
 	if (!player_get_resume_normal_shape(player, cmd)) {
-			return;
-		}
+		return;
+	}
 
 	/* Get arguments */
 	if (cmd_get_item(cmd, "item", &obj,
@@ -268,8 +268,8 @@ void do_cmd_wield(struct command *cmd)
 	struct object *obj;
 
 	if (!player_get_resume_normal_shape(player, cmd)) {
-			return;
-		}
+		return;
+	}
 
 	/* Get arguments */
 	if (cmd_get_item(cmd, "item", &obj,
@@ -354,8 +354,8 @@ void do_cmd_drop(struct command *cmd)
 	struct object *obj;
 
 	if (!player_get_resume_normal_shape(player, cmd)) {
-			return;
-		}
+		return;
+	}
 
 	/* Get arguments */
 	if (cmd_get_item(cmd, "item", &obj,
@@ -459,9 +459,9 @@ static void use_aux(struct command *cmd, struct object *obj, enum use use,
 			msgt(snd, "You activate it.");
 			activation_message(obj);
 		} else if (obj->kind->effect_msg) {
-			msgt(snd, obj->kind->effect_msg);
+			msgt(snd, "%s", obj->kind->effect_msg);
 		} else if (obj->kind->vis_msg && !player->timed[TMD_BLIND]) {
-			msgt(snd, obj->kind->vis_msg);
+			msgt(snd, "%s", obj->kind->vis_msg);
 		} else {
 			/* Make a noise! */
 			sound(snd);
@@ -539,7 +539,7 @@ static void use_aux(struct command *cmd, struct object *obj, enum use use,
 				obj->pval = charges;
 			} else if (use == USE_TIMEOUT) {
 				obj->timeout = charges;
-	}
+			}
 
 			/*
 			 * Quit if the item wasn't used and no knowledge was
@@ -554,13 +554,13 @@ static void use_aux(struct command *cmd, struct object *obj, enum use use,
 			}
 		}
 
-	/* Increase knowledge */
-	if (use == USE_SINGLE) {
+		/* Increase knowledge */
+		if (use == USE_SINGLE) {
 			char name[80];
 			int old_num = work_obj->number;
 
-		/* Single use items are automatically learned */
-		if (!was_aware) {
+			/* Single use items are automatically learned */
+			if (!was_aware) {
 				object_learn_on_use(player, work_obj);
 			}
 			/* Get a description */
@@ -573,22 +573,22 @@ static void use_aux(struct command *cmd, struct object *obj, enum use use,
 			} else {
 				msg("You have %s (%c).", name, label);
 			}
-	} else {
-		/* Wearables may need update, other things become known or tried */
+		} else {
+			/* Wearables may need update, other things become known or tried */
 			if (tval_is_wearable(work_obj)) {
-			update_player_object_knowledge(player);
-		} else if (!was_aware && ident) {
+				update_player_object_knowledge(player);
+			} else if (!was_aware && ident) {
 				object_learn_on_use(player, work_obj);
 			} else {
 				object_flavor_tried(work_obj);
+			}
 		}
-	}
 
-	if (used && use == USE_CHARGE) {
-		/* Describe charges */
+		if (used && use == USE_CHARGE) {
+			/* Describe charges */
 			if (from_floor)
 				floor_item_charges(work_obj);
-		else
+			else
 				inven_item_charges(work_obj);
 		}
 
@@ -628,8 +628,8 @@ void do_cmd_read_scroll(struct command *cmd)
 	struct object *obj;
 
 	if (!player_get_resume_normal_shape(player, cmd)) {
-			return;
-		}
+		return;
+	}
 
 	/* Check player can use scroll */
 	if (!player_can_read(player, true))
@@ -653,8 +653,8 @@ void do_cmd_use_staff(struct command *cmd)
 	struct object *obj;
 
 	if (!player_get_resume_normal_shape(player, cmd)) {
-			return;
-		}
+		return;
+	}
 
 	/* Get an item */
 	if (cmd_get_item(cmd, "item", &obj,
@@ -679,8 +679,8 @@ void do_cmd_aim_wand(struct command *cmd)
 	struct object *obj;
 
 	if (!player_get_resume_normal_shape(player, cmd)) {
-			return;
-		}
+		return;
+	}
 
 	/* Get an item */
 	if (cmd_get_item(cmd, "item", &obj,
@@ -705,8 +705,8 @@ void do_cmd_zap_rod(struct command *cmd)
 	struct object *obj;
 
 	if (!player_get_resume_normal_shape(player, cmd)) {
-			return;
-		}
+		return;
+	}
 
 	/* Get an item */
 	if (cmd_get_item(cmd, "item", &obj,
@@ -731,8 +731,8 @@ void do_cmd_activate(struct command *cmd)
 	struct object *obj;
 
 	if (!player_get_resume_normal_shape(player, cmd)) {
-			return;
-		}
+		return;
+	}
 
 	/* Get an item */
 	if (cmd_get_item(cmd, "item", &obj,
@@ -774,8 +774,8 @@ void do_cmd_quaff_potion(struct command *cmd)
 	struct object *obj;
 
 	if (!player_get_resume_normal_shape(player, cmd)) {
-			return;
-		}
+		return;
+	}
 
 	/* Get an item */
 	if (cmd_get_item(cmd, "item", &obj,
@@ -795,8 +795,8 @@ void do_cmd_use(struct command *cmd)
 	struct object *obj;
 
 	if (!player_get_resume_normal_shape(player, cmd)) {
-			return;
-		}
+		return;
+	}
 
 	/* Get an item */
 	if (cmd_get_item(cmd, "item", &obj,
@@ -897,8 +897,8 @@ void do_cmd_refill(struct command *cmd)
 	struct object *obj;
 
 	if (!player_get_resume_normal_shape(player, cmd)) {
-			return;
-		}
+		return;
+	}
 
 	/* Get an item */
 	if (cmd_get_item(cmd, "item", &obj,
@@ -1067,7 +1067,7 @@ void do_cmd_study_book(struct command *cmd)
 void do_cmd_study(struct command *cmd)
 {
 	if (!player_get_resume_normal_shape(player, cmd)) {
-			return;
+		return;
 	}
 
 	if (player_has(player, PF_CHOOSE_SPELLS))

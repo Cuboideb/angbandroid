@@ -1180,7 +1180,7 @@ void do_cmd_wiz_dump_level_map(struct command *cmd)
 	if (fo) {
 		dump_level(fo, title, cave, NULL);
 		if (file_close(fo)) {
-			msg(format("Level dumped to %s.", path));
+			msg("Level dumped to %s.", path);
 		}
 	}
 }
@@ -1919,7 +1919,7 @@ void do_cmd_wiz_play_item(struct command *cmd)
 
 		/* Provide some feedback. */
 		if (done_msg) {
-			msg(done_msg);
+			msg("%s", done_msg);
 		}
 	}
 }
@@ -2632,7 +2632,7 @@ void do_cmd_wiz_summon_named(struct command *cmd)
 {
 	int r_idx, i = 0;
 	struct monster_race *r = NULL;
-	struct monster_group_info info = { 0, 0 };
+	struct monster_group_info info = { 0, 0, 0 };
 
 	if (cmd_get_arg_number(cmd, "index", &r_idx) == CMD_OK) {
 		if (r_idx > 0 && r_idx < z_info->r_max) {

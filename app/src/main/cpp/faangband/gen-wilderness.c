@@ -91,7 +91,8 @@ static void path_to_nowhere(struct chunk *c, struct loc start,
 	grid = loc_sum(start, direction);
 	if (square_in_bounds_fully(c, grid)) {
 		/* Take a step */
-		square_set_feat(c, grid, FEAT_ROAD);
+		if (!square_ismark(c, grid))
+			square_set_feat(c, grid, FEAT_ROAD);
 		end = grid;
 	} else {
 		/* No good, just finish at the start */
@@ -106,7 +107,8 @@ static void path_to_nowhere(struct chunk *c, struct loc start,
 		adjust_dir(&direction, grid, target);
 		grid = loc_sum(grid, direction);
 		if (square_in_bounds_fully(c, grid)) {
-			square_set_feat(c, grid, FEAT_ROAD);
+			if (!square_ismark(c, grid))
+				square_set_feat(c, grid, FEAT_ROAD);
 			end = grid;
 		} else {
 			break;
@@ -116,7 +118,8 @@ static void path_to_nowhere(struct chunk *c, struct loc start,
 		correct_dir(&direction, grid, target);
 		grid = loc_sum(grid, direction);
 		if (square_in_bounds_fully(c, grid)) {
-			square_set_feat(c, grid, FEAT_ROAD);
+			if (!square_ismark(c, grid))
+				square_set_feat(c, grid, FEAT_ROAD);
 			end = grid;
 		} else {
 			break;
@@ -165,33 +168,56 @@ static void river_move(struct chunk *c, int *xp)
 }
 
 /**
- * Places paths to adjacent surface places, and joins them.  Does each 
- * direction separately, which is a bit repetitive -NRM-
+ * Places paths to adjacent surface places, and joins them.
  */
 static void alloc_paths(struct chunk *c, struct player *p, int place,
 						int last_place)
 {
-	int y, x, i, j, num, path;
+	int dir, i, j, num, path, back, coord;
 	int pcoord = player->upkeep->path_coord;
 	struct loc grid, pgrid, tgrid;
 
 	struct level *lev = &world->levels[place];
 	struct level *last_lev = &world->levels[last_place];
-	struct level *north = NULL;
-	struct level *east = NULL;
-	struct level *south = NULL;
-	struct level *west = NULL;
+	struct {
+		struct level* level;
+		bool vert, river_special;
+		int f_less, f_more;
+		int coord;
+		int para_off_min, para_off_max;
+		int perp_off_min, perp_off_max;
+	} dirs[] = {
+		{ (lev->north) ? level_by_name(world, lev->north) : NULL,
+			false, true,
+			FEAT_LESS_NORTH, FEAT_MORE_NORTH,
+			1,
+			-19, 20,
+			c->height / 3 - 9, c->height / 3 + 10 },
+		{ (lev->east) ? level_by_name(world, lev->east) : NULL,
+			true, false,
+			FEAT_LESS_EAST, FEAT_MORE_EAST,
+			c->width - 2,
+			-19, 20,
+			-(c->height / 3) - 12, -(c->height / 3) + 7 },
+		{ (lev->south) ? level_by_name(world, lev->south) : NULL,
+			false, true,
+			FEAT_LESS_SOUTH, FEAT_MORE_SOUTH,
+			c->height - 2,
+			-19, 20,
+			-(c->height / 3) - 12, -(c->height / 3) + 7 },
+		{ (lev->west) ? level_by_name(world, lev->west) : NULL,
+			true, false,
+			FEAT_LESS_WEST, FEAT_MORE_WEST,
+			1,
+			-19, 20,
+			c->height / 3 - 9, c->height / 3 + 10 },
+	};
 
 	struct loc pathend[20], gp[512];
 	int pspot, num_paths = 0, path_grids = 0;
 
 	bool jumped = true;
 	bool river;
-
-	if (lev->north) north = level_by_name(world, lev->north);
-	if (lev->east) east = level_by_name(world, lev->east);
-	if (lev->south) south = level_by_name(world, lev->south);
-	if (lev->west) west = level_by_name(world, lev->west);
 
 	/* River levels need special treatment */
 	river = (lev->topography == TOP_RIVER);
@@ -201,34 +227,47 @@ static void alloc_paths(struct chunk *c, struct player *p, int place,
 		pathend[i].x = 0;
 	}
 
-	/* Hack for finishing Nan Dungortheb */
-	//if ((last_place == q_list[2].place) && (last_place != 0))
-	//	north = last_place;
+	for (dir = 0; dir < 4; ++dir) {
+		if (!dirs[dir].level) continue;
 
-	/* North */
-	if (north) {
 		/* Harder or easier? */
-		if (north->depth > lev->depth) {
-			path = FEAT_MORE_NORTH;
-		} else {
-			path = FEAT_LESS_NORTH;
-		}
+		path = (dirs[dir].level->depth > lev->depth) ?
+			dirs[dir].f_more : dirs[dir].f_less;
 
 		/* Way back */
-		if ((north == last_lev) && (player->upkeep->create_stair)) {
+		if (dirs[dir].level == last_lev
+				&& player->upkeep->create_stair) {
 			/* No paths in river */
-			if (river)
+			if (river && dirs[dir].river_special)
 				river_move(c, &pcoord);
 
-			pgrid = loc(pcoord, 1);
+			back = pcoord;
+			if (dirs[dir].vert) {
+				pgrid = loc(dirs[dir].coord, pcoord);
+				tgrid = loc(
+					dirs[dir].coord + rand_range(
+						dirs[dir].perp_off_min,
+						dirs[dir].perp_off_max),
+					pgrid.y + rand_range(
+						dirs[dir].para_off_min,
+						dirs[dir].para_off_max));
+			} else {
+				pgrid = loc(pcoord, dirs[dir].coord);
+				tgrid = loc(
+					pgrid.x + rand_range(
+						dirs[dir].para_off_min,
+						dirs[dir].para_off_max),
+					dirs[dir].coord + rand_range(
+						dirs[dir].perp_off_min,
+						dirs[dir].perp_off_max));
+			}
 			square_set_feat(c, pgrid, path);
 			square_mark(c, pgrid);
 			jumped = false;
 
-			/* Make path to nowhere */
-			tgrid = loc(pgrid.x + randint1(40) - 20,
-						1 + c->height / 3 + randint1(20) - 10);
 			path_to_nowhere(c, pgrid, tgrid, pathend, &num_paths);
+		} else {
+			back = -2;
 		}
 
 		/* Decide number of paths */
@@ -236,147 +275,43 @@ static void alloc_paths(struct chunk *c, struct player *p, int place,
 
 		/* Place "num" paths */
 		for (i = 0; i < num; i++) {
-			x = 1 + randint0(c->width / num - 2) +
-				i * c->width / num;
+			if (dirs[dir].vert) {
+				coord = 1 + randint0(c->height / num - 2)
+					+ (i * c->height) / num;
+			} else {
+				coord = 1 + randint0(c->width / num - 2)
+					+ (i * c->width) / num;
+			}
 
 			/* No paths in river */
-			if (river)
-				river_move(c, &x);
+			if (river && dirs[dir].river_special)
+				river_move(c, &coord);
 
-			grid = loc(x, 1);
+			/* Skip if too close to the way back. */
+			if (ABS(coord - back) < 3) continue;
+
+			if (dirs[dir].vert) {
+				grid = loc(dirs[dir].coord, coord);
+				tgrid = loc(
+					dirs[dir].coord + rand_range(
+						dirs[dir].perp_off_min,
+						dirs[dir].perp_off_max),
+					grid.y + rand_range(
+						dirs[dir].para_off_min,
+						dirs[dir].para_off_max));
+			} else {
+				grid = loc(coord, dirs[dir].coord);
+				tgrid = loc(
+					grid.x + rand_range(
+						dirs[dir].para_off_min,
+						dirs[dir].para_off_max),
+					dirs[dir].coord + rand_range(
+						dirs[dir].perp_off_min,
+						dirs[dir].perp_off_max));
+			}
 			square_set_feat(c, grid, path);
 			square_mark(c, grid);
 
-			/* Make paths to nowhere */
-			tgrid = loc(grid.x + randint1(40) - 20,
-						1 + c->height / 3 + randint1(20) - 10);
-			path_to_nowhere(c, grid, tgrid, pathend, &num_paths);
-		}
-	}
-
-	/* East */
-	if (east) {
-		/* Harder or easier? */
-		if (east->depth > lev->depth) {
-			path = FEAT_MORE_EAST;
-		} else {
-			path = FEAT_LESS_EAST;
-		}
-
-		/* Way back */
-		if ((east == last_lev) && (player->upkeep->create_stair)) {
-			pgrid = loc(c->width - 2, pcoord);
-			square_set_feat(c, pgrid, path);
-			square_mark(c, pgrid);
-			jumped = false;
-
-			/* Make path to nowhere */
-			tgrid = loc(c->width - c->height / 3 - randint1(20) + 8,
-						pgrid.y + randint1(40) - 20);
-			path_to_nowhere(c, pgrid, tgrid, pathend, &num_paths);
-		}
-
-		/* Decide number of paths */
-		num = rand_range(2, 3);
-
-		/* Place "num" paths */
-		for (i = 0; i < num; i++) {
-			y = 1 + randint0(c->height / num - 2) +	i * c->height / num;
-			grid = loc(c->width - 2, y);
-			square_set_feat(c, grid, path);
-			square_mark(c, grid);
-
-			/* Make paths to nowhere */
-			tgrid = loc(c->width - c->height / 3 - randint1(20) + 8,
-						grid.y + randint1(40) - 20);
-			path_to_nowhere(c, grid, tgrid, pathend, &num_paths);
-		}
-	}
-
-	/* South */
-	if (south) {
-		/* Harder or easier? */
-		if (south->depth > lev->depth) {
-			path = FEAT_MORE_SOUTH;
-		} else {
-			path = FEAT_LESS_SOUTH;
-		}
-
-		/* Way back */
-		if ((south == last_lev) && (p->upkeep->create_stair)) {
-			/* No paths in river */
-			if (river)
-				river_move(c, &pcoord);
-
-			pgrid = loc(pcoord, c->height - 2);
-			square_set_feat(c, pgrid, path);
-			square_mark(c, pgrid);
-			jumped = false;
-
-			/* Make path to nowhere */
-			tgrid = loc(pgrid.x + randint1(40) - 20,
-						c->height - c->height / 3 - randint1(20) + 8);
-			path_to_nowhere(c, pgrid, tgrid, pathend, &num_paths);
-		}
-
-		/* Decide number of paths */
-		num = rand_range(2, 3);
-
-		/* Place "num" paths */
-		for (i = 0; i < num; i++) {
-			x = 1 + randint0(c->width / num - 2) +
-				i * c->width / num;
-
-			/* No paths in river */
-			if (river)
-				river_move(c, &x);
-
-			grid = loc(x, c->height - 2);
-			square_set_feat(c, grid, path);
-			square_mark(c, grid);
-
-			/* Make paths to nowhere */
-			tgrid = loc(grid.x + randint1(40) - 20,
-						c->height - c->height / 3 - randint1(20) + 8);
-			path_to_nowhere(c, grid, tgrid, pathend, &num_paths);
-		}
-	}
-
-	/* West */
-	if (west) {
-		/* Harder or easier? */
-		if (west->depth > lev->depth) {
-			path = FEAT_MORE_WEST;
-		} else {
-			path = FEAT_LESS_WEST;
-		}
-
-		/* Way back */
-		if ((west == last_lev) && (p->upkeep->create_stair)) {
-			pgrid = loc(1, pcoord);
-			square_set_feat(c, pgrid, path);
-			square_mark(c, pgrid);
-			jumped = false;
-
-			/* Make path to nowhere */
-			tgrid = loc(1 + c->height / 3 + randint1(20) - 10,
-						pgrid.y + randint1(40) - 20);
-			path_to_nowhere(c, pgrid, tgrid, pathend, &num_paths);
-		}
-
-		/* Decide number of paths */
-		num = rand_range(2, 3);
-
-		/* Place "num" paths */
-		for (i = 0; i < num; i++) {
-			y = 1 + randint0(c->height / num - 2) +	i * c->height / num;
-			grid = loc(1, y);
-			square_set_feat(c, grid, path);
-			square_mark(c, grid);
-
-			/* make paths to nowhere */
-			tgrid = loc(1 + c->height / 3 + randint1(20) - 10,
-						grid.y + randint1(40) - 20);
 			path_to_nowhere(c, grid, tgrid, pathend, &num_paths);
 		}
 	}
@@ -403,10 +338,13 @@ static void alloc_paths(struct chunk *c, struct player *p, int place,
 		/* Make the path, adding an adjacent grid 8/9 of the time */
 		for (j = 0; j < path_grids; j++) {
 			struct loc offset = loc(randint0(3) - 1, randint0(3) - 1);
-			square_set_feat(c, gp[j], FEAT_ROAD);
+			if (!square_ismark(c, gp[j])) {
+				square_set_feat(c, gp[j], FEAT_ROAD);
+			}
 			grid = loc_sum(gp[j], offset);
-			if (square_in_bounds_fully(c, grid)) {
-				square_set_feat(c, loc_sum(gp[j], offset), FEAT_ROAD);
+			if (square_in_bounds_fully(c, grid)
+					&& !square_ismark(c, grid)) {
+				square_set_feat(c, grid, FEAT_ROAD);
 			}
 		}
 	}
@@ -757,7 +695,6 @@ static int make_formation(struct chunk *c, struct player *p, struct loc grid,
 static int populate(struct chunk *c, bool valley)
 {
 	int i, j;
-	struct loc grid;
 
 	/* Basic "amount" */
 	int k = (c->depth / 2);
@@ -771,8 +708,8 @@ static int populate(struct chunk *c, bool valley)
 			k += 10;
 	}
 
-    /* Pick a base number of monsters */
-    i = z_info->level_monster_min + randint1(8) + k;
+	/* Pick a base number of monsters */
+	i = z_info->level_monster_min + randint1(8) + k;
 
 	/* Build the monster probability table. */
 	(void) get_mon_num(c->depth);
@@ -808,28 +745,63 @@ static int populate(struct chunk *c, bool valley)
 	alloc_objects(c, SET_BOTH, TYP_GOLD, Rand_normal(z_info->both_gold_av, 3),
 				 c->depth, ORIGIN_FLOOR);
 
-	/* Paranoia - remake the dungeon walls */
+	return k;
+}
+
+/**
+ * Perform some sanity checks on the generated level.
+ */
+static bool verify_level(struct chunk *c)
+{
+	struct loc last_bad_bnd = loc(0, 0);
+	struct loc last_bad_mon = loc(0, 0);
+	struct loc last_bad_obj = loc(0, 0);
+	int broken_bnd = 0, broken_mon = 0, broken_obj = 0;
+	struct loc grid;
+
 	for (grid.y = 0; grid.y < c->height; grid.y++) {
 		for (grid.x = 0; grid.x < c->width; grid.x++) {
-			if ((grid.y == 0) || (grid.x == 0) || (grid.y == c->height - 1)
-				|| (grid.x == c->width - 1))
-				square_set_feat(c, grid, FEAT_PERM);
-
-			/* Super paranoia */
-			if (feat_is_permanent(c->squares[grid.y][grid.x].feat)) {
-				struct monster *mon = square_monster(c, grid);
-				struct object *obj = square_object(c, grid);
-				if (mon) {
-					delete_monster(grid);
-				}
-				if (obj) {
-					square_delete_object(c, grid, obj, false, false);
-				}
+			if ((grid.y == 0 || grid.x == 0
+					|| grid.y == c->height - 1
+					|| grid.x == c->width - 1)
+					&& square(c, grid)->feat != FEAT_PERM) {
+				++broken_bnd;
+				last_bad_bnd = grid;
+			}
+			if (square_monster(c, grid)
+					&& !square_is_monster_walkable(c, grid)) {
+				++broken_mon;
+				last_bad_mon = grid;
+			}
+			if (square_object(c, grid)
+					&& !square_isobjectholding(c, grid)) {
+				++broken_obj;
+				last_bad_obj = grid;
 			}
 		}
 	}
 
-	return k;
+	if (broken_bnd || broken_mon || broken_obj) {
+		const char *title;
+
+		if (broken_bnd) {
+			title = format("Broken Wilderness:  %d Bounding Walls; Last at (x=%d,y=%d) with Feature=%d",
+				broken_bnd, last_bad_bnd.x, last_bad_bnd.y,
+				(int) square(c, last_bad_bnd)->feat);
+		} else if (broken_mon) {
+			title = format("Broken Monster:  %d Embedded in Terrain; Last at (x=%d,y=%d) with Terrain=%d",
+				broken_mon, last_bad_mon.x, last_bad_mon.y,
+				(int) square(c, last_bad_mon)->feat);
+		} else {
+			title = format("Broken Object:  %d Embedded in Terrain; Last at (x=%d,y=%d) with Terrain=%d",
+				broken_obj, last_bad_obj.x, last_bad_obj.y,
+				(int) square(c, last_bad_obj)->feat);
+		}
+		dump_level_simple(NULL, title, c);
+		msg("Restarting wilderness generation; bad level in dumpedlevel.html");
+		return false;
+	}
+	return true;
 }
 
 /**
@@ -843,10 +815,11 @@ static void mtn_connect(struct chunk *c, struct loc grid1, struct loc grid2)
 	/* Find the shortest path */
 	path_grids = project_path(c, gp, 512, grid1, grid2, PROJECT_ROCK);
 
-	/* Make the path, adding an adjacent grid 8/9 of the time */
+	/* Make the path */
 	for (j = 0; j < path_grids; j++) {
-		if ((square_feat(c, gp[j])->fidx == FEAT_ROAD) ||
-			(!square_in_bounds_fully(c, gp[j])))
+		if (!square_in_bounds_fully(c, gp[j])
+				|| square_feat(c, gp[j])->fidx == FEAT_ROAD
+				|| square_ismark(c, gp[j]))
 			break;
 		square_set_feat(c, gp[j], FEAT_ROAD);
 		square_mark(c, gp[j]);
@@ -987,6 +960,12 @@ struct chunk *plain_gen(struct player *p, int height, int width)
 
 	/* Place objects, traps and monsters */
 	(void) populate(c, false);
+
+	if (!verify_level(c)) {
+		wipe_mon_list(c, p);
+		cave_free(c);
+		return NULL;
+	}
 
 	return c;
 }
@@ -1191,6 +1170,12 @@ struct chunk *mtn_gen(struct player *p, int height, int width)
 
 	/* Place objects, traps and monsters */
 	(void) populate(c, false);
+
+	if (!verify_level(c)) {
+		wipe_mon_list(c, p);
+		cave_free(c);
+		return NULL;
+	}
 
 	return c;
 }
@@ -1526,6 +1511,12 @@ struct chunk *forest_gen(struct player *p, int height, int width)
 	/* Place objects, traps and monsters */
 	(void) populate(c, false);
 
+	if (!verify_level(c)) {
+		wipe_mon_list(c, p);
+		cave_free(c);
+		return NULL;
+	}
+
 	return c;
 }
 
@@ -1596,6 +1587,12 @@ struct chunk *swamp_gen(struct player *p, int height, int width)
 
 	/* Place objects, traps and monsters */
 	(void) populate(c, false);
+
+	if (!verify_level(c)) {
+		wipe_mon_list(c, p);
+		cave_free(c);
+		return NULL;
+	}
 
 	return c;
 }
@@ -1739,6 +1736,12 @@ struct chunk *desert_gen(struct player *p, int height, int width)
 
 	/* Place objects, traps and monsters */
 	(void) populate(c, false);
+
+	if (!verify_level(c)) {
+		wipe_mon_list(c, p);
+		cave_free(c);
+		return NULL;
+	}
 
 	return c;
 }
@@ -1900,6 +1903,13 @@ struct chunk *river_gen(struct player *p, int height, int width)
 	(void) populate(c, false);
 
 	mem_free(mid);
+
+	if (!verify_level(c)) {
+		wipe_mon_list(c, p);
+		cave_free(c);
+		return NULL;
+	}
+
 	return c;
 }
 
@@ -2039,12 +2049,6 @@ struct chunk *valley_gen(struct player *p, int height, int width)
 	for (grid.y = 0; grid.y < c->height; grid.y++) {
 		for (grid.x = 0; grid.x < c->width; grid.x++) {
 			square_unmark(c, grid);
-
-			/* Paranoia - remake the dungeon walls */
-			if ((grid.y == 0) || (grid.x == 0) ||
-				(grid.y == c->height - 1) || (grid.x == c->width - 1)) {
-				square_set_feat(c, grid, FEAT_PERM);
-			}
 		}
 	}
 
@@ -2059,6 +2063,12 @@ struct chunk *valley_gen(struct player *p, int height, int width)
 				k--;
 			}
 		}
+	}
+
+	if (!verify_level(c)) {
+		wipe_mon_list(c, p);
+		cave_free(c);
+		return NULL;
 	}
 
 	return c;
