@@ -477,7 +477,7 @@ int object_value_real(const struct object *obj, int qty)
 		if (obj->artifact) {
 			value = obj->artifact->cost;
 		} else {
-		value = obj->kind->cost;
+			value = obj->kind->cost;
 		}
 
 		/* Worthless items */

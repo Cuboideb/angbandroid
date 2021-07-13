@@ -1171,7 +1171,7 @@ static void display_monster(int col, int row, bool cursor, int oid)
 		c_prt(attr, format("%s, the %s", cave->ghost->name, race->name),
 			  row, col);
 	} else {
-	c_prt(attr, race->name, row, col);
+		c_prt(attr, race->name, row, col);
 	}
 
 	/* Display symbol */

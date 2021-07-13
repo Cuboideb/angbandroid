@@ -673,7 +673,7 @@ bool askfor_aux_keypress(char *buf, size_t buflen, size_t *curs, size_t *len,
 				oshift = utf8_fskip(buf + *curs, 1, NULL);
 				assert(oshift);
 				memmove(ocurs, oshift, *len - (oshift - buf));
-			/* Decrement */
+				/* Decrement */
 				*len -= oshift - ocurs;
 			}
 

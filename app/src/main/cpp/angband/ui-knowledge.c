@@ -532,7 +532,7 @@ static bool glyph_command(ui_event ke, bool *glyph_picker_ptr,
 	if (*glyph_picker_ptr && (ke.type == EVT_MOUSE)) {
 		int mx = logical_width(ke.mouse.x - col);
 
-		if (ke.mouse.y != row + height/2) return false;
+		if (ke.mouse.y != row + height / 2) return false;
 
 		if ((mx >= 0) && (mx < MAX_COLORS) && (ke.mouse.button == 1)) {
 		        /* Set the visual */

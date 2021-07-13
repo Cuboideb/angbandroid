@@ -439,7 +439,7 @@ void object_list_format_name(const object_list_entry_t *entry,
 	/* Get the rest of the name and clip it to fit the max width. */
 	chunk = strtok(source, "\0");
 	if (chunk) {
-	my_strcat(line_buffer, chunk, size);
+		my_strcat(line_buffer, chunk, size);
 	}
 }
 

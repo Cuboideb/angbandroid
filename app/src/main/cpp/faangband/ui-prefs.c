@@ -948,7 +948,7 @@ static enum parser_error parse_prefs_keymap_action(struct parser *p)
 {
 	const char *act = "";
 
-	struct prefs_data *d = parser_priv(p);
+	struct prefs_data *d = parser_priv(p);	
 	assert(d != NULL);
 	if (d->bypass) return PARSE_ERROR_NONE;
 

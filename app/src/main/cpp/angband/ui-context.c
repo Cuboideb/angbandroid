@@ -1137,7 +1137,7 @@ static void cmd_sub_entry(struct menu *menu, int oid, bool cursor, int row,
 	Term_addstr(-1, attr, buf);
 
 	Term_addch(attr, L')');
-}
+	}
 }
 
 /**

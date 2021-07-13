@@ -5148,7 +5148,7 @@ static bool effect_handler_MOVE_ATTACK(effect_handler_context_t *context)
 	return true;
 }
 
- /**
+/**
  * Enter single combat with an enemy
  */
 static bool effect_handler_SINGLE_COMBAT(effect_handler_context_t *context)

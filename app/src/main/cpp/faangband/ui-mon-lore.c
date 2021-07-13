@@ -64,7 +64,7 @@ void lore_title(textblock *tb, const struct monster_race *race)
 	if (rf_has(race->flags, RF_PLAYER_GHOST)) {
 		textblock_append(tb, "%s, the %s", cave->ghost->name, race->name);
 	} else {
-	textblock_append(tb, "%s", race->name);
+		textblock_append(tb, "%s", race->name);
 	}
 
 	textblock_append(tb, " ('");

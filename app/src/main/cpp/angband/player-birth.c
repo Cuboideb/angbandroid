@@ -826,7 +826,7 @@ static void generate_stats(int st[STAT_MAX], int spent[STAT_MAX], int *left)
 					step++;
 					
 					/* If pure caster skip to step 3 */
-					if (caster){
+					if (caster) {
 						step = 3;
 					}
 				}

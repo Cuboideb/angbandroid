@@ -945,7 +945,7 @@ void object_see(struct player *p, struct object *obj)
 		known_obj->grid = grid;
 		pile_insert_end(&p->cave->squares[grid.y][grid.x].obj, known_obj);
 	}
-}
+	}
 }
 
 /**

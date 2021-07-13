@@ -1042,7 +1042,7 @@ static void do_cmd_wiz_play(void)
  * Hack -- this routine always makes a "dungeon object", and applies
  * magic to it, and attempts to decline cursed items. XXX XXX XXX
  */
-static void wiz_create_item_aux(int k_idx,int y, int x)
+static void wiz_create_item_aux(int k_idx, int y, int x)
 {
     object_type* i_ptr;
     object_type object_type_body;

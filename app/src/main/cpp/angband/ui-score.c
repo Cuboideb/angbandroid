@@ -78,7 +78,7 @@ static void display_score_page(const struct high_score scores[], int start,
 				my_strcat(out_val, format(" (Max %d)", mlev), sizeof(out_val));
 
 			/* Dump the first line */
-			c_put_str(attr, out_val, n*4 + 2, 0);
+		c_put_str(attr, out_val, n * 4 + 2, 0);
 
 
 			/* Died where? */
@@ -94,7 +94,7 @@ static void display_score_page(const struct high_score scores[], int start,
 				my_strcat(out_val, format(" (Max %d)", mdun), sizeof(out_val));
 
 			/* Dump the info */
-			c_put_str(attr, out_val, n*4 + 3, 15);
+		c_put_str(attr, out_val, n * 4 + 3, 15);
 
 
 			/* Clean up standard encoded form of "when" */
@@ -108,7 +108,7 @@ static void display_score_page(const struct high_score scores[], int start,
 			strnfmt(out_val, sizeof(out_val),
 					"(User %s, Date %s, Gold %s, Turn %s).",
 					user, when, gold, aged);
-			c_put_str(attr, out_val, n*4 + 4, 15);
+		c_put_str(attr, out_val, n * 4 + 4, 15);
 		}
 }
 

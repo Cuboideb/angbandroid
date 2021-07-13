@@ -195,7 +195,7 @@ static bool set_up_path_distances(struct loc grid)
 
 	/* Found a path */
 	return true;
-	}
+}
 
 /**
  * Fill the array of path step directions

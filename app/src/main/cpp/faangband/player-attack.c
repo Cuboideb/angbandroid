@@ -998,8 +998,8 @@ static bool attempt_shield_bash(struct player *p, struct monster *mon, bool *fea
 	if (!equipped_item_by_slot_name(p, "weapon")) {
 		/* Unarmed and unskilled... */
 		if (!player_has(p, PF_UNARMED_COMBAT) &&
-		!player_has(p, PF_MARTIAL_ARTS)) {
-		bash_chance *= 4;
+			!player_has(p, PF_MARTIAL_ARTS)) {
+			bash_chance *= 4;
 		}
 	} else if (weapon->dd * weapon->ds * nblows < shield->dd * shield->ds * 3) {
 		/* ... or armed with a puny weapon */

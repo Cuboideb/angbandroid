@@ -60,8 +60,8 @@
 #include "wizard.h"
 
 /**
- * There are a few functions installed to be triggered by several
- * of the basic player events.  For convenience, these have been grouped
+ * There are a few functions installed to be triggered by several 
+ * of the basic player events.  For convenience, these have been grouped 
  * in this list.
  */
 static game_event_type player_events[] =
@@ -179,9 +179,9 @@ static int fmt_title(char buf[], int max, bool short_mode)
 		my_strcpy(buf, "[=-WIZARD-=]", max);
 	} else if (player->total_winner || (player->lev > PY_MAX_LEVEL)) {
 		my_strcpy(buf, "***WINNER***", max);
-	} else if (player_is_shapechanged(player)) {
+	} else if (player_is_shapechanged(player)) {		
 		my_strcpy(buf, player->shape->name, max);
-		my_strcap(buf);
+		my_strcap(buf);		
 	} else if (!short_mode) {
 		my_strcpy(buf, player->class->title[(player->lev - 1) / 5], max);
 	}
@@ -193,10 +193,10 @@ static int fmt_title(char buf[], int max, bool short_mode)
  * Prints title, including wizard, winner or shape as needed.
  */
 static void prt_title(int row, int col)
-{
+{	
 	char buf[32];
 
-	fmt_title(buf, sizeof(buf), false);
+	fmt_title(buf, sizeof(buf), false);	
 
 	prt_field(buf, row, col);
 }
@@ -304,7 +304,7 @@ static void prt_ac(int row, int col)
 	char tmp[32];
 
 	put_str("Cur AC ", row, col);
-	strnfmt(tmp, sizeof(tmp), "%5d",
+	strnfmt(tmp, sizeof(tmp), "%5d", 
 			player->known_state.ac + player->known_state.to_a);
 	c_put_str(COLOUR_L_GREEN, tmp, row, col + 7);
 }
@@ -321,7 +321,7 @@ static void prt_hp(int row, int col)
 
 	strnfmt(max_hp, sizeof(max_hp), "%4d", player->mhp);
 	strnfmt(cur_hp, sizeof(cur_hp), "%4d", player->chp);
-
+	
 	c_put_str(color, cur_hp, row, col + 3);
 	c_put_str(COLOUR_WHITE, "/", row, col + 7);
 	c_put_str(COLOUR_L_GREEN, max_hp, row, col + 8);
@@ -336,7 +336,7 @@ static void prt_sp(int row, int col)
 	byte color = player_sp_attr(player);
 
 	/* Do not show mana unless we should have some */
-	if (player_has(player, PF_NO_MANA) ||
+	if (player_has(player, PF_NO_MANA) || 
 		(player->lev < player->class->magic.spell_first))
 		return;
 
@@ -500,7 +500,7 @@ static int prt_speed_aux(char buf[], int max, byte *attr)
  */
 static void prt_speed(int row, int col)
 {
-	byte attr = COLOUR_WHITE;
+	byte attr = COLOUR_WHITE;	
 	char buf[32] = "";
 
 	prt_speed_aux(buf, sizeof(buf), &attr);
@@ -599,7 +599,7 @@ static int prt_stat_short(int stat, int row, int col)
 
 	/* Injured or healthy stat */
 	if (player->stat_cur[stat] < player->stat_max[stat]) {
-		put_str(format("%c:", stat_names_reduced[stat][0]), row, col);
+		put_str(format("%c:", stat_names_reduced[stat][0]), row, col);		
 		cnv_stat(player->state.stat_use[stat], tmp, sizeof(tmp));
 		/* Trim whitespace */
 		strskip(tmp,' ', 0);
@@ -613,8 +613,8 @@ static int prt_stat_short(int stat, int row, int col)
 			c_put_str(COLOUR_L_BLUE, tmp, row, col + 2);
 		}
 		else {
-			c_put_str(COLOUR_L_GREEN, tmp, row, col + 2);
-		}
+			c_put_str(COLOUR_L_GREEN, tmp, row, col + 2);	
+		}		
 	}
 
 	return 3+strlen(tmp);
