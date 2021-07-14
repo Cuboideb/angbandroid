@@ -1248,7 +1248,7 @@ static bool describe_damage(textblock *tb, const struct object *obj, bool throw)
 				} else {
 					textblock_append_c(tb, COLOUR_L_GREEN,
 						"%d vs", dam / 10);
-		}
+				}
 				groupn = 1;
 				lastdam = dam;
 			} else {
@@ -1274,7 +1274,7 @@ static bool describe_damage(textblock *tb, const struct object *obj, bool throw)
 		if (nsort == 0) {
 			has_brands_or_slays = false;
 		} else {
-		textblock_append(tb, (nsort == 1) ? " and " : ", and ");
+			textblock_append(tb, (nsort == 1) ? " and " : ", and ");
 		}
 		mem_free(sortind);
 	}
@@ -1387,7 +1387,7 @@ static bool describe_combat(textblock *tb, const struct object *obj)
 	}
 
 	if (weapon || ammo) {
-	describe_damage(tb, obj, false);
+		describe_damage(tb, obj, false);
 	}
 	if (throwing_weapon || rock) {
 		describe_damage(tb, obj, true);
@@ -1720,8 +1720,8 @@ static bool describe_effect(textblock *tb, const struct object *obj,
 
 		tbe = effect_describe(effect, prefix, boost, false);
 		if (! tbe) {
-				return false;
-			}
+			return false;
+		}
 		textblock_append_textblock(tb, tbe);
 		textblock_free(tbe);
 	}

@@ -178,7 +178,7 @@ static void wr_item(const struct object *obj)
 
 	/* Held by monster index */
 	wr_s16b(obj->held_m_idx);
-
+	
 	wr_s16b(obj->mimicking_m_idx);
 
 	/* Activation and effects*/
@@ -204,7 +204,7 @@ static void wr_item(const struct object *obj)
 static void wr_monster(const struct monster *mon)
 {
 	size_t j;
-	struct object *obj = mon->held_obj;
+	struct object *obj = mon->held_obj; 
 	struct object *dummy = object_new();
 
 	wr_u16b(mon->midx);
@@ -871,7 +871,7 @@ static void wr_objects_aux(struct chunk *c)
 
 	if (player->is_dead)
 		return;
-
+	
 	/* Write the objects */
 	wr_u16b(c->obj_max);
 	for (y = 0; y < c->height; y++) {

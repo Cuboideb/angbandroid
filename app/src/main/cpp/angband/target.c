@@ -433,8 +433,8 @@ struct point_set *target_get_monsters(int mode, monster_predicate pred,
 	struct point_set *targets = point_set_new(TS_INITIAL_SIZE);
 
 	if (restrict_to_panel) {
-	/* Get the current panel */
-	get_panel(&min_y, &min_x, &max_y, &max_x);
+		/* Get the current panel */
+		get_panel(&min_y, &min_x, &max_y, &max_x);
 	} else {
 		min_y = player->grid.y - z_info->max_range;
 		max_y = player->grid.y + z_info->max_range + 1;

@@ -364,8 +364,8 @@ int main(int argc, char *argv[])
 	/* Drop permissions */
 	safe_setuid_drop();
 
-	/* Get the file paths
-	 * Paths may be overriden by -d options, so this has to occur *before*
+	/* Get the file paths 
+	 * Paths may be overriden by -d options, so this has to occur *before* 
 	 * processing command line args */
 	init_stuff();
 
@@ -394,7 +394,7 @@ int main(int argc, char *argv[])
 			case 'g':
 				/* Default graphics tile */
 				/* in graphics.txt, 2 corresponds to adam bolt's tiles */
-				arg_graphics = 2;
+				arg_graphics = 2; 
 				if (*arg) arg_graphics = atoi(arg);
 				break;
 

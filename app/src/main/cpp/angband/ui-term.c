@@ -620,13 +620,13 @@ void Term_big_queue_char(term *t, int x, int y, int clipy,
 
 	/* No tall skinny tiles */
 	if (tile_width > 1) {
-        /* Horizontal first; skip already marked upper left corner */
-        for (hor = 1; hor < tile_width; hor++) {
-        	/* Queue dummy character */
+	        /* Horizontal first; skip already marked upper left corner */
+	        for (hor = 1; hor < tile_width; hor++) {
+		        /* Queue dummy character */
 			if (a & 0x80)
-		    	Term_queue_char(t, x + hor, y, 255, -1, 0, 0);
+				Term_queue_char(t, x + hor, y, 255, -1, 0, 0);
 			else
-		        Term_queue_char(t, x + hor, y, COLOUR_WHITE, L' ', a1, c1);
+				Term_queue_char(t, x + hor, y, COLOUR_WHITE, L' ', a1, c1);
 		}
 
 		/* Now vertical */
@@ -1325,9 +1325,9 @@ static void Term_fresh_row_both_dblh(int y, int x1, int x2, int *pr_drw)
 						draw = is_padding_changed(
 							Term, y, x);
 					} else {
-					draw = 0;
+						draw = 0;
+					}
 				}
-			}
 			}
 
 			/* Remember if this element was redrawn or not. */
@@ -1548,7 +1548,7 @@ errr Term_mark(int x, int y)
 	 * functions, but ideally there should be a test to use the blank text
 	 * attr/char pair
 	 */
-	old_aa[x] = 0x80;
+	old_aa[x] = 0x80; 
 	old_cc[x] = 0;
 	old_taa[x] = 0x80;
 	old_tcc[x] = 0;
@@ -1883,7 +1883,7 @@ errr Term_fresh(void)
 				 */
 				for (x = 0; x < w; ++x) {
 					pr_drw[ipr][x] = 0;
-			}
+				}
 				ipr = (ipr + 1) % tile_height;
 			}
 		}
@@ -2573,7 +2573,7 @@ errr Term_mousepress(int x, int y, char button)/*, byte mods);*/
 
 	/* Success (unless overflow) */
 	if (Term->key_head != Term->key_tail) return (0);
-
+  
 	/* Problem */
 	return (1);
 }

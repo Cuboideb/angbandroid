@@ -814,21 +814,21 @@ static bool attempt_shield_bash(struct player *p, struct monster *mon, bool *fea
 		return false;
 	}
 
-		/* Calculate attack quality, a mix of momentum and accuracy. */
-		bash_quality = p->state.skills[SKILL_TO_HIT_MELEE] / 4 + p->wt / 8 +
-			p->upkeep->total_weight / 80 + shield->weight / 2;
+	/* Calculate attack quality, a mix of momentum and accuracy. */
+	bash_quality = p->state.skills[SKILL_TO_HIT_MELEE] / 4 + p->wt / 8 +
+		p->upkeep->total_weight / 80 + shield->weight / 2;
 
-		/* Calculate damage.  Big shields are deadly. */
-		bash_dam = damroll(shield->dd, shield->ds);
+	/* Calculate damage.  Big shields are deadly. */
+	bash_dam = damroll(shield->dd, shield->ds);
 
-		/* Multiply by quality and experience factors */
-		bash_dam *= bash_quality / 40 + p->lev / 14;
+	/* Multiply by quality and experience factors */
+	bash_dam *= bash_quality / 40 + p->lev / 14;
 
-		/* Strength bonus. */
-		bash_dam += adj_str_td[p->state.stat_ind[STAT_STR]];
+	/* Strength bonus. */
+	bash_dam += adj_str_td[p->state.stat_ind[STAT_STR]];
 
-		/* Paranoia. */
-		bash_dam = MIN(bash_dam, 125);
+	/* Paranoia. */
+	bash_dam = MIN(bash_dam, 125);
 
 	if (OPT(p, show_damage)) {
 		msgt(MSG_HIT, "You get in a shield bash! (%d)", bash_dam);
@@ -836,31 +836,31 @@ static bool attempt_shield_bash(struct player *p, struct monster *mon, bool *fea
 		msgt(MSG_HIT, "You get in a shield bash!");
 	}
 
-		/* Encourage the player to keep wearing that heavy shield. */
-		if (randint1(bash_dam) > 30 + randint1(bash_dam / 2)) {
-			msgt(MSG_HIT_HI_SUPERB, "WHAMM!");
-		}
+	/* Encourage the player to keep wearing that heavy shield. */
+	if (randint1(bash_dam) > 30 + randint1(bash_dam / 2)) {
+		msgt(MSG_HIT_HI_SUPERB, "WHAMM!");
+	}
 
-		/* Damage, check for fear and death. */
-		if (mon_take_hit(mon, bash_dam, fear, NULL)) return true;
+	/* Damage, check for fear and death. */
+	if (mon_take_hit(mon, bash_dam, fear, NULL)) return true;
 
-		/* Stunning. */
-		if (bash_quality + p->lev > randint1(200 + mon->race->level * 8)) {
-			mon_inc_timed(mon, MON_TMD_STUN, randint0(p->lev / 5) + 4, 0);
-		}
+	/* Stunning. */
+	if (bash_quality + p->lev > randint1(200 + mon->race->level * 8)) {
+		mon_inc_timed(mon, MON_TMD_STUN, randint0(p->lev / 5) + 4, 0);
+	}
 
-		/* Confusion. */
-		if (bash_quality + p->lev > randint1(300 + mon->race->level * 12)) {
-			mon_inc_timed(mon, MON_TMD_CONF, randint0(p->lev / 5) + 4, 0);
-		}
+	/* Confusion. */
+	if (bash_quality + p->lev > randint1(300 + mon->race->level * 12)) {
+		mon_inc_timed(mon, MON_TMD_CONF, randint0(p->lev / 5) + 4, 0);
+	}
 
-		/* The player will sometimes stumble. */
-		if (35 + adj_dex_th[p->state.stat_ind[STAT_DEX]] < randint1(60)) {
+	/* The player will sometimes stumble. */
+	if (35 + adj_dex_th[p->state.stat_ind[STAT_DEX]] < randint1(60)) {
 		energy_lost = randint1(50) + 25;
 		/* Lose 26-75% of a turn due to stumbling after shield bash. */
-			msgt(MSG_GENERIC, "You stumble!");
+		msgt(MSG_GENERIC, "You stumble!");
 		p->upkeep->energy_use += energy_lost * z_info->move_energy / 100;
-		}
+	}
 
 	return false;
 }
@@ -1206,8 +1206,8 @@ void do_cmd_fire(struct command *cmd) {
 	struct object *obj;
 
 	if (!player_get_resume_normal_shape(player, cmd)) {
-			return;
-		}
+		return;
+	}
 
 	/* Get arguments */
 	if (cmd_get_item(cmd, "item", &obj,
@@ -1261,7 +1261,7 @@ void do_cmd_throw(struct command *cmd) {
 	struct object *obj;
 
 	if (!player_get_resume_normal_shape(player, cmd)) {
-			return;
+		return;
 	}
 
 	/*

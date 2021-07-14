@@ -389,7 +389,7 @@ static void display_resistance_panel(int ipart, struct char_sheet_config *config
 
 	for (i = 0; i < player->body.count; i++) {
 		equipment[i] = slot_object(player, i);
-					}
+	}
 
 	/* Equippy */
 	display_player_equippy(row++, col + config->res_nlabel);
@@ -414,11 +414,11 @@ static void display_resistance_panel(int ipart, struct char_sheet_config *config
 		render_details.value_position.y = row;
 		render_details.known_rune = is_ui_entry_for_known_rune(entry, player);
 		ui_entry_renderer_apply(get_ui_entry_renderer_index(entry), config->resists_by_region[ipart][i].label, config->res_nlabel, vals, auxs, player->body.count + 1, &render_details);
-				}
+	}
 
 	if (pcache) {
 		release_cached_player_data(pcache);
-		}
+	}
 	for (i = 0; i < player->body.count; ++i) {
 		if (ocaches[i]) {
 			release_cached_object_data(ocaches[i]);
@@ -561,11 +561,11 @@ static void display_player_sust_info(struct char_sheet_config *config)
 		render_details.label_position.y = row + i;
 		render_details.value_position.y = row + i;
 		ui_entry_renderer_apply(get_ui_entry_renderer_index(entry), NULL, 0, vals, auxs, player->body.count + 1, &render_details);
-			}
+	}
 
 	if (pcache) {
 		release_cached_player_data(pcache);
-			}
+	}
 	for (i = 0; i < player->body.count; ++i) {
 		if (ocaches[i]) {
 			release_cached_object_data(ocaches[i]);

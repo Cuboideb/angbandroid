@@ -181,8 +181,8 @@ static bool set_up_path_distances(struct loc grid)
 			/* Add the grid */
 			set_path_dist(next, cur_distance);
 			add_to_point_set(reached, next);
-			}
 		}
+	}
 
 	/* Grid distances have been recorded, so we can get rid of the point set */
 	point_set_dispose(reached);
@@ -750,8 +750,6 @@ static bool run_test(void)
 	/* Failure */
 	return false;
 }
-
-
 
 /**
  * Take one step along the current "run" path

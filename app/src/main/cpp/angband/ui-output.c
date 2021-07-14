@@ -30,7 +30,7 @@ s16b screen_save_depth;
  * ------------------------------------------------------------------------ */
 
 /**
- * These functions are used for manipulating regions on the screen, used
+ * These functions are used for manipulating regions on the screen, used 
  * mostly (but not exclusively) by the menu functions.
  */
 
@@ -185,7 +185,7 @@ struct keypress textui_textblock_show(textblock *tb, region orig_area, const cha
 				area.row + area.page_rows + 1, area.col);
 
 		/* Pager mode */
-		while (1) {
+		while (1) {			
 
 			display_area(textblock_text(tb), textblock_attrs(tb), line_starts,
 					line_lengths, n_lines, area, start_line);
@@ -266,7 +266,7 @@ void text_out_to_screen(byte a, const char *str)
 
 	/* Copy to a rewriteable string */
 	text_mbstowcs(buf, str, 1024);
-
+	
 	/* Use special wrapping boundary? */
 	if ((text_out_wrap > 0) && (text_out_wrap < wid))
 		wrap = text_out_wrap;
@@ -679,8 +679,8 @@ bool textui_panel_contains(unsigned int y, unsigned int x)
 	if (!Term)
 		return true;
 	if (Term == term_screen) {
-	hgt = SCREEN_HGT;
-	wid = SCREEN_WID;
+		hgt = SCREEN_HGT;
+		wid = SCREEN_WID;
 	} else {
 		hgt = Term->hgt / tile_height;
 		wid = Term->wid / tile_width;

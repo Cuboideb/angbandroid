@@ -244,9 +244,9 @@ void message_color_define(u16b type, byte color)
 			break;
 		}
 		if (! mc->next) {
-	mc->next = mem_zalloc(sizeof(msgcolor_t));
-	mc->next->type = type;
-	mc->next->color = color;
+			mc->next = mem_zalloc(sizeof(msgcolor_t));
+			mc->next->type = type;
+			mc->next->color = color;
 			break;
 		}
 		mc = mc->next;

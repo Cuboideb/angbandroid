@@ -492,7 +492,7 @@ bool player_knows_ego(struct player *p, struct ego_item *ego,
 			 */
 			if (!obj || modmax * modmin > 0 ||
 					obj->modifiers[i] != 0) {
-			return false;
+				return false;
 			}
 		}
 	}
@@ -871,8 +871,8 @@ void object_sense(struct player *p, struct object *obj)
 		} else {
 			new_obj = object_new();
 			obj->known = new_obj;
-		p->cave->objects[obj->oidx] = new_obj;
-		new_obj->oidx = obj->oidx;
+			p->cave->objects[obj->oidx] = new_obj;
+			new_obj->oidx = obj->oidx;
 		}
 
 		/* Give it a fake kind and number. */
@@ -905,9 +905,9 @@ void object_see(struct player *p, struct object *obj)
 		struct object *new_obj;
 
 		assert(! obj->known);
-			new_obj = object_new();
-			obj->known = new_obj;
-			object_set_base_known(obj);
+		new_obj = object_new();
+		obj->known = new_obj;
+		object_set_base_known(obj);
 
 		/* List the known object */
 		p->cave->objects[obj->oidx] = new_obj;
@@ -918,7 +918,7 @@ void object_see(struct player *p, struct object *obj)
 
 		/* Attach it to the current floor pile */
 		new_obj->grid = grid;
-			pile_insert_end(&p->cave->squares[grid.y][grid.x].obj, new_obj);
+		pile_insert_end(&p->cave->squares[grid.y][grid.x].obj, new_obj);
 	} else {
 		struct loc old = known_obj->grid;
 
@@ -926,8 +926,8 @@ void object_see(struct player *p, struct object *obj)
 		assert(known_obj == obj->known);
 
 		if (known_obj->kind != obj->kind) {
-		/* Copy over actual details */
-		object_set_base_known(obj);
+			/* Copy over actual details */
+			object_set_base_known(obj);
 		} else {
 			known_obj->number = obj->number;
 		}
@@ -937,14 +937,14 @@ void object_see(struct player *p, struct object *obj)
 
 		/* Attach it to the current floor pile if necessary */
 		if (! square_holds_object(p->cave, grid, known_obj)) {
-		/* Detach from any old pile */
-		if (!loc_is_zero(old) && square_holds_object(p->cave, old, known_obj)) {
-			square_excise_object(p->cave, old, known_obj);
-		}
+			/* Detach from any old pile */
+			if (!loc_is_zero(old) && square_holds_object(p->cave, old, known_obj)) {
+				square_excise_object(p->cave, old, known_obj);
+			}
 
-		known_obj->grid = grid;
-		pile_insert_end(&p->cave->squares[grid.y][grid.x].obj, known_obj);
-	}
+			known_obj->grid = grid;
+			pile_insert_end(&p->cave->squares[grid.y][grid.x].obj, known_obj);
+		}
 	}
 }
 
@@ -979,9 +979,9 @@ void object_grab(struct player *p, struct object *obj)
 		struct object *new_obj;
 
 		assert(! obj->known);
-			new_obj = object_new();
-			obj->known = new_obj;
-			object_set_base_known(obj);
+		new_obj = object_new();
+		obj->known = new_obj;
+		object_set_base_known(obj);
 		p->cave->objects[obj->oidx] = new_obj;
 		new_obj->oidx = obj->oidx;
 	} else {

@@ -284,12 +284,12 @@ static void race_help(int i, void *db, const region *l)
 		} else if (streq(ability->type, "element") &&
 				   (r->el_info[ability->index].res_level != ability->value)) {
 			continue;
-	}
+		}
 		text_out_e("\n%s", ability->name);
 		n_flags++;
 	}
 
-	while(n_flags < flag_space) {
+	while (n_flags < flag_space) {
 		text_out_e("\n");
 		n_flags++;
 	}
@@ -374,13 +374,13 @@ static void class_help(int i, void *db, const region *l)
 			continue;
 		} else if (streq(ability->type, "element")) {
 			continue;
-	}
+		}
 
 		text_out_e("\n%s", ability->name);
 		n_flags++;
 	}
 
-	while(n_flags < flag_space) {
+	while (n_flags < flag_space) {
 		text_out_e("\n");
 		n_flags++;
 	}
@@ -654,7 +654,7 @@ static enum birth_stage roller_command(bool first_call)
 
 	/* Prompt for it */
 	prt(prompt, Term->hgt - 1, Term->wid / 2 - promptlen / 2);
-
+	
 	/* Prompt and get a command */
 	ch = inkey();
 
@@ -970,7 +970,7 @@ static int edit_text(char *buffer, int buflen) {
 					assert(oshift);
 					memmove(oshift, ocurs,
 						len - (ocurs - buffer));
-				/* Decrement */
+					/* Decrement */
 					--cursor;
 					len -= ocurs - oshift;
 				} else {

@@ -1361,7 +1361,7 @@ bool textui_get_item(struct object **choice, const char *pmt, const char *str,
 		if (show_throwing && throwing_num) {
 			player->upkeep->command_wrk = SHOW_THROWING;
 
-		/* Start where requested if possible */
+			/* Start where requested if possible */
 		} else if ((player->upkeep->command_wrk == USE_EQUIP) && allow_equip)
 			player->upkeep->command_wrk = USE_EQUIP;
 		else if ((player->upkeep->command_wrk == USE_INVEN) && allow_inven)

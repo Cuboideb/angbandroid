@@ -372,10 +372,10 @@ void cmd_init(void)
 
 		/* Fill everything in */
 		if (cmds_all[j].keymap == 0) {
-		for (i = 0; i < cmds_all[j].len; i++) {
-			/* If a roguelike key isn't set, use default */
-			if (!commands[i].key[1])
-				commands[i].key[1] = commands[i].key[0];
+			for (i = 0; i < cmds_all[j].len; i++) {
+				/* If a roguelike key isn't set, use default */
+				if (!commands[i].key[1])
+					commands[i].key[1] = commands[i].key[0];
 
 				/* Skip entries that don't have a valid key. */
 				if (!commands[i].key[0] || !commands[i].key[1])
@@ -533,7 +533,7 @@ void textui_process_command(void)
 						cmd = NULL;
 					}
 				} else {
-			cmd = NULL;
+					cmd = NULL;
 				}
 			}
 		}

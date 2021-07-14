@@ -1205,9 +1205,9 @@ void lore_append_drop(textblock *tb, const struct monster_race *race,
 			lore_pronoun_nominative(msex, true));
 
 		/* Report general drops */
-	if (n > 0) {
-		bool only_item = rf_has(known_flags, RF_ONLY_ITEM);
-		bool only_gold = rf_has(known_flags, RF_ONLY_GOLD);
+		if (n > 0) {
+			bool only_item = rf_has(known_flags, RF_ONLY_ITEM);
+			bool only_gold = rf_has(known_flags, RF_ONLY_GOLD);
 
 			if (n == 1) {
 				textblock_append_c(tb, COLOUR_BLUE,
@@ -1216,20 +1216,20 @@ void lore_append_drop(textblock *tb, const struct monster_race *race,
 				textblock_append_c(tb, COLOUR_BLUE,
 					" one or two ");
 			} else {
-			textblock_append(tb, " up to ");
+				textblock_append(tb, " up to ");
 				textblock_append_c(tb, COLOUR_BLUE,
 					format("%d ", n));
-		}
+			}
 
-		/* Quality */
+			/* Quality */
 			if (rf_has(known_flags, RF_DROP_GREAT)) {
 				textblock_append_c(tb, COLOUR_BLUE,
 					"exceptional ");
 			} else if (rf_has(known_flags, RF_DROP_GOOD)) {
-			textblock_append_c(tb, COLOUR_BLUE, "good ");
+				textblock_append_c(tb, COLOUR_BLUE, "good ");
 			}
 
-		/* Objects or treasures */
+			/* Objects or treasures */
 			if (only_item && only_gold) {
 				textblock_append_c(tb, COLOUR_BLUE,
 					"error%s", PLURAL(n));
@@ -1242,7 +1242,7 @@ void lore_append_drop(textblock *tb, const struct monster_race *race,
 			} else if (!only_item && !only_gold) {
 				textblock_append_c(tb, COLOUR_BLUE,
 					"object%s or treasure%s",
-							   PLURAL(n), PLURAL(n));
+					PLURAL(n), PLURAL(n));
 			}
 		}
 
@@ -1534,7 +1534,7 @@ void lore_append_spells(textblock *tb, const struct monster_race *race,
 		if (innate) {
 			textblock_append(tb, ", and may ");
 		} else {
-		textblock_append(tb, "%s may ", initial_pronoun);
+			textblock_append(tb, "%s may ", initial_pronoun);
 		}
 		textblock_append_c(tb, COLOUR_L_RED, "breathe ");
 		lore_append_spell_clause(tb, current_flags, know_hp, race, "or", "");
@@ -1569,7 +1569,7 @@ void lore_append_spells(textblock *tb, const struct monster_race *race,
 	rsf_diff(current_flags, test_flags);
 	if (!rsf_is_empty(current_flags)) {
 		/* Intro */
-			textblock_append(tb, "%s may ", initial_pronoun);
+		textblock_append(tb, "%s may ", initial_pronoun);
 
 		/* Verb Phrase */
 		textblock_append_c(tb, COLOUR_L_RED, "cast spells");
@@ -1582,24 +1582,24 @@ void lore_append_spells(textblock *tb, const struct monster_race *race,
 		textblock_append(tb, " which ");
 		lore_append_spell_clause(tb, current_flags, know_hp, race, "or", "");
 
-	/* End the sentence about innate/other spells */
+		/* End the sentence about innate/other spells */
 		if (race->freq_spell) {
-		if (lore->spell_freq_known) {
-			/* Describe the spell frequency */
-			textblock_append(tb, "; ");
-			textblock_append_c(tb, COLOUR_L_GREEN, "1");
-			textblock_append(tb, " time in ");
-			textblock_append_c(tb, COLOUR_L_GREEN, "%d",
-							   100 / race->freq_spell);
-		} else if (lore->cast_spell) {
-			/* Guess at the frequency */
+			if (lore->spell_freq_known) {
+				/* Describe the spell frequency */
+				textblock_append(tb, "; ");
+				textblock_append_c(tb, COLOUR_L_GREEN, "1");
+				textblock_append(tb, " time in ");
+				textblock_append_c(tb, COLOUR_L_GREEN, "%d",
+								   100 / race->freq_spell);
+			} else if (lore->cast_spell) {
+				/* Guess at the frequency */
 				int approx_frequency = MAX(((race->freq_spell + 9) / 10) * 10,
 										   1);
-			textblock_append(tb, "; about ");
-			textblock_append_c(tb, COLOUR_L_GREEN, "1");
-			textblock_append(tb, " time in ");
-			textblock_append_c(tb, COLOUR_L_GREEN, "%d",
-							   100 / approx_frequency);
+				textblock_append(tb, "; about ");
+				textblock_append_c(tb, COLOUR_L_GREEN, "1");
+				textblock_append(tb, " time in ");
+				textblock_append_c(tb, COLOUR_L_GREEN, "%d",
+								   100 / approx_frequency);
 			}
 		}
 

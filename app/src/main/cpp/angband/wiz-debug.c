@@ -48,31 +48,31 @@ void wiz_cheat_death(void)
 	(void)player_clear_timed(player, TMD_IMAGE, true);
 	(void)player_clear_timed(player, TMD_STUN, true);
 	(void)player_clear_timed(player, TMD_CUT, true);
-	
+
 	/* Prevent starvation */
 	player_set_timed(player, TMD_FOOD, PY_FOOD_MAX - 1, false);
 
 	/* Cancel recall */
 	if (player->word_recall)
-		{
+	{
 		/* Message */
 		msg("A tension leaves the air around you...");
 		event_signal(EVENT_MESSAGE_FLUSH);
 
 		/* Hack -- Prevent recall */
 		player->word_recall = 0;
-			}
+	}
 
 	/* Cancel deep descent */
 	if (player->deep_descent)
-				{
+	{
 		/* Message */
 		msg("The air around you stops swirling...");
 		event_signal(EVENT_MESSAGE_FLUSH);
 
 		/* Hack -- Prevent recall */
 		player->deep_descent = 0;
-		}
+	}
 
 	/* Note cause of death XXX XXX XXX */
 	my_strcpy(player->died_from, "Cheating death", sizeof(player->died_from));

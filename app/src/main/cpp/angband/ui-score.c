@@ -32,84 +32,83 @@ static void display_score_page(const struct high_score scores[], int start,
 {
 	int n;
 
-		/* Dump 5 entries */
+	/* Dump 5 entries */
 	for (n = 0; start < count && n < 5; start++, n++) {
 		const struct high_score *score = &scores[start];
-			byte attr;
-
-			int clev, mlev, cdun, mdun;
-			const char *user, *gold, *when, *aged;
-			struct player_class *c;
-			struct player_race *r;
+		byte attr;
+		int clev, mlev, cdun, mdun;
+		const char *user, *gold, *when, *aged;
+		struct player_class *c;
+		struct player_race *r;
 		char out_val[160];
 		char tmp_val[160];
 
-			/* Hack -- indicate death in yellow */
+		/* Hack -- indicate death in yellow */
 		attr = (start == highlight) ? COLOUR_L_GREEN : COLOUR_WHITE;
 
-			c = player_id2class(atoi(score->p_c));
-			r = player_id2race(atoi(score->p_r));
+		c = player_id2class(atoi(score->p_c));
+		r = player_id2race(atoi(score->p_r));
 
-			/* Extract the level info */
-			clev = atoi(score->cur_lev);
-			mlev = atoi(score->max_lev);
-			cdun = atoi(score->cur_dun);
-			mdun = atoi(score->max_dun);
+		/* Extract the level info */
+		clev = atoi(score->cur_lev);
+		mlev = atoi(score->max_lev);
+		cdun = atoi(score->cur_dun);
+		mdun = atoi(score->max_dun);
 
-			/* Hack -- extract the gold and such */
-			for (user = score->uid; isspace((unsigned char)*user); user++)
-				/* loop */;
-			for (when = score->day; isspace((unsigned char)*when); when++)
-				/* loop */;
-			for (gold = score->gold; isspace((unsigned char)*gold); gold++)
-				/* loop */;
-			for (aged = score->turns; isspace((unsigned char)*aged); aged++)
-				/* loop */;
+		/* Hack -- extract the gold and such */
+		for (user = score->uid; isspace((unsigned char)*user); user++)
+			/* loop */;
+		for (when = score->day; isspace((unsigned char)*when); when++)
+			/* loop */;
+		for (gold = score->gold; isspace((unsigned char)*gold); gold++)
+			/* loop */;
+		for (aged = score->turns; isspace((unsigned char)*aged); aged++)
+			/* loop */;
 
-			/* Dump some info */
-			strnfmt(out_val, sizeof(out_val),
-					"%3d.%9s  %s the %s %s, level %d",
+		/* Dump some info */
+		strnfmt(out_val, sizeof(out_val),
+				"%3d.%9s  %s the %s %s, level %d",
 				start + 1, score->pts, score->who,
-					r ? r->name : "<none>", c ? c->name : "<none>",
-					clev);
+				r ? r->name : "<none>", c ? c->name : "<none>",
+				clev);
 
-			/* Append a "maximum level" */
-			if (mlev > clev)
-				my_strcat(out_val, format(" (Max %d)", mlev), sizeof(out_val));
+		/* Append a "maximum level" */
+		if (mlev > clev)
+			my_strcat(out_val, format(" (Max %d)", mlev), sizeof(out_val));
 
-			/* Dump the first line */
+		/* Dump the first line */
 		c_put_str(attr, out_val, n * 4 + 2, 0);
 
 
-			/* Died where? */
-			if (!cdun)
-				strnfmt(out_val, sizeof(out_val), "Killed by %s in the town",
-						score->how);
-			else
-				strnfmt(out_val, sizeof(out_val),
-						"Killed by %s on dungeon level %d", score->how, cdun);
+		/* Died where? */
+		if (!cdun)
+			strnfmt(out_val, sizeof(out_val), "Killed by %s in the town",
+					score->how);
+		else
+			strnfmt(out_val, sizeof(out_val),
+					"Killed by %s on dungeon level %d", score->how, cdun);
 
-			/* Append a "maximum level" */
-			if (mdun > cdun)
-				my_strcat(out_val, format(" (Max %d)", mdun), sizeof(out_val));
+		/* Append a "maximum level" */
+		if (mdun > cdun)
+			my_strcat(out_val, format(" (Max %d)", mdun), sizeof(out_val));
 
-			/* Dump the info */
+		/* Dump the info */
 		c_put_str(attr, out_val, n * 4 + 3, 15);
 
 
-			/* Clean up standard encoded form of "when" */
-			if ((*when == '@') && strlen(when) == 9) {
-				strnfmt(tmp_val, sizeof(tmp_val), "%.4s-%.2s-%.2s", when + 1,
-						when + 5, when + 7);
-				when = tmp_val;
-			}
-
-			/* And still another line of info */
-			strnfmt(out_val, sizeof(out_val),
-					"(User %s, Date %s, Gold %s, Turn %s).",
-					user, when, gold, aged);
-		c_put_str(attr, out_val, n * 4 + 4, 15);
+		/* Clean up standard encoded form of "when" */
+		if ((*when == '@') && strlen(when) == 9) {
+			strnfmt(tmp_val, sizeof(tmp_val), "%.4s-%.2s-%.2s", when + 1,
+					when + 5, when + 7);
+			when = tmp_val;
 		}
+
+		/* And still another line of info */
+		strnfmt(out_val, sizeof(out_val),
+				"(User %s, Date %s, Gold %s, Turn %s).",
+				user, when, gold, aged);
+		c_put_str(attr, out_val, n * 4 + 4, 15);
+	}
 }
 
 /**
@@ -151,9 +150,9 @@ static void display_scores_aux(const struct high_score scores[], int from,
 
 			display_score_page(scores, k, count, highlight);
 
-		/* Wait for response */
+			/* Wait for response */
 			prt("[Press ESC to exit, up/down to scroll, any other key to continue.]", 23, 17);
-		ch = inkey();
+			ch = inkey();
 			if ((ch.code == ARROW_UP) && allow_scrolling) {
 				if (k == 0) {
 					k = count - 10;
@@ -164,7 +163,7 @@ static void display_scores_aux(const struct high_score scores[], int from,
 					k = k - 10;
 				}
 			}
-		prt("", 23, 0);
+			prt("", 23, 0);
 
 			/* Notice Escape */
 			if (ch.code == ESCAPE) {

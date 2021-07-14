@@ -355,7 +355,7 @@ static size_t obj_desc_chest(const struct object *obj, char *buf, size_t max,
 	/* The chest is unopened, but we know nothing about its trap/lock */
 	if (obj->pval && !obj->known->pval) return end;
 
-		/* Describe the traps */
+	/* Describe the traps */
 	strnfcat(buf, max, &end, format(" (%s)", chest_trap_name(obj)));
 
 	return end;

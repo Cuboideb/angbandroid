@@ -857,11 +857,11 @@ bool project_p(struct source origin, int r, struct loc grid, int dam, int typ,
 
 	/* Adjust damage for resistance, immunity or vulnerability, and apply it */
 	context.dam = adjust_dam(player,
-					 typ,
+							 typ,
 							 context.dam,
-					 RANDOMISE,
-					 res_level,
-					 true);
+							 RANDOMISE,
+							 res_level,
+							 true);
 	if (context.dam) {
 		/* Self-inflicted damage is scaled down */
 		if (self) {

@@ -28,7 +28,7 @@
 
 /**
  * Specifications for graphics modes.
- *
+ * 
  * grafID:      ID of tile set should be >0 and unique for anything new.
  * alphablend:  Bool whether or not the tileset needs alpha blending.
  * overdrawRow: Row in the file where tiles in that row or lower draw the tile

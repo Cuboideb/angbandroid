@@ -235,7 +235,7 @@ struct term
 
 	void (*view_map_hook)(term *t);
 
-	int (*dblh_hook)(int a, wchar_t c);
+        int (*dblh_hook)(int a, wchar_t c);
 
 	errr (*control_hook)(int what, const char *msg);
 };

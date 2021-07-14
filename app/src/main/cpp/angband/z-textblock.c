@@ -324,7 +324,7 @@ void textblock_to_file(textblock *tb, ang_file *f, int indent, int wrap_at)
 	for (i = 0; i < n_lines; i++) {
 		if (indent > 0) {
 			file_putf(f, "%*c", indent, ' ');
-	}
+		}
 		for (j = 0; j < line_lengths[i]; ++j) {
 			int nc = text_wctomb(mbbuf,
 				tb->text[line_starts[i] + j]);

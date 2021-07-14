@@ -40,7 +40,7 @@ static enum parser_error parse_graf_name(struct parser *p) {
 	mode->overdrawMax = 0;
 	my_strcpy(mode->file, "", 32);
 	my_strcpy(mode->pref, "none", 32);
-
+	
 	parser_setpriv(p, mode);
 	return PARSE_ERROR_NONE;
 }
@@ -107,7 +107,7 @@ static errr finish_parse_grafmode(struct parser *p) {
 	int max = 0;
 	int count = 0;
 	int i;
-
+	
 	/* See how many graphics modes we have and what the highest index is */
 	if (p) {
 		mode = parser_priv(p);
@@ -157,7 +157,7 @@ static errr finish_parse_grafmode(struct parser *p) {
 			mem_free(mode);
 			mode = n;
 		}
-
+	
 		parser_setpriv(p, NULL);
 		parser_destroy(p);
 	}

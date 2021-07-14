@@ -521,8 +521,8 @@ static bool do_cmd_tunnel_aux(struct loc grid)
 			(!current_weapon || obj_can_takeoff(current_weapon))) {
 		/* Use only one without the overhead of gear_obj_for_use(). */
 		if (best_digger) {
-		oldn = best_digger->number;
-		best_digger->number = 1;
+			oldn = best_digger->number;
+			best_digger->number = 1;
 		}
 		player->body.slots[weapon_slot].obj = best_digger;
 		memcpy(&local_state, &player->state, sizeof(local_state));
@@ -538,7 +538,7 @@ static bool do_cmd_tunnel_aux(struct loc grid)
 	/* Swap back */
 	if (best_digger != current_weapon) {
 		if (best_digger) {
-		best_digger->number = oldn;
+			best_digger->number = oldn;
 		}
 		player->body.slots[weapon_slot].obj = current_weapon;
 		calc_bonuses(player, &local_state, false, true);
@@ -915,16 +915,16 @@ static void do_cmd_alter_aux(int dir)
 		/* Open closed doors */
 		more = do_cmd_open_aux(grid);
 	} else if (square_isdisarmabletrap(cave, grid)) {
-        	/* Disarm traps */
-        	more = do_cmd_disarm_aux(grid);
-        } else if (o_chest_trapped) {
+		/* Disarm traps */
+		more = do_cmd_disarm_aux(grid);
+	} else if (o_chest_trapped) {
         	/* Trapped chest */
         	more = do_cmd_disarm_chest(o_chest_trapped);
     	} else if (o_chest_closed) {
         	/* Open chest */
         	more = do_cmd_open_chest(grid, o_chest_closed);
-    	} else if (square_isopendoor(cave, grid)) {
-	    	/* Close door */
+	} else if (square_isopendoor(cave, grid)) {
+		/* Close door */
         	more = do_cmd_close_aux(grid);
 	} else {
 		/* Oops */
@@ -962,7 +962,7 @@ static void do_cmd_steal_aux(int dir)
 
 	/* Attack or steal from monsters */
 	if ((square(cave, grid)->mon > 0) && player_has(player, PF_STEAL)) {
-			steal_monster_item(square_monster(cave, grid), -1);
+		steal_monster_item(square_monster(cave, grid), -1);
 	} else {
 		/* Oops */
 		msg("You spin around.");

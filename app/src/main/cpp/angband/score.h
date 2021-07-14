@@ -58,7 +58,7 @@ size_t highscore_read(struct high_score scores[], size_t sz);
 size_t highscore_where(const struct high_score *entry,
 					   const struct high_score scores[], size_t sz);
 size_t highscore_add(const struct high_score *entry, struct high_score scores[],
-					   size_t sz);
+					 size_t sz);
 void build_score(struct high_score *entry, const char *died_from,
 				 time_t *death_time);
 void enter_score(time_t *death_time);

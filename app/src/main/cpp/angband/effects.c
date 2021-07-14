@@ -1124,7 +1124,7 @@ static bool effect_handler_WEB(effect_handler_context_t *context)
 	if (mon->race->spell_power > 80) rad++;
 
 	/* Check within the radius for clear floor */
-	for (grid.y = mon->grid.y - rad; grid.y <= mon->grid.y + rad; grid.y++) {  
+	for (grid.y = mon->grid.y - rad; grid.y <= mon->grid.y + rad; grid.y++) {
 		for (grid.x = mon->grid.x - rad; grid.x <= mon->grid.x + rad; grid.x++){
 			if (distance(grid, mon->grid) > rad ||
 				!square_in_bounds_fully(cave, grid)) continue;
@@ -1269,7 +1269,7 @@ static bool effect_handler_RESTORE_EXP(effect_handler_context_t *context)
 		/* Recalculate max. hitpoints */
 		update_stuff(player);
 	}
-	
+
 	/* Did something */
 	context->ident = true;
 
@@ -1460,7 +1460,7 @@ static bool effect_handler_REMOVE_CURSE(effect_handler_context_t *context)
 static bool effect_handler_RECALL(effect_handler_context_t *context)
 {
 	int target_depth;
-	context->ident = true;	
+	context->ident = true;
 
 	/* No recall */
 	if (OPT(player, birth_no_recall) && !player->total_winner) {
@@ -1667,7 +1667,7 @@ static bool effect_handler_READ_MINDS(effect_handler_context_t *context)
 		/* Detect all appropriate monsters */
 		if (mflag_has(mon->mflag, MFLAG_MARK)) {
 			/* Map around it */
-			effect_simple(EF_MAP_AREA, source_monster(i), "0", 0, 0, 0, 
+			effect_simple(EF_MAP_AREA, source_monster(i), "0", 0, 0, 0,
 						  dist_y, dist_x, NULL);
 			found = true;
 		}
@@ -2254,28 +2254,28 @@ static bool effect_handler_DETECT_SOUL(effect_handler_context_t *context)
  */
 static bool effect_handler_IDENTIFY(effect_handler_context_t *context)
 {
-    struct object *obj;
-    const char *q, *s;
+	struct object *obj;
+	const char *q, *s;
 	int itemmode = (USE_EQUIP | USE_INVEN | USE_QUIVER | USE_FLOOR);
-    bool used = false;
+	bool used = false;
 
-    context->ident = true;
+	context->ident = true;
 
-    /* Get an item */
-    q = "Identify which item? ";
-    s = "You have nothing to identify.";
+	/* Get an item */
+	q = "Identify which item? ";
+	s = "You have nothing to identify.";
 	if (context->cmd) {
 		if (cmd_get_item(context->cmd, "tgtitem", &obj, q, s,
 				item_tester_unknown, itemmode)) {
 			return used;
 		}
 	} else if (!get_item(&obj, q, s, 0, item_tester_unknown, itemmode))
-        return used;
+		return used;
 
-    /* Identify the object */
-    object_learn_unknown_rune(player, obj);
+	/* Identify the object */
+	object_learn_unknown_rune(player, obj);
 
-    return true;
+	return true;
 }
 
 
@@ -2905,7 +2905,7 @@ static bool effect_handler_TELEPORT(effect_handler_context_t *context)
 		start = player->grid;
 
 		/* Check for a no teleport grid */
-		if (square_isno_teleport(cave, start) && 
+		if (square_isno_teleport(cave, start) &&
 			((dis > 10) || (dis == 0))) {
 			msg("Teleportation forbidden!");
 			return true;
@@ -4068,7 +4068,7 @@ static bool effect_handler_BREATH(effect_handler_context_t *context)
  * quickly.
  *
  * Affect grids, objects, and monsters
- * context->subtype is element, context->radius radius, 
+ * context->subtype is element, context->radius radius,
  * context->other degrees of arc (minimum 20)
  */
 static bool effect_handler_ARC(effect_handler_context_t *context)

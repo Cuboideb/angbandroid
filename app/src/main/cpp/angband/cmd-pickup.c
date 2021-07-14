@@ -210,7 +210,7 @@ static int auto_pickup_okay(const struct object *obj)
 						break;
 					}
 					gear_obj = find_stack_object_in_inventory(obj, gear_obj->next);
-		if (!gear_obj) {
+					if (!gear_obj) {
 						break;
 					}
 					pack_num += gear_obj->number;
