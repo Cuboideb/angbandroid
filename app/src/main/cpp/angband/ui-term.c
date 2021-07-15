@@ -610,7 +610,7 @@ void Term_big_queue_char(term *t, int x, int y, int clipy,
 	int a, wchar_t c, int a1, wchar_t c1)
 {
 	int vmax;
-        int hor, vert;
+	int hor, vert;
 
 	/* Avoid warning */
 	(void)c;
@@ -2551,9 +2551,6 @@ errr Term_keypress(keycode_t k, byte mods)
 errr Term_mousepress(int x, int y, char button)/*, byte mods);*/
 {
 	/* Store the char, advance the queue */
-
-    //plog_fmt("Mouse y x btn %d %d %d", y, x, (int)button);
-
 	Term->key_queue[Term->key_head].type = EVT_MOUSE;
 	Term->key_queue[Term->key_head].mouse.x = x;
 	Term->key_queue[Term->key_head].mouse.y = y;
