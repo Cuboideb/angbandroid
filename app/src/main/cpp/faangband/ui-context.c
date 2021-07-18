@@ -1129,15 +1129,15 @@ static void cmd_sub_entry(struct menu *menu, int oid, bool cursor, int row,
 	 * the menu system.
 	 */
 	if (kp.code) {
-	Term_addch(attr, L' ');
-	Term_addch(attr, L'(');
+		Term_addch(attr, L' ');
+		Term_addch(attr, L'(');
 
-	/* Get readable version */
-	keypress_to_readable(buf, sizeof buf, kp);
-	Term_addstr(-1, attr, buf);
+		/* Get readable version */
+		keypress_to_readable(buf, sizeof buf, kp);
+		Term_addstr(-1, attr, buf);
 
-	Term_addch(attr, L')');
-}
+		Term_addch(attr, L')');
+	}
 }
 
 /**
@@ -1174,7 +1174,7 @@ static bool cmd_menu(struct command_list *list, void *selection_p)
 		if (list->list[menu.cursor].cmd ||
 				list->list[menu.cursor].hook) {
 			/* It's a proper command. */
-		*selection = &list->list[menu.cursor];
+			*selection = &list->list[menu.cursor];
 		} else {
 			/*
 			 * It's a placeholder that's a parent for a
@@ -1236,7 +1236,7 @@ struct cmd_info *textui_action_menu_choose(void)
 		command_menu = menu_new(MN_SKIN_SCROLL, &command_menu_iter);
 
 	while (cmds_all[len].len && cmds_all[len].menu_level == 0) {
-			len++;
+		len++;
 	};
 
 	menu_setpriv(command_menu, len, &chosen_command);
