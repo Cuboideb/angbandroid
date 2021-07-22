@@ -338,29 +338,29 @@ F:NO_FEAR | RES_POIS | NO_CONF | NO_SLEEP | NO_CRIT
 D:'... great writhing, tangled brambles sprawled. Some had long stabbing
 D: thorns, some hooked barbs that rent like knives.'
 
-
+# Can't move from idx 13 for dungeon generation reasons
 N:13:Human slave
 W:1:0
 G:@:g
 I:2:8d4:0
-A:20:1:0:1
+A:60:1:0:1
 P:[+0]
 F:MALE | MAN | NEVER_MOVE | NEVER_BLOW | SMART | PEACEFUL | SPECIAL_GEN
 D:A scarred and dirty man clad only in a loincloth. A metal collar
 D: is about his neck, and a long chain leads from it to the wall.
 
-
+# Can't move from idx 14 for dungeon generation reasons
 N:14:Elven slave
 W:1:0
 G:@:g
 I:2:10d4:0
-A:20:2:0:2
+A:60:1:0:2
 P:[+0]
 F:MALE | ELF | NEVER_MOVE | NEVER_BLOW | SMART | PEACEFUL | SPECIAL_GEN
 D:A chained elf slumps here, filthy hair hanging to his shoulders
 D: and eyes vacant. His back and arms bear the marks of a whip.
 
-
+# Can't move from idx 15 for dungeon generation reasons
 N:15:Orc slavemaster
 W:1:0
 G:o:g
@@ -373,6 +373,28 @@ F:MALE | OPEN_DOOR | BASH_DOOR | SPECIAL_GEN
 F:ORC | HURT_LITE | SMART | UNLOCK_DOOR | TERRITORIAL
 D:He is one of Morgoth's grim mockeries of the firstborn.
 D: Clad in tattered leather, he wields a cudgel and a whip.
+
+# Can't move from idx 16 for dungeon generation reasons
+N:16:Alert human slave
+W:1:0
+G:@:G
+I:2:8d4:0
+A:0:10:0:1
+P:[+0]
+F:MALE | MAN | NEVER_MOVE | NEVER_BLOW | SMART | PEACEFUL | SPECIAL_GEN
+D:A scarred and dirty man shackled to the wall with a long chain.
+D: His head is raised and he takes in his surroundings alertly.
+
+# Can't move from idx 17 for dungeon generation reasons
+N:17:Alert elven slave
+W:1:0
+G:@:G
+I:2:10d4:0
+A:0:10:0:2
+P:[+0]
+F:MALE | ELF | NEVER_MOVE | NEVER_BLOW | SMART | PEACEFUL | SPECIAL_GEN
+D:A chained elf crouches here, filthy hair hanging to his shoulders.
+D: Dried blood encrusts a noble face. His eyes are fixed on you. 
 
 
 ##### 2 #####
@@ -953,8 +975,7 @@ D: of the black enemy for many years.
 
 
 
-
-##### 11 #####
+##### 11 #####
 
 
 N:111:Snow troll
@@ -1156,8 +1177,7 @@ D: of Morgoth's servants and widely feared. Before you stands
 D: Duruin, Flame of the Night, a great figure wrapped in fire
 D: and shadow. He wields fiery sword and whip.
 
-
-
+
 
 ##### 13 #####
 
@@ -1316,8 +1336,7 @@ D:Known as the giant of summer and the south, he towers above you
 D: like a great tree. In his right hand, he holds the longest
 D: sword you have ever beheld.
 
-
-
+
 ##### 15 #####
 
 N:151:Cave troll

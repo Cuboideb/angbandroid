@@ -1943,7 +1943,7 @@ void do_cmd_debug(void)
     case 'T':
     {
         do_cmd_wiz_tile_test();
-	break;
+        break;
     }
 
     /* Un-hide all monsters */
