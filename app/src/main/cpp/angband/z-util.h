@@ -158,6 +158,11 @@ extern void strescape(char *s, const char c);
 extern void strdeldup(char *str);
 
 /**
+ * Change escaped characters into their literal representation
+ */
+extern void strunescape(char *s);
+
+/**
  * Determines if a string is "empty"
  */
 bool contains_only_spaces(const char* s);
