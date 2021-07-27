@@ -418,7 +418,7 @@ static void sun_banish(void)
 		some_gone = true;
 	}
 
-	process_monsters(cave, 0);
+	process_monsters(0);
 	if (some_gone) {
 		msg("Creatures of the darkness flee from the sunlight!");
 	}
@@ -593,11 +593,11 @@ void process_world(struct chunk *c)
 
 	/* Compact the monster list if we're approaching the limit */
 	if (cave_monster_count(c) + 32 > z_info->level_monster_max)
-		compact_monsters(64);
+		compact_monsters(c, 64);
 
 	/* Too many holes in the monster list - compress */
 	if (cave_monster_count(c) + 32 < cave_monster_max(c))
-		compact_monsters(0);
+		compact_monsters(c, 0);
 
 	/*** Check the Time ***/
 
@@ -1163,7 +1163,7 @@ void run_game_loop(void)
 		event_signal(EVENT_ANIMATE);
 		
 		/* Process monster with even more energy first */
-		process_monsters(cave, player->energy + 1);
+		process_monsters(player->energy + 1);
 		if (player->is_dead || !player->upkeep->playing ||
 			player->upkeep->generate_level)
 			break;
@@ -1192,7 +1192,7 @@ void run_game_loop(void)
 			return;
 		else if (!player->upkeep->generate_level) {
 			/* Process the rest of the monsters */
-			process_monsters(cave, 0);
+			process_monsters(0);
 
 			/* Mark all monsters as ready to act when they have the energy */
 			reset_monsters();
@@ -1252,7 +1252,7 @@ void run_game_loop(void)
 			event_signal(EVENT_ANIMATE);
 
 			/* Process monster with even more energy first */
-			process_monsters(cave, player->energy + 1);
+			process_monsters(player->energy + 1);
 			if (player->is_dead || !player->upkeep->playing ||
 				player->upkeep->generate_level)
 				break;

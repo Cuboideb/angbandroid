@@ -986,7 +986,7 @@ static void project_monster_handler_MON_CLONE(project_monster_handler_context_t 
 	mon_inc_timed(context->mon, MON_TMD_FAST, 50, MON_TMD_FLG_NOTIFY);
 
 	/* Attempt to clone. */
-	if (multiply_monster(cave, context->mon) && context->seen)
+	if (multiply_monster(context->mon) && context->seen)
 		context->hurt_msg = MON_MSG_SPAWN;
 
 	/* No "real" damage */
@@ -1538,7 +1538,7 @@ void project_m(struct source origin, int r, struct loc grid, int dam, int typ,
 	/* Reveal a camouflaged monster if in view and it stopped an effect. */
 	if ((flg & PROJECT_STOP) && monster_is_camouflaged(mon)
 			&& monster_is_in_view(mon)) {
-		become_aware(mon);
+		become_aware(cave, mon, player);
 		/* Reevaluate whether it's seen. */
 		if (monster_is_visible(mon)) {
 			seen = true;

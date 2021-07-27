@@ -340,7 +340,7 @@ void update_mon(struct monster *mon, struct chunk *c, bool full)
 	/* Compute distance, or just use the current one; update any heatmaps */
 	if (full) {
 		/* Target */
-		struct loc target = monster_target_loc(c, mon);
+		struct loc target = monster_target_loc(mon);
 		/* Distance components */
 		int dy = ABS(target.y - mon->grid.y);
 		int dx = ABS(target.x - mon->grid.x);
@@ -625,7 +625,7 @@ void monster_swap(struct loc grid1, struct loc grid2)
 			if (monster_is_in_view(mon) ||
 				(m2 >= 0 && los(cave, pgrid, grid2)) ||
 				(m2 < 0 && los(cave, grid1, grid2))) {
-				become_aware(mon);
+				become_aware(cave, mon, player);
 			} else {
 				move_mimicked_object(cave, mon, grid1, grid2);
 				player->upkeep->redraw |= (PR_ITEMLIST);
@@ -674,7 +674,7 @@ void monster_swap(struct loc grid1, struct loc grid2)
 			if (monster_is_in_view(mon) ||
 				(m1 >= 0 && los(cave, pgrid, grid1)) ||
 				(m1 < 0 && los(cave, grid2, grid1))) {
-				become_aware(mon);
+				become_aware(cave, mon, player);
 			} else {
 				move_mimicked_object(cave, mon, grid2, grid1);
 				player->upkeep->redraw |= (PR_ITEMLIST);
@@ -741,10 +741,13 @@ bool monster_can_see(struct chunk *c, struct monster *mon, struct loc grid)
 /**
  * Make player fully aware of the given mimic.
  *
+ * \param c Is the chunk with the monster.
+ * \param mon Is the monster.
+ * \param p Is the player that becomes aware of the mimic.
  * When a player becomes aware of a mimic, we update the monster memory
  * and delete the "fake item" that the monster was mimicking.
  */
-void become_aware(struct monster *mon)
+void become_aware(struct chunk *c, struct monster *mon, struct player *p)
 {
 	struct monster_lore *lore = get_lore(mon->race);
 
@@ -762,7 +765,7 @@ void become_aware(struct monster *mon)
 			object_desc(o_name, sizeof(o_name), obj, ODESC_BASE);
 
 			/* Print a message */
-			if (square_isseen(cave, obj->grid))
+			if (square_isseen(c, obj->grid))
 				msg("The %s was really a monster!", o_name);
 
 			/* Clear the mimicry */
@@ -784,7 +787,7 @@ void become_aware(struct monster *mon)
 					given->known->oidx = 0;
 					given->known->grid = loc(0, 0);
 				}
-				if (! monster_carry(cave, mon, given)) {
+				if (! monster_carry(c, mon, given)) {
 					if (given->known) {
 						object_delete(&given->known);
 					}
@@ -796,19 +799,19 @@ void become_aware(struct monster *mon)
 			 * Delete the mimicked object; noting and lighting
 			 * done below outside of the if block.
 			 */
-			square_delete_object(cave, obj->grid, obj, false, false);
+			square_delete_object(c, obj->grid, obj, false, false);
 
 			/* Since mimicry affects visibility, update that. */
-			update_mon(mon, cave, false);
+			update_mon(mon, c, false);
 		}
 
 		/* Update monster and item lists */
-		player->upkeep->update |= (PU_UPDATE_VIEW | PU_MONSTERS);
-		player->upkeep->redraw |= (PR_MONLIST | PR_ITEMLIST);
+		p->upkeep->update |= (PU_UPDATE_VIEW | PU_MONSTERS);
+		p->upkeep->redraw |= (PR_MONLIST | PR_ITEMLIST);
 	}
 
-	square_note_spot(cave, mon->grid);
-	square_light_spot(cave, mon->grid);
+	square_note_spot(c, mon->grid);
+	square_light_spot(c, mon->grid);
 }
 
 /**
@@ -1327,7 +1330,7 @@ bool mon_take_hit(struct monster *mon, int dam, bool *fear, const char *note)
 
 	/* Become aware of its presence */
 	if (monster_is_camouflaged(mon))
-		become_aware(mon);
+		become_aware(cave, mon, player);
 
 	/* No damage, we're done */
 	if (dam == 0) return false;
@@ -1787,14 +1790,14 @@ bool monster_revert_shape(struct monster *mon)
  * is targeting) is; this may be different to mon->target.grid, which is a
  * short-term target
  */
-struct loc monster_target_loc(struct chunk *c, const struct monster *mon)
+struct loc monster_target_loc(const struct monster *mon)
 {
 	if (mon->target.midx == -1) {
 		/* Player (or decoy) */
-		return monster_is_decoyed(mon) ? cave_find_decoy(c) : player->grid;
+		return monster_is_decoyed(mon) ? cave_find_decoy(cave) : player->grid;
 	} else if (mon->target.midx > 0) {
 		/* Monster */
-		return cave_monster(c, mon->target.midx)->grid;
+		return cave_monster(cave, mon->target.midx)->grid;
 	} else if (!loc_eq(mon->target.grid, loc(0, 0))) {
 		return mon->target.grid;
 	}
