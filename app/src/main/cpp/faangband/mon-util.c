@@ -806,7 +806,9 @@ void become_aware(struct chunk *c, struct monster *mon, struct player *p)
 		}
 
 		/* Update monster and item lists */
-		p->upkeep->update |= (PU_UPDATE_VIEW | PU_MONSTERS);
+		if (mon->race->light != 0) {
+			p->upkeep->update |= (PU_UPDATE_VIEW | PU_MONSTERS);
+		}
 		p->upkeep->redraw |= (PR_MONLIST | PR_ITEMLIST);
 	}
 
@@ -1672,7 +1674,7 @@ bool monster_change_shape(struct monster *mon)
 			get_mon_num_prep(monster_base_shape_okay);
 
 			/* Pick a random race */
-			race = get_mon_num(player->depth + 5);
+			race = get_mon_num(player->depth + 5, player->depth);
 
 			/* Reset allocation table */
 			get_mon_num_prep(NULL);
