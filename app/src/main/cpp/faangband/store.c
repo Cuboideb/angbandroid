@@ -1414,7 +1414,7 @@ static bool store_create_random(struct store *store)
 
 		/* Know everything the player knows, no origin yet */
 		obj->known->notice |= OBJ_NOTICE_ASSESSED;
-		object_set_base_known(obj);
+		object_set_base_known(player, obj);
 		obj->known->notice |= OBJ_NOTICE_ASSESSED;
 		player_know_object(player, obj);
 		obj->origin = ORIGIN_NONE;
@@ -1471,7 +1471,7 @@ static struct object *store_create_item(struct store *store,
 	/* Know everything the player knows, no origin yet */
 	obj->known = known_obj;
 	obj->known->notice |= OBJ_NOTICE_ASSESSED;
-	object_set_base_known(obj);
+	object_set_base_known(player, obj);
 	obj->known->notice |= OBJ_NOTICE_ASSESSED;
 	player_know_object(player, obj);
 	obj->origin = ORIGIN_NONE;
@@ -2136,7 +2136,7 @@ void do_cmd_sell(struct command *cmd)
 	}
 
 	/* Get the label */
-	label = gear_to_label(obj);
+	label = gear_to_label(player, obj);
 
 	price = price_item(store, &dummy_item, true, amt);
 
@@ -2268,7 +2268,7 @@ void do_cmd_stash(struct command *cmd)
 	}
 
 	/* Get where the object is now */
-	label = gear_to_label(obj);
+	label = gear_to_label(player, obj);
 
 	/* Now get the real item */
 	dropped = gear_object_for_use(obj, amt, false, &none_left);

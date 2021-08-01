@@ -1,4 +1,4 @@
-# Angband for Android 4.2.2
+# Angband for Android 4.2.3
 
 An unofficial port of the roguelike Angband to Android.
 
@@ -88,7 +88,7 @@ This port support the usual graphic tilesets of Angband (go to Preferences). Try
 
 Enjoy!
 
-Angband homepage [http://rephial.org](http://rephial.org)
+Angband homepage [http://angband.github.io/angband](http://angband.github.io/angband)
 
 Forum and resources [http://angband.oook.cz](http://angband.oook.cz)
 
