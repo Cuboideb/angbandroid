@@ -773,7 +773,7 @@ public class TermView extends View implements OnGestureListener {
 		dirZoneFill.setAlpha(alpha);
 	}
 
-	public TSize getCharDimensions(Paint p)
+	public static TSize getCharDimensions(Paint p)
 	{
 		int h = (int)Math.ceil(p.getFontSpacing());
 		int w = (int)p.measureText("X", 0, 1);
@@ -2141,16 +2141,27 @@ public class TermView extends View implements OnGestureListener {
 		@Override
 		public void updatePosition(float dy, float dx)
 		{
-			if (dx < 0 && x+dx < getHorizontalGap()) return;
+			float x2 = x+dx;
+			float y2 = y+dy;
 
-			if (dx > 0 && x+w+dx > getWidth()) return;
+			if (x2 < 0) return;
 
-			if (dy < 0 && y+dy < 0) return;
+			if (x2+w > getWidth()) return;
 
-			if (dy > 0 && y+h+dy > getHeight()-getVerticalGap()) return;
+			if (y2 < 0) return;
 
-			x += dx;
-			y += dy;
+			if (y2+h > getHeight()) return;
+
+			int verticalGap = 0;
+			if (Preferences.getKeyboardOverlap()) {
+				verticalGap = game_context.getKeyboardHeightAbsolute();
+			}
+
+			if (x2 < getHorizontalGap() &&
+				y2+h > getHeight()-verticalGap) return;
+
+			x = x2;
+			y = y2;
 		}
 
 		@Override

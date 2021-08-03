@@ -142,16 +142,19 @@
 		  seekBar:max="100"
 		  seekBar:defaultVal="100" />
 
+		<!--
 		<CheckBoxPreference
 			android:key="angband.qwertynumpad"
 			android:defaultValue="false"
 			android:title="Qwerty NumPad"
 			android:summary="Qwerty keyboard comes with NumPad" />
+	    -->
 
 		<CheckBoxPreference
 			android:key="angband.use_adv_keyboard"
 			android:defaultValue="true"
-			android:title="Use Advanced Keyboard" />
+			android:title="Use Full Keyboard"
+			android:summary="Turn OFF to display a mini-keyboard" />
 
 		<CheckBoxPreference
 			android:key="angband.show_adv_keymaps"
@@ -183,7 +186,6 @@
 	  <org.rephial.xyangband.SeekBarPreference
 		  android:key="angband.keyboard_height"
 		  android:title="Keyboard Height"
-		  android:dependency="angband.use_adv_keyboard"
 		  seekBar:min="0"
 		  seekBar:max="100"
 		  seekBar:defaultVal="0" />
