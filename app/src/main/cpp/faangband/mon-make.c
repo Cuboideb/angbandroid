@@ -1434,8 +1434,7 @@ static bool mon_create_drop(struct chunk *c, struct monster *mon, byte origin)
 				/* Set origin details */
 				obj->origin = origin;
 				obj->origin_depth = c->depth;
-				/* Note incorrect use of player global here - NRM */
-				obj->origin_place = player->place;
+				obj->origin_place = c->place;
 				obj->origin_race = mon->race;
 				obj->number = 1;
 
@@ -1476,8 +1475,7 @@ static bool mon_create_drop(struct chunk *c, struct monster *mon, byte origin)
 		/* Set origin details */
 		obj->origin = origin;
 		obj->origin_depth = c->depth;
-		/* Note incorrect use of player global here - NRM */
-		obj->origin_place = player->place;
+		obj->origin_place = c->place;
 		obj->origin_race = mon->race;
 		obj->number = (obj->artifact) ?
 			1 : randint0(drop->max - drop->min) + drop->min;
@@ -1503,8 +1501,7 @@ static bool mon_create_drop(struct chunk *c, struct monster *mon, byte origin)
 		/* Set origin details */
 		obj->origin = origin;
 		obj->origin_depth = c->depth;
-		/* Note incorrect use of player global here - NRM */
-		obj->origin_place = player->place;
+		obj->origin_place = c->place;
 		obj->origin_race = mon->race;
 
 		/* Try to carry */
@@ -1551,9 +1548,8 @@ void mon_create_mimicked_object(struct chunk *c, struct monster *mon, int index)
 		apply_magic(obj, mon->race->level, true, false, false, false);
 		obj->number = 1;
 		obj->origin = ORIGIN_DROP_MIMIC;
-		obj->origin_depth = player->depth;
-		/* Note incorrect use of player global here - NRM */
-		obj->origin_place = player->place;
+		obj->origin_depth = c->depth;
+		obj->origin_place = c->place;
 	}
 
 	obj->mimicking_m_idx = index;
@@ -2078,25 +2074,23 @@ static bool place_friends(struct chunk *c, struct loc grid, struct monster_race 
 			return place_new_monster_group(c, grid, race, sleep, group_info,
 										   total, origin);
 		} else {
-			int j;
-			struct loc new = grid;
+			struct loc new;
 
-			/* Find a nearby place to put the other groups */
-			for (j = 0; j < 50; j++) {
-				scatter(c, &new, grid, z_info->monster_group_dist, false);
-				if (square_isopen(c, new)) {
-					break;
+			/* Find a nearby place to put the other groups. */
+			if (scatter_ext(c, &new, 1, grid,
+					z_info->monster_group_dist, false,
+					square_isopen) > 0) {
+				/* Place the monsters */
+				bool success = place_new_monster_one(c, new,
+					friends_race, sleep, group_info, origin);
+
+				if (total > 1) {
+					success = place_new_monster_group(c,
+						new, friends_race, sleep,
+						group_info, total, origin);
 				}
+				return success;
 			}
-
-			/* Place the monsters */
-			bool success = place_new_monster_one(c, new, friends_race, sleep,
-												 group_info, origin);
-			if (total > 1)
-				success = place_new_monster_group(c, new, friends_race, sleep,
-												  group_info, total, origin);
-
-			return success;
 		}
 	}
 

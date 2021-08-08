@@ -313,6 +313,7 @@ extern struct vault *vaults;
 extern struct room_template *room_templates;
 
 /* generate.c */
+void prepare_next_level(struct player *p);
 int get_room_builder_count(void);
 int get_room_builder_index_from_name(const char *name);
 const char *get_room_builder_name_from_index(int i);
@@ -378,8 +379,11 @@ bool build_pit(struct chunk *c, struct loc centre, int rating);
 bool build_template(struct chunk *c, struct loc centre, int rating);
 bool build_interesting(struct chunk *c, struct loc centre, int rating);
 bool build_lesser_vault(struct chunk *c, struct loc centre, int rating);
+bool build_lesser_new_vault(struct chunk *c, struct loc centre, int rating);
 bool build_medium_vault(struct chunk *c, struct loc centre, int rating);
+bool build_medium_new_vault(struct chunk *c, struct loc centre, int rating);
 bool build_greater_vault(struct chunk *c, struct loc centre, int rating);
+bool build_greater_new_vault(struct chunk *c, struct loc centre, int rating);
 bool build_moria(struct chunk *c, struct loc centre, int rating);
 bool build_room_of_chambers(struct chunk *c, struct loc centre, int rating);
 bool build_huge(struct chunk *c, struct loc centre, int rating);
@@ -403,7 +407,7 @@ bool find_nearby_grid(struct chunk *c, struct loc *grid, struct loc centre,
 					  int yd, int xd);
 void correct_dir(struct loc *offset, struct loc grid1, struct loc grid2);
 void rand_dir(struct loc *offset);
-void new_player_spot(struct chunk *c, struct player *p);
+bool new_player_spot(struct chunk *c, struct player *p);
 void place_object(struct chunk *c, struct loc grid, int level, bool good,
 				  bool great, byte origin, int tval);
 void place_gold(struct chunk *c, struct loc grid, int level, byte origin);

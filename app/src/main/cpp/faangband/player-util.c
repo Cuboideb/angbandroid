@@ -369,13 +369,13 @@ void death_knowledge(struct player *p)
 
 	player_learn_all_runes(p);
 	for (obj = p->gear; obj; obj = obj->next) {
-		object_flavor_aware(obj);
+		object_flavor_aware(p, obj);
 		obj->known->effect = obj->effect;
 		obj->known->activation = obj->activation;
 	}
 
 	for (obj = home->stock; obj; obj = obj->next) {
-		object_flavor_aware(obj);
+		object_flavor_aware(p, obj);
 		obj->known->effect = obj->effect;
 		obj->known->activation = obj->activation;
 	}
@@ -384,7 +384,7 @@ void death_knowledge(struct player *p)
 
 	/* Get time of death */
 	(void)time(&death_time);
-	enter_score(&death_time);
+	enter_score(p, &death_time);
 
 	/* Hack -- Recalculate bonuses */
 	p->upkeep->update |= (PU_BONUS);
@@ -702,8 +702,9 @@ void player_update_light(struct player *p)
 				/* If it's a torch, now is the time to delete it */
 				if (of_has(obj->flags, OF_BURNS_OUT)) {
 					bool dummy;
-					struct object *burnt = gear_object_for_use(obj, 1, false,
-															   &dummy);
+					struct object *burnt =
+						gear_object_for_use(p, obj, 1,
+						false, &dummy);
 					if (burnt->known)
 						object_delete(&burnt->known);
 					object_delete(&burnt);

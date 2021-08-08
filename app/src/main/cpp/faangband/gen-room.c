@@ -1380,6 +1380,8 @@ static bool build_room_template_type(struct chunk *c, struct loc centre,
  * \param centre the room centre; out of chunk centre invokes find_space()
  * \param v pointer to the vault template
  * \return success
+ *
+ * Note slightly incorrect use of player global for themed levels
  */
 bool build_vault(struct chunk *c, struct loc centre, struct vault *v)
 {
@@ -1390,7 +1392,7 @@ bool build_vault(struct chunk *c, struct loc centre, struct vault *v)
 	char racial_symbol[30] = "";
 	bool icky;
 	bool placed = false;
-	struct level *lev = &world->levels[player->place];
+	struct level *lev = &world->levels[c->place];
 	struct loc panic = loc(0, 0);
 	int rotate, thgt, twid;
 	bool reflect;
@@ -1529,7 +1531,6 @@ bool build_vault(struct chunk *c, struct loc centre, struct vault *v)
 					place_stairs(c, grid, FEAT_LESS);
 				}
 				/* Place player only in themed level, and only once. */
-				/* Note incorrect use of player global here - NRM */
 				if ((player->themed_level) && (!placed)) {
 					player_place(c, player, grid);
 					placed = true;
@@ -1550,28 +1551,28 @@ bool build_vault(struct chunk *c, struct loc centre, struct vault *v)
 				/* Work out which direction */
 				if ((grid.y == 1) && lev->north) {
 					adj = level_by_name(world, lev->north);
-					if (adj->depth > player->depth) {
+					if (adj->depth > c->depth) {
 						square_set_feat(c, grid, FEAT_MORE_NORTH);
 					} else {
 						square_set_feat(c, grid, FEAT_LESS_NORTH);
 					}
 				} else if ((grid.x == 1) && lev->west) {
 					adj = level_by_name(world, lev->west);
-					if (adj->depth > player->depth) {
+					if (adj->depth > c->depth) {
 						square_set_feat(c, grid, FEAT_MORE_WEST);
 					} else {
 						square_set_feat(c, grid, FEAT_LESS_WEST);
 					}
 				} else if ((grid.y == c->height - 2) && lev->south) {
 					adj = level_by_name(world, lev->south);
-					if (adj->depth > player->depth) {
+					if (adj->depth > c->depth) {
 						square_set_feat(c, grid, FEAT_MORE_SOUTH);
 					} else {
 						square_set_feat(c, grid, FEAT_LESS_SOUTH);
 					}
 				} else if ((grid.x == c->width - 2) && lev->east) {
 					adj = level_by_name(world, lev->east);
-					if (adj->depth > player->depth) {
+					if (adj->depth > c->depth) {
 						square_set_feat(c, grid, FEAT_MORE_EAST);
 					} else {
 						square_set_feat(c, grid, FEAT_LESS_EAST);
@@ -1809,7 +1810,7 @@ bool build_vault(struct chunk *c, struct loc centre, struct vault *v)
 	/* Ensure that the player is always placed in a themed level. */
 	if (player->themed_level && !placed) {
 		if (lev->topography == TOP_CAVE) {
-			new_player_spot(c, player);
+			if (!new_player_spot(c, player)) return false;
 		} else {
 			player_place(c, player, panic);
 		}
@@ -3112,7 +3113,20 @@ bool build_interesting(struct chunk *c, struct loc centre, int rating)
  */
 bool build_lesser_vault(struct chunk *c, struct loc centre, int rating)
 {
-	return build_vault_type(c, centre, "Lesser vault (new)", "Lesser vault");
+		return build_vault_type(c, centre, "Lesser vault", NULL);
+}
+
+
+/**
+ * Build a lesser new-style vault.
+ * \param c the chunk the room is being built in
+ * \param centre the room centre; out of chunk centre invokes find_space()
+ * \param rating is not used for this room type
+ * \return success
+ */
+bool build_lesser_new_vault(struct chunk *c, struct loc centre, int rating)
+{
+	return build_vault_type(c, centre, "Lesser vault (new)", NULL);
 }
 
 
@@ -3125,15 +3139,29 @@ bool build_lesser_vault(struct chunk *c, struct loc centre, int rating)
  */
 bool build_medium_vault(struct chunk *c, struct loc centre, int rating)
 {
-	return build_vault_type(c, centre, "Medium vault (new)", "Medium vault");
+	return build_vault_type(c, centre, "Medium vault (new)", NULL);
 }
 
 
 /**
- * Build a greater vaults.
+ * Build a medium new-style vault.
  * \param c the chunk the room is being built in
  * \param centre the room centre; out of chunk centre invokes find_space()
  * \param rating is not used for this room type
+ * \return success
+ */
+bool build_medium_new_vault(struct chunk *c, struct loc centre, int rating)
+{
+	return build_vault_type(c, centre, "Medium vault (new)", NULL);
+}
+
+
+/**
+ * Help greater_vault() or greater_new_vault().
+ * \param c the chunk the room is being built in
+ * \param centre the room centre; out of chunk centre invokes find_space()
+ * \param name is the name of the type to build, i.e. "Greater vault" or
+ * "Greater vault (new)"
  * \return success
  *
  * Classic profile:
@@ -3157,7 +3185,8 @@ bool build_medium_vault(struct chunk *c, struct loc centre, int rating)
  * 50-59  1.8 -  2.1%
  * 0-49   0.0 -  1.0%
  */
-bool build_greater_vault(struct chunk *c, struct loc centre, int rating)
+static bool help_greater_vault(struct chunk *c, struct loc centre,
+		const char *name)
 {
 	int i;
 	int numerator   = 1;
@@ -3182,7 +3211,33 @@ bool build_greater_vault(struct chunk *c, struct loc centre, int rating)
 	/* Non-classic profiles need to adjust the probability */
 	if (!streq(dun->profile->name, "classic") && !one_in_(3)) return false;
 
-	return build_vault_type(c, centre, "Greater vault (new)", "Greater vault");
+	return build_vault_type(c, centre, name, NULL);
+}
+
+
+/**
+ * Build a greater vault.
+ * \param c the chunk the room is being built in
+ * \param centre the room centre; out of chunk centre invokes find_space()
+ * \param rating is not used for this room type
+ * \return success
+ */
+bool build_greater_vault(struct chunk *c, struct loc centre, int rating)
+{
+	return help_greater_vault(c, centre, "Greater vault");
+}
+
+
+/**
+ * Build a greater new-style vault.
+ * \param c the chunk the room is being built in
+ * \param centre the room centre; out of chunk centre invokes find_space()
+ * \param rating is not used for this room type
+ * \return success
+ */
+bool build_greater_new_vault(struct chunk *c, struct loc centre, int rating)
+{
+	return help_greater_vault(c, centre, "Greater vault (new)");
 }
 
 

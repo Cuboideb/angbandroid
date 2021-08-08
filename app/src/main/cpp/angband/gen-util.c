@@ -339,8 +339,9 @@ static bool find_start(struct chunk *c, struct loc *grid)
  * Place the player at a random starting location.
  * \param c current chunk
  * \param p the player
+ * \return true on success or false on failure
  */
-void new_player_spot(struct chunk *c, struct player *p)
+bool new_player_spot(struct chunk *c, struct player *p)
 {
 	struct loc grid;
 
@@ -350,8 +351,9 @@ void new_player_spot(struct chunk *c, struct player *p)
 			square_isstairs(c, p->grid)) {
 		grid = p->grid;
 	} else if (!find_start(c, &grid)) {
+		msg("Failed to place player; please report.  Restarting generation.");
 		dump_level_simple(NULL, "Player Placement Failure", c);
-		quit("Failed to place player!");
+		return false;
 	}
 
 	/* Create stairs the player came down if allowed and necessary */
@@ -363,6 +365,7 @@ void new_player_spot(struct chunk *c, struct player *p)
 		square_set_feat(c, grid, FEAT_LESS);
 
 	player_place(c, p, grid);
+	return true;
 }
 
 
@@ -807,13 +810,11 @@ void vault_monsters(struct chunk *c, struct loc grid, int depth, int num)
 	for (k = 0; k < num; k++) {
 		/* Try nine locations */
 		for (i = 0; i < 9; i++) {
-			struct loc near = grid;
+			struct loc near;
 
-			/* Pick a nearby location */
-			scatter(c, &near, grid, 1, true);
-
-			/* Require "empty" floor grids */
-			if (!square_isempty(c, near)) continue;
+			/* Pick a nearby empty location. */
+			if (scatter_ext(c, &near, 1, grid, 1, true,
+					square_isempty) == 0) continue;
 
 			/* Place the monster (allow groups) */
 			pick_and_place_monster(c, near, depth, true, true,

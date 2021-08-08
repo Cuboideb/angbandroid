@@ -628,13 +628,13 @@ static int melee_damage(struct player *p, struct monster *mon,
 						struct object *obj, int b, int s, int sleeping_bonus,
 						u32b *msg_type, bool *armsman)
 {
-	int dice = obj->dd;
+	int dice = (obj) ? obj->dd : 1;
 	int sides, dmg, add = 0;
 	bool extra;
 	int multiplier = 10;
 
 	/* Get the average value of a single damage die. (x10) */
-	int die_average = (10 * (obj->ds + 1)) / 2;
+	int die_average = (10 * (((obj) ? obj->ds : 1) + 1)) / 2;
 
 	/* Get the multiplier for slays and brands. */
 	if (s) {
@@ -660,7 +660,8 @@ static int melee_damage(struct player *p, struct monster *mon,
 	add = multiplier - 10;
 
 	/* Apply deadliness to average. (100x inflation) */
-	apply_deadliness(&die_average, MIN(obj->to_d + p->state.to_d, 150));
+	apply_deadliness(&die_average,
+		MIN(((obj) ? obj->to_d : 0) + p->state.to_d, 150));
 
 	/* Calculate the actual number of sides to each die. */
 	sides = (2 * die_average) - 10000;
@@ -842,15 +843,14 @@ bool py_attack_real(struct player *p, struct loc grid, bool *fear)
 
 	int ac = terrain_armor_adjust(grid, mon->race->ac, true);
 
-	/* Default to punching for one damage */
 	char verb[20];
-	int dmg = 1;
 	u32b msg_type = MSG_HIT;
 	char dmg_text[20];
+	int j, b, s, weight, dmg;
 
 	my_strcpy(dmg_text, "", sizeof(dmg_text));
 
-	/* Default to punching for one damage */
+	/* Default to punching */
 	my_strcpy(verb, "punch", sizeof(verb));
 
 	/* Extract monster name (or "it") */
@@ -900,43 +900,49 @@ bool py_attack_real(struct player *p, struct loc grid, bool *fear)
 		return false;
 	}
 
-	/* Handle normal weapon */
 	if (obj) {
-		int j;
-		int b = 0, s = 0;
-		int weight = obj->weight;
-
+		/* Handle normal weapon */
+		weight = obj->weight;
 		my_strcpy(verb, "hit", sizeof(verb));
+	} else {
+		weight = 0;
+	}
 
-		/* Best attack from all slays or brands on all non-launcher equipment */
-		for (j = 2; j < p->body.count; j++) {
-			struct object *obj_local = slot_object(p, j);
-			if (obj_local)
-				improve_attack_modifier(obj_local, mon, &b, &s, verb, false);
+	/* Best attack from all slays or brands on all non-launcher equipment */
+	b = 0;
+	s = 0;
+	for (j = 2; j < p->body.count; j++) {
+		struct object *obj_local = slot_object(p, j);
+		if (obj_local) {
+			improve_attack_modifier(p, obj_local, mon, &b, &s, verb, false);
 		}
+	}
 
-		/* Get the best attack from all slays or brands - weapon or temporary */
-		improve_attack_modifier(obj, mon, &b, &s, verb, false);
-		improve_attack_modifier(NULL, mon, &b, &s, verb, false);
+	/* Get the best attack from all slays or brands - weapon or temporary */
+	if (obj) {
+		improve_attack_modifier(p, obj, mon, &b, &s, verb, false);
+	}
+	improve_attack_modifier(p, NULL, mon, &b, &s, verb, false);
 
+	if (player_has(p, PF_UNARMED_COMBAT) || player_has(p, PF_MARTIAL_ARTS)) {
+		dmg = unarmed_damage(p, mon->race, chance + sleeping_bonus,
+							 &unarmed_blow_idx, &power_strike, &confusing_blow);
+	} else {
 		/* Get the damage */
 		dmg = melee_damage(p, mon, obj, b, s, sleeping_bonus, &msg_type,
 						   &armsman);
+	}
 
-		/* Splash damage and earthquakes */
-		splash = (weight * dmg) / 100;
-		if (player_of_has(p, OF_IMPACT) && dmg > 50) {
-			do_quake = true;
-			equip_learn_flag(p, OF_IMPACT);
-		}
-	} else if (player_has(p, PF_UNARMED_COMBAT)	||
-			   player_has(p, PF_MARTIAL_ARTS)) {
-		dmg = unarmed_damage(p, mon->race, chance + sleeping_bonus,
-							 &unarmed_blow_idx, &power_strike, &confusing_blow);
+	/* Splash damage and earthquakes */
+	splash = (weight * dmg) / 100;
+	if (player_of_has(p, OF_IMPACT) && dmg > 50) {
+		do_quake = true;
+		equip_learn_flag(p, OF_IMPACT);
 	}
 
 	/* Learn by use */
 	equip_learn_on_melee_attack(p);
+	learn_brand_slay_from_melee(p, obj, mon);
 
 	/* Substitute shape-specific blows for shapechanged players */
 	if (player_is_shapechanged(p)) {
@@ -1234,7 +1240,6 @@ static void ranged_helper(struct player *p,	struct object *obj, int dir,
 						  int shots, ranged_attack attack)
 {
 	int i;
-	char o_name[80];
 	int path_n;
 	struct loc path_g[256];
 
@@ -1258,9 +1263,6 @@ static void ranged_helper(struct player *p,	struct object *obj, int dir,
 
 	/* Sound */
 	sound(MSG_SHOOT);
-
-	/* Describe the object */
-	object_desc(o_name, sizeof(o_name), obj, ODESC_FULL | ODESC_SINGULAR);
 
 	/* Actually "fire" the object -- Take a partial turn */
 	p->upkeep->energy_use = (z_info->move_energy * 10 / shots);
@@ -1312,12 +1314,21 @@ static void ranged_helper(struct player *p,	struct object *obj, int dir,
 			mem_free(result.hit_verb);
 
 			if (result.success) {
+				char o_name[80];
+
 				hit_target = true;
 
 				missile_learn_on_ranged_attack(p, obj);
 
 				/* Learn by use for other equipped items */
 				equip_learn_on_ranged_attack(p);
+
+				/*
+				 * Describe the object (have most up-to-date
+				 * knowledge now).
+				 */
+				object_desc(o_name, sizeof(o_name), obj,
+					ODESC_FULL | ODESC_SINGULAR);
 
 				/* No negative damage; change verb if no damage done */
 				if (dmg <= 0) {
@@ -1406,10 +1417,11 @@ static void ranged_helper(struct player *p,	struct object *obj, int dir,
 	}
 
 	/* Get the missile */
-	if (object_is_carried(p, obj))
-		missile = gear_object_for_use(obj, 1, true, &none_left);
-	else
+	if (object_is_carried(p, obj)) {
+		missile = gear_object_for_use(p, obj, 1, true, &none_left);
+	} else {
 		missile = floor_object_for_use(obj, 1, true, &none_left);
+	}
 
 	/* Terminate piercing */
 	if (p->timed[TMD_POWERSHOT]) {
@@ -1450,13 +1462,14 @@ static struct attack_result make_ranged_shot(struct player *p,
 
 	result.success = true;
 
-	improve_attack_modifier(ammo, mon, &b, &s, result.hit_verb, true);
-	improve_attack_modifier(bow, mon, &b, &s, result.hit_verb, true);
+	improve_attack_modifier(p, ammo, mon, &b, &s, result.hit_verb, true);
+	improve_attack_modifier(p, bow, mon, &b, &s, result.hit_verb, true);
 
 	result.dmg = ranged_damage(p, mon, ammo, bow, b, s, result.s_bonus,
 							   &result.msg_type, &result.marksman, tries);
 
 	missile_learn_on_ranged_attack(p, bow);
+	learn_brand_slay_from_launch(p, ammo, bow, mon);
 
 	return result;
 }
@@ -1490,7 +1503,7 @@ static struct attack_result make_ranged_throw(struct player *p,
 
 	result.success = true;
 
-	improve_attack_modifier(obj, mon, &b, &s, result.hit_verb, true);
+	improve_attack_modifier(p, obj, mon, &b, &s, result.hit_verb, true);
 
 	result.dmg = ranged_damage(p, mon, obj, NULL, b, s, result.s_bonus,
 							   &result.msg_type, &result.marksman, tries);
@@ -1498,6 +1511,8 @@ static struct attack_result make_ranged_throw(struct player *p,
 	/* Direct adjustment for exploding things (flasks of oil) */
 	if (of_has(obj->flags, OF_EXPLODE))
 		result.dmg *= 3;
+
+	learn_brand_slay_from_throw(p, obj, mon);
 
 	return result;
 }

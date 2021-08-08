@@ -314,6 +314,7 @@ extern struct vault *themed_levels;
 extern struct room_template *room_templates;
 
 /* generate.c */
+void prepare_next_level(struct player *p);
 int get_room_builder_count(void);
 int get_room_builder_index_from_name(const char *name);
 const char *get_room_builder_name_from_index(int i);
@@ -394,8 +395,11 @@ bool build_pit(struct chunk *c, struct loc centre, int rating);
 bool build_template(struct chunk *c, struct loc centre, int rating);
 bool build_interesting(struct chunk *c, struct loc centre, int rating);
 bool build_lesser_vault(struct chunk *c, struct loc centre, int rating);
+bool build_lesser_new_vault(struct chunk *c, struct loc centre, int rating);
 bool build_medium_vault(struct chunk *c, struct loc centre, int rating);
+bool build_medium_new_vault(struct chunk *c, struct loc centre, int rating);
 bool build_greater_vault(struct chunk *c, struct loc centre, int rating);
+bool build_greater_new_vault(struct chunk *c, struct loc centre, int rating);
 bool build_moria(struct chunk *c, struct loc centre, int rating);
 bool build_room_of_chambers(struct chunk *c, struct loc centre, int rating);
 bool build_huge(struct chunk *c, struct loc centre, int rating);
@@ -420,7 +424,7 @@ bool find_nearby_grid(struct chunk *c, struct loc *grid, struct loc centre,
 void correct_dir(struct loc *offset, struct loc grid1, struct loc grid2);
 void adjust_dir(struct loc *offset, struct loc grid1, struct loc grid2);
 void rand_dir(struct loc *offset);
-void new_player_spot(struct chunk *c, struct player *p);
+bool new_player_spot(struct chunk *c, struct player *p);
 void place_stairs(struct chunk *c, struct loc grid, int feat);
 void place_object(struct chunk *c, struct loc grid, int level, bool good,
 				  bool great, byte origin, int tval);
@@ -453,8 +457,5 @@ void spread_monsters(struct chunk *c, const char *type, int depth, int num,
 void get_vault_monsters(struct chunk *c, char racial_symbol[], char *vault_type,
 						const char *data, int y1, int y2, int x1, int x2);
 void get_chamber_monsters(struct chunk *c, int y1, int x1, int y2, int x2, char *name, int area);
-
-/* generate.h */
-void prepare_next_level(struct chunk **c, struct player *p);
 
 #endif /* !GENERATE_H */

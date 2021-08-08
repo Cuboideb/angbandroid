@@ -1163,6 +1163,15 @@ bool square_isinemptysquare(struct chunk *c, struct loc grid)
 	return true;
 }
 
+/**
+ * Checks if a square is appropriate for placing a summoned creature.
+ */
+bool square_allows_summon(struct chunk *c, struct loc grid)
+{
+	return square_isempty(c, grid) && !square_iswarded(c, grid)
+		&& !square_isdecoyed(c, grid);
+}
+
 
 
 /**
@@ -1382,7 +1391,8 @@ void square_set_feat(struct chunk *c, struct loc grid, int feat)
 	current_feat = square(c, grid)->feat;
 
 	/* Floor and road have only cosmetic differences; use road when outside */
-	if ((feat == FEAT_FLOOR) && (level_topography(player->place) != TOP_CAVE)) {
+	if (player->place && (feat == FEAT_FLOOR) &&
+		(level_topography(player->place) != TOP_CAVE)) {
 		feat = FEAT_ROAD;
 	}
 

@@ -47,10 +47,10 @@ const char *equip_describe(struct player *p, int slot);
 int wield_slot(const struct object *obj);
 bool minus_ac(struct player *p);
 char gear_to_label(struct player *p, struct object *obj);
-struct object *gear_last_item(void);
-void gear_insert_end(struct object *obj);
-struct object *gear_object_for_use(struct object *obj, int num, bool message,
-								   bool *none_left);
+struct object *gear_last_item(struct player *p);
+void gear_insert_end(struct player *p, struct object *obj);
+struct object *gear_object_for_use(struct player *p, struct object *obj,
+	int num, bool message, bool *none_left);
 int inven_carry_num(const struct object *obj);
 bool inven_carry_okay(const struct object *obj);
 void inven_item_charges(struct object *obj);
@@ -59,7 +59,7 @@ void inven_carry(struct player *p, struct object *obj, bool absorb,
 void inven_wield(struct object *obj, int slot);
 void inven_takeoff(struct object *item);
 void inven_drop(struct object *obj, int amt);
-void combine_pack(void);
+void combine_pack(struct player *p);
 bool pack_is_full(void);
 bool pack_is_overfull(void);
 void pack_overflow(struct object *obj);

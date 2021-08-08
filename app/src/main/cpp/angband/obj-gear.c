@@ -415,7 +415,7 @@ static bool gear_excise_object(struct object *obj)
 	}
 
 	/* Update the gear */
-	calc_inventory(player->upkeep, player->gear, player->body);
+	calc_inventory(player);
 
 	/* Housekeeping */
 	player->upkeep->update |= (PU_BONUS);
@@ -425,15 +425,15 @@ static bool gear_excise_object(struct object *obj)
 	return true;
 }
 
-struct object *gear_last_item(void)
+struct object *gear_last_item(struct player *p)
 {
-	return pile_last_item(player->gear);
+	return pile_last_item(p->gear);
 }
 
-void gear_insert_end(struct object *obj)
+void gear_insert_end(struct player *p, struct object *obj)
 {
-	pile_insert_end(&player->gear, obj);
-	pile_insert_end(&player->gear_k, obj->known);
+	pile_insert_end(&p->gear, obj);
+	pile_insert_end(&p->gear_k, obj->known);
 }
 
 /**
@@ -442,12 +442,12 @@ void gear_insert_end(struct object *obj)
  *
  * Optionally describe what remains.
  */
-struct object *gear_object_for_use(struct object *obj, int num, bool message,
-								   bool *none_left)
+struct object *gear_object_for_use(struct player *p, struct object *obj,
+	int num, bool message, bool *none_left)
 {
 	struct object *usable;
 	char name[80];
-	char label = gear_to_label(player, obj);
+	char label = gear_to_label(p, obj);
 	bool artifact = (obj->known->artifact != NULL);
 
 	/* Bounds check */
@@ -458,7 +458,7 @@ struct object *gear_object_for_use(struct object *obj, int num, bool message,
 		usable = object_split(obj, num);
 
 		/* Change the weight */
-		player->upkeep->total_weight -= (num * obj->weight);
+		p->upkeep->total_weight -= (num * obj->weight);
 
 		if (message) {
 			object_desc(name, sizeof(name), obj, ODESC_PREFIX | ODESC_FULL);
@@ -481,17 +481,17 @@ struct object *gear_object_for_use(struct object *obj, int num, bool message,
 		*none_left = true;
 
 		/* Stop tracking item */
-		if (tracked_object_is(player->upkeep, obj))
-			track_object(player->upkeep, NULL);
+		if (tracked_object_is(p->upkeep, obj))
+			track_object(p->upkeep, NULL);
 
 		/* Inventory has changed, so disable repeat command */
 		cmd_disable_repeat();
 	}
 
 	/* Housekeeping */
-	player->upkeep->update |= (PU_BONUS);
-	player->upkeep->notice |= (PN_COMBINE);
-	player->upkeep->redraw |= (PR_INVEN | PR_EQUIP);
+	p->upkeep->update |= (PU_BONUS);
+	p->upkeep->notice |= (PN_COMBINE);
+	p->upkeep->redraw |= (PR_INVEN | PR_EQUIP);
 
 	/* Print a message if desired */
 	if (message) {
@@ -722,7 +722,7 @@ void inven_carry(struct player *p, struct object *obj, bool absorb,
 		/* Paranoia */
 		assert(pack_slots_used(p) <= z_info->pack_size);
 
-		gear_insert_end(obj);
+		gear_insert_end(p, obj);
 		apply_autoinscription(obj);
 
 		/* Remove cave object details */
@@ -737,10 +737,10 @@ void inven_carry(struct player *p, struct object *obj, bool absorb,
 		/* Hobbits ID mushrooms on pickup, gnomes ID wands and staffs on pickup */
 		if (!object_flavor_is_aware(obj)) {
 			if (player_has(p, PF_KNOW_MUSHROOM) && tval_is_mushroom(obj)) {
-				object_flavor_aware(obj);
+				object_flavor_aware(p, obj);
 				msg("Mushrooms for breakfast!");
 			} else if (player_has(p, PF_KNOW_ZAPPER) && tval_is_zapper(obj))
-				object_flavor_aware(obj);
+				object_flavor_aware(p, obj);
 		}
 	}
 
@@ -781,7 +781,8 @@ void inven_wield(struct object *obj, int slot)
 	if (object_is_carried(player, obj)) {
 		/* Split off a new object if necessary */
 		if (obj->number > 1) {
-			wielded = gear_object_for_use(obj, 1, false, &dummy);
+			wielded = gear_object_for_use(player, obj, 1, false,
+				&dummy);
 
 			/* It's still carried; keep its weight in the total. */
 			assert(wielded->number == 1);
@@ -837,7 +838,7 @@ void inven_wield(struct object *obj, int slot)
 	}
 
 	/* See if we have to overflow the pack */
-	combine_pack();
+	combine_pack(player);
 	pack_overflow(old);
 
 	/* Recalculate bonuses, torch, mana, gear */
@@ -939,7 +940,7 @@ void inven_drop(struct object *obj, int amt)
 		inven_takeoff(obj);
 
 	/* Get the object */
-	dropped = gear_object_for_use(obj, amt, false, &none_left);
+	dropped = gear_object_for_use(player, obj, amt, false, &none_left);
 
 	/* Describe the dropped object */
 	object_desc(name, sizeof(name), dropped, ODESC_PREFIX | ODESC_FULL);
@@ -1025,23 +1026,23 @@ static bool inven_can_stack_partial(const struct object *obj1,
 /**
  * Combine items in the pack, confirming no blank objects or gold
  */
-void combine_pack(void)
+void combine_pack(struct player *p)
 {
 	struct object *obj1, *obj2, *prev;
 	bool display_message = false;
 	bool disable_repeat = false;
 
 	/* Combine the pack (backwards) */
-	obj1 = gear_last_item();
+	obj1 = gear_last_item(p);
 	while (obj1) {
 		assert(obj1->kind);
 		assert(!tval_is_money(obj1));
 		prev = obj1->prev;
 
 		/* Scan the items above that item */
-		for (obj2 = player->gear; obj2 && obj2 != obj1; obj2 = obj2->next) {
+		for (obj2 = p->gear; obj2 && obj2 != obj1; obj2 = obj2->next) {
 			object_stack_t stack_mode2 =
-				object_is_in_quiver(player, obj2) ?
+				object_is_in_quiver(p, obj2) ?
 				OSTACK_QUIVER : OSTACK_PACK;
 
 			assert(obj2->kind);
@@ -1060,7 +1061,7 @@ void combine_pack(void)
 				break;
 			} else {
 				object_stack_t stack_mode1 =
-					object_is_in_quiver(player, obj1) ?
+					object_is_in_quiver(p, obj1) ?
 					OSTACK_QUIVER : OSTACK_PACK;
 
 				if (inven_can_stack_partial(obj2, obj1,
@@ -1091,7 +1092,7 @@ void combine_pack(void)
 		obj1 = prev;
 	}
 
-	calc_inventory(player->upkeep, player->gear, player->body);
+	calc_inventory(p);
 
 	/* Redraw gear */
 	event_signal(EVENT_INVENTORY);

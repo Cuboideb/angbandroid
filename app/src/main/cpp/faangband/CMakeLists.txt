@@ -41,6 +41,8 @@ add_library( # Sets the name of the library.
             cmd-wizard.c
             datafile.c
             debug.c
+            effect-handler-attack.c
+            effect-handler-general.c
             effects.c
             effects-info.c
             game-event.c
