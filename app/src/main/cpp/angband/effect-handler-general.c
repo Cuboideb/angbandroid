@@ -40,6 +40,7 @@
 #include "obj-tval.h"
 #include "player-calcs.h"
 #include "player-history.h"
+#include "player-quest.h"
 #include "player-timed.h"
 #include "player-util.h"
 #include "project.h"
@@ -169,7 +170,8 @@ static bool uncurse_object(struct object *obj, int strength, char *dice_string)
 			remove_object_curse(obj, index, true);
 		} else if (!of_has(obj->flags, OF_FRAGILE)) {
 			/* Failure to remove, object is now fragile */
-			object_desc(o_name, sizeof(o_name), obj, ODESC_FULL);
+			object_desc(o_name, sizeof(o_name), obj, ODESC_FULL,
+				player);
 			msgt(MSG_CURSED, "The spell fails; your %s is now fragile.", o_name);
 			of_on(obj->flags, OF_FRAGILE);
 			player_learn_flag(player, OF_FRAGILE);
@@ -357,7 +359,7 @@ static bool enchant_spell(int num_hit, int num_dam, int num_ac, struct command *
 		return false;
 
 	/* Description */
-	object_desc(o_name, sizeof(o_name), obj, ODESC_BASE);
+	object_desc(o_name, sizeof(o_name), obj, ODESC_BASE, player);
 
 	/* Describe */
 	msg("%s %s glow%s brightly!",
@@ -398,7 +400,7 @@ static void brand_object(struct object *obj, const char *name)
 		char o_name[80];
 		char brand[20];
 
-		object_desc(o_name, sizeof(o_name), obj, ODESC_BASE);
+		object_desc(o_name, sizeof(o_name), obj, ODESC_BASE, player);
 		strnfmt(brand, sizeof(brand), "of %s", name);
 
 		/* Describe */
@@ -1040,7 +1042,8 @@ bool effect_handler_RECALL(effect_handler_context_t *context)
 	}
 
 	/* No recall from quest levels with force_descend */
-	if (OPT(player, birth_force_descend) && (is_quest(player->depth))) {
+	if (OPT(player, birth_force_descend)
+			&& is_quest(player, player->depth)) {
 		msg("Nothing happens.");
 		return true;
 	}
@@ -1052,9 +1055,9 @@ bool effect_handler_RECALL(effect_handler_context_t *context)
 	}
 
 	/* Warn the player if they're descending to an unrecallable level */
-	target_depth = dungeon_get_next_level(player->max_depth, 1);
-	if (OPT(player, birth_force_descend) && !(player->depth) &&
-			(is_quest(target_depth))) {
+	target_depth = dungeon_get_next_level(player, player->max_depth, 1);
+	if (OPT(player, birth_force_descend) && !(player->depth)
+			&& is_quest(player, target_depth)) {
 		if (!get_check("Are you sure you want to descend? ")) {
 			return false;
 		}
@@ -1102,10 +1105,10 @@ bool effect_handler_DEEP_DESCENT(effect_handler_context_t *context)
 
 	/* Calculate target depth */
 	int target_increment = (4 / z_info->stair_skip) + 1;
-	int target_depth = dungeon_get_next_level(player->max_depth,
-											  target_increment);
+	int target_depth = dungeon_get_next_level(player, player->max_depth,
+		target_increment);
 	for (i = 5; i > 0; i--) {
-		if (is_quest(target_depth)) break;
+		if (is_quest(player, target_depth)) break;
 		if (target_depth >= z_info->max_depth - 1) break;
 
 		target_depth++;
@@ -1294,7 +1297,10 @@ bool effect_handler_DETECT_TRAPS(effect_handler_context_t *context)
 			/* Scan all objects in the grid to look for traps on chests */
 			for (obj = square_object(cave, grid); obj; obj = obj->next) {
 				/* Skip anything not a trapped chest */
-				if (!is_trapped_chest(obj)) continue;
+				if (!is_trapped_chest(obj)
+						|| ignore_item_ok(player, obj)) {
+					continue;
+				}
 
 				/* Identify once */
 				if (!obj->known || obj->known->pval != obj->pval) {
@@ -1619,7 +1625,7 @@ bool effect_handler_DETECT_OBJECTS(effect_handler_context_t *context)
 			}
 
 			/* Notice an object is detected */
-			if (!ignore_item_ok(obj)) {
+			if (!ignore_item_ok(player, obj)) {
 				objects = true;
 			}
 
@@ -1695,7 +1701,7 @@ static bool detect_monsters(int y_dist, int x_dist, monster_predicate pred)
 				player->upkeep->redraw |= (PR_MONSTER);
 
 			/* Update the monster */
-			update_mon(mon, cave, false);
+			update_mon(player, mon, cave, false);
 
 			/* Detect */
 			monsters = true;
@@ -1922,7 +1928,7 @@ bool effect_handler_DISENCHANT(effect_handler_context_t *context)
 		return true;
 
 	/* Describe the object */
-	object_desc(o_name, sizeof(o_name), obj, ODESC_BASE);
+	object_desc(o_name, sizeof(o_name), obj, ODESC_BASE, player);
 
 	/* Artifacts have a 60% chance to resist */
 	if (obj->artifact && (randint0(100) < 60)) {
@@ -2667,7 +2673,7 @@ bool effect_handler_TELEPORT_LEVEL(effect_handler_context_t *context)
 {
 	bool up = true;
 	bool down = true;
-	int target_depth = dungeon_get_next_level(player->max_depth, 1);
+	int target_depth = dungeon_get_next_level(player, player->max_depth, 1);
 	struct monster *t_mon = monster_target_monster(context);
 	struct loc decoy = cave_find_decoy(cave);
 
@@ -2715,11 +2721,12 @@ bool effect_handler_TELEPORT_LEVEL(effect_handler_context_t *context)
 		up = false;
 
 	/* No forcing player down to quest levels if they can't leave */
-	if (!up && is_quest(target_depth))
+	if (!up && is_quest(player, target_depth))
 		down = false;
 
 	/* Can't leave quest levels or go down deeper than the dungeon */
-	if (is_quest(player->depth) || (player->depth >= z_info->max_depth - 1))
+	if (is_quest(player, player->depth)
+			|| (player->depth >= z_info->max_depth - 1))
 		down = false;
 
 	/* Determine up/down if not already done */
@@ -2733,16 +2740,19 @@ bool effect_handler_TELEPORT_LEVEL(effect_handler_context_t *context)
 	/* Now actually do the level change */
 	if (up) {
 		msgt(MSG_TPLEVEL, "You rise up through the ceiling.");
-		target_depth = dungeon_get_next_level(player->depth, -1);
+		target_depth = dungeon_get_next_level(player,
+			player->depth, -1);
 		dungeon_change_level(player, target_depth);
 	} else if (down) {
 		msgt(MSG_TPLEVEL, "You sink through the floor.");
 
 		if (OPT(player, birth_force_descend)) {
-			target_depth = dungeon_get_next_level(player->max_depth, 1);
+			target_depth = dungeon_get_next_level(player,
+				player->max_depth, 1);
 			dungeon_change_level(player, target_depth);
 		} else {
-			target_depth = dungeon_get_next_level(player->depth, 1);
+			target_depth = dungeon_get_next_level(player,
+				player->depth, 1);
 			dungeon_change_level(player, target_depth);
 		}
 	} else {
@@ -2932,7 +2942,7 @@ bool effect_handler_CURSE_ARMOR(effect_handler_context_t *context)
 	if (!obj) return (true);
 
 	/* Describe */
-	object_desc(o_name, sizeof(o_name), obj, ODESC_FULL);
+	object_desc(o_name, sizeof(o_name), obj, ODESC_FULL, player);
 
 	/* Attempt a saving throw for artifacts */
 	if (obj->artifact && (randint0(100) < 50)) {
@@ -2990,7 +3000,7 @@ bool effect_handler_CURSE_WEAPON(effect_handler_context_t *context)
 	if (!obj) return (true);
 
 	/* Describe */
-	object_desc(o_name, sizeof(o_name), obj, ODESC_FULL);
+	object_desc(o_name, sizeof(o_name), obj, ODESC_FULL, player);
 
 	/* Attempt a saving throw */
 	if (obj->artifact && (randint0(100) < 50)) {

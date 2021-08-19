@@ -1666,14 +1666,15 @@ void do_cmd_buy(struct command *cmd)
 	object_copy_amt(bought, obj, amt);
 
 	/* Ensure we have room */
-	if (bought->number > inven_carry_num(bought)) {
+	if (bought->number > inven_carry_num(player, bought)) {
 		msg("You cannot carry that many items.");
 		object_delete(&bought);
 		return;
 	}
 
 	/* Describe the object (fully) */
-	object_desc(o_name, sizeof(o_name), bought, ODESC_PREFIX | ODESC_FULL);
+	object_desc(o_name, sizeof(o_name), bought, ODESC_PREFIX | ODESC_FULL,
+		player);
 
 	/* Extract the price for the entire stack */
 	price = price_item(store, bought, false, bought->number);
@@ -1694,7 +1695,8 @@ void do_cmd_buy(struct command *cmd)
 	player->upkeep->notice |= (PN_COMBINE | PN_IGNORE);
 
 	/* Describe the object (fully) again for the message */
-	object_desc(o_name, sizeof(o_name), bought, ODESC_PREFIX | ODESC_FULL);
+	object_desc(o_name, sizeof(o_name), bought, ODESC_PREFIX | ODESC_FULL,
+		player);
 
 	/* Message */
 	if (one_in_(3)) msgt(MSG_STORE5, "%s", ONE_OF(comment_accept));
@@ -1794,7 +1796,7 @@ void do_cmd_retrieve(struct command *cmd)
 	object_copy_amt(picked_item, obj, amt);
 
 	/* Ensure we have room */
-	if (picked_item->number > inven_carry_num(picked_item)) {
+	if (picked_item->number > inven_carry_num(player, picked_item)) {
 		msg("You cannot carry that many items.");
 		object_delete(&picked_item);
 		return;
@@ -1930,7 +1932,8 @@ void do_cmd_sell(struct command *cmd)
 	value = object_value_real(sold_item, amt);
 
 	/* Get the description all over again */
-	object_desc(o_name, sizeof(o_name), sold_item, ODESC_PREFIX | ODESC_FULL);
+	object_desc(o_name, sizeof(o_name), sold_item,
+		ODESC_PREFIX | ODESC_FULL, player);
 
 	/* Describe the result (in message buffer) */
 	if (OPT(player, birth_no_selling)) {
@@ -1944,7 +1947,7 @@ void do_cmd_sell(struct command *cmd)
 
 	/* Autoinscribe if we still have any */
 	if (!none_left)
-		apply_autoinscription(obj);
+		apply_autoinscription(player, obj);
 
 	/* Set ignore flag */
 	player->upkeep->notice |= PN_IGNORE;
@@ -2024,7 +2027,8 @@ void do_cmd_stash(struct command *cmd)
 	dropped = gear_object_for_use(player, obj, amt, false, &none_left);
 
 	/* Describe */
-	object_desc(o_name, sizeof(o_name), dropped, ODESC_PREFIX | ODESC_FULL);
+	object_desc(o_name, sizeof(o_name), dropped,
+		ODESC_PREFIX | ODESC_FULL, player);
 
 	/* Message */
 	msg("You drop %s (%c).", o_name, label);

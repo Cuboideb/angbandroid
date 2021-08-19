@@ -47,6 +47,7 @@ struct object_base *kb_info;
 struct object_kind *k_info;
 struct artifact *a_info;
 struct artifact_set *set_info;
+struct artifact_upkeep *aup_info;
 struct ego_item *e_info;
 struct flavor *flavors;
 
@@ -385,14 +386,14 @@ struct object_kind *objkind_byid(int kidx) {
 /**
  * Return the a_idx of the artifact with the given name
  */
-struct artifact *lookup_artifact_name(const char *name)
+const struct artifact *lookup_artifact_name(const char *name)
 {
 	int i;
 	int a_idx = -1;
 
 	/* Look for it */
 	for (i = 0; i < z_info->a_max; i++) {
-		struct artifact *art = &a_info[i];
+		const struct artifact *art = &a_info[i];
 
 		/* Test for equality */
 		if (art->name && streq(name, art->name))
@@ -630,13 +631,13 @@ bool obj_can_browse(const struct object *obj)
 bool obj_can_cast_from(const struct object *obj)
 {
 	return obj_can_browse(obj) &&
-			spell_book_count_spells(obj, spell_okay_to_cast) > 0;
+		spell_book_count_spells(player, obj, spell_okay_to_cast) > 0;
 }
 
 bool obj_can_study(const struct object *obj)
 {
 	return obj_can_browse(obj) &&
-		spell_book_count_spells(obj, spell_okay_to_study) > 0;
+		spell_book_count_spells(player, obj, spell_okay_to_study) > 0;
 }
 
 
@@ -892,14 +893,15 @@ bool recharge_timeout(struct object *obj)
  *
  * The item can be negative to mean "item on floor".
  */
-bool verify_object(const char *prompt, const struct object *obj)
+bool verify_object(const char *prompt, const struct object *obj,
+		const struct player *p)
 {
 	char o_name[80];
 
 	char out_val[160];
 
 	/* Describe */
-	object_desc(o_name, sizeof(o_name), obj, ODESC_PREFIX | ODESC_FULL);
+	object_desc(o_name, sizeof(o_name), obj, ODESC_PREFIX | ODESC_FULL, p);
 
 	/* Prompt */
 	strnfmt(out_val, sizeof(out_val), "%s %s? ", prompt, o_name);
@@ -935,7 +937,8 @@ static msg_tag_t msg_tag_lookup(const char *tag)
 /**
  * Print a message from a string, customised to include details about an object
  */
-void print_custom_message(struct object *obj, const char *string, int msg_type)
+void print_custom_message(struct object *obj, const char *string, int msg_type,
+		const struct player *p)
 {
 	char buf[1024] = "\0";
 	const char *next;
@@ -964,7 +967,7 @@ void print_custom_message(struct object *obj, const char *string, int msg_type)
 			case MSG_TAG_NAME:
 				if (obj) {
 					end += object_desc(buf, 1024, obj,
-									   ODESC_PREFIX | ODESC_BASE);
+						ODESC_PREFIX | ODESC_BASE, p);
 				} else {
 					strnfcat(buf, 1024, &end, "hands");
 				}
@@ -1000,4 +1003,58 @@ void print_custom_message(struct object *obj, const char *string, int msg_type)
 	strnfcat(buf, 1024, &end, string);
 
 	msgt(msg_type, "%s", buf);
+}
+
+/**
+ * Return if the given artifact has been created.
+ */
+bool is_artifact_created(const struct artifact *art)
+{
+	assert(art->aidx == aup_info[art->aidx].aidx);
+	return aup_info[art->aidx].created;
+}
+
+/**
+ * Return if the given artifact has been seen.
+ */
+bool is_artifact_seen(const struct artifact *art)
+{
+	assert(art->aidx == aup_info[art->aidx].aidx);
+	return aup_info[art->aidx].seen;
+}
+
+/**
+ * Return if the given artifact has ever been seen.
+ */
+bool is_artifact_everseen(const struct artifact *art)
+{
+	assert(art->aidx == aup_info[art->aidx].aidx);
+	return aup_info[art->aidx].everseen;
+}
+
+/**
+ * Set whether the given artifact has been created or not.
+ */
+void mark_artifact_created(const struct artifact *art, bool created)
+{
+	assert(art->aidx == aup_info[art->aidx].aidx);
+	aup_info[art->aidx].created = created;
+}
+
+/**
+ * Set whether the given artifact has been created or not.
+ */
+void mark_artifact_seen(const struct artifact *art, bool seen)
+{
+	assert(art->aidx == aup_info[art->aidx].aidx);
+	aup_info[art->aidx].seen = seen;
+}
+
+/**
+ * Set whether the given artifact has been seen or not.
+ */
+void mark_artifact_everseen(const struct artifact *art, bool seen)
+{
+	assert(art->aidx == aup_info[art->aidx].aidx);
+	aup_info[art->aidx].everseen = seen;
 }

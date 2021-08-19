@@ -43,6 +43,7 @@
 #include "player-attack.h"
 #include "player-calcs.h"
 #include "player-path.h"
+#include "player-quest.h"
 #include "player-timed.h"
 #include "player-util.h"
 #include "project.h"
@@ -68,7 +69,7 @@ void do_cmd_go_up(struct command *cmd)
 		return;
 	}
 	
-	ascend_to = dungeon_get_next_level(player->depth, -1);
+	ascend_to = dungeon_get_next_level(player, player->depth, -1);
 	
 	if (ascend_to == player->depth) {
 		msg("You can't go up from here!");
@@ -95,7 +96,7 @@ void do_cmd_go_up(struct command *cmd)
  */
 void do_cmd_go_down(struct command *cmd)
 {
-	int descend_to = dungeon_get_next_level(player->depth, 1);
+	int descend_to = dungeon_get_next_level(player, player->depth, 1);
 
 	/* Verify stairs */
 	if (!square_isdownstairs(cave, player->grid)) {
@@ -111,8 +112,9 @@ void do_cmd_go_down(struct command *cmd)
 
 	/* Warn a force_descend player if they're going to a quest level */
 	if (OPT(player, birth_force_descend)) {
-		descend_to = dungeon_get_next_level(player->max_depth, 1);
-		if (is_quest(descend_to) &&
+		descend_to = dungeon_get_next_level(player,
+			player->max_depth, 1);
+		if (is_quest(player, descend_to) &&
 			!get_check("Are you sure you want to descend? "))
 			return;
 	}
@@ -264,7 +266,7 @@ void do_cmd_open(struct command *cmd)
 	grid = loc_sum(player->grid, ddgrid[dir]);
 
 	/* Check for chest */
-	obj = chest_check(grid, CHEST_OPENABLE);
+	obj = chest_check(player, grid, CHEST_OPENABLE);
 
 	/* Check for door */
 	if (!obj && !do_cmd_open_test(grid)) {
@@ -282,7 +284,7 @@ void do_cmd_open(struct command *cmd)
 		grid = loc_sum(player->grid, ddgrid[dir]);
 
 		/* Check for chest */
-		obj = chest_check(grid, CHEST_OPENABLE);
+		obj = chest_check(player, grid, CHEST_OPENABLE);
 	}
 
 	/* Monster */
@@ -559,9 +561,11 @@ static bool do_cmd_tunnel_aux(struct loc grid)
 							 ORIGIN_RUBBLE, 0);
 
 				/* Observe the new object */
-				if (!ignore_item_ok(square_object(cave, grid)) &&
-					square_isseen(cave, grid))
+				if (!ignore_item_ok(player,
+						square_object(cave, grid))
+						&& square_isseen(cave, grid)) {
 					msg("You have found something!");
+				}
 			} 
 		} else if (gold) {
 			/* Found treasure */
@@ -836,7 +840,7 @@ void do_cmd_disarm(struct command *cmd)
 	grid = loc_sum(player->grid, ddgrid[dir]);
 
 	/* Check for chests */
-	obj = chest_check(grid, CHEST_TRAPPED);
+	obj = chest_check(player, grid, CHEST_TRAPPED);
 
 	/* Verify legality */
 	if (!obj && !do_cmd_disarm_test(grid)) {
@@ -854,7 +858,7 @@ void do_cmd_disarm(struct command *cmd)
 		grid = loc_sum(player->grid, ddgrid[dir]);
 
 		/* Check for chests */
-		obj = chest_check(grid, CHEST_TRAPPED);
+		obj = chest_check(player, grid, CHEST_TRAPPED);
 	}
 
 
@@ -908,9 +912,9 @@ static void do_cmd_alter_aux(int dir)
 	}
 
 	/* Check for closed chest */
-	o_chest_closed = chest_check(grid, CHEST_OPENABLE);
+	o_chest_closed = chest_check(player, grid, CHEST_OPENABLE);
 	/* Check for trapped chest */
-	o_chest_trapped = chest_check(grid, CHEST_TRAPPED);
+	o_chest_trapped = chest_check(player, grid, CHEST_TRAPPED);
 
 	/* Action depends on what's there */
 	if (square(cave, grid)->mon > 0) {
@@ -1625,8 +1629,9 @@ void do_cmd_mon_command(struct command *cmd)
 			obj->held_m_idx = 0;
 			pile_excise(&mon->held_obj, obj);
 			drop_near(cave, &obj, 0, mon->grid, true, false);
-			object_desc(o_name, sizeof(o_name), obj, ODESC_PREFIX | ODESC_FULL);
-			if (!ignore_item_ok(obj)) {
+			object_desc(o_name, sizeof(o_name), obj,
+				ODESC_PREFIX | ODESC_FULL, player);
+			if (!ignore_item_ok(player, obj)) {
 				msg("%s drops %s.", m_name, o_name);
 			}
 

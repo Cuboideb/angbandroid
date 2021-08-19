@@ -19,19 +19,21 @@
 #include "angband.h"
 #include "cave.h"
 #include "cmd-core.h"
-#include "cmds.h"
 #include "game-input.h"
 #include "game-world.h"
 #include "generate.h"
 #include "init.h"
 #include "obj-chest.h"
 #include "obj-gear.h"
+#include "obj-ignore.h"
 #include "obj-knowledge.h"
 #include "obj-pile.h"
 #include "obj-tval.h"
 #include "obj-util.h"
+#include "player-attack.h"
 #include "player-calcs.h"
 #include "player-history.h"
+#include "player-quest.h"
 #include "player-spell.h"
 #include "player-timed.h"
 #include "player-util.h"
@@ -48,7 +50,7 @@
    Keep in mind to check all intermediate level for unskippable
    quests
 */
-int dungeon_get_next_level(int dlev, int added)
+int dungeon_get_next_level(struct player *p, int dlev, int added)
 {
 	int target_level, i;
 
@@ -64,7 +66,7 @@ int dungeon_get_next_level(int dlev, int added)
 
 	/* Check intermediate levels for quests */
 	for (i = dlev; i <= target_level; i++) {
-		if (is_quest(i)) return i;
+		if (is_quest(p, i)) return i;
 	}
 
 	return target_level;
@@ -78,8 +80,10 @@ void player_set_recall_depth(struct player *p)
 	/* Account for forced descent */
 	if (OPT(p, birth_force_descend)) {
 		/* Force descent to a lower level if allowed */
-		if ((p->max_depth < z_info->max_depth - 1) && !is_quest(p->max_depth)) {
-			p->recall_depth = dungeon_get_next_level(p->max_depth, 1);
+		if (p->max_depth < z_info->max_depth - 1
+				&& !is_quest(p, p->max_depth)) {
+			p->recall_depth = dungeon_get_next_level(p,
+				p->max_depth, 1);
 		}
 	}
 
@@ -666,10 +670,11 @@ bool player_attack_random_monster(struct player *p)
 	/* Look for a monster, attack */
 	for (i = 0; i < 8; i++, dir++) {
 		struct loc grid = loc_sum(p->grid, ddgrid_ddd[dir % 8]);
-		if (square_monster(cave, grid)) {
+		const struct monster *mon = square_monster(cave, grid);
+		if (mon && !monster_is_camouflaged(mon)) {
 			p->upkeep->energy_use = z_info->move_energy;
 			msg("You angrily lash out at a nearby foe!");
-			move_player(ddd[dir % 8], false);
+			py_attack(p, grid);
 			return true;
 		}
 	}
@@ -1159,7 +1164,7 @@ bool player_book_has_unlearned_spells(struct player *p)
 	}
 
 	/* Check through all available books */
-	item_num = scan_items(item_list, item_max, USE_INVEN | USE_FLOOR,
+	item_num = scan_items(item_list, item_max, p, USE_INVEN | USE_FLOOR,
 						  obj_can_study);
 	for (i = 0; i < item_num; i++) {
 		const struct class_book *book = player_object_to_book(p, item_list[i]);
@@ -1167,7 +1172,7 @@ bool player_book_has_unlearned_spells(struct player *p)
 
 		/* Extract spells */
 		for (j = 0; j < book->num_spells; j++)
-			if (spell_okay_to_study(book->spells[j].sidx)) {
+			if (spell_okay_to_study(p, book->spells[j].sidx)) {
 				/* There is a spell the player can study */
 				mem_free(item_list);
 				return true;
@@ -1485,8 +1490,10 @@ void search(struct player *p)
 
 			/* Traps on chests */
 			for (obj = square_object(cave, grid); obj; obj = obj->next) {
-				if (!obj->known || !is_trapped_chest(obj))
+				if (!obj->known || ignore_item_ok(p, obj)
+						|| !is_trapped_chest(obj)) {
 					continue;
+				}
 
 				if (obj->known->pval != obj->pval) {
 					msg("You have discovered a trap on the chest!");

@@ -251,7 +251,8 @@ static int handle_key_equip_cmp_general(struct keypress ch, int istate,
 static int handle_key_equip_cmp_select(struct keypress ch, int istate,
 	struct equippable_summary *s, struct player *p);
 static int prompt_for_easy_filter(struct equippable_summary *s, bool apply_not);
-static void display_object_comparison(const struct equippable_summary *s);
+static void display_object_comparison(const struct equippable_summary *s,
+	const struct player *p);
 static bool dump_to_file(const char *path);
 static void append_to_file(ang_file *fff);
 static void filter_items(struct equippable_summary *s);
@@ -924,7 +925,7 @@ static int handle_key_equip_cmp_select(struct keypress ch, int istate,
 	case 'x':
 		/* Skip the selection. For the first, acts like ESC. */
 		if (istate == EQUIP_CMP_MENU_SEL1) {
-			display_object_comparison(s);
+			display_object_comparison(s, p);
 		}
 		s->isel0 = -1;
 		s->isel1 = -1;
@@ -940,7 +941,7 @@ static int handle_key_equip_cmp_select(struct keypress ch, int istate,
 			result = EQUIP_CMP_MENU_SEL1;
 		} else {
 			s->isel1 = s->sorted_indices[s->work_sel];
-			display_object_comparison(s);
+			display_object_comparison(s, p);
 			s->isel0 = -1;
 			s->isel1 = -1;
 			s->work_sel = -1;
@@ -1174,7 +1175,8 @@ static int prompt_for_easy_filter(struct equippable_summary *s, bool apply_not)
 }
 
 
-static void display_object_comparison(const struct equippable_summary *s)
+static void display_object_comparison(const struct equippable_summary *s,
+		const struct player *p)
 {
 	char hbuf[120];
 	textblock *tb0;
@@ -1183,7 +1185,7 @@ static void display_object_comparison(const struct equippable_summary *s)
 	assert(s->isel0 >= 0 && s->isel0 < s->nitems);
 	tb0 = object_info(s->items[s->isel0].obj, OINFO_NONE);
 	object_desc(hbuf, sizeof(hbuf), s->items[s->isel0].obj,
-		ODESC_PREFIX | ODESC_FULL | ODESC_CAPITAL);
+		ODESC_PREFIX | ODESC_FULL | ODESC_CAPITAL, p);
 	if (s->isel1 != -1 && s->isel1 != s->isel0) {
 		textblock *tb1 = textblock_new();
 		textblock *tb2;
@@ -1192,7 +1194,7 @@ static void display_object_comparison(const struct equippable_summary *s)
 		textblock_append(tb1, "%s\n", hbuf);
 		textblock_append_textblock(tb1, tb0);
 		object_desc(hbuf, sizeof(hbuf), s->items[s->isel1].obj,
-			ODESC_PREFIX | ODESC_FULL | ODESC_CAPITAL);
+			ODESC_PREFIX | ODESC_FULL | ODESC_CAPITAL, p);
 		textblock_append(tb1, "\n%s\n", hbuf);
 		tb2 = object_info(s->items[s->isel1].obj, OINFO_NONE);
 		textblock_append_textblock(tb1, tb2);
@@ -1334,7 +1336,8 @@ static void append_to_file(ang_file *fff)
 }
 
 
-static char *set_short_name(const struct object *obj, size_t length)
+static char *set_short_name(const struct object *obj, size_t length,
+		const struct player *p)
 {
 	char buf[80];
 	const char *nmsrc;
@@ -1350,7 +1353,7 @@ static char *set_short_name(const struct object *obj, size_t length)
 		tail = true;
 	} else {
 		object_desc(buf, N_ELEMENTS(buf), obj, ODESC_COMBAT |
-			ODESC_SINGULAR | ODESC_TERSE);
+			ODESC_SINGULAR | ODESC_TERSE, p);
 		nmsrc = buf;
 		tail = false;
 	}
@@ -1712,7 +1715,9 @@ static bool select_wearable(const struct object *obj, const void *closure)
  */
 static bool select_seen_wearable(const struct object *obj, const void *closure)
 {
-	return tval_is_wearable(obj) && obj->known && !ignore_item_ok(obj);
+	const struct player *p = closure;
+
+	return tval_is_wearable(obj) && obj->known && !ignore_item_ok(p, obj);
 }
 
 
@@ -1771,7 +1776,8 @@ static void add_obj_to_summary(const struct object *obj, void *closure)
 
 	if (c->summary->nshortnm > 0) {
 		string_free(e->short_name);
-		e->short_name = set_short_name(obj, c->summary->nshortnm);
+		e->short_name = set_short_name(obj, c->summary->nshortnm,
+			c->p);
 		e->nmlen = (int)strlen(e->short_name);
 	}
 
@@ -1848,7 +1854,7 @@ static void apply_visitor_to_equipped(struct player *p,
 
 
 static int reconfigure_for_term_if_necessary(bool update_names,
-	struct equippable_summary *s)
+	const struct player *p, struct equippable_summary *s)
 {
 	int result = 0;
 	int min_length = 16;
@@ -1963,7 +1969,7 @@ static int reconfigure_for_term_if_necessary(bool update_names,
 		for (i = 0; i < s->nitems; ++i) {
 			string_free(s->items[i].short_name);
 			s->items[i].short_name =
-				set_short_name(s->items[i].obj, length);
+				set_short_name(s->items[i].obj, length, p);
 			s->items[i].nmlen =
 				(int)strlen(s->items[i].short_name);
 		}
@@ -2258,7 +2264,7 @@ static int initialize_summary(struct player *p,
 	}
 
 	/* These need to be redone on a change to the terminal size. */
-	if (reconfigure_for_term_if_necessary(false, *s)) {
+	if (reconfigure_for_term_if_necessary(false, p, *s)) {
 		return 1;
 	}
 
@@ -2279,7 +2285,7 @@ static int initialize_summary(struct player *p,
 	apply_visitor_to_pile(p->gear, &visitor);
 	if (cave) {
 		visitor.selfunc = select_seen_wearable;
-		visitor.selfunc_closure = NULL;
+		visitor.selfunc_closure = p;
 		apply_visitor_to_pile(square_object(cave, p->grid), &visitor);
 	}
 	visitor.selfunc = select_wearable;
@@ -2318,7 +2324,7 @@ static int initialize_summary(struct player *p,
 	if (cave) {
 		add_obj_data.src = EQUIP_SOURCE_FLOOR;
 		visitor.selfunc = select_seen_wearable;
-		visitor.selfunc_closure = NULL;
+		visitor.selfunc_closure = p;
 		apply_visitor_to_pile(square_object(cave, p->grid), &visitor);
 	}
 	add_obj_data.src = EQUIP_SOURCE_HOME;
@@ -2441,7 +2447,7 @@ static int display_page(struct equippable_summary *s, const struct player *p,
 
 	/* Try to handle terminal size changes while displaying the summary. */
 	if (allow_reconfig) {
-		if (reconfigure_for_term_if_necessary(true, s)) {
+		if (reconfigure_for_term_if_necessary(true, p, s)) {
 			return 1;
 		}
 	}

@@ -88,13 +88,13 @@ extern bool **ego_ignore_types;
 
 /* obj-ignore.c */
 void ignore_birth_init(void);
-void rune_autoinscribe(int i);
+void rune_autoinscribe(struct player *p, int i);
 const char *get_autoinscription(struct object_kind *kind, bool aware);
-int apply_autoinscription(struct object *obj);
+int apply_autoinscription(struct player *p, struct object *obj);
 int remove_autoinscription(s16b kind);
 int add_autoinscription(s16b kind, const char *inscription, bool aware);
-void autoinscribe_ground(void);
-void autoinscribe_pack(void);
+void autoinscribe_ground(struct player *p);
+void autoinscribe_pack(struct player *p);
 void object_ignore_flavor_of(const struct object *obj);
 ignore_type_t ignore_type_of(const struct object *obj);
 byte ignore_level_of(const struct object *obj);
@@ -109,8 +109,8 @@ bool kind_is_ignored_unaware(const struct object_kind *kind);
 void kind_ignore_when_aware(struct object_kind *kind);
 void kind_ignore_when_unaware(struct object_kind *kind);
 bool object_is_ignored(const struct object *obj);
-bool ignore_item_ok(const struct object *obj);
-bool ignore_known_item_ok(const struct object *obj);
+bool ignore_item_ok(const struct player *p, const struct object *obj);
+bool ignore_known_item_ok(const struct player *p, const struct object *obj);
 void ignore_drop(struct player *p);
 const char *ignore_name_for_type(ignore_type_t type);
 

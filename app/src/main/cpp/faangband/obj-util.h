@@ -25,6 +25,8 @@
 /* An item's pval (for charges, amount of gold, etc) is limited to s16b */
 #define MAX_PVAL  32767
 
+struct player;
+
 void flavor_init(void);
 void flavor_set_all_aware(void);
 void object_flags(const struct object *obj, bitflag flags[OF_SIZE]);
@@ -36,7 +38,7 @@ unsigned check_for_inscrip(const struct object *obj, const char *inscrip);
 unsigned check_for_inscrip_with_int(const struct object *obj, const char *insrip, int *ival);
 struct object_kind *lookup_kind(int tval, int sval);
 struct object_kind *objkind_byid(int kidx);
-struct artifact *lookup_artifact_name(const char *name);
+const struct artifact *lookup_artifact_name(const char *name);
 struct ego_item *lookup_ego_item(const char *name, int tval, int sval);
 int lookup_sval(int tval, const char *name);
 void object_short_name(char *buf, size_t max, const char *name);
@@ -66,8 +68,16 @@ int get_use_device_chance(const struct object *obj);
 void distribute_charges(struct object *source, struct object *dest, int amt);
 int number_charging(const struct object *obj);
 bool recharge_timeout(struct object *obj);
-bool verify_object(const char *prompt, const struct object *obj);
-void print_custom_message(struct object *obj, const char *string, int msg_type);
+bool verify_object(const char *prompt, const struct object *obj,
+		const struct player *p);
+void print_custom_message(struct object *obj, const char *string, int msg_type,
+		const struct player *p);
 
+bool is_artifact_created(const struct artifact *art);
+bool is_artifact_seen(const struct artifact *art);
+bool is_artifact_everseen(const struct artifact *art);
+void mark_artifact_created(const struct artifact *art, bool created);
+void mark_artifact_seen(const struct artifact *art, bool seen);
+void mark_artifact_everseen(const struct artifact *art, bool seen);
 
 #endif /* OBJECT_UTIL_H */

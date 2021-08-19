@@ -1,0 +1,3 @@
+grep -li android *.[ch]
+
+grep -li soft_kbd *.[ch]

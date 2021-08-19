@@ -202,7 +202,7 @@ static int artifact_power(int a_idx, const char *reason, bool verbose)
 	object_copy(known_obj, obj);
 	obj->known = known_obj;
 	object_desc(buf, 256 * sizeof(char), obj,
-				ODESC_PREFIX | ODESC_FULL | ODESC_SPOIL);
+		ODESC_PREFIX | ODESC_FULL | ODESC_SPOIL, NULL);
 	file_putf(log_file, "%s\n", buf);
 
 	power = object_power(obj, verbose, log_file);
@@ -219,7 +219,7 @@ static int artifact_power(int a_idx, const char *reason, bool verbose)
 static void store_base_power(struct artifact_set_data *data)
 {
 	int i, num;
-	struct artifact *art;
+	const struct artifact *art;
 	struct object_kind *kind;
 	int *fake_total_power;
 	int **fake_tv_power;
@@ -2958,7 +2958,7 @@ static void artifact_set_data_free(struct artifact_set_data *data)
 /**
  * Write an artifact data file
  */
-static void write_randart_entry(ang_file *fff, struct artifact *art)
+static void write_randart_entry(ang_file *fff, const struct artifact *art)
 {
 	char name[120] = "";
 	struct object_kind *kind = lookup_kind(art->tval, art->sval);
@@ -3115,7 +3115,7 @@ void do_randart(u32b randart_seed, bool create_file)
 
 		/* Write individual entries */
 		for (i = 1; i < z_info->a_max; i++) {
-			struct artifact *art = &a_info[i];
+			const struct artifact *art = &a_info[i];
 			write_randart_entry(log_file, art);
 		}
 

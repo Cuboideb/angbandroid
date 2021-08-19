@@ -131,7 +131,8 @@ int inven_damage(struct player *p, int type, int cperc)
 				bool none_left = false;
 
 				/* Get a description */
-				object_desc(o_name, sizeof(o_name), obj, ODESC_BASE);
+				object_desc(o_name, sizeof(o_name), obj,
+					ODESC_BASE, p);
 
 				/* Message */
 				msgt(MSG_DESTROY, "%sour %s (%c) %s %s!",
@@ -358,7 +359,8 @@ static void project_object_handler_KILL_TRAP(project_object_handler_context_t *c
 		unlock_chest((struct object * const)context->obj);
 
 		/* Notice */
-		if (context->obj->known && !ignore_item_ok(context->obj)) {
+		if (context->obj->known
+				&& !ignore_item_ok(player, context->obj)) {
 			context->obj->known->pval = context->obj->pval;
 			msg("Click!");
 			context->obvious = true;
@@ -541,18 +543,21 @@ bool project_o(struct source origin, int r, struct loc grid, int dam, int typ,
 			char o_name[80];
 
 			/* Effect observed */
-			if (obj->known && !ignore_item_ok(obj) &&
+			if (obj->known && !ignore_item_ok(player, obj) &&
 				square_isseen(cave, grid)) {
 				obvious = true;
-				object_desc(o_name, sizeof(o_name), obj, ODESC_BASE);
+				object_desc(o_name, sizeof(o_name), obj,
+					ODESC_BASE, player);
 			}
 
 			/* Artifacts, and other objects, get to resist */
 			if (obj->artifact || ignore) {
 				/* Observe the resist */
-				if (obvious && obj->known && !ignore_item_ok(obj))
+				if (obvious && obj->known
+						&& !ignore_item_ok(player, obj)) {
 					msg("The %s %s unaffected!", o_name,
 						VERB_AGREEMENT(obj->number, "is", "are"));
+				}
 			} else if (obj->mimicking_m_idx) {
 				/* Reveal mimics */
 				if (obvious)
@@ -561,8 +566,10 @@ bool project_o(struct source origin, int r, struct loc grid, int dam, int typ,
 						player);
 			} else {
 				/* Describe if needed */
-				if (obvious && obj->known && note_kill && !ignore_item_ok(obj))
+				if (obvious && obj->known && note_kill
+						&& !ignore_item_ok(player, obj)) {
 					msgt(MSG_DESTROY, "The %s %s!", o_name, note_kill);
+				}
 
 				/* Delete the object */
 				square_delete_object(cave, grid, obj, true, true);

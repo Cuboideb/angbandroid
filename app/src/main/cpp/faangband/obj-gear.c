@@ -180,9 +180,9 @@ bool object_is_in_quiver(struct player *p, const struct object *obj)
  * Note that this function does not check that there are adequate slots in the
  * quiver, just the total quantity of missiles.
  */
-int pack_slots_used(struct player *p)
+int pack_slots_used(const struct player *p)
 {
-	struct object *obj;
+	const struct object *obj;
 	int i, pack_slots = 0;
 	int quiver_ammo = 0;
 
@@ -338,7 +338,7 @@ bool minus_ac(struct player *p)
 	/* If we can still damage the item */
 	if (obj && (obj->ac + obj->to_a > 0)) {
 		char o_name[80];
-		object_desc(o_name, sizeof(o_name), obj, ODESC_BASE);
+		object_desc(o_name, sizeof(o_name), obj, ODESC_BASE, p);
 
 		/* Object resists */
 		if (obj->el_info[ELEM_ACID].flags & EL_INFO_IGNORE) {
@@ -397,31 +397,31 @@ char gear_to_label(struct player *p, struct object *obj)
  * \param obj the object being tested
  * \return whether an object was removed
  */
-static bool gear_excise_object(struct object *obj)
+static bool gear_excise_object(struct player *p, struct object *obj)
 {
 	int i;
 
-	pile_excise(&player->gear_k, obj->known);
-	pile_excise(&player->gear, obj);
+	pile_excise(&p->gear_k, obj->known);
+	pile_excise(&p->gear, obj);
 
 	/* Change the weight */
-	player->upkeep->total_weight -= (obj->number * obj->weight);
+	p->upkeep->total_weight -= (obj->number * obj->weight);
 
 	/* Make sure it isn't still equipped */
-	for (i = 0; i < player->body.count; i++) {
-		if (slot_object(player, i) == obj) {
-			player->body.slots[i].obj = NULL;
-			player->upkeep->equip_cnt--;
+	for (i = 0; i < p->body.count; i++) {
+		if (slot_object(p, i) == obj) {
+			p->body.slots[i].obj = NULL;
+			p->upkeep->equip_cnt--;
 		}
 	}
 
 	/* Update the gear */
-	calc_inventory(player);
+	calc_inventory(p);
 
 	/* Housekeeping */
-	player->upkeep->update |= (PU_BONUS);
-	player->upkeep->notice |= (PN_COMBINE);
-	player->upkeep->redraw |= (PR_INVEN | PR_EQUIP);
+	p->upkeep->update |= (PU_BONUS);
+	p->upkeep->notice |= (PN_COMBINE);
+	p->upkeep->redraw |= (PR_INVEN | PR_EQUIP);
 
 	return true;
 }
@@ -462,23 +462,26 @@ struct object *gear_object_for_use(struct player *p, struct object *obj,
 		p->upkeep->total_weight -= (num * obj->weight);
 
 		if (message) {
-			object_desc(name, sizeof(name), obj, ODESC_PREFIX | ODESC_FULL);
+			object_desc(name, sizeof(name), obj,
+				ODESC_PREFIX | ODESC_FULL, p);
 		}
 	} else {
 		if (message) {
 			if (artifact) {
-				object_desc(name, sizeof(name), obj, ODESC_FULL | ODESC_SINGULAR);
+				object_desc(name, sizeof(name), obj,
+					ODESC_FULL | ODESC_SINGULAR, p);
 			} else {
 				/* Describe zero amount */
 				obj->number = 0;
-				object_desc(name, sizeof(name), obj, ODESC_PREFIX | ODESC_FULL);
+				object_desc(name, sizeof(name), obj,
+					ODESC_PREFIX | ODESC_FULL, p);
 				obj->number = num;
 			}
 		}
 
 		/* We're using the entire stack */
 		usable = obj;
-		gear_excise_object(usable);
+		gear_excise_object(p, usable);
 		*none_left = true;
 
 		/* Stop tracking item */
@@ -509,6 +512,7 @@ struct object *gear_object_for_use(struct player *p, struct object *obj,
  * Check how many missiles can be put in the quiver with a limit on whether
  * the quiver can expand to take more slots in the pack.
  *
+ * \param p Is the player with the quiver to use.
  * \param obj Is the object to add.
  * \param n_add_pack At entry, *n_add_pack is the maximum number of additional
  * pack slots to give to the quiver.  At exit, *n_add_pack will be the number
@@ -517,8 +521,8 @@ struct object *gear_object_for_use(struct player *p, struct object *obj,
  * added to the quiver.  It will be no more than obj->number.  The value of
  * *n_to_quiver at entry is not used.
  */
-static void quiver_absorb_num(const struct object *obj, int *n_add_pack,
-	int *n_to_quiver)
+static void quiver_absorb_num(const struct player *p, const struct object *obj,
+		int *n_add_pack, int *n_to_quiver)
 {
 	bool ammo = tval_is_ammo(obj);
 
@@ -530,7 +534,7 @@ static void quiver_absorb_num(const struct object *obj, int *n_add_pack,
 
 		/* Count the current space this object could go into. */
 		for (i = 0; i < z_info->quiver_size; i++) {
-			struct object *quiver_obj = player->upkeep->quiver[i];
+			const struct object *quiver_obj = p->upkeep->quiver[i];
 			if (quiver_obj) {
 				int mult = tval_is_ammo(quiver_obj) ?
 					1 : z_info->thrown_quiver_mult;
@@ -606,9 +610,9 @@ static void quiver_absorb_num(const struct object *obj, int *n_add_pack,
 /**
  * Calculate how much of an item is can be carried in the inventory or quiver.
  */
-int inven_carry_num(const struct object *obj)
+int inven_carry_num(const struct player *p, const struct object *obj)
 {
-	int n_free_slot = z_info->pack_size - pack_slots_used(player);
+	int n_free_slot = z_info->pack_size - pack_slots_used(p);
 	int num_to_quiver, num_left, i;
 
 	/* Treasure can always be picked up. */
@@ -617,7 +621,7 @@ int inven_carry_num(const struct object *obj)
 	}
 
 	/* Absorb as many as we can in the quiver. */
-	quiver_absorb_num(obj, &n_free_slot, &num_to_quiver);
+	quiver_absorb_num(p, obj, &n_free_slot, &num_to_quiver);
 
 	/* The quiver will get everything, or the pack can hold what's left. */
 	if (num_to_quiver == obj->number || n_free_slot > 0) {
@@ -627,7 +631,7 @@ int inven_carry_num(const struct object *obj)
 	/* See if we can add to a partially full inventory slot. */
 	num_left = obj->number - num_to_quiver;
 	for (i = 0; i < z_info->pack_size; i++) {
-		struct object *inven_obj = player->upkeep->inven[i];
+		struct object *inven_obj = p->upkeep->inven[i];
 		if (inven_obj && object_stackable(inven_obj, obj, OSTACK_PACK)) {
 			num_left -= inven_obj->kind->base->max_stack -
 				inven_obj->number;
@@ -644,7 +648,7 @@ int inven_carry_num(const struct object *obj)
  */
 bool inven_carry_okay(const struct object *obj)
 {
-	return inven_carry_num(obj) > 0;
+	return inven_carry_num(player, obj) > 0;
 }
 
 /**
@@ -724,7 +728,7 @@ void inven_carry(struct player *p, struct object *obj, bool absorb,
 		assert(pack_slots_used(p) <= z_info->pack_size);
 
 		gear_insert_end(p, obj);
-		apply_autoinscription(obj);
+		apply_autoinscription(p, obj);
 
 		/* Remove cave object details */
 		obj->held_m_idx = 0;
@@ -750,7 +754,8 @@ void inven_carry(struct player *p, struct object *obj, bool absorb,
 
 	if (message) {
 		char o_name[80];
-		object_desc(o_name, sizeof(o_name), obj, ODESC_PREFIX | ODESC_FULL);
+		object_desc(o_name, sizeof(o_name), obj,
+			ODESC_PREFIX | ODESC_FULL, p);
 		msg("You have %s (%c).", o_name, gear_to_label(p, obj));
 	}
 
@@ -833,7 +838,8 @@ void inven_wield(struct object *obj, int slot)
 		fmt = "You are wearing %s (%c).";
 
 	/* Describe the result */
-	object_desc(o_name, sizeof(o_name), wielded, ODESC_PREFIX | ODESC_FULL);
+	object_desc(o_name, sizeof(o_name), wielded,
+		ODESC_PREFIX | ODESC_FULL, player);
 
 	/* Message */
 	msgt(MSG_WIELD, fmt, o_name, I2A(slot));
@@ -895,7 +901,8 @@ void inven_takeoff(struct object *obj)
 	}
 
 	/* Describe the object */
-	object_desc(o_name, sizeof(o_name), obj, ODESC_PREFIX | ODESC_FULL);
+	object_desc(o_name, sizeof(o_name), obj, ODESC_PREFIX | ODESC_FULL,
+		player);
 
 	/* Describe removal by slot */
 	if (slot_type_is(player, slot, EQUIP_WEAPON))
@@ -966,7 +973,8 @@ void inven_drop(struct object *obj, int amt)
 	dropped = gear_object_for_use(player, obj, amt, false, &none_left);
 
 	/* Describe the dropped object */
-	object_desc(name, sizeof(name), dropped, ODESC_PREFIX | ODESC_FULL);
+	object_desc(name, sizeof(name), dropped, ODESC_PREFIX | ODESC_FULL,
+		player);
 
 	/* Message */
 	msg("You drop %s (%c).", name, label);
@@ -974,17 +982,19 @@ void inven_drop(struct object *obj, int amt)
 	/* Describe what's left */
 	if (dropped->artifact) {
 		object_desc(name, sizeof(name), dropped,
-					ODESC_FULL | ODESC_SINGULAR);
+			ODESC_FULL | ODESC_SINGULAR, player);
 		msg("You no longer have the %s (%c).", name, label);
 	} else if (none_left) {
 		/* Play silly games to get the right description */
 		int number = dropped->number;
 		dropped->number = 0;
-		object_desc(name, sizeof(name), dropped, ODESC_PREFIX | ODESC_FULL);
+		object_desc(name, sizeof(name), dropped,
+			ODESC_PREFIX | ODESC_FULL, player);
 		msg("You have %s (%c).", name, label);
 		dropped->number = number;
 	} else {
-		object_desc(name, sizeof(name), obj, ODESC_PREFIX | ODESC_FULL);
+		object_desc(name, sizeof(name), obj,
+			ODESC_PREFIX | ODESC_FULL, player);
 		msg("You have %s (%c).", name, label);
 	}
 
@@ -1181,7 +1191,8 @@ void pack_overflow(struct object *obj)
 	assert(obj != NULL);
 
 	/* Describe */
-	object_desc(o_name, sizeof(o_name), obj, ODESC_PREFIX | ODESC_FULL);
+	object_desc(o_name, sizeof(o_name), obj, ODESC_PREFIX | ODESC_FULL,
+		player);
 	if (obj->artifact) {
 		artifact = true;
 	}
@@ -1190,7 +1201,7 @@ void pack_overflow(struct object *obj)
 	msg("You drop %s.", o_name);
 
 	/* Excise the object and drop it (carefully) near the player */
-	gear_excise_object(obj);
+	gear_excise_object(player, obj);
 	drop_near(cave, &obj, 0, player->grid, false, true);
 
 	/* Describe */
@@ -1252,7 +1263,7 @@ int preferred_quiver_slot(const struct object *obj)
  * Check whether an artifact is a member of an artifact set, and if so,
  * whether the player is using the entire set
  */
-struct artifact_set *get_artifact_set(struct artifact *art)
+struct artifact_set *get_artifact_set(const struct artifact *art)
 {
 	struct artifact_set *set = set_info;
 
@@ -1279,7 +1290,7 @@ struct artifact_set *get_artifact_set(struct artifact *art)
  * Check whether an artifact is a member of an artifact set, and if so,
  * whether the player is using the entire set
  */
-struct artifact_set *check_sets(struct artifact *art)
+struct artifact_set *check_sets(const struct artifact *art)
 {
 	struct artifact_set *set = get_artifact_set(art);
 	struct set_item *item = NULL;

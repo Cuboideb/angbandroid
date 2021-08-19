@@ -851,18 +851,14 @@ struct object *floor_object_for_use(struct object *obj, int num, bool message,
 	usable->known->grid = loc(0, 0);
 	usable->grid = loc(0, 0);
 
-	/* Housekeeping */
-	player->upkeep->update |= (PU_BONUS | PU_INVEN);
-	player->upkeep->notice |= (PN_COMBINE);
-	player->upkeep->redraw |= (PR_INVEN | PR_EQUIP);
-
 	/* Print a message if requested and there is anything left */
 	if (message) {
 		if (usable == obj)
 			obj->number = 0;
 
 		/* Get a description */
-		object_desc(name, sizeof(name), obj, ODESC_PREFIX | ODESC_FULL);
+		object_desc(name, sizeof(name), obj, ODESC_PREFIX | ODESC_FULL,
+			player);
 
 		if (usable == obj)
 			obj->number = num;
@@ -878,12 +874,13 @@ struct object *floor_object_for_use(struct object *obj, int num, bool message,
 /**
  * Find and return the oldest object on the given grid marked as "ignore".
  */
-static struct object *floor_get_oldest_ignored(struct chunk *c, struct loc grid)
+static struct object *floor_get_oldest_ignored(const struct player *p,
+		struct chunk *c, struct loc grid)
 {
 	struct object *obj, *ignore = NULL;
 
 	for (obj = square_object(c, grid); obj; obj = obj->next)
-		if (ignore_item_ok(obj))
+		if (ignore_item_ok(p, obj))
 			ignore = obj;
 
 	return ignore;
@@ -900,7 +897,7 @@ bool floor_carry(struct chunk *c, struct loc grid, struct object *drop,
 				 bool *note)
 {
 	int n = 0;
-	struct object *obj, *ignore = floor_get_oldest_ignored(c, grid);
+	struct object *obj, *ignore = floor_get_oldest_ignored(player, c, grid);
 
 	/* Fail if the square can't hold objects */
 	if (!square_isobjectholding(c, grid))
@@ -919,7 +916,7 @@ bool floor_carry(struct chunk *c, struct loc grid, struct object *drop,
 			}
 
 			/* Don't mention if ignored */
-			if (ignore_item_ok(obj)) {
+			if (ignore_item_ok(player, obj)) {
 				*note = false;
 			}
 
@@ -970,7 +967,7 @@ bool floor_carry(struct chunk *c, struct loc grid, struct object *drop,
 	square_light_spot(c, grid);
 
 	/* Don't mention if ignored */
-	if (ignore_item_ok(drop)) {
+	if (ignore_item_ok(player, drop)) {
 		*note = false;
 	}
 
@@ -992,7 +989,7 @@ static void floor_carry_fail(struct chunk *c, struct object *drop, bool broke)
 		const char *verb = broke ?
 			VERB_AGREEMENT(drop->number, "breaks", "break") :
 			VERB_AGREEMENT(drop->number, "disappears", "disappear");
-		object_desc(o_name, sizeof(o_name), drop, ODESC_BASE);
+		object_desc(o_name, sizeof(o_name), drop, ODESC_BASE, player);
 		msg("The %s %s.", o_name, verb);
 		if (!loc_is_zero(known->grid))
 			square_excise_object(player->cave, known->grid, known);
@@ -1015,8 +1012,8 @@ static void floor_carry_fail(struct chunk *c, struct object *drop, bool broke)
  *
  * If no appropriate grid is found, the given grid is unchanged
  */
-static void drop_find_grid(struct chunk *c, struct object *drop,
-		bool prefer_pile, struct loc *grid)
+static void drop_find_grid(const struct player *p, struct chunk *c,
+		struct object *drop, bool prefer_pile, struct loc *grid)
 {
 	int best_score = -1;
 	struct loc start = *grid;
@@ -1049,7 +1046,7 @@ static void drop_find_grid(struct chunk *c, struct object *drop,
 					combine = true;
 
 				/* Count objects */
-				if (!ignore_item_ok(obj))
+				if (!ignore_item_ok(p, obj))
 					num_shown++;
 				else
 					num_ignored++;
@@ -1058,9 +1055,9 @@ static void drop_find_grid(struct chunk *c, struct object *drop,
 				num_shown++;
 
 			/* Disallow if the stack size is too big */
-			if ((!OPT(player, birth_stacking) && (num_shown > 1)) ||
+			if ((!OPT(p, birth_stacking) && (num_shown > 1)) ||
 				((num_shown + num_ignored) > z_info->floor_size &&
-				 !floor_get_oldest_ignored(c, try)))
+				 !floor_get_oldest_ignored(p, c, try)))
 				continue;
 
 			/* Score the location based on how close and how full the grid is */
@@ -1120,13 +1117,13 @@ void drop_near(struct chunk *c, struct object **dropped, int chance,
 {
 	char o_name[80];
 	struct loc best = grid;
-	bool dont_ignore = verbose && !ignore_item_ok(*dropped);
+	bool dont_ignore = verbose && !ignore_item_ok(player, *dropped);
 
 	/* Only called in the current level */
 	assert(c == cave);
 
 	/* Describe object */
-	object_desc(o_name, sizeof(o_name), *dropped, ODESC_BASE);
+	object_desc(o_name, sizeof(o_name), *dropped, ODESC_BASE, player);
 
 	/* Handle normal breakage */
 	if (!((*dropped)->artifact) && (randint0(100) < chance)) {
@@ -1135,7 +1132,7 @@ void drop_near(struct chunk *c, struct object **dropped, int chance,
 	}
 
 	/* Find the best grid and drop the item, destroying if there's no space */
-	drop_find_grid(c, *dropped, prefer_pile, &best);
+	drop_find_grid(player, c, *dropped, prefer_pile, &best);
 	if (floor_carry(c, best, *dropped, &dont_ignore)) {
 		sound(MSG_DROP);
 		if (dont_ignore && (square(c, best)->mon < 0)) {
@@ -1282,17 +1279,17 @@ void floor_item_charges(struct object *obj)
  *
  * Return the number of objects acquired.
  */
-int scan_floor(struct object **items, int max_size, object_floor_t mode,
-			   item_tester tester)
+int scan_floor(struct object **items, int max_size, struct player *p,
+		object_floor_t mode, item_tester tester)
 {
 	struct object *obj;
 	int num = 0;
 
 	/* Sanity */
-	if (!square_in_bounds(cave, player->grid)) return 0;
+	if (!square_in_bounds(cave, p->grid)) return 0;
 
 	/* Scan all objects in the grid */
-	for (obj = square_object(cave, player->grid); obj; obj = obj->next) {
+	for (obj = square_object(cave, p->grid); obj; obj = obj->next) {
 		/* Enforce limit */
 		if (num >= max_size) break;
 
@@ -1303,8 +1300,8 @@ int scan_floor(struct object **items, int max_size, object_floor_t mode,
 		if ((mode & OFLOOR_SENSE) && (!obj->known)) continue;
 
 		/* Visible */
-		if ((mode & OFLOOR_VISIBLE) && !is_unknown(obj) && ignore_item_ok(obj))
-			continue;
+		if ((mode & OFLOOR_VISIBLE) && !is_unknown(obj)
+				&& ignore_item_ok(p, obj)) continue;
 
 		/* Accept this item */
 		items[num++] = obj;
@@ -1321,16 +1318,17 @@ int scan_floor(struct object **items, int max_size, object_floor_t mode,
  *
  * Return the number of objects acquired.
  */
-int scan_distant_floor(struct object **items, int max_size, struct loc grid)
+int scan_distant_floor(struct object **items, int max_size, struct player *p,
+		struct loc grid)
 {
 	struct object *obj;
 	int num = 0;
 
 	/* Sanity */
-	if (!square_in_bounds(player->cave, grid)) return 0;
+	if (!square_in_bounds(p->cave, grid)) return 0;
 
 	/* Scan all objects in the grid */
-	for (obj = square_object(player->cave, grid); obj; obj = obj->next) {
+	for (obj = square_object(p->cave, grid); obj; obj = obj->next) {
 		/* Enforce limit */
 		if (num >= max_size) break;
 
@@ -1338,7 +1336,7 @@ int scan_distant_floor(struct object **items, int max_size, struct loc grid)
 		if (obj->kind == unknown_item_kind) continue;
 
 		/* Visible */
-		if (ignore_known_item_ok(obj)) continue;
+		if (ignore_known_item_ok(p, obj)) continue;
 
 		/* Accept this item's base object */
 		items[num++] = cave->objects[obj->oidx];
@@ -1362,8 +1360,8 @@ int scan_distant_floor(struct object **items, int max_size, struct loc grid)
  * z_info->floor_size,
  * though practically speaking much smaller numbers are likely.
  */
-int scan_items(struct object **item_list, size_t item_max, int mode,
-			   item_tester tester)
+int scan_items(struct object **item_list, size_t item_max, struct player *p,
+		int mode, item_tester tester)
 {
 	bool use_inven = ((mode & USE_INVEN) ? true : false);
 	bool use_equip = ((mode & USE_EQUIP) ? true : false);
@@ -1379,27 +1377,26 @@ int scan_items(struct object **item_list, size_t item_max, int mode,
 
 	if (use_inven)
 		for (i = 0; i < z_info->pack_size && item_num < item_max; i++) {
-			if (object_test(tester, player->upkeep->inven[i]))
-				item_list[item_num++] = player->upkeep->inven[i];
+			if (object_test(tester, p->upkeep->inven[i]))
+				item_list[item_num++] = p->upkeep->inven[i];
 		}
 
 	if (use_equip)
-		for (i = 0; i < player->body.count && item_num < item_max; i++) {
-			if (object_test(tester, slot_object(player, i)))
-				item_list[item_num++] = slot_object(player, i);
+		for (i = 0; i < p->body.count && item_num < item_max; i++) {
+			if (object_test(tester, slot_object(p, i)))
+				item_list[item_num++] = slot_object(p, i);
 		}
 
 	if (use_quiver)
 		for (i = 0; i < z_info->quiver_size && item_num < item_max; i++) {
-			if (object_test(tester, player->upkeep->quiver[i]))
-				item_list[item_num++] = player->upkeep->quiver[i];
+			if (object_test(tester, p->upkeep->quiver[i]))
+				item_list[item_num++] = p->upkeep->quiver[i];
 		}
 
 	/* Scan all non-gold objects in the grid */
 	if (use_floor) {
-		floor_num = scan_floor(floor_list, floor_max,
-							   OFLOOR_TEST | OFLOOR_SENSE | OFLOOR_VISIBLE,
-							   tester);
+		floor_num = scan_floor(floor_list, floor_max, p,
+			OFLOOR_TEST | OFLOOR_SENSE | OFLOOR_VISIBLE, tester);
 
 		for (i = 0; i < floor_num && item_num < item_max; i++)
 			item_list[item_num++] = floor_list[i];

@@ -133,14 +133,15 @@ void object_list_reset(object_list_t *list)
 /**
  * Return true if the object should be omitted from the object list.
  */
-static bool object_list_should_ignore_object(const struct object *obj)
+static bool object_list_should_ignore_object(const struct player *p,
+		const struct object *obj)
 {
 	struct object *base_obj = cave->objects[obj->oidx];
 
 	assert(obj->kind);
 	assert(base_obj);
 
-	if (!is_unknown(base_obj) && ignore_known_item_ok(obj))
+	if (!is_unknown(base_obj) && ignore_known_item_ok(p, obj))
 		return true;
 
 	if (tval_is_money(base_obj))
@@ -187,7 +188,7 @@ void object_list_collect(object_list_t *list)
 			loc_eq(grid, pgrid);
 		field = (los) ? OBJECT_LIST_SECTION_LOS : OBJECT_LIST_SECTION_NO_LOS;
 
-		if (object_list_should_ignore_object(obj)) continue;
+		if (object_list_should_ignore_object(player, obj)) continue;
 
 		/* Find or add a list entry. */
 		for (entry_index = 0; entry_index < (int)list->entries_size;
@@ -420,7 +421,8 @@ void object_list_format_name(const object_list_entry_t *entry,
 	 */
 	old_number = entry->object->number;
 	entry->object->number = entry->count[field];
-	object_desc(name, sizeof(name), base_obj, ODESC_PREFIX | ODESC_FULL);
+	object_desc(name, sizeof(name), base_obj, ODESC_PREFIX | ODESC_FULL,
+		player);
 	entry->object->number = old_number;
 
 	/* The source string for strtok() needs to be set properly, depending on

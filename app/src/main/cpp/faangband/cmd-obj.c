@@ -118,7 +118,7 @@ static int beam_chance(int tval)
 /**
  * Print an artifact activation message.
  */
-static void activation_message(struct object *obj)
+static void activation_message(struct object *obj, const struct player *p)
 {
 	const char *message;
 
@@ -130,7 +130,7 @@ static void activation_message(struct object *obj)
 	} else {
 		message = obj->activation->message;
 	}
-	print_custom_message(obj, message, MSG_GENERIC);
+	print_custom_message(obj, message, MSG_GENERIC, p);
 }
 
 
@@ -191,7 +191,8 @@ void do_cmd_inscribe(struct command *cmd)
 		return;
 
 	/* Form prompt */
-	object_desc(o_name, sizeof(o_name), obj, ODESC_PREFIX | ODESC_FULL);
+	object_desc(o_name, sizeof(o_name), obj, ODESC_PREFIX | ODESC_FULL,
+		player);
 	strnfmt(prompt, sizeof prompt, "Inscribing %s.", o_name);
 
 	if (cmd_get_string(cmd, "inscription", &str,
@@ -213,8 +214,8 @@ void do_cmd_autoinscribe(struct command *cmd)
 {
 	if (player_is_shapechanged(player)) return;
 
-	autoinscribe_ground();
-	autoinscribe_pack();
+	autoinscribe_ground(player);
+	autoinscribe_pack(player);
 
 	player->upkeep->redraw |= (PR_INVEN | PR_EQUIP);
 }
@@ -305,7 +306,8 @@ void do_cmd_wield(struct command *cmd)
 
 	/* Prevent wielding into a stickied slot */
 	if (!obj_can_takeoff(equip_obj)) {
-		object_desc(o_name, sizeof(o_name), equip_obj, ODESC_BASE);
+		object_desc(o_name, sizeof(o_name), equip_obj, ODESC_BASE,
+			player);
 		msg("You cannot remove the %s you are %s.", o_name,
 			equip_describe(player, slot));
 		return;
@@ -316,14 +318,15 @@ void do_cmd_wield(struct command *cmd)
 	while (n--) {
 		/* Prompt */
 		object_desc(o_name, sizeof(o_name), equip_obj,
-					ODESC_PREFIX | ODESC_FULL);
+			ODESC_PREFIX | ODESC_FULL, player);
 		
 		/* Forget it */
 		if (!get_check(format("Really take off %s? ", o_name))) return;
 	}
 
 	/* Describe the object */
-	object_desc(o_name, sizeof(o_name), equip_obj, ODESC_PREFIX | ODESC_FULL);
+	object_desc(o_name, sizeof(o_name), equip_obj,
+		ODESC_PREFIX | ODESC_FULL, player);
 
 	/* Took off weapon */
 	if (slot_type_is(player, slot, EQUIP_WEAPON))
@@ -457,7 +460,7 @@ static void use_aux(struct command *cmd, struct object *obj, enum use use,
 		/* Sound and/or message */
 		if (obj->activation) {
 			msgt(snd, "You activate it.");
-			activation_message(obj);
+			activation_message(obj, player);
 		} else if (obj->kind->effect_msg) {
 			msgt(snd, "%s", obj->kind->effect_msg);
 		} else if (obj->kind->vis_msg && !player->timed[TMD_BLIND]) {
@@ -566,7 +569,8 @@ static void use_aux(struct command *cmd, struct object *obj, enum use use,
 			}
 			/* Get a description */
 			work_obj->number = number + ((used) ? 0 : 1);
-			object_desc(name, sizeof(name), work_obj, ODESC_PREFIX | ODESC_FULL);
+			object_desc(name, sizeof(name), work_obj,
+				ODESC_PREFIX | ODESC_FULL, player);
 			work_obj->number = old_num;
 			if (from_floor) {
 				/* Print a message */
@@ -606,7 +610,7 @@ static void use_aux(struct command *cmd, struct object *obj, enum use use,
 
 	/* Autoinscribe if we are guaranteed to still have any */
 	if (!none_left && !from_floor)
-		apply_autoinscription(obj);
+		apply_autoinscription(player, obj);
 
 	/* Mark as tried and redisplay */
 	player->upkeep->notice |= (PN_COMBINE);
@@ -953,7 +957,7 @@ void do_cmd_cast(struct command *cmd)
 		return;
 
 	/* Get arguments */
-	if (cmd_get_spell(cmd, "spell", &spell_index,
+	if (cmd_get_spell(cmd, "spell", player, &spell_index,
 			/* Verb */   "cast",
 			/* Book */   obj_can_cast_from,
 			/* Error */  "There are no spells you can cast.",
@@ -968,7 +972,7 @@ void do_cmd_cast(struct command *cmd)
 	}
 
 	/* Get the spell */
-	spell = spell_by_index(spell_index);
+	spell = spell_by_index(player, spell_index);
 
 	/* Verify "dangerous" spells */
 	if (spell->smana > player->csp) {
@@ -1018,7 +1022,7 @@ void do_cmd_study_spell(struct command *cmd)
 	if (!player_can_study(player, true))
 		return;
 
-	if (cmd_get_spell(cmd, "spell", &spell_index,
+	if (cmd_get_spell(cmd, "spell", player, &spell_index,
 			/* Verb */   "study",
 			/* Book */   obj_can_study,
 			/* Error  */ "You cannot learn any new spells from the books you have.",
@@ -1057,7 +1061,7 @@ void do_cmd_study_book(struct command *cmd)
 
 	for (i = 0; i < book->num_spells; i++) {
 		spell = &book->spells[i];
-		if (!spell_okay_to_study(spell->sidx))
+		if (!spell_okay_to_study(player, spell->sidx))
 			continue;
 		if ((++k > 1) && (randint0(k) != 0))
 			continue;
