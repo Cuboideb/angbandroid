@@ -262,7 +262,7 @@ static bool adjust_panel_help(int y, int x, bool help)
  * \param coords is part of the output string
  */
 static ui_event target_recall_loop_object(struct object *obj, int y, int x,
-										  char out_val[TARGET_OUT_VAL_SIZE],
+		char out_val[TARGET_OUT_VAL_SIZE],
 		const char *s1,
 		const char *s2,
 		const char *s3,

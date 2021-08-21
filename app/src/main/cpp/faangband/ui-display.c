@@ -2606,7 +2606,7 @@ static void see_floor_items(game_event_type type, game_event_data *data,
 
 	/* Scan all visible, sensed objects in the grid */
 	floor_num = scan_floor(floor_list, floor_max, player,
-						   OFLOOR_SENSE | OFLOOR_VISIBLE, NULL);
+		OFLOOR_SENSE | OFLOOR_VISIBLE, NULL);
 	if (floor_num == 0) {
 		mem_free(floor_list);
 		return;

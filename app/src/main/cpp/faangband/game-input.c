@@ -159,7 +159,7 @@ int get_spell_from_book(struct player *p, const char *verb,
 		return get_spell_from_book_hook(p, verb, book, error,
 			spell_filter);
 	}
-		return -1;
+	return -1;
 }
 
 /**
@@ -174,7 +174,7 @@ int get_spell(struct player *p, const char *verb,
 		return get_spell_hook(p, verb, book_filter, cmd, error,
 			spell_filter);
 	}
-		return -1;
+	return -1;
 }
 
 /**

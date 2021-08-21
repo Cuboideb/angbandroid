@@ -1106,7 +1106,12 @@ bool player_can_study_prereq(void)
  */
 bool player_can_read_prereq(void)
 {
-	return player_can_read(player, true);
+	/*
+	 * Accomodate hacks elsewhere:  'r' is overloaded to mean
+	 * release a commanded monster when TMD_COMMAND is active.
+	 */
+	return (player->timed[TMD_COMMAND]) ?
+		true : player_can_read(player, true);
 }
 
 /**
@@ -1165,7 +1170,7 @@ bool player_book_has_unlearned_spells(struct player *p)
 
 	/* Check through all available books */
 	item_num = scan_items(item_list, item_max, p, USE_INVEN | USE_FLOOR,
-						  obj_can_study);
+		obj_can_study);
 	for (i = 0; i < item_num; i++) {
 		const struct class_book *book = player_object_to_book(p, item_list[i]);
 		if (!book) continue;

@@ -169,8 +169,8 @@ void try_save(void) {
 
 static bool only_text_variant()
 {
-	return (strcmp(variant_name, "angband") != 0);
-		/*&& (strcmp(variant_name, "faangband") != 0);*/
+	return (strcmp(variant_name, "angband") != 0)
+		&& (strcmp(variant_name, "faangband") != 0);
 }
 
 static int get_input_from_ui(int wait)
