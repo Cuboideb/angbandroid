@@ -35,10 +35,33 @@ char* quest_outcome[] = {
 };
 
 /*
+ * Puts an item in the player's inventory.
+ * If the inventory would overflow, this is handled at the start of the next
+ * player turn.
+ */
+void give_player_item(object_type * o_ptr)
+{
+    char o_name[80];
+    int slot = inven_carry(o_ptr);
+
+    /* reset the pointer to the new location to pick up the count of the item
+       in the inventory */
+    o_ptr = &inventory[slot];
+
+    object_desc(o_name, sizeof(o_name), o_ptr, TRUE, 3);
+
+    if (slot >= 0)
+        msg_format("You have %s (%c).", o_name, index_to_label(slot));
+}
+
+/*
  * Rewards player depending on the quest.
  */
 void reward_player_for_quest(cptr m_name, unsigned int quest_index)
 {
+    int selection;
+    object_type herb;
+
     if (quest_index >= QUEST_TYPES)
     {
         msg_print("Bug detected! Quest invalid!");
@@ -61,8 +84,26 @@ void reward_player_for_quest(cptr m_name, unsigned int quest_index)
         }
     }
 
-    msg_format("%^s tells you about some passages a little way off.", m_name);
-    p_ptr->slave_quest = QUEST_REWARD_MAP;
+    selection = dieroll(3);
+
+    switch(selection)
+    {
+    case 1:
+        msg_format("%^s gives you a ragged herb.", m_name);
+        object_prep(&herb, O_IDX_HERB_RAGE);
+        give_player_item(&herb);
+        p_ptr->slave_quest = QUEST_COMPLETE;
+        break;
+    case 2:
+        msg_format("%^s gives you a ragged herb.", m_name);
+        object_prep(&herb, O_IDX_HERB_TERROR);
+        give_player_item(&herb);
+        p_ptr->slave_quest = QUEST_COMPLETE;
+        break;
+    default:
+        msg_format("%^s tells you about some passages a little way off.", m_name);
+        p_ptr->slave_quest = QUEST_REWARD_MAP;
+    }
 }
 
 /*
@@ -2742,9 +2783,6 @@ extern void perceive(void)
  */
 void py_pickup_aux(int o_idx)
 {
-    int slot;
-
-    char o_name[80];
     object_type* o_ptr;
 
     o_ptr = &o_list[o_idx];
@@ -2752,18 +2790,7 @@ void py_pickup_aux(int o_idx)
     /*hack - don't pickup &nothings*/
     if (o_ptr->k_idx)
     {
-        /* Carry the object */
-        slot = inven_carry(o_ptr);
-
-        /* Get the object again */
-        o_ptr = &inventory[slot];
-
-        /* Describe the object */
-        object_desc(o_name, sizeof(o_name), o_ptr, TRUE, 3);
-
-        /* Message */
-        if (slot >= 0)
-            msg_format("You have %s (%c).", o_name, index_to_label(slot));
+        give_player_item(o_ptr);
 
         // Break the truce if creatures see
         break_truce(FALSE);
@@ -3898,6 +3925,7 @@ void py_attack_aux(int y, int x, int attack_type)
     int effective_strength;
     int damage_type = GF_HURT;
 
+    int m_idx;
     monster_type* m_ptr;
     monster_race* r_ptr;
 
@@ -3921,7 +3949,8 @@ void py_attack_aux(int y, int x, int attack_type)
                            // identified it goes here
 
     /* Get the monster */
-    m_ptr = &mon_list[cave_m_idx[y][x]];
+    m_idx = cave_m_idx[y][x];
+    m_ptr = &mon_list[m_idx];
     r_ptr = &r_info[m_ptr->r_idx];
 
     /*possibly update the monster health bar*/
@@ -4208,24 +4237,6 @@ void py_attack_aux(int y, int x, int attack_type)
             prt = damroll(r_ptr->pd, r_ptr->ps);
             prt_percent = prt_after_sharpness(o_ptr, &noticed_flag);
 
-            bool can_sharpen
-                = ((o_ptr->tval == TV_SWORD) || (o_ptr->tval == TV_POLEARM))
-                && (prt_percent == 100);
-            if (singing(SNG_WHETTING) && can_sharpen)
-            {
-                int weight = o_ptr->weight;
-                if (off_hand_blow)
-                {
-                    // If offhand, consider weight of main weapon first
-                    weight += inventory[INVEN_WIELD].weight;
-                }
-
-                if (weight <= 5 * ability_bonus(S_SNG, SNG_WHETTING))
-                {
-                    prt_percent -= 50;
-                }
-            }
-
             if (prt_percent < 0)
             {
                 prt_percent = 0;
@@ -4243,9 +4254,6 @@ void py_attack_aux(int y, int x, int attack_type)
 
             // determine the punctuation for the attack ("...", ".", "!" etc)
             attack_punctuation(punctuation, net_dam, crit_bonus_dice);
-
-            update_combat_rolls2(total_dice, mds, dam, r_ptr->pd, r_ptr->ps,
-                prt, prt_percent, damage_type, TRUE);
 
             /* Special message for visible unalert creatures */
             if (stealth_bonus)
@@ -4314,8 +4322,41 @@ void py_attack_aux(int y, int x, int attack_type)
             }
 
             // damage, check for death
-            fatal_blow = mon_take_hit(cave_m_idx[y][x], net_dam, NULL, -1);
+            fatal_blow = mon_take_hit(m_idx, net_dam, NULL, -1);
             p_ptr->vengeance = 0;
+
+            if (singing(SNG_SLAYING) && !fatal_blow && crit_bonus_dice > 0)
+            {
+                int kill_threshold = ability_bonus(S_SNG, SNG_SLAYING);
+                if (m_ptr->hp < kill_threshold)
+                {
+                    msg_format("Your song soars as %s falls before you.", m_name);
+
+                    /* Sort out combat rolls window */
+                    total_dice = 0;
+                    mds = 0;
+                    dam = m_ptr->hp;
+                    prt = 0;
+                    prt_percent = 0;
+
+                    /* Generate treasure */
+                    monster_death(m_idx);
+
+                    /* Auto-recall only if visible or unique */
+                    if (m_ptr->ml || (r_ptr->flags1 & (RF1_UNIQUE)))
+                    {
+                        monster_race_track(m_ptr->r_idx);
+                    }
+
+                    /* Delete the monster */
+                    delete_monster_idx(m_idx);
+                    
+                    fatal_blow = TRUE;
+                }
+            }
+
+            update_combat_rolls2(total_dice, mds, dam, r_ptr->pd, r_ptr->ps,
+                prt, prt_percent, damage_type, TRUE);
 
             // use different colours depending on whether knock back triggered
             if (do_knock_back)

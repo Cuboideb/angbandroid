@@ -1023,7 +1023,7 @@ bool get_alertness_text(
         }
         else
         {
-            char morale_buf[6];
+            char morale_buf[8];
 
             if (m_ptr->stance == STANCE_FLEEING)
             {
@@ -2009,9 +2009,9 @@ int ability_bonus(int skilltype, int abilitynum)
             bonus = skill;
             break;
         }
-        case SNG_WHETTING:
+        case SNG_THRESHOLDS:
         {
-            bonus = skill / 2;
+            bonus = skill;
             break;
         }
         case SNG_TREES:
@@ -2019,12 +2019,12 @@ int ability_bonus(int skilltype, int abilitynum)
             bonus = skill / 5;
             break;
         }
-        case SNG_THRESHOLDS:
+        case SNG_STAYING:
         {
             bonus = skill;
             break;
         }
-        case SNG_STAYING:
+        case SNG_SLAYING:
         {
             bonus = skill;
             break;
@@ -2745,9 +2745,6 @@ static void calc_bonuses(void)
             case SNG_STAUNCHING:
                 song_noise += 4;
                 break;
-            case SNG_WHETTING:
-                song_noise += 4;
-                break;
             case SNG_TREES:
                 song_noise += 4;
                 break;
@@ -2755,6 +2752,9 @@ static void calc_bonuses(void)
                 song_noise += 4;
                 break;
             case SNG_STAYING:
+                song_noise += 8;
+                break;
+            case SNG_SLAYING:
                 song_noise += 8;
                 break;
             case SNG_LORIEN:
@@ -3114,7 +3114,7 @@ void update_lore_aux(object_type* o_ptr)
         if (o_ptr->name1)
         {
             artefact_type* a_ptr = &a_info[o_ptr->name1];
-            char note[120];
+            char note[150];
             char shorter_desc[120];
             int new_exp;
 

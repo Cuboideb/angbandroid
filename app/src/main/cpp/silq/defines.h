@@ -215,6 +215,9 @@
 #define R_IDX_CARCHAROTH 253 // the location of Carcharoth
 #define R_IDX_MORGOTH_HALLU 401 // the location of Morgoth's hallucination image
 
+#define O_IDX_HERB_RAGE 380
+#define O_IDX_HERB_TERROR 382
+
 /*
  * Maximum size of the "view" array (see "cave.c")
  * Note that the "view radius" will NEVER exceed 20, and even if the "view"
@@ -530,9 +533,9 @@
 #define SNG_FREEDOM 3
 #define SNG_SILENCE 4
 #define SNG_STAUNCHING 5
-#define SNG_WHETTING 6
+#define SNG_THRESHOLDS 6
 #define SNG_TREES 7
-#define SNG_THRESHOLDS 8
+#define SNG_SLAYING 8
 #define SNG_STAYING 9
 #define SNG_LORIEN 10
 #define SNG_MASTERY 11
