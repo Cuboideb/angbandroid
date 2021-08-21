@@ -35,11 +35,11 @@ final public class Plugins {
 		}
 		public boolean onlyText()
 		{
-			return this != angband; //&& this != faangband;
+			return this != angband && this != faangband;
 		}
 		public boolean only1x1()
 		{
-			return this != angband; //&& this != faangband;
+			return this != angband && this != faangband;
 		}
 		public boolean noMouse()
 		{
