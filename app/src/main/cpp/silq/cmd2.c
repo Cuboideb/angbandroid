@@ -1411,8 +1411,6 @@ bool do_cmd_open_aux(int y, int x)
 
 /*
  * Open a closed/locked/jammed door or a closed/locked chest.
- *
- * Unlocking a locked door/chest is worth some experience.
  */
 void do_cmd_open(void)
 {
@@ -4140,7 +4138,7 @@ void do_cmd_fire(int quiver)
                         && p_ptr->active_ability[S_ARC][ARC_PUNCTURE])
                     {
                         puncture = TRUE;
-                        dam = 3;
+                        dam = 5;
                         prt = 0;
                     }
 
