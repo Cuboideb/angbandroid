@@ -750,6 +750,9 @@ static void display_knowledge(const char *title, int *obj_list, int o_count,
 	byte attr_top = 0;
 	byte char_left = 0;
 
+	byte tw = 0;
+	byte th = 0;
+
 	int delay = 0;
 
 	struct menu group_menu;
@@ -843,6 +846,16 @@ static void display_knowledge(const char *title, int *obj_list, int o_count,
 	/* Save screen */
 	screen_save();
 	clear_from(0);
+
+	if (tile_width > 1 || tile_height > 1) {
+		th = tile_height;
+		tw = tile_width;
+
+		tile_height = 1;
+		tile_width = 1;
+
+		Term_control_visuals();
+	}
 
 	/* This is the event loop for a multi-region panel */
 	/* Panels are -- text panels, two menus, and visual browser */
@@ -1070,6 +1083,13 @@ static void display_knowledge(const char *title, int *obj_list, int o_count,
 	mem_free(g_names);
 	mem_free(g_offset);
 	mem_free(g_list);
+
+	if (tw > 0) {
+		tile_height = th;
+		tile_width = tw;
+
+		Term_control_visuals();
+	}
 
 	screen_load();
 }

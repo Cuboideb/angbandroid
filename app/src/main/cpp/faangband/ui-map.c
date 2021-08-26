@@ -1076,6 +1076,9 @@ void do_cmd_view_map(void)
 	tile_width = 1;
 	tile_height = 1;
 
+	/* React to changes */
+	Term_control_visuals();
+
 	/* Display the map */
 	display_map(&cy, &cx);
 
@@ -1091,6 +1094,9 @@ void do_cmd_view_map(void)
 	/* Restore the tile multipliers */
 	tile_width = w;
 	tile_height = h;
+
+	/* React to changes */
+	Term_control_visuals();
 
 	/* Regional map if not in the dungeon */
 	if (level_topography(player->place) != TOP_CAVE) {

@@ -1497,6 +1497,9 @@ void feed_keymap(const char *buf)
 	inkey_next = NULL;
 
 	while (true) {
+
+		if (idx >= N_ELEMENTS(request_command_buffer)) break;
+
 		struct keypress *key = &request_command_buffer[idx];
 
 		key->type = EVT_KBRD;

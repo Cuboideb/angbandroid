@@ -316,6 +316,7 @@ extern int col_map[SIDEBAR_MAX];
 #define TERM_CONTROL_CONTEXT 2
 #define TERM_CONTROL_VISUAL_STATE 4
 #define TERM_CONTROL_SHOW_CURSOR 5
+#define TERM_CONTROL_DEBUG 6
 
 /**
  * Bit flags for the "window_flag" variable.
