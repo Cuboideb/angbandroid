@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 
-def my_boost_dir = local_props("boost.dir")
-def my_boost_dir_libs = my_boost_dir + "/libs"
-def my_boost_dir_inc  = my_boost_dir + "/include"
+//def my_boost_dir = local_props("boost.dir")
+//def my_boost_dir_libs = my_boost_dir + "/libs"
+//def my_boost_dir_inc  = my_boost_dir + "/include"
 def my_abi_filters = local_props("ABI_FILTERS")
 
 android {
@@ -13,8 +13,8 @@ android {
         applicationId "org.rephial.xyangband"
         minSdkVersion 22
         targetSdkVersion 29
-        versionCode 62
-        versionName "1.30.3"
+        versionCode 63
+        versionName "1.30.4"
         externalNativeBuild {
             cmake {
                 // flags for the c++ compiler eg "-std=c++14 -frtti -fexceptions"
@@ -23,11 +23,12 @@ android {
                 // cppFlags "-std=c++14"
 
                 // this causes libc++_shared.so to get packaged into .apk
-                arguments '-DANDROID_STL=c++_shared'
+                //arguments '-DANDROID_STL=c++_shared'
 
                 // This is used in CMakeLists.txt so our native code can find/use (prebuilt) boost
                 //arguments '-DMY_BOOST_LIBS_DIR=' + my_boost_dir_libs
-                arguments '-DMY_BOOST_INC_DIR='  + my_boost_dir_inc
+                // Only this one for tome 2.4.0
+                //arguments '-DMY_BOOST_INC_DIR='  + my_boost_dir_inc
             }
         }
     }
