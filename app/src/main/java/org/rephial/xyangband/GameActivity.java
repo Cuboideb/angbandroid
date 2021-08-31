@@ -327,55 +327,17 @@ public class GameActivity extends Activity {
 		if (what == TERM_CONTROL_LIST_KEYS) {
 			setFastKeys(msg);
 		}
-		/*
 		if (what == TERM_CONTROL_CONTEXT) {
-
-			//Log.d("Angband", "Refresh: " + msg);
-
-			// Save keymaps for later
-			String pattern = "keymaps:";
-			int pos = msg.indexOf(pattern);
-			if (pos > -1) {
-				coreKeymaps = msg.substring(pos + pattern.length());
-				Preferences.setCoreKeymaps(coreKeymaps);
-			}
-
-			if (msg.indexOf("in_dungeon:1") > -1) {
-
-				if (bottomRibbon != null) {
-					bottomRibbon.restoreCommandMode();
-				}
-
-				//state.nativew.reloadGraphics();
-			}
-			else {
-				if (bottomRibbon != null) {
-					bottomRibbon.setCommandMode(false);
-				}
-			}
+			// Nothing
 		}
-		*/
-		if (what == TERM_CONTROL_VISUAL_STATE && term != null) {
-
-			Pattern pattern = Pattern.compile("visual:(\\d+):(\\d+)" +
-				":(\\d+)");
-			Matcher matcher = pattern.matcher(msg);
-			if (matcher.matches()) {
-				int rows = Integer.parseInt(matcher.group(1));
-				int cols = Integer.parseInt(matcher.group(2));
-				int graf = Integer.parseInt(matcher.group(3));
-
-				// In graphics thread
-				state.nativew.configureVisuals(rows, cols, graf);
-			}
+		if (what == TERM_CONTROL_VISUAL_STATE) {
+			// Nothing
 		}
 		if (what == TERM_CONTROL_DEBUG) {
 			Log.d("Angband", "Native: " + msg);
 		}
 		if (what == TERM_CONTROL_SHOW_CURSOR) {
-			//Log.d("Angband", "Big cursor: " + msg);
-			state.setBigCursor(msg.equals("big"));
-			state.setCursorVisible(true);
+			// Nothing
 		}
 	}
 

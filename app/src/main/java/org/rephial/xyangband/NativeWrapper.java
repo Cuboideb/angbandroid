@@ -2,6 +2,8 @@ package org.rephial.xyangband;
 
 import android.os.CountDownTimer;
 import android.util.Log;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class NativeWrapper {
 	// Load native library
@@ -477,13 +479,36 @@ public class NativeWrapper {
 
 		//Log.d("Angband", "Control: " + what + " - " + str);
 
+		// Inside display lock (before other draw operations)!
 		synchronized (display_lock) {
+
+			// Notify observers
 			state.controlMsg(what, str);
 
-			// Hack -- Force setup of graphics mode variables
+			// Force setup of graphics mode variables now
 			if (what == GameActivity.TERM_CONTROL_CONTEXT) {
 				state.inGameHook();
 				reloadGraphics();
+			}
+
+			// Modify term tile size now
+			if (what == GameActivity.TERM_CONTROL_VISUAL_STATE && term != null) {
+				Pattern pattern = Pattern.compile("visual:(\\d+):(\\d+):(\\d+)");
+				Matcher matcher = pattern.matcher(str);
+				if (matcher.matches()) {
+					int rows = Integer.parseInt(matcher.group(1));
+					int cols = Integer.parseInt(matcher.group(2));
+					int graf = Integer.parseInt(matcher.group(3));
+					// Reconfigure visuals
+					term.configureVisuals(rows, cols, graf);
+				}
+			}
+
+			// Change visibility of the cursor
+			if (what == GameActivity.TERM_CONTROL_SHOW_CURSOR) {
+				//Log.d("Angband", "Big cursor: " + msg);
+				state.setBigCursor(str.equals("big"));
+				state.setCursorVisible(true);
 			}
 		}
 	}
