@@ -1154,6 +1154,12 @@ void do_cmd_view_map(void)
 		}
 	}
 
+	/* Flush */
+	Term_fresh();
+
+	/* Clear the screen */
+	Term_clear();
+
 	/* Load screen */
 	screen_load();
 }
