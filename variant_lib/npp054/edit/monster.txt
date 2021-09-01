@@ -5869,7 +5869,7 @@ F:NO_SLEEP
 S:SPELL_PCT_50 | POW_90
 S:ARROW | BALL_WATER | BOLT_ICE | BOLT_WATER | HASTE
 S:ADD_MANA | HEAL | CURE | BLINK | TPORT
-S:TELE_SELF_TO | TELE_TO | TELE_AWAY | TRAPS | S_HOUND
+S:TELE_TO | TELE_AWAY | TRAPS | S_HOUND
 S:S_ANIMAL
 D:Sent to Middle-Earth in the waning years of the second age as the
 D: second among the Istar after Saruman the White. Alatar traveled to
@@ -6860,7 +6860,7 @@ F:IM_POIS | NO_SLOW | NO_FEAR | NO_CONF | NO_SLEEP
 S:SPELL_PCT_65 | POW_70
 S:BALL_NETHR | BALL_WATER | BOLT_ICE | BOLT_WATER | BOLT_NETHR
 S:HOLY_ORB | HASTE | ADD_MANA | HEAL | CURE
-S:BLINK | TPORT | TELE_SELF_TO | TELE_TO | TELE_AWAY
+S:BLINK | TPORT | TELE_TO | TELE_AWAY
 S:WOUND | S_DEMON | S_UNDEAD | S_HI_UNDEAD
 D:Third among the Istar to arrive to Middle-Earth and the lesser of the
 D: Blue Wizards, Pallando was once a Servant to Mandos. His insight into
@@ -7148,7 +7148,7 @@ F:NO_SLEEP
 S:SPELL_PCT_65 | POW_60
 S:BALL_FIRE | BALL_COLD | BALL_WATER | BOLT_FIRE | BOLT_COLD
 S:BOLT_WATER | HASTE | ADD_MANA | HEAL | CURE
-S:BLINK | TPORT | TELE_SELF_TO | TELE_TO | TELE_AWAY
+S:BLINK | TPORT | TELE_TO | TELE_AWAY
 S:S_ANIMAL | S_HYDRA
 D:A Servant of Yavanna, sent to Middle-Earth as the least of the Istar
 D: as the partner to Saruman the White, against Saruman's wish. Radagast
@@ -7812,7 +7812,7 @@ F:N_WATER
 S:SPELL_PCT_60 | POW_90
 S:BRTH_COLD | BRTH_SOUND | BALL_COLD | BALL_STORM | BALL_WATER
 S:BOLT_COLD | BOLT_ICE | BOLT_MANA | HASTE | ADD_MANA
-S:HEAL | CURE | BLINK | TELE_SELF_TO | TELE_TO
+S:HEAL | CURE | BLINK | TELE_TO
 S:S_AINU
 D:The most powerful of Ulmo's servants, Oss["e] is known as the most
 D: accomplished singer among the Maiar, but he is also known for his
@@ -8202,7 +8202,7 @@ F:NO_STUN | NO_CONF | NO_SLEEP | N_LAVA | N_FIRE
 S:SPELL_PCT_60 | POW_100
 S:BRTH_FIRE | BRTH_PLAS | BALL_FIRE | BALL_LIGHT | BOLT_FIRE
 S:BOLT_PLAS | HASTE | ADD_MANA | HEAL | CURE
-S:BLINK | TPORT | TELE_SELF_TO | TELE_TO | S_AINU
+S:BLINK | TPORT | TELE_TO | S_AINU
 D:Also called the Sun-Maiden, this Maia has the task of carrying the sun
 D: across the sky. Greatest among the fire spirits created by Eru, Arien
 D: is second only to Sauron in power among the Maiar.
@@ -10338,7 +10338,7 @@ F:NO_SLOW | NO_FEAR | NO_STUN | NO_CONF | NO_SLEEP
 S:SPELL_PCT_60 | POW_90
 S:BALL_ELEC | BALL_COLD | BALL_LIGHT | BALL_MANA | HASTE
 S:ADD_MANA | HEAL | CURE | BLINK | TPORT
-S:TELE_SELF_TO | TELE_TO | TELE_AWAY
+S:TELE_TO | TELE_AWAY
 D:A more powerful Maia that serves Manw["e], the Vala of air, light and
 D: the sky. He is the High King of the Valar and his servants reflect
 D: his wisdom and nature. Manw["e]'s servants command lightning, light
@@ -10363,7 +10363,7 @@ F:NO_SLOW | NO_FEAR | NO_STUN | NO_CONF | NO_SLEEP
 S:SPELL_PCT_60 | POW_90
 S:BALL_FIRE | BALL_LIGHT | BOLT_PLAS | HOLY_ORB | HASTE
 S:ADD_MANA | HEAL | CURE | BLINK | TPORT
-S:TELE_SELF_TO | TELE_TO | TELE_AWAY
+S:TELE_TO | TELE_AWAY
 D:A more powerful Maia that serves Varda, the Vala of pure fire and the
 D: light it shines. Revered by the elves as Elbereth, she is Manw["e]'s
 D: wife and the Queen of the Valar. She brings light in it's many forms
@@ -10388,7 +10388,7 @@ F:NO_SLOW | NO_FEAR | NO_STUN | NO_CONF | NO_SLEEP
 S:SPELL_PCT_60 | POW_90
 S:BALL_SOUND | BALL_WATER | BOLT_WATER | BEAM_ICE | HASTE
 S:ADD_MANA | HEAL | CURE | BLINK | TPORT
-S:TELE_SELF_TO | TELE_TO | TELE_AWAY
+S:TELE_TO | TELE_AWAY
 D:A more powerful Maia that serves Ulmo, the Vala of water and the Lord
 D: of the seas. Like their lord, his servants wield water in it's many
 D: forms and are also known among the Ainur for their skill as singers.
@@ -10413,7 +10413,7 @@ F:NO_SLEEP
 S:SPELL_PCT_60 | POW_80
 S:BALL_DARK | BALL_CONFU | BALL_CHAOS | BOLT_MANA | HASTE
 S:ADD_MANA | HEAL | CURE | BLINK | TPORT
-S:TELE_SELF_TO | TELE_TO | TELE_AWAY
+S:TELE_TO | TELE_AWAY
 D:A more powerful Maia, corrupted by Morgoth from the service of
 D: another. Not all the Maiar that serve the great enemy turned into
 D: demons like the Balrogs, instead serving their master's dark ends in
@@ -10439,7 +10439,7 @@ F:NO_SLOW | NO_FEAR | NO_STUN | NO_CONF | NO_SLEEP
 S:SPELL_PCT_60 | POW_80
 S:BOULDER | BALL_ACID | BALL_SHARD | BOLT_ACID | HASTE
 S:ADD_MANA | HEAL | CURE | BLINK | TPORT
-S:TELE_SELF_TO | TELE_TO | TELE_AWAY
+S:TELE_TO | TELE_AWAY
 D:A more powerful Maia that serves Aul["e], the Great Smith and the Vala
 D: of the unliving earth. Like Aul["e] himself, his servants have a love
 D: of creation unspoiled by greed and are skilled in various crafts. In
@@ -10462,7 +10462,7 @@ F:IM_COLD | IM_POIS | RES_NETHR | RES_WATER | RES_PLAS
 F:NO_SLOW | NO_FEAR | NO_STUN | NO_CONF | NO_SLEEP
 S:SPELL_PCT_45 | POW_80
 S:ARROW | HASTE | ADD_MANA | HEAL | CURE
-S:BLINK | TPORT | TELE_SELF_TO | TELE_TO | TELE_AWAY
+S:BLINK | TPORT | TELE_TO | TELE_AWAY
 S:S_HOUND | S_ANIMAL
 D:A more powerful Maia that serves Orom["e], the Huntsman of the Valar.
 D: Like Orom["e] himself, his servants are powerful hunters and range
@@ -10485,7 +10485,7 @@ F:IM_COLD | IM_POIS | RES_NETHR | RES_WATER | RES_PLAS
 F:NO_SLOW | NO_FEAR | NO_STUN | NO_CONF | NO_SLEEP
 S:SPELL_PCT_60 | POW_80
 S:BALL_NETHR | HOLY_ORB | HASTE | ADD_MANA | HEAL
-S:CURE | BLINK | TPORT | TELE_SELF_TO | TELE_TO
+S:CURE | BLINK | TPORT | TELE_TO
 S:TELE_AWAY | WOUND
 D:A more powerful Maia that serves Mandos, the Judge of the Valar and
 D: the dead. These Maiar carry the judgement of their lord to those he
@@ -10509,7 +10509,7 @@ F:IM_COLD | IM_POIS | RES_NETHR | RES_WATER | RES_PLAS
 F:NO_SLOW | NO_FEAR | NO_STUN | NO_CONF | NO_SLEEP
 S:SPELL_PCT_60 | POW_70
 S:BALL_FIRE | BALL_COLD | HASTE | ADD_MANA | HEAL
-S:CURE | BLINK | TPORT | TELE_SELF_TO | TELE_TO
+S:CURE | BLINK | TPORT | TELE_TO
 S:TELE_AWAY | S_ANIMAL | S_HYDRA
 D:A more powerful Maia that serves Yavanna, wife of Aule and the Vala of
 D: living earth. Her dominion are the plants and animals of Arda and
@@ -10533,7 +10533,7 @@ F:IM_COLD | IM_POIS | RES_NETHR | RES_WATER | RES_PLAS
 F:NO_SLOW | NO_FEAR | NO_STUN | NO_CONF | NO_SLEEP
 S:SPELL_PCT_60 | POW_70
 S:BALL_LIGHT | BALL_DARK | BALL_CONFU | HASTE | ADD_MANA
-S:HEAL | CURE | BLINK | TPORT | TELE_SELF_TO
+S:HEAL | CURE | BLINK | TPORT
 S:TELE_TO | TELE_AWAY | MIND_BLAST
 D:A more powerful Maia that serves Irmo, the Master of Dreams and
 D: Visions. Irmo convinced Varda to allow a time of night for rest and
@@ -10556,7 +10556,7 @@ F:IM_COLD | IM_POIS | RES_NETHR | RES_WATER | RES_PLAS
 F:NO_SLOW | NO_FEAR | NO_STUN | NO_CONF | NO_SLEEP
 S:SPELL_PCT_30 | POW_70
 S:BOLT | HASTE | ADD_MANA | HEAL | CURE
-S:BLINK | TPORT | TELE_SELF_TO | TELE_TO | TELE_AWAY
+S:BLINK | TPORT | TELE_TO | TELE_AWAY
 S:DRAIN_MANA | BRAIN_SMASH
 D:A more powerful Maia that serves Tulkas, the Champion of the Valar.
 D: Like Tulkas himself, this Ainu delights in tests of strenght and
