@@ -963,6 +963,20 @@ public class GameActivity extends Activity {
 		return h;
 	}
 
+	public int getKeyboardWidth() {
+		int w = 0;
+
+		if (advKeyboard != null && advKeyboard.vertical) {
+			w += advKeyboard.mainView.getWidth();
+		}
+
+		if (miniKeyboard != null) {
+			w += miniKeyboard.getWidth();
+		}
+
+		return w;
+	}
+
 	public int getKeyboardHeightAbsolute() {
 		int h = 0;
 
@@ -981,11 +995,15 @@ public class GameActivity extends Activity {
 		return h;
 	}
 
-	public int getKeyboardWidth() {
+	public int getKeyboardWidthAbsolute() {
 		int w = 0;
 
-		if (advKeyboard != null && advKeyboard.vertical) {
+		if (advKeyboard != null) {
 			w += advKeyboard.mainView.getWidth();
+		}
+
+		if (ribbonZone != null) {
+			w += ribbonZone.getWidth();
 		}
 
 		if (miniKeyboard != null) {

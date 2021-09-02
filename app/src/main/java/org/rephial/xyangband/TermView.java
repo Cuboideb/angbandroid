@@ -2144,21 +2144,22 @@ public class TermView extends View implements OnGestureListener {
 			float x2 = x+dx;
 			float y2 = y+dy;
 
-			if (x2 < 0) return;
+			RectF bounds = new RectF(0, 0, getWidth(), getHeight());
 
-			if (x2+w > getWidth()) return;
+			RectF floating = new RectF(x2, y2, x2+w, y2+h);
 
-			if (y2 < 0) return;
+			if (!bounds.contains(floating)) return;
 
-			if (y2+h > getHeight()) return;
-
-			int verticalGap = 0;
 			if (Preferences.getKeyboardOverlap()) {
-				verticalGap = game_context.getKeyboardHeightAbsolute();
-			}
 
-			if (x2 < getHorizontalGap() &&
-				y2+h > getHeight()-verticalGap) return;
+				float kh = game_context.getKeyboardHeightAbsolute();
+				float kw = game_context.getKeyboardWidthAbsolute();
+
+				bounds.top = bounds.bottom - kh;
+				bounds.right = kw;
+
+				if (bounds.intersect(floating)) return;
+			}
 
 			x = x2;
 			y = y2;
