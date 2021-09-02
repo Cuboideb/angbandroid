@@ -5855,7 +5855,7 @@ D:It is a towering glowing form of molten hate.
 
 N:443:Alatar the Blue
 G:A:b
-I:125:48d100:100:100:0
+I:125:48d100:40:100:0
 W:65:1:150:34000
 B:HIT:WOUND:8d8
 B:HIT:WOUND:8d8
@@ -6847,8 +6847,8 @@ D:A massive elephantine form with eyes twisted by madness.
 
 N:501:Pallando the Blue
 G:A:b
-I:120:40d100:100:100:0
-W:70:2:135:32000
+I:120:40d100:40:100:0
+W:55:2:135:32000
 B:HIT:EXP_80:8d5
 B:HIT:EXP_80:8d5
 B:HIT:HURT:8d5
@@ -7134,8 +7134,8 @@ D: down its length.
 
 N:517:Radagast the Brown
 G:A:u1
-I:115:30d100:100:100:0
-W:65:4:120:30000
+I:115:30d100:40:100:0
+W:45:4:120:30000
 B:HIT:UN_BONUS:8d4
 B:HIT:UN_BONUS:8d4
 B:HIT:HURT:8d4
@@ -10485,7 +10485,7 @@ F:IM_COLD | IM_POIS | RES_NETHR | RES_WATER | RES_PLAS
 F:NO_SLOW | NO_FEAR | NO_STUN | NO_CONF | NO_SLEEP
 S:SPELL_PCT_60 | POW_80
 S:BALL_NETHR | HOLY_ORB | HASTE | ADD_MANA | HEAL
-S:CURE | BLINK | TPORT | TELE_TO
+S:CURE | BLINK | TPORT | TELE_SELF_TO | TELE_TO
 S:TELE_AWAY | WOUND
 D:A more powerful Maia that serves Mandos, the Judge of the Valar and
 D: the dead. These Maiar carry the judgement of their lord to those he
@@ -10533,7 +10533,7 @@ F:IM_COLD | IM_POIS | RES_NETHR | RES_WATER | RES_PLAS
 F:NO_SLOW | NO_FEAR | NO_STUN | NO_CONF | NO_SLEEP
 S:SPELL_PCT_60 | POW_70
 S:BALL_LIGHT | BALL_DARK | BALL_CONFU | HASTE | ADD_MANA
-S:HEAL | CURE | BLINK | TPORT
+S:HEAL | CURE | BLINK | TPORT | TELE_SELF_TO
 S:TELE_TO | TELE_AWAY | MIND_BLAST
 D:A more powerful Maia that serves Irmo, the Master of Dreams and
 D: Visions. Irmo convinced Varda to allow a time of night for rest and

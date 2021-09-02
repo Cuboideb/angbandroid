@@ -483,6 +483,12 @@ static errr Term_wipe_android(int x, int y, int n)
 	return 0;
 }
 
+static byte Term_xchar_android(byte c)
+{
+	/* Keep it as ISO-8859-1 */
+	return c;
+}
+
 /*
  * Draw some text on the screen
  */
@@ -579,6 +585,7 @@ static void term_data_link(int i)
 	t->bigcurs_hook = Term_bigcurs_android;
 	t->wipe_hook = Term_wipe_android;
 	t->text_hook = Term_text_android;
+	t->xchar_hook = Term_xchar_android;
 	//t->control_hook = Term_control_android;
 
 	/* Remember where we came from */

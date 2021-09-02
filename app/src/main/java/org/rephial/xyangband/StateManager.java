@@ -23,7 +23,7 @@ public class StateManager {
 	public boolean warnError = false;
 	public String fatalMessage = "";
 	public String warnMessage = "";
-	public Plugins.Plugin currentPlugin;	
+	public Plugins.Plugin currentPlugin;
 
 	public Bitmap savedDungeon = null;
 

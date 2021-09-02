@@ -50,9 +50,9 @@ final public class Plugins {
 		{
 			return true;
 		}
-		public boolean useLatin1()
+		public String getEncoding()
 		{
-			return this == npp054;
+			return this == npp054 ? "ISO-8859-1": "UTF-8";
 		}
 		public boolean canUseTopBar()
 		{

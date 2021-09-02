@@ -291,7 +291,7 @@ public class TermWindow {
 		}
 	}
 
-	public void addnstr(int n, byte[] cp) {
+	public void addnstr(int n, byte[] cp, String encoding) {
 		/*
 		String foo = new String(cp);
 		Log.d("Angband","addnstr ("+row+","+col+") ["+foo+"]");
@@ -299,10 +299,10 @@ public class TermWindow {
 
 		String str;
 		try {
-			//str = new String(cp, "ISO-8859-1");
-			str = new String(cp, "UTF-8");
+			str = new String(cp, encoding);
 		} catch(java.io.UnsupportedEncodingException e) {
 			str = "";
+			Log.d("Angband", "Encoding exception");
 		}
 
 		// Overwrite n, because the parameter was expressed in bytes,

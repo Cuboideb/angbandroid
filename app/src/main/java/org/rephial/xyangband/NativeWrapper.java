@@ -518,7 +518,7 @@ public class NativeWrapper {
 			TermWindow t = state.getWin(w);
 			if (t != null && state.windowIsVisible(t)) {
 				t.cursor_visible = false;
-				t.addnstr(n, cp);
+				t.addnstr(n, cp, state.currentPlugin.getEncoding());
 			}
 		}
 	}
