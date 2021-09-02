@@ -5856,7 +5856,7 @@ D:It is a towering glowing form of molten hate.
 N:443:Alatar the Blue
 G:A:b
 I:125:48d100:40:100:0
-W:65:1:150:34000
+W:65:2:150:34000
 B:HIT:WOUND:8d8
 B:HIT:WOUND:8d8
 B:HIT:WOUND:8d8
