@@ -7134,7 +7134,7 @@ D: down its length.
 
 N:517:Radagast the Brown
 G:A:u1
-I:115:30d100:40:100:0
+I:115:30d100:60:100:0
 W:45:4:120:30000
 B:HIT:UN_BONUS:8d4
 B:HIT:UN_BONUS:8d4
@@ -9687,7 +9687,7 @@ F:N_LAVA | N_ICE | N_OIL | N_FIRE | N_SAND
 F:N_FOREST | N_ACID | N_MUD
 S:SPELL_PCT_60 | POW_200
 S:BALL_MANA | BOLT_PLAS | BOLT_MANA | ADD_MANA | HEAL
-S:CURE | TELE_SELF_TO | TELE_TO | BRAIN_SMASH | WOUND
+S:CURE | TELE_TO | BRAIN_SMASH | WOUND
 S:S_HI_DRAGON | S_HI_DEMON | S_HI_UNIQUE | S_HI_UNDEAD | S_WRAITH
 D:He is the Master of the Pits of Angband.  His figure is like a black
 D: mountain crowned with lightning.  He rages with everlasting anger,

@@ -20,7 +20,8 @@ final public class Plugins {
 		npp054(3),
 		silq(4),
 		faangband(5),
-		tome24x(6);
+		npp710(6),
+		tome24x(7);
 
 		private int id;
 
@@ -52,7 +53,7 @@ final public class Plugins {
 		}
 		public String getEncoding()
 		{
-			return this == npp054 ? "ISO-8859-1": "UTF-8";
+			return (this == npp054 || this == npp710) ? "ISO-8859-1": "UTF-8";
 		}
 		public boolean canUseTopBar()
 		{
@@ -111,6 +112,9 @@ final public class Plugins {
 		if (plugin == Plugin.npp054.getId())
 			is = Preferences.getResources().openRawResource(R.raw.zipnpp054);
 
+		if (plugin == Plugin.npp710.getId())
+			is = Preferences.getResources().openRawResource(R.raw.zipnpp710);
+
 		if (plugin == Plugin.silq.getId())
 			is = Preferences.getResources().openRawResource(R.raw.zipsilq);
 
@@ -135,6 +139,9 @@ final public class Plugins {
 		}
 		else if (plugin == Plugin.npp054.getId()) {
 			is = Preferences.getResources().openRawResource(R.raw.crcnpp054);
+		}
+		else if (plugin == Plugin.npp710.getId()) {
+			is = Preferences.getResources().openRawResource(R.raw.crcnpp710);
 		}
 		else if (plugin == Plugin.silq.getId()) {
 			is = Preferences.getResources().openRawResource(R.raw.crcsilq);
@@ -178,8 +185,7 @@ final public class Plugins {
 
 			path += "/user/bone";
 
-			Log.d("Angband", "Examining " + path
-				+ " - " + minDate);
+			Log.d("Angband", "Examining " + path + " - " + minDate);
 
 			File f = new File(path);
 

@@ -204,6 +204,7 @@ static int get_input_from_ui(int wait)
 }
 
 void send_key_to_term(int key) {
+	
 	if (key == MOUSE_TAG) {
 		Term_mousepress(mouse_data.x, mouse_data.y, mouse_data.button);
 	}
@@ -482,6 +483,12 @@ static errr Term_wipe_android(int x, int y, int n)
 	return 0;
 }
 
+static byte Term_xchar_android(byte c)
+{
+	/* Keep it as ISO-8859-1 */
+	return c;
+}
+
 /*
  * Draw some text on the screen
  */
@@ -578,6 +585,7 @@ static void term_data_link(int i)
 	t->bigcurs_hook = Term_bigcurs_android;
 	t->wipe_hook = Term_wipe_android;
 	t->text_hook = Term_text_android;
+	t->xchar_hook = Term_xchar_android;
 	//t->control_hook = Term_control_android;
 
 	/* Remember where we came from */
@@ -843,6 +851,15 @@ int queryInt(const char* argv0) {
 	}
 	else if (strcmp(argv0, "life_pct") == 0 && p_ptr) {
 		result = p_ptr->chp * 10 / MAX(p_ptr->mhp, 1);
+	}
+	else if (strcmp(argv0, "cant_run") == 0) {
+		result = 0;
+		if (!IN_THE_DUNGEON ||
+			p_ptr->command_cmd != 0 ||
+			p_ptr->timed[TMD_CONFUSED] ||
+			p_ptr->timed[TMD_PARALYZED]) {
+		 	result = 1;
+		}
 	}
 	else if (strcmp(argv0, "msg_subw") == 0) {
 		result = 0;
