@@ -783,7 +783,7 @@ static void keys_to_ui(struct menu *menu)
 			row_valid = menu->row_funcs->valid_row(menu, oid);
 		}
 
-		if (row_valid == MN_ROW_HIDDEN) {
+		if (row_valid != MN_ROW_VALID) {
 			continue;
 		}
 

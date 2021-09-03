@@ -761,7 +761,7 @@ static void keys_to_ui(struct menu *menu)
 		}
 		used[j] = '\0';
 		my_strcat(buf, used, sizeof(buf));
-	}                                         
+	}
 
 	int pos, current;
 	char temp[256];
@@ -783,7 +783,7 @@ static void keys_to_ui(struct menu *menu)
 			row_valid = menu->row_funcs->valid_row(menu, oid);
 		}
 
-		if (row_valid == MN_ROW_HIDDEN) {
+		if (row_valid != MN_ROW_VALID) {
 			continue;
 		}
 

@@ -462,11 +462,6 @@ static errr Term_curs_hack(int x, int y)
 	return (-1);
 }
 
-static errr Term_control_hack(int what, const char *msg)
-{
-	return -1;
-}
-
 /**
  * Hack -- fake hook for "Term_wipe()" (see above)
  */
@@ -1548,7 +1543,7 @@ errr Term_mark(int x, int y)
 	 * functions, but ideally there should be a test to use the blank text
 	 * attr/char pair
 	 */
-	old_aa[x] = 0x80; 
+	old_aa[x] = 0x80;
 	old_cc[x] = 0;
 	old_taa[x] = 0x80;
 	old_tcc[x] = 0;
@@ -1720,7 +1715,6 @@ errr Term_fresh(void)
 	if (!Term->wipe_hook) Term->wipe_hook = Term_wipe_hack;
 	if (!Term->text_hook) Term->text_hook = Term_text_hack;
 	if (!Term->pict_hook) Term->pict_hook = Term_pict_hack;
-	if (!Term->control_hook) Term->control_hook = Term_control_hack;
 
 
 	/* Handle "total erase" */
@@ -2570,7 +2564,7 @@ errr Term_mousepress(int x, int y, char button)/*, byte mods);*/
 
 	/* Success (unless overflow) */
 	if (Term->key_head != Term->key_tail) return (0);
-  
+
 	/* Problem */
 	return (1);
 }
@@ -3163,52 +3157,4 @@ int Term_get_first_tile_row(term *t)
 		}
 	}
 	return result;
-}
-
-errr Term_control(int what, const char *msg)
-{
-	if (strlen(msg) == 0) {
-		return (-1);
-	}
-
-	/* Verify the hook */
-	if (!Term->control_hook) return (-1);
-
-	/* Call the hook */
-	return ((*Term->control_hook)(what, msg));
-}
-
-errr Term_control_ws(int what, int n, const wchar_t *ws)
-{
-	if (n == 0) {
-		return (-1);
-	}
-
-	/* Verify the hook */
-	if (!Term->control_hook) return (-1);
-
-	/* Make a copy */
-	wchar_t* wbuf = mem_alloc(sizeof(wchar_t)*(n+1));
-	memcpy(wbuf,ws,sizeof(wchar_t)*n);
-	wbuf[n]=0;
-
-	/* Transform to multi-byte */
-	size_t len = wcstombs((char*)NULL, wbuf, (size_t)32000);
-	char* s = mem_alloc(len+1);
-	wcstombs(s, wbuf, len+1);
-	mem_free(wbuf);
-
-	errr status = Term_control(what, s);
-	mem_free(s);
-	return (status);
-}
-
-errr Term_control_context()
-{
-	return Term_control(TERM_CONTROL_CONTEXT,"dummy");
-}
-
-errr Term_control_visuals()
-{
-	return Term_control(TERM_CONTROL_VISUAL_STATE,"dummy");
 }

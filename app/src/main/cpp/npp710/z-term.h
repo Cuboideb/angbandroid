@@ -14,6 +14,10 @@
 #include "h-basic.h"
 #include "ui-event.h"
 
+#ifdef ANDROID
+#include "droid.h"
+#endif
+
 
 /*
  * A term_win is a "window" for a Term

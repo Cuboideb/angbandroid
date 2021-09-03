@@ -155,7 +155,6 @@ extern bool suffix(const char *s, const char *t);
  */
 extern void strskip(char *s, const char c, const char e);
 extern void strescape(char *s, const char c);
-extern void strdeldup(char *str);
 
 /**
  * Change escaped characters into their literal representation

@@ -61,12 +61,4 @@ void keymap_free(void);
  */
 void keymap_dump(ang_file *fff);
 
-/*
- * Pack user keymaps in this form: keymaps:trigger1##action1###trigger2##action2
- * ## separates trigger from action
- * ### separates keymaps
- */
-#define HAS_KEYMAP_PACK 1
-void keymap_pack(char buffer[], int n);
-
 #endif /* UI_KEYMAP_H */

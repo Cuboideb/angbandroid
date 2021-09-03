@@ -20,7 +20,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
-#include "ui-keymap.h"
+#include "z-file.h"
 #include "ui-output.h"
 #include "curses.h"
 #include "grafmode.h"
@@ -460,7 +460,7 @@ static errr Term_xtra_android(int n, int v)
 	return 1;
 }
 
-static errr Term_control_android(int what, const char *msg)
+int Term_control(int what, const char *msg)
 {
 	const char *pbuf = msg;
 	char buf[2048] = "";
@@ -474,12 +474,6 @@ static errr Term_control_android(int what, const char *msg)
 
 	if (what == TERM_CONTROL_CONTEXT && IN_THE_DUNGEON) {
 		strnfmt(buf, sizeof(buf), "in_dungeon:1");
-
-#if defined(HAS_KEYMAP_PACK)
-		n = strlen(buf);
-		keymap_pack(buf+n, sizeof(buf)-n);
-#endif
-
 		pbuf = buf;
 	}
 
@@ -500,7 +494,7 @@ static errr Term_curs_android(int x, int y)
 {
 	move(y, x);
 
-	Term_control_android(TERM_CONTROL_SHOW_CURSOR, "small");
+	Term_control(TERM_CONTROL_SHOW_CURSOR, "small");
 
 	return 0;
 }
@@ -509,7 +503,7 @@ static errr Term_bigcurs_android(int x, int y)
 {
 	move(y, x);
 
-	Term_control_android(TERM_CONTROL_SHOW_CURSOR, "big");
+	Term_control(TERM_CONTROL_SHOW_CURSOR, "big");
 
 	return 0;
 }
@@ -683,7 +677,6 @@ static void term_data_link(int i)
 	t->wipe_hook = Term_wipe_android;
 	t->text_hook = Term_text_android;
 	t->pict_hook = Term_pict_android;
-	t->control_hook = Term_control_android;
 	t->dblh_hook = is_dh_tile;
 
 #if defined(SIDEBAR_MODE)

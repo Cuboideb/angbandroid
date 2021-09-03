@@ -762,9 +762,15 @@ void py_pickup(bool pickup)
 
 		object_desc(o_name, sizeof(o_name), o_ptr, ODESC_PREFIX | ODESC_FULL);
 
-		if (p_ptr->timed[TMD_BLIND]) msg_c_format(msgt, "You are aware of %s.", o_name);
-
-		else msg_c_format(msgt, "You see %s.", o_name);
+		if (!inven_carry_okay(o_ptr)) {
+			msg_c_format(msgt, "You have no room for %s.", o_name);
+		}
+		else if (p_ptr->timed[TMD_BLIND]) {
+			msg_c_format(msgt, "You are aware of %s.", o_name);
+		}
+		else {
+			msg_c_format(msgt, "You see %s.", o_name);
+		}
 	}
 
 	/* Multiple objects */

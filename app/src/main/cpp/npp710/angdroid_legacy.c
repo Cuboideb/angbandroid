@@ -27,19 +27,7 @@
 #include "angband.h"
 #include "init.h" // init_file_paths()
 #include "z-term.h"
-
-#ifndef false
-#	define false 0
-#endif
-
-#ifndef true
-#	define true 1
-#endif
-
-#define TERM_CONTROL_LIST_KEYS 1
-#define TERM_CONTROL_CONTEXT 2
-#define TERM_CONTROL_VISUAL_STATE 4
-#define TERM_CONTROL_SHOW_CURSOR 5
+#include "droid.h"
 
 static char variant_name[100];
 static char android_files_path[1024];
@@ -142,6 +130,24 @@ static void Term_nuke_android(term *t)
 		delwin(td->win);
 	}
 	*/
+}
+
+int Term_control(int what, const char *msg)
+{
+	const char *pbuf = msg;
+	char buf[2048] = "";
+
+	if (what == TERM_CONTROL_CONTEXT && IN_THE_DUNGEON) {
+		strnfmt(buf, sizeof(buf), "in_dungeon:1");
+		pbuf = buf;
+	}
+
+	return (errr)control_msg(what, pbuf);
+}
+
+void feed_keymap(const char *buf)
+{
+	/* Nothing*/
 }
 
 void try_save(void) {
