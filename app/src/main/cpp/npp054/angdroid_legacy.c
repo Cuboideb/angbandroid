@@ -28,18 +28,7 @@
 #include "init.h" // init_file_paths()
 #include "z-term.h"
 
-#ifndef false
-#	define false 0
-#endif
-
-#ifndef true
-#	define true 1
-#endif
-
-#define TERM_CONTROL_LIST_KEYS 1
-#define TERM_CONTROL_CONTEXT 2
-#define TERM_CONTROL_VISUAL_STATE 4
-#define TERM_CONTROL_SHOW_CURSOR 5
+#include "droid.h"
 
 static char variant_name[100];
 static char android_files_path[1024];
@@ -406,7 +395,7 @@ static errr Term_xtra_android(int n, int v)
 	return 1;
 }
 
-static errr Term_control_android(int what, const char *msg)
+int Term_control(int what, const char *msg)
 {
 	const char *pbuf = msg;
 	char buf[2048] = "";
@@ -414,16 +403,15 @@ static errr Term_control_android(int what, const char *msg)
 
 	if (what == TERM_CONTROL_CONTEXT && IN_THE_DUNGEON) {
 		strnfmt(buf, sizeof(buf), "in_dungeon:1");
-
-#if defined(HAS_KEYMAP_PACK)
-		n = strlen(buf);
-		keymap_pack(buf+n, sizeof(buf)-n);
-#endif
-
 		pbuf = buf;
 	}
 
 	return (errr)control_msg(what, pbuf);
+}
+
+void feed_keymap(const char *buf)
+{
+	/* Nothing*/
 }
 
 /*
@@ -440,7 +428,7 @@ static errr Term_curs_android(int x, int y)
 {
 	move(y, x);
 
-	Term_control_android(TERM_CONTROL_SHOW_CURSOR, "small");
+	Term_control(TERM_CONTROL_SHOW_CURSOR, "small");
 
 	return 0;
 }
@@ -449,7 +437,7 @@ static errr Term_bigcurs_android(int x, int y)
 {
 	move(y, x);
 
-	Term_control_android(TERM_CONTROL_SHOW_CURSOR, "big");
+	Term_control(TERM_CONTROL_SHOW_CURSOR, "big");
 
 	return 0;
 }

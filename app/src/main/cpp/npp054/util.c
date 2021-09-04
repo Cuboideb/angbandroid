@@ -20,6 +20,8 @@
 #include "angband.h"
 #include "game-event.h"
 
+#include "droid.h"
+
 /*
  * Convert a decimal to a single digit hex number
  */
@@ -1223,6 +1225,8 @@ ui_event_data inkey_ex(void)
 	/* Hack -- Use the "inkey_next" pointer */
 	if (inkey_next && *inkey_next && !inkey_xtra)
 	{
+		soft_kbd_clear(false);
+
 		/* Get next character, and advance */
 		ke.key = *inkey_next++;
 		ke.type = EVT_KBRD;
@@ -1266,6 +1270,7 @@ ui_event_data inkey_ex(void)
 	/* Hack -- Activate main screen */
 	Term_activate(term_screen);
 
+	if (!inkey_scan) soft_kbd_flush();
 
 	/* Get a key */
 	while (ke.type == EVT_NONE)
@@ -1433,6 +1438,7 @@ ui_event_data inkey_ex(void)
 		}
 	}
 
+	soft_kbd_clear(false);
 
 	/* Hack -- restore the term */
 	Term_activate(old);

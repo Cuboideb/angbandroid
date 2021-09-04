@@ -123,23 +123,24 @@ static int _choose(menu_ptr menu)
 
     _list(menu, keys);
 
-    /*
-    {
-        char tmp[100];
-        int i, j;
-
-        for (i = 0, j = 0; i < menu->count; i++) {
-            if (keys[i]) tmp[j++] = keys[i];
-        }
-        tmp[j] = 0;
-        if (j > 0) soft_kbd_linger(tmp);
-    }
-    */
-
     for (;;)
     {
         char ch = '\0';
         int i;
+
+        /* For Android port */
+        /*
+        {
+            char tmp[100];
+            int j, pos;
+
+            for (j = 0, pos = 0; j < menu->count && pos < sizeof(tmp)-1; j++) {
+                if (keys[j]) tmp[pos++] = keys[j];
+            }
+            tmp[pos] = 0;
+            if (pos > 0) soft_kbd_flash(tmp);
+        }
+        */
 
         choice = -1;
         if (!get_com(describe ? browse_prompt : choose_prompt, &ch, FALSE)) break;
@@ -181,7 +182,6 @@ static int _choose(menu_ptr menu)
 
         break;
     }
-    /*soft_kbd_clear(true);*/
     return choice;
 }
 

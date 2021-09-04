@@ -1,5 +1,7 @@
 #include "angband.h"
 
+#include "droid.h"
+
 #include <assert.h>
 
 static void _context_make(obj_prompt_context_ptr context);
@@ -349,6 +351,14 @@ static void _display(obj_prompt_context_ptr context)
         filter = obj_exists; /* Hack: null filter only shows empty slots for INV_EQUIP */
 
     inv_display(tab->inv, start, stop, filter, context->doc, context->prompt->flags);
+
+    /* For Android port */
+    {
+        char buf[200] = "";
+        collect_keys(tab->inv, start, stop, filter,
+            context->prompt->flags, buf, sizeof(buf));
+        if (buf[0]) soft_kbd_flash(buf);
+    }
 
     if (tab->page_ct > 1)
     {

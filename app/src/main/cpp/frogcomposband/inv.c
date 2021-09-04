@@ -594,6 +594,36 @@ cptr inv_name(inv_ptr inv)
     return inv->name;
 }
 
+/* For Android */
+void collect_keys(inv_ptr inv, slot_t start, slot_t stop, obj_p p,
+    int flags, char *buf, int max_buf)
+{
+    slot_t slot;
+    int max = inv_max(inv);
+    int pos = 0;
+
+    buf[0] = 0;
+
+    if (flags & (INV_NO_LABELS|INV_SHOW_SLOT)) return;
+
+    if (!stop) stop = max;
+    if (stop > max) stop = max;
+
+    for (slot = start; slot <= stop && pos < max_buf-1; slot++)
+    {
+        obj_ptr obj = inv_obj(inv, slot);
+
+        if (!_filter(obj, p)) continue;
+        if (inv->type == INV_EQUIP && equip_is_empty_two_handed_slot(slot)) continue;
+
+        buf[pos++] = inv_slot_label(inv, slot);
+    }
+    if (pos < max_buf-1) {
+        buf[pos++] = '/';
+    }
+    buf[pos] = 0;
+}
+
 /* Menus and Display
  * It turns out to be more convenient for inv_display() to know
  * about special equipment handling (cf describe_slots and two-handed
@@ -741,7 +771,7 @@ void inv_calculate_labels(inv_ptr inv, slot_t start, slot_t stop, int flags)
 
     /* Clear old labels or old sort data */
     inv_for_each(inv, obj_clear_scratch);
-    
+
     /* Initialize by ordinal */
     for (slot = start; slot <= stop; slot++)
     {
@@ -773,7 +803,7 @@ void inv_calculate_labels(inv_ptr inv, slot_t start, slot_t stop, int flags)
         }
     }
 
-    /* Add new labels to prevent unusable items */ 
+    /* Add new labels to prevent unusable items */
     for (slot = start; slot <= stop; slot++)
     {
         obj_ptr obj = inv_obj(inv, slot);
@@ -785,7 +815,7 @@ void inv_calculate_labels(inv_ptr inv, slot_t start, slot_t stop, int flags)
             {
                 slot_t slot2 = inv_label_slot(inv, lowercase[i]);
                 if (slot2) continue;
-                obj->scratch = lowercase[i];     
+                obj->scratch = lowercase[i];
                 break;
             }
         }

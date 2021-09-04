@@ -19,6 +19,8 @@
 #include "ui-event.h"
 #include "ui-menu.h"
 
+#include "droid.h"
+
 /* Cursor colours */
 const byte curs_attrs[2][2] =
 {
@@ -686,7 +688,85 @@ static bool menu_handle_event(void *object, const ui_event_data *in)
 	return TRUE;
 }
 
+static void keys_to_ui(struct menu_type *menu)
+{
+	char buf[256] = "";
 
+	/*
+	if (menu->inscriptions) {
+		int i, j;
+		char used[20];
+		for (i = 0, j = 0; i < 10; i++) {
+			if (menu->inscriptions[i]) {
+				used[j++] = ('0' + i);
+			}
+		}
+		used[j] = '\0';
+		my_strcat(buf, used, sizeof(buf));
+	}
+	*/
+
+	int pos, current;
+	char temp[256];
+	int n = menu->filter_list ? menu->filter_count : menu->count;
+
+	//plog_fmt("count: %d", menu->count);
+
+	for (pos = 0, current = 0; pos < n; pos++) {
+
+		int oid = pos;
+		int validity = 1;
+		char sel = 0;
+
+		if (menu->filter_list) {
+			oid = menu->filter_list[oid];
+		}
+
+		if (menu->row_funcs->valid_row) {
+			validity = menu->row_funcs->valid_row(menu, oid);
+		}
+
+		if (validity != 1) continue;
+
+		if (!(menu->flags & MN_NO_TAGS)) {
+			if (menu->flags & MN_REL_TAGS) {
+				sel = menu->skin->get_tag(menu, pos);
+			}
+			else if (menu->selections && !(menu->flags & MN_PVT_TAGS)) {
+				sel = menu->selections[pos];
+			}
+			else if (menu->row_funcs->get_tag) {
+				sel = menu->row_funcs->get_tag(menu, oid);
+			}
+		}
+
+		if (sel != 0) {
+			temp[current++] = sel;
+		}
+	}
+	temp[current] = '\0';
+	my_strcat(buf, temp, sizeof(buf));
+
+	/*
+	if (menu->cmd_keys) {
+		my_strcat(buf, menu->cmd_keys, sizeof(buf));
+	}
+	*/
+
+	/*
+	if (menu->switch_keys) {
+		my_strcat(buf, menu->switch_keys, sizeof(buf));
+	}
+	*/
+
+	strdeldup(buf);
+
+	//plog_fmt("Keys %s\n", buf);
+
+	if (strlen(buf) > 0) {
+		soft_kbd_flash(buf);
+	}
+}
 
 /*
  * Modal selection from a menu.
@@ -722,6 +802,7 @@ ui_event_data menu_select(menu_type *menu, int *cursor, int no_handle)
 		menu->filter_count = menu->count;
 
 	ke.type = EVT_REFRESH;
+	keys_to_ui(menu);
 	(void)run_event_loop(&menu->target, &ke);
 
 	/* Check for command flag */
@@ -734,6 +815,7 @@ ui_event_data menu_select(menu_type *menu, int *cursor, int no_handle)
 	/* Stop on first unhandled event. */
 	while (!(ke.type & (no_handle)))
 	{
+		keys_to_ui(menu);
 		ke = run_event_loop(&menu->target, NULL);
 
 		switch (ke.type)

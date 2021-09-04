@@ -113,4 +113,8 @@ extern void    inv_calculate_labels(inv_ptr inv, slot_t start, slot_t stop, int 
 extern void    inv_load(inv_ptr inv, savefile_ptr file);
 extern void    inv_save(inv_ptr inv, savefile_ptr file);
 
+/* For Android */
+extern void collect_keys(inv_ptr inv, slot_t start, slot_t stop, obj_p p,
+    int flags, char *buf, int max_buf);
+
 #endif

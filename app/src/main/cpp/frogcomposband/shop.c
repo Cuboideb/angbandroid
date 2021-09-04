@@ -1,5 +1,7 @@
 #include "angband.h"
 
+#include "droid.h"
+
 #include <assert.h>
 
 bool store_hack = FALSE;
@@ -75,7 +77,7 @@ static bool _shroomery_create(obj_ptr obj, u32b mode);
 static bool _dragon_will_buy(obj_ptr obj);
 static bool _dragon_create(obj_ptr obj, u32b mode);
 
-static _type_t _types[] = 
+static _type_t _types[] =
 {
     { SHOP_GENERAL, "General Store", _general_will_buy, _general_create,
         {{  1, "Bilbo the Friendly",         200, 108, RACE_HOBBIT },
@@ -110,7 +112,7 @@ static _type_t _types[] =
          { 30, "Hurk the Poor",              500, 108, RACE_SNOTLING },
          { 31, "Soalin the Wretched",        750, 107, RACE_ZOMBIE },
          { 32, "Merulla the Humble",        1000, 107, RACE_DEMIGOD }}},
-        
+
     { SHOP_ARMORY, "Armory", _armory_will_buy, _armory_create,
         {{  1, "Kon-Dar the Ugly",         15000, 115, RACE_SNOTLING },
          {  2, "Darg-Low the Grim",        20000, 111, RACE_HUMAN },
@@ -1314,7 +1316,7 @@ void shop_save(shop_ptr shop, savefile_ptr file)
 
 /************************************************************************
  * Pricing
- * Note: All functions take the point of view of the *shop*, not 
+ * Note: All functions take the point of view of the *shop*, not
  *       the player. So _buy is the shop buying or the player
  *       selling. This is appropriate for a shop module!
  ***********************************************************************/
@@ -1452,6 +1454,23 @@ static int  _restock(shop_ptr shop, int target, bool is_shuffle);
 static void _wizard_stock(shop_ptr shop);
 static void _shuffle_stock(shop_ptr shop);
 static int  _stock_base(shop_ptr shop);
+
+/* For Android port */
+static void send_keys(_ui_context_ptr context)
+{
+    int start = context->top;
+    int max_inven = inv_max(context->shop->inv);
+    int stop = context->top + context->page_size - 1;
+    if (stop > max_inven) stop = max_inven;
+    char buf[100] = "";
+    int pos = 0;
+    for (; start <= stop && pos < sizeof(buf)-1; start++) {
+        obj_ptr obj = inv_obj(context->shop->inv, start);
+        if (obj) buf[pos++] = 'a' + (start - context->top);
+    }
+    buf[pos] = 0;
+    if (pos > 0) soft_kbd_flash(buf);
+}
 
 void shop_ui(shop_ptr shop)
 {
@@ -1602,7 +1621,7 @@ static void _display(_ui_context_ptr context)
         doc_width(doc) - ct, shop->type->name, shop->owner->purse);
 
     _display_inv(doc, shop, context->top, context->page_size);
-    
+
     {
         slot_t max = inv_last(shop->inv, obj_exists);
         slot_t bottom = context->top + context->page_size - 1;
@@ -1623,7 +1642,7 @@ static void _display(_ui_context_ptr context)
         doc_insert(doc, "<color:keypress>s</color> to give. ");
     else
         doc_insert(doc, "<color:keypress>s</color> to sell. ");
-    doc_insert(doc, 
+    doc_insert(doc,
         "<color:keypress>x</color> to begin examining items.\n"
         "<color:keypress>B</color> to buyout inventory. "
 		"<color:keypress>S</color> to shuffle stock. "
@@ -1791,6 +1810,9 @@ static void _examine(_ui_context_ptr context)
         slot_t  slot;
         obj_ptr obj;
 
+        /* For Android port */
+        send_keys(context);
+
         if (!msg_command("<color:y>Examine which item <color:w>(<color:keypress>Esc</color> when done)</color>?</color>", &cmd)) break;
         if (cmd < 'a' || cmd > 'z') continue;
         slot = label_slot(cmd);
@@ -1869,6 +1891,9 @@ static void _reserve(_ui_context_ptr context)
         char    cmd;
         slot_t  slot;
         obj_ptr obj;
+
+        /* For Android port */
+        send_keys(context);
 
         if (!msg_command("<color:y>Reserve which item <color:w>(<color:keypress>Esc</color> when done)</color>?</color>", &cmd)) break;
         if (cmd < 'a' || cmd > 'z') continue;
@@ -1962,6 +1987,9 @@ static void _sell(_ui_context_ptr context)
 				return;
 			}
 		}
+
+        /* For Android port */
+        send_keys(context);
 
         if (!msg_command("<color:y>Buy which item <color:w>(<color:keypress>Esc</color> "
                          "to cancel)</color>?</color>", &cmd)) break;
