@@ -146,7 +146,6 @@ void do_quest(monster_type* m_ptr)
         break;
     };
 
-
     if (get_item(&item, q, s, (USE_INVEN)))
     {
         inven_item_increase(item, -1);
@@ -2784,7 +2783,6 @@ extern void perceive(void)
 void py_pickup_aux(int o_idx)
 {
     object_type* o_ptr;
-
     o_ptr = &o_list[o_idx];
 
     /*hack - don't pickup &nothings*/
@@ -3895,7 +3893,7 @@ void break_mercy_oath(monster_type* m_ptr, int damage)
             msg_print("You break your oath of mercy.");
             do_cmd_note("Broke your oath", p_ptr->depth);
         }
-        p_ptr->oaths_broken |= OATH_MERCY;
+        p_ptr->oaths_broken |= OATH_MERCY_FLAG;
     }
 }
 
@@ -5852,3 +5850,4 @@ void run_step(int dir)
     /* Move the player */
     move_player(p_ptr->run_cur_dir);
 }
+
