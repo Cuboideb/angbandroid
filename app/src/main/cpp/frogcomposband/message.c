@@ -416,7 +416,9 @@ static char msg_prompt_imp(cptr prompt, char keys[], int options)
 
 char msg_prompt(cptr prompt, char keys[], int options)
 {
+    soft_kbd_linger(keys);
     char ch = msg_prompt_imp(prompt, keys, options);
+    soft_kbd_clear(true);
     if (isprint(ch))
         msg_print(format("=> <color:y>%c</color>.", ch));
     msg_line_clear();
