@@ -26,6 +26,7 @@ extern void soft_kbd_flash(const char *keys);
 extern void soft_kbd_linger(const char *keys);
 extern void soft_kbd_clear(int force);
 extern void soft_kbd_flush();
+extern void soft_kbd_append(const char *keys);
 
 extern void strdeldup(char *str);
 

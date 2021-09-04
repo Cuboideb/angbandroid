@@ -2744,8 +2744,15 @@ s16b get_quantity(cptr prompt, int max)
 		/* Build the default */
 		strnfmt(buf, sizeof(buf), "%d", amt);
 
+		soft_kbd_linger("0123456789*");
+
 		/* Ask for a quantity */
-		if (!get_string(prompt, buf, 7)) return (0);
+		if (!get_string(prompt, buf, 7)) {
+			soft_kbd_clear(true);
+			return (0);
+		}
+
+		soft_kbd_clear(true);
 
 		/* Extract a number */
 		amt = atoi(buf);
@@ -2806,6 +2813,8 @@ int get_check_other(cptr prompt, cptr other_text, char other, cptr explain)
 	/* Get an acceptable answer */
 	while (TRUE)
 	{
+		soft_kbd_flash("[^yes_no$]");
+		soft_kbd_append(format("%c", other));
 		ke = inkey_ex();
 		if (quick_messages) break;
 		if (ke.key == ESCAPE) break;
@@ -2865,6 +2874,7 @@ bool get_check(cptr prompt)
 	/* Get an acceptable answer */
 	while (TRUE)
 	{
+		soft_kbd_flash("[^yes_no$]");
 		ke = inkey_ex();
 		if (quick_messages) break;
 		if (ke.key == ESCAPE) break;

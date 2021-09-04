@@ -68,6 +68,11 @@ void soft_kbd_flush()
 	}
 }
 
+void soft_kbd_append(const char *keys)
+{
+	my_strcat(soft_kbd_buffer, keys, sizeof(soft_kbd_buffer));
+}
+
 void strdeldup(char *str)
 {
 	int i, j, k;
