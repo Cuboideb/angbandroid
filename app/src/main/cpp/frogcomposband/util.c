@@ -13,6 +13,8 @@
 #include "angband.h"
 #include "z-doc.h"
 
+#include "droid.h"
+
 #include <assert.h>
 
 /* Stop using auto_more and use the new improved handling instead! */
@@ -2138,6 +2140,8 @@ char inkey(void)
     /* Hack -- Use the "inkey_next" pointer */
     if (inkey_next && *inkey_next && !inkey_xtra)
     {
+        soft_kbd_clear(false);
+
         /* Get next character, and advance */
         ch = *inkey_next++;
 
@@ -2180,6 +2184,7 @@ char inkey(void)
     /* Hack -- Activate main screen */
     Term_activate(angband_term[0]);
 
+    if (!inkey_scan) soft_kbd_flush();
 
     /* Get a key */
     while (!ch)
@@ -2327,6 +2332,7 @@ char inkey(void)
         }
     }
 
+    soft_kbd_clear(false);
 
     /* Hack -- restore the term */
     Term_activate(old);

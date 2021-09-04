@@ -1,6 +1,8 @@
 #include "angband.h"
 #include "menu.h"
 
+#include "droid.h"
+
 void default_menu(int cmd, int which, vptr cookie, variant *res)
 {
     var_clear(res);
@@ -106,7 +108,7 @@ static int _choose(menu_ptr menu)
     char choose_prompt[255];
     char browse_prompt[255];
     char keys[100];
-    
+
     if (menu->browse_prompt)
     {
         allow_browse = TRUE;
@@ -118,8 +120,21 @@ static int _choose(menu_ptr menu)
         sprintf(choose_prompt, "%s", menu->choose_prompt);
         sprintf(browse_prompt, "%s", "");
     }
-    
+
     _list(menu, keys);
+
+    /*
+    {
+        char tmp[100];
+        int i, j;
+
+        for (i = 0, j = 0; i < menu->count; i++) {
+            if (keys[i]) tmp[j++] = keys[i];
+        }
+        tmp[j] = 0;
+        if (j > 0) soft_kbd_linger(tmp);
+    }
+    */
 
     for (;;)
     {
@@ -166,6 +181,7 @@ static int _choose(menu_ptr menu)
 
         break;
     }
+    /*soft_kbd_clear(true);*/
     return choice;
 }
 

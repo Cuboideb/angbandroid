@@ -26,6 +26,7 @@ add_library( # Sets the name of the library.
             ../curses/mbstowcs.c
             ../curses/wcstombs.c
             ../curses/wctomb.c            
+            ../curses/droid.c
                         
             alky.c
             angband.c
