@@ -3412,7 +3412,7 @@ static bool store_get_check(const char *prompt)
 
 	while (TRUE)
 	{
-		soft_kbd_flash("[^yes_no$]");
+		soft_kbd_flash("yn");
 
 		/* Get an answer */
 		ch = inkey_ex();
