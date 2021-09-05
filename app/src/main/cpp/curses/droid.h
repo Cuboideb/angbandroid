@@ -17,6 +17,7 @@
 
 extern int Term_control(int what, const char *msg);
 #define Term_control_keys(msg) Term_control(TERM_CONTROL_LIST_KEYS,msg)
+#define Term_control_debug(msg) Term_control(TERM_CONTROL_DEBUG,msg)
 /*extern int Term_control_ws(int what, int n, const wchar_t *msg);*/
 extern int Term_control_context();
 extern int Term_control_visuals();

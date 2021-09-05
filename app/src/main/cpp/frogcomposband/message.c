@@ -416,7 +416,14 @@ static char msg_prompt_imp(cptr prompt, char keys[], int options)
 
 char msg_prompt(cptr prompt, char keys[], int options)
 {
-    soft_kbd_linger(keys);
+    if (strncasecmp(keys, "ny", 2) == 0
+        || strncasecmp(keys, "yn", 2) == 0) {
+        soft_kbd_linger("[^yes_no$]");
+        soft_kbd_append(keys+2);
+    }
+    else {
+        soft_kbd_linger(keys);
+    }
     char ch = msg_prompt_imp(prompt, keys, options);
     soft_kbd_clear(true);
     if (isprint(ch))
