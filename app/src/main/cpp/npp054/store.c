@@ -22,6 +22,8 @@
 #include "ui-menu.h"
 #include "game-event.h"
 
+#include "droid.h"
+
 
 /*** Constants and definitions ***/
 
@@ -3410,6 +3412,8 @@ static bool store_get_check(const char *prompt)
 
 	while (TRUE)
 	{
+		soft_kbd_flash("[^yes_no$]");
+
 		/* Get an answer */
 		ch = inkey_ex();
 
