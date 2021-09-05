@@ -259,7 +259,6 @@ int process_special_command(int key)
 		//return 0;
 	}
 
-#if defined(HAS_FEED_KEYMAP)
 	if (strncmp(buf, "macro:", 6) == 0) {
 
 		my_strcpy(tmp, buf+6, sizeof(tmp));
@@ -288,7 +287,6 @@ int process_special_command(int key)
 
 		return 0;
 	}
-#endif
 
 	if (sscanf(buf, "resize:%d:%d", &tcols, &trows) == 2) {
 

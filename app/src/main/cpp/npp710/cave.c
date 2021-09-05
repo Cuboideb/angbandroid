@@ -4207,12 +4207,15 @@ static void update_flow_partial(byte which_flow, u32b elem_flag)
 				/*mark that we stored this grid for the next cycle*/
 				cave_info[y2][x2] |= (CAVE_FLOW);
 
-				/* Store this grid in the flow table */
-				flow_table[next_cycle][0][grid_count] = y2;
-				flow_table[next_cycle][1][grid_count] = x2;
+				if (grid_count < 15 * FLOW_LENGTH_PARTIAL)
+				{
+					/* Store this grid in the flow table */
+					flow_table[next_cycle][0][grid_count] = y2;
+					flow_table[next_cycle][1][grid_count] = x2;
 
-				/* Increment number of grids stored */
-				grid_count++;
+					/* Increment number of grids stored */
+					grid_count++;
+				}
 			}
 		}
 
@@ -4327,12 +4330,15 @@ static void update_flows_partial_prep(void)
 					cave_cost[clear_flows[j]][y2][x2] = 0;
 				}
 
-				/* Store this grid in the flow table */
-				flow_table[next_cycle][0][grid_count] = y2;
-				flow_table[next_cycle][1][grid_count] = x2;
+				if (grid_count < 12 * FLOW_LENGTH_PARTIAL)
+				{
+					/* Store this grid in the flow table */
+					flow_table[next_cycle][0][grid_count] = y2;
+					flow_table[next_cycle][1][grid_count] = x2;
 
-				/* Increment number of grids stored */
-				grid_count++;
+					/* Increment number of grids stored */
+					grid_count++;
+				}
 			}
 		}
 
@@ -4464,12 +4470,15 @@ static void update_flow_full(byte which_flow, u32b elem_flag)
 				/* Store cost at this location */
 				cave_cost[which_flow][y2][x2] = new_cave_cost;
 
-				/* Store this grid in the flow table */
-				flow_table[next_cycle][0][grid_count] = y2;
-				flow_table[next_cycle][1][grid_count] = x2;
+				if (grid_count < 10 * FLOW_LENGTH_FULL)
+				{
+					/* Store this grid in the flow table */
+					flow_table[next_cycle][0][grid_count] = y2;
+					flow_table[next_cycle][1][grid_count] = x2;
 
-				/* Increment number of grids stored */
-				grid_count++;
+					/* Increment number of grids stored */
+					grid_count++;
+				}
 			}
 		}
 

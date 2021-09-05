@@ -45,7 +45,7 @@ final public class Plugins {
 		public boolean noMouse()
 		{
 			return this != angband && this != faangband &&
-				this != npp054;
+				this != npp054 && this != npp710;
 		}
 		public boolean enableSubWindows()
 		{
