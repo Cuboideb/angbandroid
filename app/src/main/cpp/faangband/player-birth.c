@@ -777,7 +777,7 @@ static void recalculate_stats(int *stats_local_local, int points_left_local)
 static void reset_stats(int stats_local[STAT_MAX],
 		int points_spent_local[STAT_MAX],
 		int points_inc_local[STAT_MAX],
-						int *points_left_local, bool update_display)
+		int *points_left_local, bool update_display)
 {
 	int i;
 
@@ -863,8 +863,8 @@ static bool sell_stat(int choice, int stats_local[STAT_MAX],
 			   the stat has changed, and inform the UI. */
 			recalculate_stats(stats_local, *points_left_local);
 		}
-	
-			return true;
+
+		return true;
 	}
 
 	/* Didn't adjust stat. */
@@ -907,7 +907,7 @@ static void generate_stats(int st[STAT_MAX], int spent[STAT_MAX],
 			
 				if (!maxed[STAT_STR] && st[STAT_STR] < 17) {
 					if (!buy_stat(STAT_STR, st, spent, inc,
-								  left, false))
+							left, false))
 						maxed[STAT_STR] = true;
 				} else {
 					step++;
@@ -925,7 +925,7 @@ static void generate_stats(int st[STAT_MAX], int spent[STAT_MAX],
 			case 1: {
 				if (!maxed[STAT_DEX] && st[STAT_DEX] < 17) {
 					if (!buy_stat(STAT_DEX, st, spent, inc,
-								  left, true)) {
+							left, true)) {
 						maxed[STAT_DEX] = true;
 					}
 					if (player->state.num_blows / 10 > blows) {
@@ -968,7 +968,7 @@ static void generate_stats(int st[STAT_MAX], int spent[STAT_MAX],
 
 						if (!buy_stat(spell_stat, st,
 								spent, inc,
-									  left, false)) {
+								left, false)) {
 							maxed[spell_stat] = true;
 						}
 
@@ -976,7 +976,7 @@ static void generate_stats(int st[STAT_MAX], int spent[STAT_MAX],
 						
 							sell_stat(spell_stat,
 								st, spent, inc,
-									  left, false);
+								left, false);
 							maxed[spell_stat] = true;
 						}
 					}
@@ -987,7 +987,7 @@ static void generate_stats(int st[STAT_MAX], int spent[STAT_MAX],
 					   spent[STAT_CON] < points_trigger) {
 					   
 					if (!buy_stat(STAT_CON, st, spent, inc,
-								  left, false)) {
+							left, false)) {
 						maxed[STAT_CON] = true;
 					}
 
@@ -1023,7 +1023,7 @@ static void generate_stats(int st[STAT_MAX], int spent[STAT_MAX],
 
 				/* Buy until we can't buy any more. */
 				while (buy_stat(next_stat, st, spent, inc, left,
-								false));
+						false));
 				maxed[next_stat] = true;
 
 				break;
