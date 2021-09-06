@@ -409,11 +409,6 @@ int Term_control(int what, const char *msg)
 	return (errr)control_msg(what, pbuf);
 }
 
-void feed_keymap(const char *buf)
-{
-	/* Nothing*/
-}
-
 /*
  * Display the cursor
  *

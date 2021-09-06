@@ -10,6 +10,8 @@
 
 #include "angband.h"
 
+#include "droid.h"
+
 static void flavor_assign_fixed(void)
 {
     int i, j;
@@ -2627,6 +2629,73 @@ static int get_tag(int* cp, char tag)
     return (FALSE);
 }
 
+static void keys_to_ui(const int* floor_list, int floor_num)
+{
+    int i;
+    object_type *o_ptr;
+    char buf[200] = "";
+    char *pbuf = buf;
+
+    if (p_ptr->command_wrk == (USE_INVEN))
+    {
+        for (i = 0; i < INVEN_PACK; i++)
+        {
+            o_ptr = &inventory[i];
+
+            /* Skip non-objects */
+            if (!o_ptr->k_idx)
+                continue;
+
+            if (!item_tester_okay(o_ptr))
+                continue;
+
+            *pbuf++ = index_to_label(i);
+        }
+    }
+
+    if (p_ptr->command_wrk == (USE_EQUIP))
+    {
+        for (i = INVEN_WIELD; i < INVEN_TOTAL; i++)
+        {
+            o_ptr = &inventory[i];
+
+            if (!item_tester_okay(o_ptr))
+                continue;
+
+            *pbuf++ = index_to_label(i);
+        }
+    }
+
+    if (p_ptr->command_wrk == (USE_FLOOR))
+    {
+        for (i = 0; i < floor_num; i++)
+        {
+            o_ptr = &o_list[floor_list[i]];
+
+            /* Skip non-objects */
+            if (!o_ptr->k_idx)
+                continue;
+
+            /* Is this item acceptable? */
+            if (!item_tester_okay(o_ptr))
+                continue;
+
+            *pbuf++ = I2A(i);
+        }
+    }
+
+    *pbuf++ = '/';
+
+    if ((p_ptr->get_item_mode == 0) || (p_ptr->get_item_mode & (USE_FLOOR)))
+    {
+        *pbuf++ = '-';
+    }
+
+    *pbuf = 0;
+
+    soft_kbd_flash(buf);
+}
+
 /*
  * Let the user select an item, save its "index"
  *
@@ -3020,6 +3089,8 @@ bool get_item(int* cp, cptr pmt, cptr str, int mode)
 
         /* Show the prompt */
         prt(tmp_val, 0, 0);
+
+        keys_to_ui(floor_list, floor_num);
 
         /* Get a key */
         which = inkey();

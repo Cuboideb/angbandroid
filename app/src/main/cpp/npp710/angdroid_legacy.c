@@ -145,11 +145,6 @@ int Term_control(int what, const char *msg)
 	return (errr)control_msg(what, pbuf);
 }
 
-void feed_keymap(const char *buf)
-{
-	/* Nothing*/
-}
-
 void try_save(void) {
 	/* flag to prevent re-entrant saving due to Term_xtra
 	   being called in display functions during save */

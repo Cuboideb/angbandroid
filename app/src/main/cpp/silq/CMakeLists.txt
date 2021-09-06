@@ -13,20 +13,21 @@ cmake_minimum_required(VERSION 3.4.1)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-format-security -Wno-parentheses-equality -Wno-logical-not-parentheses -Wno-deprecated-declarations")
 
 include_directories(../common ../curses .)
-             
+
 add_library( # Sets the name of the library.
       silq
 
       # Sets the library as a shared library.
       SHARED
 
-      # Provides a relative path to your source file(s).            
+      # Provides a relative path to your source file(s).
       angdroid_legacy.c
       ../curses/curses.c
       ../curses/mbstowcs.c
       ../curses/wcstombs.c
-      ../curses/wctomb.c            
-      
+      ../curses/wctomb.c
+      ../curses/droid.c
+
       birth.c
       cave.c
       cmd1.c
@@ -92,4 +93,3 @@ target_link_libraries( # Specifies the target library.
       # Links the target library to the log library
       # included in the NDK.
       ${log-lib} )
-                       

@@ -10,6 +10,8 @@
 
 #include "angband.h"
 
+#include "droid.h"
+
 #ifdef SET_UID
 
 #ifndef HAVE_USLEEP
@@ -1906,6 +1908,8 @@ char inkey(void)
     /* Hack -- Use the "inkey_next" pointer */
     if (inkey_next && *inkey_next && !inkey_xtra)
     {
+        soft_kbd_clear(false);
+
         /* Get next character, and advance */
         ch = *inkey_next++;
 
@@ -2027,8 +2031,12 @@ char inkey(void)
             break;
         }
 
+        if (!inkey_scan) soft_kbd_flush();
+
         /* Get a key (see above) */
         ch = inkey_aux();
+
+        soft_kbd_clear(false);
 
         /* Handle "control-right-bracket" */
         if (ch == 29)
@@ -3695,9 +3703,15 @@ s16b get_quantity(cptr prompt, int max)
         /* Build the default */
         sprintf(buf, "%d", amt);
 
+        soft_kbd_linger("0123456789");
+
         /* Ask for a quantity */
-        if (!term_get_string(prompt, buf, 7))
+        if (!term_get_string(prompt, buf, 7)) {
+            soft_kbd_clear(true);
             return (0);
+        }
+
+        soft_kbd_clear(true);
 
         /* Extract a number */
         amt = atoi(buf);
@@ -3756,6 +3770,9 @@ int get_check_other(cptr prompt, char other)
     /* Prompt for it */
     prt(buf, 0, 0);
 
+    soft_kbd_linger("[^yes_no$]");
+    soft_kbd_append(format("%c", other));
+
     /* Get an acceptable answer */
     while (TRUE)
     {
@@ -3772,6 +3789,8 @@ int get_check_other(cptr prompt, char other)
             break;
         bell("Illegal response to question!");
     }
+
+    soft_kbd_clear(true);
 
     /* Erase the prompt */
     prt("", 0, 0);
@@ -3810,6 +3829,8 @@ bool get_check(cptr prompt)
     /* Prompt for it */
     prt(buf, 0, 0);
 
+    soft_kbd_linger("[^yes_no$]");
+
     /* Get an acceptable answer */
     while (TRUE)
     {
@@ -3822,6 +3843,8 @@ bool get_check(cptr prompt)
             break;
         bell("Illegal response to a 'yes/no' question!");
     }
+
+    soft_kbd_clear(true);
 
     /* Erase the prompt */
     prt("", 0, 0);
@@ -3845,10 +3868,21 @@ int get_menu_choice(s16b max, char* prompt)
 
     bool done = FALSE;
 
+    char buf[100] = "";
+    int i;
+
+    /* For Android port */
+    for (i = 0; i < max; i++) {
+        buf[i] = I2A(i);
+    }
+    buf[max] = 0;
+
     prt(prompt, 0, 0);
 
     while (!done)
     {
+        soft_kbd_flash(buf);
+
         ch = inkey();
 
         /* Letters are used for selection */
