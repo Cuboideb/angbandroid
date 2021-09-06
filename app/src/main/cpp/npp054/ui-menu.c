@@ -692,34 +692,23 @@ static void keys_to_ui(struct menu_type *menu)
 {
 	char buf[256] = "";
 
-	/*
-	if (menu->inscriptions) {
-		int i, j;
-		char used[20];
-		for (i = 0, j = 0; i < 10; i++) {
-			if (menu->inscriptions[i]) {
-				used[j++] = ('0' + i);
-			}
-		}
-		used[j] = '\0';
-		my_strcat(buf, used, sizeof(buf));
-	}
-	*/
-
-	int pos, current;
+	int cursor, current;
 	char temp[256];
-	int n = menu->filter_list ? menu->filter_count : menu->count;
+	int n = menu->filter_count;
 
 	//plog_fmt("count: %d", menu->count);
 
-	for (pos = 0, current = 0; pos < n; pos++) {
+	for (cursor = 0, current = 0; cursor < n; cursor++) {
 
-		int oid = pos;
+		int oid = 0;
 		int validity = 1;
 		char sel = 0;
 
 		if (menu->filter_list) {
-			oid = menu->filter_list[oid];
+			oid = menu->filter_list[cursor];
+		}
+		else {
+			oid = cursor;
 		}
 
 		if (menu->row_funcs->valid_row) {
@@ -730,10 +719,11 @@ static void keys_to_ui(struct menu_type *menu)
 
 		if (!(menu->flags & MN_NO_TAGS)) {
 			if (menu->flags & MN_REL_TAGS) {
-				sel = menu->skin->get_tag(menu, pos);
+				sel = menu->skin->get_tag(menu, cursor);
 			}
-			else if (menu->selections && !(menu->flags & MN_PVT_TAGS)) {
-				sel = menu->selections[pos];
+			else if (menu->selections && !(menu->flags & MN_PVT_TAGS)
+				&& cursor < strlen(menu->selections)) {
+				sel = menu->selections[cursor];
 			}
 			else if (menu->row_funcs->get_tag) {
 				sel = menu->row_funcs->get_tag(menu, oid);
@@ -744,20 +734,25 @@ static void keys_to_ui(struct menu_type *menu)
 			temp[current++] = sel;
 		}
 	}
+
 	temp[current] = '\0';
 	my_strcat(buf, temp, sizeof(buf));
 
-	/*
 	if (menu->cmd_keys) {
 		my_strcat(buf, menu->cmd_keys, sizeof(buf));
 	}
-	*/
 
-	/*
-	if (menu->switch_keys) {
-		my_strcat(buf, menu->switch_keys, sizeof(buf));
+	if (true) {
+		int i, j;
+		for (i = 0, j = 0; buf[i]; i++) {
+			/* Visible */
+			int c = (byte)buf[i];
+			if (c >= ' ' && c < 0x8A) {
+				buf[j++] = buf[i];
+			}
+		}
+		buf[j] = 0;
 	}
-	*/
 
 	strdeldup(buf);
 

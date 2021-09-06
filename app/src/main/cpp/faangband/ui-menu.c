@@ -768,20 +768,23 @@ static void keys_to_ui(struct menu *menu)
 		my_strcat(buf, used, sizeof(buf));
 	}
 
-	int pos, current;
+	int cursor, current;
 	char temp[256];
 	int n = menu->filter_list ? menu->filter_count : menu->count;
 
 	//plog_fmt("count: %d", menu->count);
 
-	for (pos = 0, current = 0; pos < n; pos++) {
+	for (cursor = 0, current = 0; cursor < n; cursor++) {
 
-		int oid = pos;
+		int oid = 0;
 		menu_row_validity_t row_valid = MN_ROW_VALID;
 		char sel = 0;
 
 		if (menu->filter_list) {
 			oid = menu->filter_list[oid];
+		}
+		else {
+			oid = cursor;
 		}
 
 		if (menu->row_funcs->valid_row) {
@@ -794,10 +797,11 @@ static void keys_to_ui(struct menu *menu)
 
 		if (!(menu->flags & MN_NO_TAGS)) {
 			if (menu->flags & MN_REL_TAGS) {
-				sel = menu->skin->get_tag(menu, pos);
+				sel = menu->skin->get_tag(menu, cursor);
 			}
-			else if (menu->selections && !(menu->flags & MN_PVT_TAGS)) {
-				sel = menu->selections[pos];
+			else if (menu->selections && !(menu->flags & MN_PVT_TAGS)
+				&& cursor < strlen(menu->selections)) {
+				sel = menu->selections[cursor];
 			}
 			else if (menu->row_funcs->get_tag) {
 				sel = menu->row_funcs->get_tag(menu, oid);
