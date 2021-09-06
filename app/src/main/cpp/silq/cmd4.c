@@ -10,6 +10,8 @@
 
 #include "angband.h"
 
+#include "droid.h"
+
 /* String used to show a color sample */
 #define COLOR_SAMPLE "###"
 
@@ -6380,6 +6382,8 @@ int main_menu_aux(int* highlight)
 
     /* Place cursor at current choice */
     Term_gotoxy(COL_MAIN, 1 + *highlight);
+
+    soft_kbd_flash("abcdefghijklmnopqr");
 
     /* Get key (while allowing menu commands) */
     hide_cursor = TRUE;
