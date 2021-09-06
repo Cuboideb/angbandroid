@@ -11,7 +11,7 @@
 WINDOW _win[WIN_MAX];
 WINDOW* stdscr = &_win[0];
 
-#define LOGC(...) 
+#define LOGC(...)
 //#define LOGC(...) __android_log_print(ANDROID_LOG_DEBUG  , "Angband", __VA_ARGS__)
 
 static jmp_buf jbuf;
@@ -203,19 +203,19 @@ int addntiles(int x, int y, int n,
 }
 */
 
-int waddnwstr(WINDOW* w, int n, const wchar_t *ws) {	
+int waddnwstr(WINDOW* w, int n, const wchar_t *ws) {
 	wchar_t* wbuf = malloc(sizeof(wchar_t)*(n+1));
 	memcpy(wbuf,ws,sizeof(wchar_t)*n);
 	wbuf[n]=0;
 
-	size_t len = wcstombs((char*)NULL, wbuf, (size_t)32000);
+	size_t len = wcstombs((char*)NULL, wbuf, 0);
 	// Cant convert
 	if (len == (size_t)-1) {
 		return 0;
 	}
 	char* s = malloc(len+1);
 
-	wcstombs(s, wbuf, len+1);
+	wcstombs(s, wbuf, len);
 
 	free(wbuf);
 
@@ -399,12 +399,12 @@ int init_color(int c, int rgb) {
 	LOGC("curses.init_color %d %d",c,rgb);
 	JAVA_CALL(NativeWrapper_init_color, c, rgb);
 	return 0;
-} 
+}
 int init_pair(int pair, int f, int b){
 	LOGC("curses.init_pair %d %d %d",pair,f,b);
 	JAVA_CALL(NativeWrapper_init_pair, pair, f, b);
 	return 0;
-} 
+}
 
 int clrtobot(void){
 	wclrtobot(stdscr);
@@ -448,9 +448,9 @@ WINDOW* getwin(int k)
 	return ret;
 }
 
-WINDOW* newwin(int rows, int cols, 
+WINDOW* newwin(int rows, int cols,
 	int begin_y, int begin_x) {
-	LOGC("curses.newwin %d %d %d %d",rows,cols,begin_y,begin_x);	
+	LOGC("curses.newwin %d %d %d %d",rows,cols,begin_y,begin_x);
 	int k = JAVA_CALL_INT(NativeWrapper_newwin, rows, cols, begin_y, begin_x);
 
 	//hack
@@ -490,7 +490,7 @@ int refresh(void){
 	return 0;
 }
 
-int angdroid_getch(int v) {	
+int angdroid_getch(int v) {
 	LOGC("curses.getch %d",v);
 	int k = JAVA_CALL_INT(NativeWrapper_getch, v);
 	return k;
@@ -550,7 +550,7 @@ JNIEXPORT void JNICALL angdroid_gameStart
 	NativeWrapperClass = (*env)->GetObjectClass(env, NativeWrapperObj);
 
 	/* NativeWrapper Methods */
-	NativeWrapper_fatal = JAVA_METHOD("fatal", "(Ljava/lang/String;)V");	
+	NativeWrapper_fatal = JAVA_METHOD("fatal", "(Ljava/lang/String;)V");
 	NativeWrapper_warn = JAVA_METHOD("warn", "(Ljava/lang/String;)V");
 	NativeWrapper_waddnstr = JAVA_METHOD("waddnstr", "(II[B)V");
 	NativeWrapper_control_msg = JAVA_METHOD("control_msg", "(II[B)V");
@@ -584,7 +584,7 @@ JNIEXPORT void JNICALL angdroid_gameStart
 	NativeWrapper_mbstowcs = JAVA_METHOD("mbstowcs", "([B[BI)I");
 	NativeWrapper_wcstombs = JAVA_METHOD("wcstombs", "([B[BI)I");
 
-	// process argc/argv 
+	// process argc/argv
 	jstring argv0 = NULL;
 	int i;
 	for(i = 0; i < argc; i++) {
@@ -607,7 +607,7 @@ JNIEXPORT jint JNICALL angdroid_gameQueryInt
 	(JNIEnv *env1, jobject obj1, jint argc, jobjectArray argv) {
 	jint result = -1; // -1 indicates error
 
-	// process argc/argv 
+	// process argc/argv
 	jstring argv0 = NULL;
 	int i = 0;
 

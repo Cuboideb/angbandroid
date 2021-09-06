@@ -52,9 +52,6 @@ SET(SRCS_COMMON
   # Provides a relative path to your source file(s).
   main-android.cc
   ../curses/curses.c
-  ../curses/mbstowcs.c
-  ../curses/wcstombs.c
-  ../curses/wctomb.c
 
   birth.cc
   bldg.cc

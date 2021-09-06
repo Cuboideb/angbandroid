@@ -23,9 +23,6 @@ add_library( # Sets the name of the library.
       # Provides a relative path to your source file(s).
       angdroid_legacy.c
       ../curses/curses.c
-      ../curses/mbstowcs.c
-      ../curses/wcstombs.c
-      ../curses/wctomb.c
       ../curses/droid.c
 
       birth.c
