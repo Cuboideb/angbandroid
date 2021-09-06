@@ -12,6 +12,8 @@
 
 #include "angband.h"
 
+#include "droid.h"
+
 cptr spell_category_name(int tval)
 {
     switch (tval)
@@ -73,6 +75,8 @@ static int get_spell(int *sn, cptr prompt, int sval, bool learned, int use_realm
     cptr        p;
     rect_t      display = ui_menu_rect();
     int menu_line = (use_menu ? 1 : 0);
+    char        soft_keys[50] = "";
+    char        *psk = soft_keys;
 
 #ifdef ALLOW_REPEAT /* TNB */
 
@@ -112,8 +116,14 @@ static int get_spell(int *sn, cptr prompt, int sval, bool learned, int use_realm
     for (i = 0; i < num; i++)
     {
         /* Look for "okay" spells */
-        if (spell_okay(spells[i], learned, FALSE, use_realm, browse)) okay = TRUE;
+        if (spell_okay(spells[i], learned, FALSE, use_realm, browse))
+        {
+            /* Android - Save key */
+            *psk++ = I2A(i);
+            okay = TRUE;
+        }
     }
+    *psk = 0;
 
     /* No "okay" spells */
     if (!okay) return (FALSE);
@@ -146,7 +156,12 @@ static int get_spell(int *sn, cptr prompt, int sval, bool learned, int use_realm
     while (!flag)
     {
         if (choice == ESCAPE) choice = ' ';
-        else if (!get_com(out_val, &choice, TRUE))break;
+        else
+        {
+            /* For Android port */
+            soft_kbd_flash(soft_keys);
+            if (!get_com(out_val, &choice, TRUE))break;
+        }
 
         if (use_menu && choice != ' ')
         {
