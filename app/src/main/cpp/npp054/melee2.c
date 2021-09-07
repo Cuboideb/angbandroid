@@ -3364,6 +3364,13 @@ static bool get_move_retreat(monster_type *m_ptr, int *ty, int *tx)
 	*ty = -(p_ptr->py - m_ptr->fy);
 	*tx = -(p_ptr->px - m_ptr->fx);
 
+	/* Paranoia */
+	if (!in_bounds(*ty,*tx)) {
+		/* Charge! */
+		*ty = p_ptr->py;
+		*tx = p_ptr->px;
+	}
+
 	/* We want to run away */
 	return (TRUE);
 }
@@ -4039,6 +4046,11 @@ static bool make_move(monster_type *m_ptr, int *ty, int *tx, bool fear,
 	bool look_again = FALSE;
 
 	int chance;
+
+	/* Sanity check */
+	if (!in_bounds(*ty, *tx)) {
+		return (FALSE);
+	}
 
 	/* Remember where monster is */
 	oy = m_ptr->fy;
