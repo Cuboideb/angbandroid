@@ -1229,12 +1229,20 @@ void take_hit(int dam, cptr kb_str)
 		/* Hack -- bell on first notice */
 		if (old_chp > warning)
 		{
-			bell("Low hitpoint warning!");
+			/*bell("Low hitpoint warning! Press space to continue");*/
+			clear_message_line();
+			message(MSG_HITPOINT_WARN, 0, "Low hitpoint warning! Press space to continue ");
+			flush();
+			while (true) {
+				char ch = inkey();
+				if (ch == ' ') break;
+			}
 		}
-
-		/* Message */
-		message(MSG_HITPOINT_WARN, 0, "*** LOW HITPOINT WARNING! ***");
-		message_flush();
+		else {
+			/* Message */
+			message(MSG_HITPOINT_WARN, 0, "*** LOW HITPOINT WARNING! ***");
+			message_flush();
+		}
 	}
 }
 
