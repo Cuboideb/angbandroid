@@ -1227,7 +1227,7 @@ void take_hit(int dam, cptr kb_str)
 	if (p_ptr->chp < warning)
 	{
 		/* Hack -- bell on first notice */
-		if (old_chp > warning)
+		if (old_chp >= warning)
 		{
 			/*bell("Low hitpoint warning! Press space to continue");*/
 			clear_message_line();
