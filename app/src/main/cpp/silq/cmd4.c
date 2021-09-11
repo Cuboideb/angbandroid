@@ -299,6 +299,8 @@ void do_cmd_character_sheet(void)
         Term_putstr(52, 23, -1, TERM_L_WHITE, "i");
         Term_putstr(70, 23, -1, TERM_L_WHITE, "ESC");
 
+        soft_kbd_flash("acins");
+
         /* Query */
         ch = inkey();
 
@@ -1170,6 +1172,16 @@ int abilities_menu1(int* highlight)
     /* Place cursor at current choice */
     Term_gotoxy(COL_SKILL, 3 + *highlight);
 
+    /* Android port */
+    {
+        char tmp[100];
+        for (i = 0; i < options; i++) {
+            tmp[i] = I2A(i);
+        }
+        tmp[i] = 0;
+        soft_kbd_flash(tmp);
+    }
+
     /* Get key (while allowing menu commands) */
     hide_cursor = TRUE;
     ch = inkey();
@@ -1244,6 +1256,9 @@ int abilities_menu2(int skilltype, int* highlight)
 
     char buf[80];
 
+    char soft_keys[100] = "";
+    char *psk = soft_keys;
+
     byte attr;
 
     // clear the abilities and description area
@@ -1317,6 +1332,9 @@ int abilities_menu2(int skilltype, int* highlight)
                 (b_name + b_ptr->name));
         }
         Term_putstr(COL_ABILITY, b_ptr->abilitynum + 4, -1, attr, buf);
+
+        /* Android port */
+        *psk++ = (char)'a' + b_ptr->abilitynum;
 
         if (*highlight == b_ptr->abilitynum + 1)
         {
@@ -1485,6 +1503,10 @@ int abilities_menu2(int skilltype, int* highlight)
 
     /* Place cursor at current choice */
     Term_gotoxy(COL_ABILITY, 3 + *highlight);
+
+    /* Android port */
+    *psk = 0;
+    soft_kbd_flash(soft_keys);
 
     /* Get key (while allowing menu commands) */
     hide_cursor = TRUE;
