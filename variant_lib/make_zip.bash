@@ -19,7 +19,7 @@ mv ${ZIP_FILE}.zip $RAW_DIR
 
 cd $RAW_DIR
 
-mv ${ZIP_FILE} ${ZIP_FILE}.old
+#mv ${ZIP_FILE} ${ZIP_FILE}.old
 
 mv ${ZIP_FILE}.zip ${ZIP_FILE}
 
