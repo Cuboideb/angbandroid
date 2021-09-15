@@ -1543,7 +1543,7 @@ errr Term_mark(int x, int y)
 	 * functions, but ideally there should be a test to use the blank text
 	 * attr/char pair
 	 */
-	old_aa[x] = 0x80;
+	old_aa[x] = 0x80; 
 	old_cc[x] = 0;
 	old_taa[x] = 0x80;
 	old_tcc[x] = 0;
@@ -2564,7 +2564,7 @@ errr Term_mousepress(int x, int y, char button)/*, byte mods);*/
 
 	/* Success (unless overflow) */
 	if (Term->key_head != Term->key_tail) return (0);
-
+  
 	/* Problem */
 	return (1);
 }
