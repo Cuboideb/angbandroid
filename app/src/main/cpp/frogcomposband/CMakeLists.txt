@@ -21,7 +21,7 @@ add_library( # Sets the name of the library.
             SHARED
 
             # Provides a relative path to your source file(s).
-            angdroid_legacy.c
+            main-android.c
             ../curses/curses.c
             ../curses/droid.c
 
