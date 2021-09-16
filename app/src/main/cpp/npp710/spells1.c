@@ -1231,7 +1231,7 @@ void take_hit(int dam, cptr kb_str)
 		{
 			/*bell("Low hitpoint warning! Press space to continue");*/
 			clear_message_line();
-			message(MSG_HITPOINT_WARN, 0, "Low hitpoint warning! Press space to continue ");
+			message(MSG_HITPOINT_WARN, 0, "Low hitpoint warning! Press SPACE to continue ");
 			flush();
 			while (true) {
 				char ch = inkey();
