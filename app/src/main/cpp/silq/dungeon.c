@@ -9,6 +9,7 @@
  */
 
 #include "angband.h"
+#include "droid.h"
 
 /*
  * Return a "feeling" (or NULL) about an item.  Method 1 (Weak).
@@ -1712,6 +1713,16 @@ static void process_player(void)
         // sprinting, dodging etc.
         //        this might cause annoying slowdowns, I'm not sure
         p_ptr->update |= (PU_BONUS);
+    }
+
+    if (cave_up_stairs_bold(p_ptr->py, p_ptr->px))
+    {
+        soft_kbd_flash("<");
+    }
+
+    if (cave_down_stairs_bold(p_ptr->py, p_ptr->px))
+    {
+        soft_kbd_flash(">");
     }
 
     /*** Handle actual user input ***/

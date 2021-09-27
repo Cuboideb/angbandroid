@@ -18,6 +18,7 @@
 
 #include "angband.h"
 #include "game-event.h"
+#include "droid.h"
 
 /*
  * Change dungeon level.
@@ -1741,9 +1742,15 @@ void process_player(void)
 
 	/* Update buttons if player is on up stairs or down stairs */
 	basic_buttons();
-	if (cave_up_stairs(py, px)) button_add("[<]", '<');
+	if (cave_up_stairs(py, px)) {
+		button_add("[<]", '<');
+		soft_kbd_flash("<");
+	}
 	else button_kill('<');
-	if (cave_down_stairs(py, px)) button_add("[>]", '>');
+	if (cave_down_stairs(py, px)) {
+		button_add("[>]", '>');
+		soft_kbd_flash(">");
+	}
 	else button_kill('>');
 	if (cave_shop_bold(p_ptr->py,p_ptr->px)) button_add("[ENTER]", '_');
 	/* Check if there is anything to pickup */

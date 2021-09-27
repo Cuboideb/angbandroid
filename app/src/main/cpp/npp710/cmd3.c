@@ -18,6 +18,7 @@
 
 #include "angband.h"
 #include "game-event.h"
+#include "droid.h"
 
 /*
  * Display inventory
@@ -1879,6 +1880,17 @@ static bool choose_mtrap(int *choice)
 
 	while (!done)
 	{
+		/* For Android port */
+		char buf[20] = "";
+		int i = 0;
+		while (i < num && i < 9)
+		{
+			buf[i] = I2A(i);
+			i++;
+		}
+		buf[i] = 0;
+		soft_kbd_flash(buf);
+
 		c = inkey();
 
 		/* Letters are used for selection */
