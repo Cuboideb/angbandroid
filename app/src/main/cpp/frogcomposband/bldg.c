@@ -1820,7 +1820,7 @@ static bool _is_wanted_corpse(obj_ptr obj)
 }
 static bool _is_wanted_captureball(obj_ptr obj)
 {
-    if (obj->tval == TV_CAPTURE && _is_wanted_monster(obj->pval))
+    if (obj->tval == TV_CAPTURE && obj->pval > 0 && _is_wanted_monster(obj->pval))
         return TRUE;
     return FALSE;
 }

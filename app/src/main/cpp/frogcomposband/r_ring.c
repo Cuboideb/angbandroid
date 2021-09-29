@@ -1506,7 +1506,7 @@ static void _calc_bonuses(void)
     if (_essences[OF_AURA_COLD] >= 7)
         p_ptr->sh_cold++;
     if (_essences[OF_AURA_SHARDS] >= 7)
-        p_ptr->sh_cold++;
+        p_ptr->sh_shards++;
 }
 
 static void _calc_stats(s16b stats[MAX_STATS])
@@ -1614,7 +1614,7 @@ static void _get_flags(u32b flgs[OF_ARRAY_SIZE])
     if (_essences[OF_AURA_COLD] >= 7)
         add_flag(flgs, OF_AURA_COLD);
     if (_essences[OF_AURA_SHARDS] >= 7)
-        p_ptr->sh_shards++;
+        add_flag(flgs, OF_AURA_SHARDS);
 
     if (_essences[OF_IM_ACID] >= 2)
         add_flag(flgs, OF_IM_ACID);
