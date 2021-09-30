@@ -240,7 +240,7 @@ static void path_analyse(struct chunk *c, struct loc grid)
 	/* Project along the path */
 	for (i = 0; i < path_n - 1; ++i) {
 		/* Forget grids which would block los */
-		if (square_iswall(player->cave, path_g[i])) {
+		if (!square_allowslos(player->cave, path_g[i])) {
 			sqinfo_off(square(c, path_g[i])->info, SQUARE_SEEN);
 			square_forget(c, path_g[i]);
 			square_light_spot(c, path_g[i]);
@@ -311,7 +311,7 @@ void update_mon(struct player *p, struct monster *mon, struct chunk *c,
 {
 	struct monster_lore *lore;
 
-	int d;
+	int d, dy, dx;
 
 	/* If still generating the level, measure distances from the middle */
 	struct loc pgrid = character_dungeon ? p->grid :
@@ -342,9 +342,10 @@ void update_mon(struct player *p, struct monster *mon, struct chunk *c,
 	if (full) {
 		/* Target */
 		struct loc target = monster_target_loc(mon);
+
 		/* Distance components */
-		int dy = ABS(target.y - mon->grid.y);
-		int dx = ABS(target.x - mon->grid.x);
+		dy = ABS(target.y - mon->grid.y);
+		dx = ABS(target.x - mon->grid.x);
 
 		/* Approximate distance */
 		d = (dy > dx) ? (dy + (dx >>  1)) : (dx + (dy >> 1));
@@ -362,10 +363,13 @@ void update_mon(struct player *p, struct monster *mon, struct chunk *c,
 		if (mon->scent.grids) {
 			update_scent(c, NULL, mon);
 		}
-	} else {
-		/* Extract the distance */
-		d = mon->cdis;
 	}
+
+	/* Get the actual distance from the player (mon->cdis is now
+	 * the distance from the monster to its target) */
+	dy = ABS(player->grid.y - mon->grid.y);
+	dx = ABS(player->grid.x - mon->grid.x);
+	d = (dy > dx) ? (dy + (dx >>  1)) : (dx + (dy >> 1));
 
 	/* Remove any dead monster targets (then what happens? - NRM)*/
 	if ((mon->target.midx > 0) && !cave_monster(c, mon->target.midx)) {
@@ -1746,7 +1750,8 @@ bool monster_change_shape(struct monster *mon)
 	}
 
 	/* Emergency teleport if needed */
-	if (!monster_passes_walls(mon) && square_iswall(cave, mon->grid)) {
+	if (!monster_passes_walls(mon) &&
+		!square_is_monster_walkable(cave, mon->grid)) {
 		effect_simple(EF_TELEPORT, source_monster(mon->midx), "1", 0, 0, 0,
 					  mon->grid.y, mon->grid.x, NULL);
 	}
@@ -1777,7 +1782,8 @@ bool monster_revert_shape(struct monster *mon)
 		mon->original_player_race = NULL;
 
 		/* Emergency teleport if needed */
-		if (!monster_passes_walls(mon) && square_iswall(cave, mon->grid)) {
+		if (!monster_passes_walls(mon) &&
+			!square_is_monster_walkable(cave, mon->grid)) {
 			effect_simple(EF_TELEPORT, source_monster(mon->midx), "1", 0, 0, 0,
 						  mon->grid.y, mon->grid.x, NULL);
 		}
