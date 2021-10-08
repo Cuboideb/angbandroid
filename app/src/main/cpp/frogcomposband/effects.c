@@ -82,7 +82,8 @@ void set_action(int typ)
 
     p_ptr->action = typ;
 
-    if (prev_typ == ACTION_SING) bard_stop_singing();
+    /* Must call after setting the new action to prevent recursive loops */
+    if ((prev_typ == ACTION_SING) || (prev_typ == ACTION_SPELL)) stop_mouth();
 
     switch (p_ptr->action)
     {
