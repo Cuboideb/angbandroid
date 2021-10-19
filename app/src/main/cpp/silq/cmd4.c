@@ -1517,18 +1517,14 @@ int abilities_menu2(int skilltype, int* highlight)
     {
         *highlight = (int)ch - 'a' + 1;
 
-        abilities_menu2(skilltype, highlight);
-
-        return (*highlight);
+        return abilities_menu2(skilltype, highlight);
     }
 
     if ((ch >= 'A') && (ch <= (char)'A' + options - 1))
     {
         *highlight = (int)ch - 'A' + 1;
 
-        abilities_menu2(skilltype, highlight);
-
-        return (*highlight);
+        return abilities_menu2(skilltype, highlight);
     }
 
     if ((ch == ESCAPE) || (ch == 'q') || (ch == '4'))
@@ -2743,14 +2739,14 @@ bool melt_mithril_item(int item_num)
                     i_ptr2->number = 99;
 
                     // give it to the player
-                    slot = inven_carry(i_ptr2);
+                    slot = inven_carry(i_ptr2, TRUE);
                     inven_item_optimize(slot);
                     inven_item_describe(slot);
                     window_stuff();
                 }
 
                 // now give the last stack of mithril to the player
-                slot = inven_carry(i_ptr);
+                slot = inven_carry(i_ptr, TRUE);
                 inven_item_optimize(slot);
                 inven_item_describe(slot);
                 window_stuff();
@@ -6309,7 +6305,7 @@ void create_smithing_item(void)
         p_ptr->depth);
 
     // Get the slot of the forged item
-    slot = inven_carry(smith_o_ptr);
+    slot = inven_carry(smith_o_ptr, TRUE);
 
     // Get the item itself
     o_ptr = &inventory[slot];
