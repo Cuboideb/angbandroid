@@ -1834,10 +1834,10 @@ int rd_chunks(void)
 
 #if OBJ_RECOVER
 	for (j = 0; j < chunk_max; j++) {
-		if (j == 0 && streq(chunk_list[j].name, "Town")) continue;
+		if (j == 0 && streq(chunk_list[j]->name, "Town")) continue;
 		chunk_list[j] = 0;
 	}
-	if (streq(chunk_list[0].name, "Town")) {
+	if (chunk_list[0] && streq(chunk_list[0]->name, "Town")) {
 		chunk_list_max = 1;
 	} else {
 		chunk_list_max = 0;
@@ -1865,7 +1865,7 @@ int rd_history(void)
 	rd_u32b(&tmp32u);
 	for (i = 0; i < tmp32u; i++) {
 		s32b turnno;
-		s16b dlev, clev;
+		s16b place, clev;
 		bitflag type[HIST_SIZE];
 		const struct artifact *art = NULL;
 		int aidx = 0;
@@ -1875,7 +1875,7 @@ int rd_history(void)
 		for (j = 0; j < hist_size; j++)		
 			rd_byte(&type[j]);
 		rd_s32b(&turnno);
-		rd_s16b(&dlev);
+		rd_s16b(&place);
 		rd_s16b(&clev);
 		rd_string(name, sizeof(name));
 		if (name[0]) {
@@ -1890,7 +1890,7 @@ int rd_history(void)
 			continue;
 		}
 
-		history_add_full(player, type, aidx, dlev, clev, turnno, text);
+		history_add_full(player, type, aidx, place, clev, turnno, text);
 	}
 
 	return 0;
