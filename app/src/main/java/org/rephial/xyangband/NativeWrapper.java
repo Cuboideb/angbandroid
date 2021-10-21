@@ -2,6 +2,7 @@ package org.rephial.xyangband;
 
 import android.os.CountDownTimer;
 import android.util.Log;
+import android.graphics.Color;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -457,12 +458,13 @@ public class NativeWrapper {
 		TermWindow.ColorPair fgCol = TermWindow.pairs.get(fgColorIdx);
 		TermWindow.ColorPair bgCol = TermWindow.pairs.get(bgColorIdx);
 
-		if (fgCol != null && bgCol != null) {
-			term.drawPoint(r, c, p, fgCol.fColor, bgCol.fColor, extendErase);
+		term.drawPoint(r, c, p,
+			(fgCol != null) ? fgCol.fColor: Color.BLACK,
+			(bgCol != null) ? bgCol.fColor: Color.BLACK,
+			extendErase);
 
-			p.isDirty = false;
-			p.isUgly = false;
-		}
+		p.isDirty = false;
+		p.isUgly = false;
 	}
 
 	public void control_msg(final int what, final int n, final byte[] cp)

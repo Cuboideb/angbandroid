@@ -2840,7 +2840,6 @@ public class TermView extends View implements OnGestureListener {
 		ta &= 0x7F;
 
 		TermWindow.ColorPair pair = TermWindow.pairs.get(a);
-		if (pair == null) return;
 
 		Paint fore_temp = fore;
 		int tw = char_width;
@@ -2860,15 +2859,10 @@ public class TermView extends View implements OnGestureListener {
 		Rect bg = new Rect(x, y, x+tw, y+th);
 
 		TermWindow.ColorPair pair2 = TermWindow.pairs.get(ta);
-		if (pair2 != null) {
-			setBackColor(pair2.fColor);
-		}
-		else {
-			setBackColor(Color.BLACK);
-		}
+		setBackColor((pair2 != null) ? pair2.fColor: Color.BLACK);
 		canvas.drawRect(bg, back);
 
-		if (c == ' ') return;
+		if (c == ' ' || pair == null) return;
 
 		fore_temp.setColor(pair.fColor);
 
