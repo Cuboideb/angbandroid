@@ -36,7 +36,7 @@ enum {
     PLAYER_FLAG_CLASS
 };
 
-static struct player_ability *lookup_ability(const char *type, int index, int value)
+struct player_ability *lookup_ability(const char *type, int index, int value)
 {
 	struct player_ability *ability;
 	for (ability = player_abilities; ability; ability = ability->next) {
@@ -468,15 +468,8 @@ void do_cmd_abilities(void)
 	/* Might want to gain a new ability or browse old ones */
 	if (player->upkeep->new_specialties > 0) {
 		/* Interact and choose. */
-		while (true) {
-
-			soft_kbd_flash("lv");
-
-			if (!get_com_ex
-				("View abilities or Learn specialty (l/v/ESC)?", &answer)) {
-			   	break;
-			}
-
+		while (get_com_ex
+			   ("View abilities or Learn specialty (l/v/ESC)?", &answer)) {
 			/* New ability */
 			if ((answer.key.code == 'L') || (answer.key.code == 'l')) {
 				gain_specialty();
