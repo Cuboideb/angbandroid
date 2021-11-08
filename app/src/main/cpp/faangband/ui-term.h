@@ -43,6 +43,7 @@ struct term_win
 {
 	bool cu, cv;
 	int cx, cy;
+	int cnx, cny;
 
 	int **a;
 	wchar_t **c;
@@ -239,7 +240,7 @@ struct term
 
 	void (*view_map_hook)(term *t);
 
-	int (*dblh_hook)(int a, wchar_t c);
+        int (*dblh_hook)(int a, wchar_t c);
 
 };
 

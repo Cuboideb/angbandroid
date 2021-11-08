@@ -43,6 +43,7 @@ struct term_win
 {
 	bool cu, cv;
 	int cx, cy;
+	int cnx, cny;
 
 	int **a;
 	wchar_t **c;
