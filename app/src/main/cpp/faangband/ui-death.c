@@ -292,6 +292,9 @@ static void make_bones(void)
 	prt("ghost a special message or description? (y/n)", 17, 0);
 
 	while (no_answer) {
+
+		soft_kbd_flash("[^yes_no$]");
+
 		answer = inkey_ex();
 
 		/* Clear last line */
