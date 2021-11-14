@@ -2784,7 +2784,7 @@ public class TermView extends View implements OnGestureListener {
 	}
 
 	public void drawPoint(int r, int c, TermWindow.TermPoint p,
-		int fcolor, int bcolor, boolean extendedErase) {
+		int fcolor, int bcolor) {
 
 		if (canvas == null) {
 			// OnSizeChanged has not been called yet
@@ -2806,14 +2806,9 @@ public class TermView extends View implements OnGestureListener {
 
 		setBackColor(bcolor);
 
-		if (useGraphics != 0) {
-		   extendedErase = false;
-		}
+		Rect bg = new Rect(x, y, x+tw, y+th);
 
-		canvas.drawRect(x, y,
-			x + tw + (extendedErase ? 1 : 0),
-			y + th + (extendedErase ? 1 : 0),
-			back);
+		canvas.drawRect(bg, back);
 
 		if (ch != ' ') {
 
@@ -2826,7 +2821,12 @@ public class TermView extends View implements OnGestureListener {
 			float h2 = fore_temp.descent() - fore_temp.ascent();
 			float pady = Math.max((th - h2) / 2, 0) + fore_temp.descent();
 
+			canvas.save();
+			canvas.clipRect(bg);
+
 			canvas.drawText(str, x + pad, y + th - pady, fore_temp);
+
+			canvas.restore();
 		}
 	}
 
@@ -2871,12 +2871,17 @@ public class TermView extends View implements OnGestureListener {
 		float h2 = fore_temp.descent() - fore_temp.ascent();
 		float pady = Math.max((th - h2) / 2, 0) + fore_temp.descent();
 
+		canvas.save();
+		canvas.clipRect(bg);
+
 		canvas.drawText(str, x + padx, y + th - pady, fore_temp);
 
 		if ((gxa & MONSTER_MASK) != 0) {
 			Rect r = new Rect(x, y, x+tw, y+th);
 			drawLifeColor(gxa, r);
 		}
+
+		canvas.restore();
 	}
 
 	public void markTile(TermWindow t, int r, int c, int th, int tw)

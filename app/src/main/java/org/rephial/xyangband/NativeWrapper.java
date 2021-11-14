@@ -326,110 +326,13 @@ public class NativeWrapper {
 					drawTile(r, c, p);
 				}
 				else {
-					drawPoint(r, c, p, false);
+					drawPoint(r, c, p);
 				}
 			}
 		}
 
 		term.postInvalidate();
 	}
-
-	/*
-	private void froshOld(TermWindow w) {
-
-		if (w != null) {
-			if (w != state.virtscr && w != state.stdscr) {
-				//Log.d("Angband", "Frosh win > 0");
-
-				// Just redraw
-				if (state.windowIsVisible(w)) {
-					term.postInvalidate();
-				}
-
-				return;
-			}
-			else {
-				//Log.d("Angband", "Frosh with w in (stdscr, virtscr)");
-			}
-		}
-		else {
-			Log.d("Angband", "Frosh with NULL");
-		}
-
-		synchronized(display_lock) {
-			// for forcing a redraw due to an Android event, w should be null
-
-			TermWindow v = state.virtscr;
-
-			if (w != null) {
-				v.overwrite(w);
-			}
-
-			if (term == null) {
-				v.quiet();
-				return;
-			}
-
-			// mark ugly points, i.e. those clobbered by anti-alias overflow
-
-			for(int c = 0; c<v.cols; c++) {
-				for(int r = 0; r<v.rows; r++) {
-					TermWindow.TermPoint p = v.buffer[r][c];
-
-					if (p.isDirty || w == null) {
-
-						if (r<v.rows-1) {
-							TermWindow.TermPoint u = v.buffer[r+1][c];
-							u.isUgly = !u.isDirty;
-						}
-						if (c<v.cols-1) {
-							TermWindow.TermPoint u = v.buffer[r][c+1];
-							u.isUgly = !u.isDirty;
-						}
-						if (c<v.cols-1 && r<v.rows-1) {
-							TermWindow.TermPoint u = v.buffer[r+1][c+1];
-							u.isUgly = !u.isDirty;
-						}
-					}
-
-					if (p.isDirty && p.isBigPad()) {
-						v.touchBigTile(r, c, term.tile_wid, term.tile_hgt);
-					}
-				}
-			}
-
-			term.preloadTiles(v);
-
-			for(int r = 0; r<v.rows; r++) {
-				for(int c = 0; c<v.cols; c++) {
-					TermWindow.TermPoint p = v.buffer[r][c];
-
-					if (p.isBigPad()) {
-						p.isDirty = false;
-						p.isUgly = false;
-						continue;
-					}
-
-					if (p.isDirty || p.isUgly || w == null) {
-						if (p.isGraphicTile()) {
-							drawTile(r, c, p);
-						}
-						else {
-							drawPoint(r, c, p, p.isDirty || w == null);
-						}
-					}
-				}
-			}
-
-			term.postInvalidate();
-
-			if (false && w == null) {
-				Log.d("Angband", "Scroll reset");
-				term.onScroll(null,null,0,0);  // sanitize scroll position
-			}
-		}
-	}
-	*/
 
 	private void drawTile(int r, int c, TermWindow.TermPoint p)
 	{
@@ -441,8 +344,7 @@ public class NativeWrapper {
 		p.isUgly = false;
 	}
 
-	private void drawPoint(int r, int c, TermWindow.TermPoint p,
-		boolean extendErase)
+	private void drawPoint(int r, int c, TermWindow.TermPoint p)
 	{
 		if (p.bgColor < 0) return;
 
@@ -460,8 +362,7 @@ public class NativeWrapper {
 
 		term.drawPoint(r, c, p,
 			(fgCol != null) ? fgCol.fColor: Color.BLACK,
-			(bgCol != null) ? bgCol.fColor: Color.BLACK,
-			extendErase);
+			(bgCol != null) ? bgCol.fColor: Color.BLACK);
 
 		p.isDirty = false;
 		p.isUgly = false;
