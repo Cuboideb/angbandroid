@@ -664,7 +664,7 @@ public class GameActivity extends Activity {
 		}
 
 		Preferences.setHorizontalSubWindows(!horizontal);
-		Preferences.setTopBar(!horizontal);
+		Preferences.setTopBar(true);
 
 		if (term != null) adjustSize(shouldAdjustByWidth());
 
