@@ -361,8 +361,8 @@ public class NativeWrapper {
 		TermWindow.ColorPair bgCol = TermWindow.pairs.get(bgColorIdx);
 
 		term.drawPoint(r, c, p,
-			(fgCol != null) ? fgCol.fColor: Color.BLACK,
-			(bgCol != null) ? bgCol.fColor: Color.BLACK);
+			TermWindow.safeFgColor(fgCol),
+			TermWindow.safeFgColor(bgCol));
 
 		p.isDirty = false;
 		p.isUgly = false;

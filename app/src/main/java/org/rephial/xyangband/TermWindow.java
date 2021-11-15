@@ -78,6 +78,12 @@ public class TermWindow {
 		}
 	}
 
+	public static int safeFgColor(ColorPair p)
+	{
+		if (p == null) p = pairs.get(0);
+		return p != null ? p.fColor: TERM_BLACK;
+	}
+
 	public void resize(int width, int height)
 	{
 		int old_rows = this.rows;
