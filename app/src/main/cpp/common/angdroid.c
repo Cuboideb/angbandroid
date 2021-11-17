@@ -816,6 +816,10 @@ static const char *get_command_desc(int key)
 	for (j = 0; cmds_all[j].name != NULL; j++)
 	{
 		struct cmd_info *commands = cmds_all[j].list;
+
+		/* Stop here */
+		if (streq(cmds_all[j].name, "Hidden")) break;
+
 		/* Look into every group */
 		for (i = 0; i < cmds_all[j].len; i++) {
 			// Original keymap
@@ -844,6 +848,10 @@ static char *get_command_list()
 	for (j = 0; cmds_all[j].name != NULL; j++)
 	{
 		struct cmd_info *commands = cmds_all[j].list;
+
+		/* Stop here */
+		if (streq(cmds_all[j].name, "Hidden")) break;
+
 		/* Look into every group */
 		for (i = 0; i < cmds_all[j].len; i++) {
 

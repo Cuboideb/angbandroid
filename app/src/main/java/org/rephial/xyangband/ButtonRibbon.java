@@ -119,12 +119,7 @@ public class ButtonRibbon implements OnClickListener,
 			//makeCommand("✦", "do_cmd_list", CmdLocation.FixedL);
 			//makeCommand("^", "Ctrl", CmdLocation.FixedL);
 
-			if (state.inTheDungeon()) {
-				restoreCommandMode();
-			}
-			else {
-				setCommandMode(false);
-			}
+			restoreCommandMode();
 		}
 	}
 

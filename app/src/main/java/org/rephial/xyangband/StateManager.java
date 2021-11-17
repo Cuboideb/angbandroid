@@ -112,6 +112,8 @@ public class StateManager {
 	{
 		loadGraphics();
 
+		coreCommands.clear();
+
 		buildCommandList();
 	}
 

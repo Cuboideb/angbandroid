@@ -636,7 +636,7 @@ public class GameActivity extends Activity {
 		Preferences.setEnableTouch(true);
 		Preferences.setTouchRight(true);
 
-		Preferences.setCommandMode(false);
+		//Preferences.setCommandMode(false);
 		state.opaqueWidgets = false;
 
 		term.resetDragOffset();
