@@ -332,6 +332,8 @@ void object_delete(struct chunk *c, struct chunk *p_c,
 	if (c && p_c && obj->oidx && (obj == c->objects[obj->oidx]) &&
 		p_c->objects[obj->oidx]) {
 		obj->grid = loc(0, 0);
+		obj->prev = NULL;
+		obj->next = NULL;
 		obj->held_m_idx = 0;
 		obj->mimicking_m_idx = 0;
 
@@ -1084,6 +1086,9 @@ static void drop_find_grid(const struct player *p, struct chunk *c,
 		/* Start bouncing from grid to grid, stopping if we find an empty one */
 		if (i < 1000) {
 			best = rand_loc(best, 1, 1);
+			/* Keep in bounds. */
+			best.x = MAX(0, MIN(best.x, c->width - 1));
+			best.y = MAX(0, MIN(best.y, c->height - 1));
 		} else {
 			/* Now go to purely random locations */
 			best = loc(randint0(c->width), randint0(c->height));
