@@ -618,7 +618,6 @@ bool askfor_aux_keypress(char *buf, size_t buflen, size_t *curs, size_t *len,
 				buf[0] = '\0';
 				*curs = 0;
 				*len = 0;
-
 				break;
 			}
 

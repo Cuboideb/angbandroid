@@ -449,7 +449,6 @@ static int prt_health_aux(int row, int col)
 	return 12;
 }
 
-
 /**
  * Redraw the "monster health bar"
  *

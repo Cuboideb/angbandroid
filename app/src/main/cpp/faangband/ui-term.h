@@ -244,6 +244,7 @@ struct term
 
 };
 
+
 /**
  * ------------------------------------------------------------------------
  * Available Constants
@@ -364,6 +365,7 @@ extern u32b window_flag[ANGBAND_TERM_MAX];
  * Hack -- The main "screen"
  */
 #define term_screen	(angband_term[0])
+
 
 
 /**

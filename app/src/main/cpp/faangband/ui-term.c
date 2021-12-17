@@ -2227,6 +2227,7 @@ void Term_big_putch(int x, int y, int a, wchar_t c)
 	}
 }
 
+
 /**
  * Move to a location and, using an attr, add a string
  */
