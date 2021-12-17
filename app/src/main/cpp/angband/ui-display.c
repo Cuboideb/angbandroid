@@ -532,6 +532,9 @@ static void prt_depth(int row, int col)
 	put_str(format("%-13s", depths), row, col);
 }
 
+
+
+
 /**
  * Some simple wrapper functions
  */
@@ -1395,7 +1398,6 @@ static void update_maps(game_event_type type, game_event_data *data, void *user)
 		/* Redraw the grid spot */
 		map_info(data->point, &g);
 		grid_data_as_text(&g, &a, &c, &ta, &tc);
-
 		Term_queue_char(t, vx, vy, a, c, ta, tc);
 #ifdef MAP_DEBUG
 		/* Plot 'spot' updates in light green to make them visible */
@@ -2668,6 +2670,7 @@ static void process_character_pref_files(void)
 		process_pref_file(buf, true, true);
     }
 }
+
 
 static void ui_enter_init(game_event_type type, game_event_data *data,
 						  void *user)

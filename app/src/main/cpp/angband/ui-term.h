@@ -244,6 +244,7 @@ struct term
 
 };
 
+
 /**
  * ------------------------------------------------------------------------
  * Available Constants
@@ -284,7 +285,6 @@ extern int col_map[SIDEBAR_MAX];
  * Number of grids in each screen (horizontally)
  */
 #define SCREEN_WID	((int)((Term->wid - COL_MAP - 1) / tile_width))
-
 
 /**
  * Definitions for the "actions" of "Term_xtra()"
@@ -365,6 +365,7 @@ extern u32b window_flag[ANGBAND_TERM_MAX];
  * Hack -- The main "screen"
  */
 #define term_screen	(angband_term[0])
+
 
 
 /**

@@ -4036,7 +4036,6 @@ void do_cmd_query_symbol(void)
 	if (!num) {
 		/* Free the "who" array */
 		mem_free(who);
-
 		return;
 	}
 
@@ -4059,7 +4058,6 @@ void do_cmd_query_symbol(void)
 	} else {
 		/* Any unsupported response is "nope, no history please" */
 		mem_free(who);
-
 		return;
 	}
 
@@ -4155,6 +4153,7 @@ void do_cmd_monlist(void)
 	/* Return */
 	screen_load();
 }
+
 
 /**
  * Display the main-screen item list.

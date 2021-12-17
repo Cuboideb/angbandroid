@@ -693,7 +693,6 @@ static void prt_map_aux(void)
 				/* Determine what is there */
 				map_info(loc(x, y), &g);
 				grid_data_as_text(&g, &a, &c, &ta, &tc);
-
 				Term_queue_char(t, vx, vy, a, c, ta, tc);
 
 				if ((tile_width > 1) || (tile_height > 1))

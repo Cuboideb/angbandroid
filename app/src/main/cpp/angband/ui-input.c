@@ -617,7 +617,6 @@ bool askfor_aux_keypress(char *buf, size_t buflen, size_t *curs, size_t *len,
 				buf[0] = '\0';
 				*curs = 0;
 				*len = 0;
-
 				break;
 			}
 
@@ -1747,6 +1746,8 @@ ui_event textui_get_command(int *count)
 	ui_event ke = EVENT_EMPTY;
 
 	const struct keypress *act = NULL;
+
+
 
 	/* Get command */
 	while (1) {

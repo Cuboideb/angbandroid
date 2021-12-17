@@ -46,7 +46,7 @@ size_t highscore_read(struct high_score scores[], size_t sz)
 	path_build(fname, sizeof(fname), ANGBAND_DIR_SCORES, "scores.raw");
 	scorefile = file_open(fname, MODE_READ, FTYPE_TEXT);
 
-	if (!scorefile) return true;
+	if (!scorefile) return 0;
 
 	for (i = 0; i < sz; i++)
 		if (file_read(scorefile, (char *)&scores[i],
@@ -169,7 +169,9 @@ static void highscore_write(const struct high_score scores[], size_t sz)
 		msg("Failed to open new scorefile for writing.");
 
 		file_close(lok);
+		safe_setuid_grab();
 		file_delete(lok_name);
+		safe_setuid_drop();
 		return;
 	}
 

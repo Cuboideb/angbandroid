@@ -1087,6 +1087,7 @@ static void do_cmd_sidebar_mode(const char *name, int row)
 	screen_load();
 }
 
+
 /**
  * Set hitpoint warning level
  */

@@ -15,7 +15,6 @@
 ##### Remap the player icon #####
 
 
-
 ##### Human Classes #####
 ?:[EQU $CLASS Warrior]
 monster:<player>:0x83:0x87 #  
