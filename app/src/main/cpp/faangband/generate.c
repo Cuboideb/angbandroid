@@ -811,7 +811,7 @@ static void place_feeling(struct chunk *c)
  */
 static int calc_obj_feeling(struct chunk *c, struct player *p)
 {
-	u32b x;
+	uint32_t x;
 
 	/* Town gets no feeling */
 	if (c->depth == 0) return 0;
@@ -842,7 +842,7 @@ static int calc_obj_feeling(struct chunk *c, struct player *p)
  */
 static int calc_mon_feeling(struct chunk *c)
 {
-	u32b x;
+	uint32_t x;
 
 	/* Town gets no feeling */
 	if (c->depth == 0) return 0;
@@ -1422,17 +1422,26 @@ static void leave_arena(struct chunk *c, struct player *p)
 	int y, x;
 	bool found = false;
 
-	/* Find where the player has to go, place them by hand */
-	for (y = 0; y < c->height; y++) {
-		for (x = 0; x < c->width; x++) {
-			struct loc grid = loc(x, y);
-			if (square(c, grid)->mon == -1) {
-				p->grid = grid;
-				found = true;
-				break;
+	/* Use the stored player grid */
+	if (!loc_eq(p->old_grid, loc(0, 0))) {
+		p->grid = p->old_grid;
+		p->old_grid = loc(0, 0);
+		found = true;
+	}
+
+	/* Look for the old player mark, place them by hand */
+	if (!found) {
+		for (y = 0; y < cave->height; y++) {
+			for (x = 0; x < cave->width; x++) {
+				struct loc grid = loc(x, y);
+				if (square(cave, grid)->mon == -1) {
+					p->grid = grid;
+					found = true;
+					break;
+				}
 			}
+			if (found) break;
 		}
-		if (found) break;
 	}
 
 	/* Failed to find, try near the killed monster */
