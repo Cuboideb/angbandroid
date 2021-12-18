@@ -48,7 +48,7 @@
 #include "ui-target.h"
 
 static bool inkey_xtra;
-u32b inkey_scan;		/* See the "inkey()" function */
+uint32_t inkey_scan;		/* See the "inkey()" function */
 bool inkey_flag;		/* See the "inkey()" function */
 
 /**
@@ -361,7 +361,7 @@ ui_event inkey_m(void)
  */
 static void msg_flush(int x)
 {
-	byte a = COLOUR_L_BLUE;
+	uint8_t a = COLOUR_L_BLUE;
 
 	/* Pause for response */
 	Term_putstr(x, 0, -1, a, "-more-");
@@ -411,7 +411,7 @@ void display_message(game_event_type unused, game_event_data *data, void *user)
 	int n;
 	char *t;
 	char buf[1024];
-	byte color;
+	uint8_t color;
 	int w, h;
 
 	int type;
@@ -1085,7 +1085,7 @@ bool get_character_name(char *buf, size_t buflen)
 	soft_kbd_linger("*");
 
 	/* Ask the user for a string */
-	res = askfor_aux(buf, buflen, get_name_keypress);
+	res = askfor_aux_ext(buf, buflen, get_name_keypress, handle_name_mouse);
 
 	soft_kbd_clear(true);
 
@@ -1550,12 +1550,10 @@ static bool textui_get_aim_dir(int *dp)
 	/* Ask until satisfied */
 	while (!dir) {
 		/* Choose a prompt */
-		if (!target_okay()) {
+		if (!target_okay())
 			p = "Direction ('*' or <click> to target, \"'\" for closest, Escape to cancel)? ";
-		}
-		else {
-			p = "Direction ('5' for target, '*' or <click> to re-target, Escape to cancel)? ";
-		}
+		else
+			p = "Direction ('5' for target, '*' or <click> to re-target, Escape to cancel)? ";		
 
         soft_kbd_flash("*'5");
 
