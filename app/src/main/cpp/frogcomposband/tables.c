@@ -2712,10 +2712,10 @@ kamae kamae_shurui[MAX_KAMAE] =
 
 kamae kata_shurui[MAX_KATA] =
 {
-    {"Iai", 25, ""},
-    {"Huujin", 30, ""},
-    {"Kouki", 35, ""},
-    {"Musou", 40, ""},
+    {"Iai", 25, "Gives a single accuracy-boosted retaliatory blow against melee attacks, at the cost of increasing all damage taken by 20%. Any melee attack by you dispels this posture."},
+    {"Huujin", 30, "Gives reflection unless blind, at the cost of -1.00 to blows."},
+    {"Kouki", 35, "Gives +5 to all stats and +50 melee to-hit, at the cost of -50 AC, vulnerability to the base elements, and zero regeneration. Using most inventory items dispels this posture."},
+    {"Musou", 40, "Gives full telepathy and ultimate resistance, halves most types of damage, and gives a full round of retaliatory blows against melee attacks, at the cost of 2 SP per turn. Almost any action other than retaliation dispels this posture."},
 };
 
 cptr exp_level_str[5]=

@@ -17674,6 +17674,8 @@ P:Body:Hound
 S:FREQ_35
 S:S_MONSTER | CAUSE_3 | CAUSE_4 | CONFUSE | BRAIN_SMASH | DRAIN_MANA | SCARE |
 S:HASTE | PARALYZE |
+D:A crafty, ancient kitsune spirit. (You are unsure why the goddess of cats
+D:seems to think it's a kitten spirit.)
 
 N:988:Fenghuang
 G:B:R

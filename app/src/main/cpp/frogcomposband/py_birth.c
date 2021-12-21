@@ -3352,6 +3352,7 @@ static void _birth_finalize(void)
         command_menu = TRUE;
         no_scrambling = TRUE;
         show_rogue_keys = TRUE;
+        thrall_mode = FALSE;
     }
 
     if (coffee_break)

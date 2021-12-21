@@ -6,7 +6,6 @@ enum menu_e {
     MENU_TEXT,
     MENU_HELP,
     MENU_COLOR,
-    MENU_ON_BROWSE,
     MENU_COLUMN,
 };
 

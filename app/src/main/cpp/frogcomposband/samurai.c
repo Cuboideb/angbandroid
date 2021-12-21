@@ -143,7 +143,7 @@ cptr do_hissatsu_spell(int spell, int mode)
 
     case 6:
         if (name) return "Counter";
-        if (desc) return "Prepares to counterattack. When attack by a monster, strikes back using SP each time.";
+        if (desc) return "Prepares to counterattack, using SP to retaliate against any monster strikes on the following turn.";
         if (browse) return NULL;
         if (cast)
         {
@@ -256,7 +256,7 @@ cptr do_hissatsu_spell(int spell, int mode)
 
     case 10:
         if (name) return "Wind Blast";
-        if (desc) return "Attacks an adjacent monster, and blow it away.";
+        if (desc) return "Attacks an adjacent monster, and blows it away.";
         if (browse) return NULL;
         if (cast)
         {
@@ -339,7 +339,7 @@ cptr do_hissatsu_spell(int spell, int mode)
 
     case 12:
         if (name) return "Rock Smash";
-        if (desc) return "Breaks rock. Or greatly damage a monster made of rock.";
+        if (desc) return "Breaks rock, or greatly damages a monster made of rock.";
         if (browse)
         {
             display_weapon_info_aux(HISSATSU_HAGAN);
@@ -367,7 +367,7 @@ cptr do_hissatsu_spell(int spell, int mode)
 
     case 13:
         if (name) return "Midare-Setsugekka";
-        if (desc) return "Attacks a monster with increased number of attacks and more damage unless it has resistance to cold.";
+        if (desc) return "Attacks a monster with an increased number of attacks, and more damage unless it has resistance to cold.";
         if (browse)
         {
             display_weapon_info_aux(HISSATSU_COLD);
@@ -1085,12 +1085,30 @@ void samurai_posture_get_flags(u32b flgs[OF_ARRAY_SIZE])
     }
 }
 
+static void _kata_menu_fn(int cmd, int which, vptr cookie, variant *res)
+{
+    switch (cmd)
+    {
+    case MENU_TEXT:
+        var_set_string(res, which ? format("Form of %s", kata_shurui[which - 1].desc) : "No Form");
+        break;
+    case MENU_COLOR:
+        var_set_int(res, (kata_shurui[which - 1].min_level > p_ptr->lev) ? TERM_L_DARK : TERM_WHITE);
+        break;
+    case MENU_HELP:
+        var_set_string(res, which ? kata_shurui[which - 1].info : "");
+        break;
+    default:
+        default_menu(cmd, which, cookie, res);
+    }
+}
+
 static bool _choose_kata(void)
 {
-    char choice;
     int new_kata = 0;
-    int i;
-    char buf[80];
+    int idx;
+    menu_t menu = { "Choose which form", "Browse which form", NULL,
+                    _kata_menu_fn, NULL, MAX_KATA + 1, 0 };
 
     if (p_ptr->confused)
     {
@@ -1099,7 +1117,7 @@ static bool _choose_kata(void)
     }
     if (p_ptr->stun)
     {
-        msg_print("You are not clear headed");
+        msg_print("You are not clear-headed.");
         return FALSE;
     }
     if (p_ptr->afraid)
@@ -1108,62 +1126,18 @@ static bool _choose_kata(void)
         return FALSE;
     }
 
-    screen_save();
-
-    prt(" a) No Form", 2, 20);
-
-    for (i = 0; i < MAX_KATA; i++)
-    {
-        if (p_ptr->lev >= kata_shurui[i].min_level)
-        {
-            sprintf(buf," %c) Form of %-12s  %s",I2A(i+1), kata_shurui[i].desc, kata_shurui[i].info);
-            prt(buf, 3+i, 20);
-        }
-    }
-
-    prt("", 1, 0);
-    prt("        Choose Form: ", 1, 14);
-
-    for(;;)
-    {
-        choice = inkey();
-
-        if (choice == ESCAPE)
-        {
-            screen_load();
-            return FALSE;
-        }
-        else if ((choice == 'a') || (choice == 'A'))
+    idx = menu_choose(&menu);
+    if (idx < 0) return FALSE;
+    if (idx == 0)
         {
             if (p_ptr->action == ACTION_KATA)
                 set_action(ACTION_NONE);
             else
-                msg_print("You are not assuming posture.");
-
-            screen_load();
+            msg_print("You are not assuming a posture.");
             return TRUE;
         }
-        else if ((choice == 'b') || (choice == 'B'))
-        {
-            new_kata = 0;
-            break;
-        }
-        else if (((choice == 'c') || (choice == 'C')) && (p_ptr->lev > 29))
-        {
-            new_kata = 1;
-            break;
-        }
-        else if (((choice == 'd') || (choice == 'D')) && (p_ptr->lev > 34))
-        {
-            new_kata = 2;
-            break;
-        }
-        else if (((choice == 'e') || (choice == 'E')) && (p_ptr->lev > 39))
-        {
-            new_kata = 3;
-            break;
-        }
-    }
+    else if ((idx <= MAX_KATA) && (p_ptr->lev >= kata_shurui[idx - 1].min_level)) new_kata = idx - 1;
+    else return FALSE;
     set_action(ACTION_KATA);
 
     if (p_ptr->special_defense & (KATA_IAI << new_kata))
@@ -1180,7 +1154,6 @@ static bool _choose_kata(void)
     }
     p_ptr->redraw |= (PR_STATE);
     p_ptr->redraw |= (PR_STATUS);
-    screen_load();
     return TRUE;
 }
 
