@@ -1367,9 +1367,11 @@ static int _yeqrezh_gain_talent(int slot)
 {
     int choices[MAX_YEQREZH_MUT];
     int i, ct = 0;
+    static bool _lock = FALSE;
     menu_t menu = { "Gain which gift?", "Browse which gift?", NULL,
                     _yeqrezh_menu_fn, choices, 0, Term->hgt - 6};
 
+    if (_lock) return -1;
     if ((slot % 5) != 4) return -1;
     if ((slot >= _YEQREZH_PICKS) || (slot < 0)) return -1;
     if (!character_dungeon) return -1;
@@ -1388,6 +1390,8 @@ static int _yeqrezh_gain_talent(int slot)
     if (ct == 0) return -1;
 
     menu.count = ct;
+
+    _lock = TRUE;
 
     for (;;)
     {
@@ -1418,11 +1422,15 @@ static int _yeqrezh_gain_talent(int slot)
                     var_clear(&v);
                 }
 
+                _lock = FALSE;
+
                 return idx;
             }
         }
         msg_print("Please make a choice!");
     }
+
+    _lock = FALSE;
 
     return -1;
 }

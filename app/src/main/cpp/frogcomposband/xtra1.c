@@ -5529,6 +5529,9 @@ void update_stuff(void)
     /* Update stuff */
     if (!p_ptr->update) return;
 
+    /* mega-hack - prevent triggering repeated calls by resizing the window */
+    if (((!redraw_hack) && (!resize_hack)) || (character_xtra))
+    {
     if (p_ptr->update & (PU_BONUS))
     {
         p_ptr->update &= ~(PU_BONUS);
@@ -5551,6 +5554,7 @@ void update_stuff(void)
     {
         p_ptr->update &= ~(PU_MANA);
         calc_mana();
+        }
     }
 
     if (p_ptr->update & (PU_SPELLS))

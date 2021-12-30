@@ -215,7 +215,7 @@ int _letter_roman_value(unsigned char mika)
     }
 }
 
-int find_roman_numeral(char *nimi)
+int find_roman_numeral(char *nimi, int *paikka)
 {
     int i, tyhja, pituus = strlen(nimi), uuspit, isoarvo = 0;
     int arvot[22] = {0};
@@ -247,6 +247,7 @@ int find_roman_numeral(char *nimi)
         if ((i < uuspit - 1) && (arvot[i + 1] > arvot[i])) isoarvo -= arvot[i];
         else isoarvo += arvot[i];
     }
+    if (paikka != NULL) *paikka = tyhja;
     return MAX(0, isoarvo); /* paranoia */
 }
 
@@ -319,15 +320,19 @@ int find_arabic_numeral(char *nimi, int *paikka)
 
 void bump_numeral(char *nimi, int muutos)
 {
-    int _old_num = 0, _error = 0;
+    int _old_num = 0, _error = 0, paikka = 0;
     if ((!nimi) || (!strlen(nimi))) return;
     if (!muutos) return; /* Nothing to do */
-    _old_num = find_roman_numeral(nimi);
+    _old_num = find_roman_numeral(nimi, &paikka);
     while (_old_num > 0)
     {
         char luku[PY_NAME_LEN + 2] = "";
         if (!num_to_roman(_old_num, luku)) break;
-        if (!clip_and_locate(luku, nimi)) break;
+        if ((paikka > 0) && ((int)strpos(luku, nimi) < paikka))
+        {
+            nimi[paikka] = '\0';
+        }
+        else if (!clip_and_locate(luku, nimi)) break;
         _error = 1;
         if ((_old_num + muutos) <= 0) return;
         if (!num_to_roman(_old_num + muutos, luku)) break;
@@ -374,7 +379,7 @@ void bump_numeral(char *nimi, int muutos)
 bool name_is_numbered(char *nimi)
 {
     if ((!nimi) || (strlen(nimi) < 2)) return FALSE;
-    if (find_roman_numeral(nimi)) return TRUE;
+    if (find_roman_numeral(nimi, NULL)) return TRUE;
     if (find_arabic_numeral(nimi, NULL)) return TRUE;
     return FALSE;
 }

@@ -271,7 +271,9 @@ void check_experience(void)
             if ((p_ptr->max_plv % 5) == 0) level_inc_stat = TRUE;
 
             if (class_ptr->gain_level != NULL)
+            {
                 (class_ptr->gain_level)(p_ptr->lev);
+            }
 
             if (mut_present(MUT_CHAOS_GIFT))
                 chaos_warrior_reward();
@@ -3324,6 +3326,8 @@ bool mon_take_hit(int m_idx, int dam, int type, bool *fear, cptr note)
     return (FALSE);
 }
 
+bool resize_hack = FALSE;
+
 /*
  * Map resizing whenever the main term changes size
  */
@@ -3331,6 +3335,8 @@ void resize_map(void)
 {
     /* Only if the dungeon exists */
     if (!character_dungeon) return;
+
+    resize_hack = TRUE;
 
     viewport_verify();
     msg_line_clear();
@@ -3366,6 +3372,8 @@ void resize_map(void)
 
     /* Refresh */
     Term_fresh();
+
+    resize_hack = FALSE;
 }
 
 /*
@@ -3375,6 +3383,8 @@ void redraw_window(void)
 {
     /* Only if the dungeon exists */
     if (!character_dungeon) return;
+
+    resize_hack = TRUE;
 
     /* Window stuff */
     p_ptr->window |= (PW_INVEN | PW_EQUIP | PW_SPELL);
@@ -3387,6 +3397,8 @@ void redraw_window(void)
 
     /* Redraw */
     Term_redraw();
+
+    resize_hack = FALSE;
 }
 
 

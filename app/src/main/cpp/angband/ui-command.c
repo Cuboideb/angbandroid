@@ -297,24 +297,25 @@ static void screenshot_term_query(int wid, int hgt, int x, int y, int *a, wchar_
 /**
  * Take an html screenshot
  */
-void html_screenshot(const char *path, int mode)
+void html_screenshot(const char *path, int mode, term *other_term)
 {
+	/* Put the contents of the other terminal on the right by default. */
+	bool other_left = false;
 	int y, x;
-	int wid, hgt;
-
+	int main_wid, main_hgt, other_wid, other_hgt, wid, hgt;
+	int main_xst, other_xst;
 	int a = COLOUR_WHITE;
 	int oa = COLOUR_WHITE;
 	int fg_colour = COLOUR_WHITE;
 	int bg_colour = COLOUR_DARK;
 	wchar_t c = L' ';
+	term *main_term = Term;
 
-	const char *new_color_fmt = (mode == 0) ?
-					"<font color=\"#%02X%02X%02X\" style=\"background-color: #%02X%02X%02X\">"
-				 	: "[COLOR=\"#%02X%02X%02X\"]";
+	const char *new_color_fmt = "<font color=\"#%02X%02X%02X\" style=\"background-color: #%02X%02X%02X\">";
 	const char *change_color_fmt = (mode == 0) ?
 					"</font><font color=\"#%02X%02X%02X\" style=\"background-color: #%02X%02X%02X\">"
 					: "[/COLOR][COLOR=\"#%02X%02X%02X\"]";
-	const char *close_color_str = mode ==  0 ? "</font>" : "[/COLOR]";
+	const char *close_color_str = "</font>";
 
 	char *mbbuf;
 	ang_file *fp;
@@ -330,24 +331,69 @@ void html_screenshot(const char *path, int mode)
 	}
 
 	/* Retrieve current screen size */
-	Term_get_size(&wid, &hgt);
+	Term_get_size(&main_wid, &main_hgt);
+	if (other_term) {
+		Term_activate(other_term);
+		Term_get_size(&other_wid, &other_hgt);
+		Term_activate(main_term);
+	} else {
+		other_wid = 0;
+		other_hgt = 0;
+	}
+	if (other_left) {
+		other_xst = 0;
+		main_xst = (other_wid > 0) ? other_wid + 1 : 0;
+	} else {
+		other_xst = main_wid + 1;
+		main_xst = 0;
+	}
+	hgt = MAX(main_hgt, other_hgt);
+	wid = (other_wid > 0) ? main_wid + other_wid + 1 : main_wid;
 
 	if (mode == 0) {
 		file_putf(fp, "<!DOCTYPE html><html><head>\n");
 		file_putf(fp, "  <meta='generator' content='%s'>\n", buildid);
 		file_putf(fp, "  <title>%s</title>\n", path);
 		file_putf(fp, "</head>\n\n");
-		file_putf(fp, "<body style='color: #fff; background: #000;'>\n");
+		file_putf(fp, "<body style='color: #%02X%02X%02X; background: #%02X%02X%02X;'>\n",
+			angband_color_table[COLOUR_WHITE][1],
+			angband_color_table[COLOUR_WHITE][2],
+			angband_color_table[COLOUR_WHITE][3],
+			angband_color_table[COLOUR_DARK][1],
+			angband_color_table[COLOUR_DARK][2],
+			angband_color_table[COLOUR_DARK][3]);
 		file_putf(fp, "<pre>\n");
 	} else {
-		file_putf(fp, "[CODE][TT][BC=black][COLOR=white]\n");
+		file_putf(fp, "[CODE][TT][BC=\"#%02X%02X%02X\"][COLOR=\"#%02X%02X%02X\"]\n",
+			angband_color_table[COLOUR_DARK][1],
+			angband_color_table[COLOUR_DARK][2],
+			angband_color_table[COLOUR_DARK][3],
+			angband_color_table[COLOUR_WHITE][1],
+			angband_color_table[COLOUR_WHITE][2],
+			angband_color_table[COLOUR_WHITE][3]);
 	}
 
 	/* Dump the screen */
 	for (y = 0; y < hgt; y++) {
 		for (x = 0; x < wid; x++) {
 			/* Get the attr/char */
-			screenshot_term_query(wid, hgt, x, y, &a, &c);
+			if (x >= main_xst && x < main_xst + main_wid
+					&& y < main_hgt) {
+				screenshot_term_query(wid, hgt, x - main_xst, y,
+					&a, &c);
+			} else if (x >= other_xst && x < other_xst + other_wid
+					&& y < other_hgt) {
+				if (x == other_xst) {
+					Term_activate(other_term);
+				}
+				Term_what(x - other_xst, y, &a, &c);
+				if (x == other_xst + other_wid - 1) {
+					Term_activate(main_term);
+				}
+			} else {
+				a = main_term->attr_blank;
+				c = main_term->char_blank;
+			}
 
 			/* Set the foreground and background */
 			fg_colour = a % MAX_COLORS;
@@ -366,9 +412,13 @@ void html_screenshot(const char *path, int mode)
 				assert((a >= BG_BLACK) && (a < BG_MAX * MAX_COLORS));
 			}
 
-			/* Color change */
-			if (oa != a) {
-				if (oa == COLOUR_WHITE) {
+			/*
+			 * Color change (for forum text, ignore changes if the character is
+			 * a space since the forum software strips [COLOR][/COLOR] elements that
+			 * only contain whitespace)
+			 */
+			if (oa != a && (mode == 0 || c != L' ')) {
+				if (oa == COLOUR_WHITE && mode == 0) {
 					/* From the default white to another color */
 					file_putf(fp, new_color_fmt,
 							  angband_color_table[fg_colour][1],
@@ -377,8 +427,9 @@ void html_screenshot(const char *path, int mode)
 							  angband_color_table[bg_colour][1],
 							  angband_color_table[bg_colour][2],
 							  angband_color_table[bg_colour][3]);
-				} else if (fg_colour == COLOUR_WHITE &&
-						   bg_colour == COLOUR_DARK) {
+				} else if (fg_colour == COLOUR_WHITE
+						&& bg_colour == COLOUR_DARK
+						&& mode == 0) {
 					/* From another color to the default white */
 					file_putf(fp, "%s", close_color_str);
 				} else {
@@ -416,7 +467,7 @@ void html_screenshot(const char *path, int mode)
 	}
 
 	/* Close the last font-color tag if necessary */
-	if (oa != COLOUR_WHITE) file_putf(fp, "%s", close_color_str);
+	if (oa != COLOUR_WHITE && mode == 0) file_putf(fp, "%s", close_color_str);
 
 	if (mode == 0) {
 		file_putf(fp, "</pre>\n");
@@ -437,7 +488,7 @@ void html_screenshot(const char *path, int mode)
 /**
  * Hack -- save a screen dump to a file in html format
  */
-static void do_cmd_save_screen_html(int mode)
+static void do_cmd_save_screen_html(int mode, term *other_term)
 {
 	size_t i;
 
@@ -455,8 +506,7 @@ static void do_cmd_save_screen_html(int mode)
 
 	/* Save current preferences */
 	path_build(file_name, sizeof(file_name), ANGBAND_DIR_USER, "dump.prf");
-	fff = file_open(file_name, MODE_WRITE,
-					(mode == 0 ? FTYPE_HTML : FTYPE_TEXT));
+	fff = file_open(file_name, MODE_WRITE, FTYPE_TEXT);
 
 	/* Check for failure */
 	if (!fff) {
@@ -474,7 +524,7 @@ static void do_cmd_save_screen_html(int mode)
 	/* Dump the screen with raw character attributes */
 	reset_visuals(false);
 	do_cmd_redraw();
-	html_screenshot(tmp_val, mode);
+	html_screenshot(tmp_val, mode, other_term);
 
 	/* Recover current graphics settings */
 	reset_visuals(true);
@@ -492,12 +542,23 @@ static void do_cmd_save_screen_html(int mode)
  */
 void do_cmd_save_screen(void)
 {
-	char ch;
-	ch = get_char("Dump as (H)TML or (F)orum text? ", "hf", 2, ' ');
+	char ch = get_char("Dump as (H)TML or (F)orum text? ", "hf", 2, ' ');
+	int mode = 0;
+	term *ml_term;
 
-	switch (ch)
-	{
-		case 'h': do_cmd_save_screen_html(0); break;
-		case 'f': do_cmd_save_screen_html(1); break;
+	switch (ch) {
+		case 'h':
+			mode = 0;
+			break;
+		case 'f':
+			mode = 1;
+			break;
+		default:
+			return;
 	}
+	ml_term = find_first_subwindow(PW_MONLIST);
+	if (ml_term) {
+		if (!get_check("Include monster list? ")) ml_term = NULL;
+	}
+	do_cmd_save_screen_html(mode, ml_term);
 }

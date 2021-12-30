@@ -746,7 +746,7 @@ extern void py_birth_obj_aux(int tval, int sval, int qty);
 extern void py_birth_food(void);
 extern void py_birth_light(void);
 extern void py_birth_spellbooks(void);
-extern int find_roman_numeral(char *nimi);
+extern int find_roman_numeral(char *nimi, int *paikka);
 extern int find_arabic_numeral(char *nimi, int *paikka);
 extern bool num_to_roman(int _num, char *buf);
 extern void bump_numeral(char *nimi, int muutos);
@@ -2017,6 +2017,7 @@ extern bool get_monster_drop(int m_idx, object_type *o_ptr);
 extern byte get_monster_drop_ct(monster_type *m_ptr);
 extern bool mon_take_hit(int m_idx, int dam, int type, bool *fear, cptr note);
 extern void mon_check_kill_unique(int m_idx);
+extern bool resize_hack;
 extern void resize_map(void);
 extern void redraw_window(void);
 
