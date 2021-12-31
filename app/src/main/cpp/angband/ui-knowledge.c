@@ -23,6 +23,7 @@
 #include "effects.h"
 #include "effects-info.h"
 #include "game-input.h"
+#include "game-world.h"
 #include "grafmode.h"
 #include "init.h"
 #include "mon-lore.h"
@@ -1694,13 +1695,20 @@ static void do_cmd_knowledge_artifacts(const char *name, int row)
 
 	int *artifacts;
 	int a_count = 0;
+	char title[40];
 
 	artifacts = mem_zalloc(z_info->a_max * sizeof(int));
 
 	/* Collect valid artifacts */
 	a_count = collect_known_artifacts(artifacts, z_info->a_max);
 
-	display_knowledge("artifacts", artifacts, a_count, obj_f, art_f, NULL);
+	if (OPT(player, birth_randarts)) {
+		strnfmt(title, sizeof(title), "artifacts (seed %08x)",
+			seed_randart);
+	} else {
+		strnfmt(title, sizeof(title), "artifacts");
+	}
+	display_knowledge(title, artifacts, a_count, obj_f, art_f, NULL);
 	mem_free(artifacts);
 }
 
@@ -3632,8 +3640,9 @@ void do_cmd_inven(void)
 		screen_save();
 
 		/* Get an item to use a context command on (Display the inventory) */
-		if (get_item(&obj, "Select Item:", NULL, CMD_NULL, NULL,
-					 GET_ITEM_PARAMS)) {
+		if (get_item(&obj, "Select Item:",
+				"Error in do_cmd_inven(), please report.",
+				CMD_NULL, NULL, GET_ITEM_PARAMS)) {
 			/* Load screen */
 			screen_load();
 
@@ -3677,8 +3686,9 @@ void do_cmd_equip(void)
 		screen_save();
 
 		/* Get an item to use a context command on (Display the equipment) */
-		if (get_item(&obj, "Select Item:", NULL, CMD_NULL, NULL,
-					 GET_ITEM_PARAMS)) {
+		if (get_item(&obj, "Select Item:",
+				"Error in do_cmd_equip(), please report.",
+				CMD_NULL, NULL, GET_ITEM_PARAMS)) {
 			/* Load screen */
 			screen_load();
 
@@ -3725,8 +3735,9 @@ void do_cmd_quiver(void)
 		screen_save();
 
 		/* Get an item to use a context command on (Display the quiver) */
-		if (get_item(&obj, "Select Item:", NULL, CMD_NULL, NULL,
-					 GET_ITEM_PARAMS)) {
+		if (get_item(&obj, "Select Item:",
+				"Error in do_cmd_quiver(), please report.",
+				CMD_NULL, NULL, GET_ITEM_PARAMS)) {
 			/* Load screen */
 			screen_load();
 

@@ -3583,8 +3583,9 @@ void do_cmd_inven(void)
 		screen_save();
 
 		/* Get an item to use a context command on (Display the inventory) */
-		if (get_item(&obj, "Select Item:", NULL, CMD_NULL, NULL,
-					 GET_ITEM_PARAMS)) {
+		if (get_item(&obj, "Select Item:",
+				"Error in do_cmd_inven(), please report.",
+				CMD_NULL, NULL, GET_ITEM_PARAMS)) {
 			/* Load screen */
 			screen_load();
 
@@ -3628,8 +3629,9 @@ void do_cmd_equip(void)
 		screen_save();
 
 		/* Get an item to use a context command on (Display the equipment) */
-		if (get_item(&obj, "Select Item:", NULL, CMD_NULL, NULL,
-					 GET_ITEM_PARAMS)) {
+		if (get_item(&obj, "Select Item:",
+				"Error in do_cmd_equip(), please report.",
+				CMD_NULL, NULL, GET_ITEM_PARAMS)) {
 			/* Load screen */
 			screen_load();
 
@@ -3676,8 +3678,9 @@ void do_cmd_quiver(void)
 		screen_save();
 
 		/* Get an item to use a context command on (Display the quiver) */
-		if (get_item(&obj, "Select Item:", NULL, CMD_NULL, NULL,
-					 GET_ITEM_PARAMS)) {
+		if (get_item(&obj, "Select Item:",
+				"Error in do_cmd_quiver(), please report.",
+				CMD_NULL, NULL, GET_ITEM_PARAMS)) {
 			/* Load screen */
 			screen_load();
 
