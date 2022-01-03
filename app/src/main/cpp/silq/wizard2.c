@@ -1301,7 +1301,6 @@ static void do_cmd_wiz_tile_test(void)
             int x = monster_index % 30 + 2;
 
             place_monster_one(y, x, r_idx, FALSE, FALSE, NULL);
-
         }
     }
 
