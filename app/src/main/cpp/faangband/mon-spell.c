@@ -61,6 +61,31 @@ static spell_tag_t spell_tag_lookup(const char *tag)
 }
 
 /**
+ * Lookup a race-specific message for a spell.
+ *
+ * \param r is the race.
+ * \param s_idx is the spell index.
+ * \param msg_type is the type of message.
+ * \return the text of the message if there's a race-specific one or NULL if
+ * there is not.
+ */
+static const char *find_alternate_spell_message(const struct monster_race *r,
+		int s_idx, enum monster_altmsg_type msg_type)
+{
+	const struct monster_altmsg *am = r->spell_msgs;
+
+	while (1) {
+		if (!am) {
+			return NULL;
+		}
+		if (am->index == s_idx && am->msg_type == msg_type) {
+			 return am->message;
+		}
+		am = am->next;
+	}
+}
+
+/**
  * Print a monster spell message.
  *
  * We fill in the monster name and/or pronoun where necessary in
@@ -70,6 +95,7 @@ static void spell_message(struct monster *mon,
 						  const struct monster_spell *spell,
 						  bool seen, bool hits)
 {
+	const char punct[] = ".!?;:,'";
 	char buf[1024] = "\0";
 	const char *next;
 	const char *s;
@@ -78,6 +104,7 @@ static void spell_message(struct monster *mon,
 	size_t end = 0;
 	struct monster_spell_level *level = spell->level;
 	struct monster *t_mon = NULL;
+	bool is_leading;
 
 	/* Get the right level of message */
 	while (level->next && mon->race->spell_power >= level->next->power) {
@@ -94,15 +121,34 @@ static void spell_message(struct monster *mon,
 		if (t_mon) {
 			return;
 		} else {
-			in_cursor = level->blind_message;
+			in_cursor = find_alternate_spell_message(mon->race,
+				spell->index, MON_ALTMSG_UNSEEN);
+			if (in_cursor == NULL) {
+				in_cursor = level->blind_message;
+			} else if (in_cursor[0] == '\0') {
+				return;
+			}
 		}
 	} else if (!hits) {
-		in_cursor = level->miss_message;
+		in_cursor = find_alternate_spell_message(mon->race,
+			spell->index, MON_ALTMSG_MISS);
+		if (in_cursor == NULL) {
+			in_cursor = level->miss_message;
+		} else if (in_cursor[0] == '\0') {
+			return;
+		}
 	} else {
-		in_cursor = level->message;
+		in_cursor = find_alternate_spell_message(mon->race,
+			spell->index, MON_ALTMSG_SEEN);
+		if (in_cursor == NULL) {
+			in_cursor = level->message;
+		} else if (in_cursor[0] == '\0') {
+			return;
+		}
 	}
 
 	next = strchr(in_cursor, '{');
+	is_leading = (next == in_cursor);
 	while (next) {
 		/* Copy the text leading up to this { */
 		strnfcat(buf, 1024, &end, "%.*s", next - in_cursor, in_cursor);
@@ -119,7 +165,17 @@ static void spell_message(struct monster *mon,
 			switch (spell_tag_lookup(tag)) {
 				case SPELL_TAG_NAME: {
 					char m_name[80];
-					monster_desc(m_name, sizeof(m_name), mon, MDESC_STANDARD);
+					int mdesc_mode = (MDESC_IND_HID |
+						MDESC_PRO_HID);
+
+					if (is_leading) {
+						mdesc_mode |= MDESC_CAPITAL;
+					}
+					if (!strchr(punct, *in_cursor)) {
+						mdesc_mode |= MDESC_COMMA;
+					}
+					monster_desc(m_name, sizeof(m_name),
+						mon, mdesc_mode);
 
 					strnfcat(buf, sizeof(buf), &end, m_name);
 					break;
@@ -138,7 +194,14 @@ static void spell_message(struct monster *mon,
 				case SPELL_TAG_TARGET: {
 					char m_name[80];
 					if (mon->target.midx > 0) {
-						monster_desc(m_name, sizeof(m_name), t_mon, MDESC_TARG);
+						int mdesc_mode = MDESC_TARG;
+
+						if (!strchr(punct, *in_cursor)) {
+							mdesc_mode |= MDESC_COMMA;
+						}
+						monster_desc(m_name,
+							sizeof(m_name), t_mon,
+							mdesc_mode);
 						strnfcat(buf, sizeof(buf), &end, m_name);
 					} else {
 						strnfcat(buf, sizeof(buf), &end, "you");
@@ -177,6 +240,7 @@ static void spell_message(struct monster *mon,
 		}
 
 		next = strchr(in_cursor, '{');
+		is_leading = false;
 	}
 	strnfcat(buf, 1024, &end, in_cursor);
 

@@ -12,9 +12,6 @@ Please choose one of the following help files:
 
 
 
-
-
-
 Browser/help commands:
   #     go to line         %  go to file         ?  go to last file/main menu
   SPACE advance 1 page     -  back up 1 page     /  search for text

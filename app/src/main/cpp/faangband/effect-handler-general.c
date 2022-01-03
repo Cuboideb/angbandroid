@@ -2450,7 +2450,7 @@ bool effect_handler_PROBE(effect_handler_context_t *context)
 
 			/* Get "the monster" or "something" */
 			monster_desc(m_name, sizeof(m_name), mon,
-					MDESC_IND_HID | MDESC_CAPITAL);
+				MDESC_IND_HID | MDESC_CAPITAL | MDESC_COMMA);
 
 			/* Describe the monster */
 			msg("%s has %d hit point%s.", m_name, mon->hp, (mon->hp == 1) ? "" : "s");
@@ -2619,7 +2619,21 @@ bool effect_handler_TELEPORT(effect_handler_context_t *context)
 
 	/* Report failure (very unlikely) */
 	if (!num_spots) {
-		msg("Failed to find teleport destination!");
+		if (is_player) {
+			msg("Failed to find teleport destination!");
+		} else {
+			/*
+			 * With either teleport self or teleport other, it'll
+			 * be the caster that is puzzled.
+			 */
+			struct monster *mon = cave_monster(cave,
+				context->origin.which.monster);
+
+			if (square_isseen(cave, mon->grid)) {
+				add_monster_message(mon, MON_MSG_BRIEF_PUZZLE,
+					true);
+			}
+		}
 		return true;
 	}
 
