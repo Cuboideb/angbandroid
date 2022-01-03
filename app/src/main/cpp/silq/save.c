@@ -953,7 +953,8 @@ static void wr_extra(void)
 
     wr_s32b(p_ptr->unused2);
     wr_s32b(p_ptr->unused3);
-    wr_s32b(p_ptr->unused4);
+
+    wr_s32b(min_depth_counter);
 
     updatecharinfoS();
 }

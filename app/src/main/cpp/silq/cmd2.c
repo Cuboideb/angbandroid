@@ -16,35 +16,27 @@
  */
 int min_depth(void)
 {
-    int p = 0;
-    int d = 0;
-
-    // base minimum depth
-    while (p < playerturn)
-    {
-        d += 1;
-        p += 1000 + 50 * d;
-    }
+    int min_depth_value = min_depth_counter / 100000 + 1;
 
     // bounds on the base
-    if (d < 1)
-        d = 1;
-    if (d > MORGOTH_DEPTH)
-        d = MORGOTH_DEPTH;
+    if (min_depth_value < 1)
+        min_depth_value = 1;
+    if (min_depth_value > MORGOTH_DEPTH)
+        min_depth_value = MORGOTH_DEPTH;
 
     // can't leave the throne room
     if (p_ptr->depth == MORGOTH_DEPTH)
     {
-        d = MORGOTH_DEPTH;
+        min_depth_value = MORGOTH_DEPTH;
     }
 
     // no limits in the endgame
     if (p_ptr->on_the_run)
     {
-        d = 0;
+        min_depth_value = 0;
     }
 
-    return (d);
+    return (min_depth_value);
 }
 
 void note_lost_greater_vault(void)
@@ -122,6 +114,13 @@ void do_cmd_go_up(void)
         return;
     }
 
+    /* Ironman */
+    if (birth_ironman && (silmarils_possessed() == 0))
+    {
+        msg_print("You have vowed to not to return until you hold a Silmaril.");
+        return;
+    }
+
     if (chosen_oath(OATH_IRON) && !oath_invalid(OATH_IRON) &&
        (silmarils_possessed() == 0))
     {
@@ -136,13 +135,9 @@ void do_cmd_go_up(void)
         }
     }
 
-    p_ptr->oaths_broken |= OATH_IRON_FLAG;
-
-    /* Ironman */
-    if (birth_ironman && (silmarils_possessed() == 0))
+    if (silmarils_possessed() == 0)
     {
-        msg_print("You have vowed to not to return until you hold a Silmaril.");
-        return;
+    p_ptr->oaths_broken |= OATH_IRON_FLAG;
     }
 
     /* Hack -- take a turn */
@@ -4268,10 +4263,10 @@ void do_cmd_fire(int quiver)
                             && !(r_ptr->flags1 & (RF1_RES_CRIT)))
                         {
                             // Slightly magical. Function that caps out before
-                            // 20 (Morgoth will) but grows quickly early on, and
+                            // 30 but grows quickly early on, and
                             // doesn't need math.h
                             crippling_blow_multiplier
-                                = (20 - (40 / (crit_bonus_dice + 2)));
+                                = (30 - (60 / (crit_bonus_dice + 2)));
                             if (skill_check(PLAYER, crippling_blow_multiplier,
                                     monster_skill(m_ptr, S_WIL), m_ptr)
                                 > 0)
