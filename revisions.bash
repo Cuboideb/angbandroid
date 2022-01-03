@@ -2,7 +2,7 @@ echo Sumary of revisions
 cd angband-github
 echo Vanilla: https://github.com/angband/angband/commit/`git rev-parse HEAD`
 cd ../faangband-github
-echo FAangband: https://github.com/NickMcConnell/FAangband/`git rev-parse HEAD`
+echo FAangband: https://github.com/NickMcConnell/FAangband/commit/`git rev-parse HEAD`
 cd ../frog-github
 echo FrogComposband: https://github.com/sulkasormi/frogcomposband/commit/`git rev-parse HEAD`
 cd ../silq-github
