@@ -2562,7 +2562,7 @@ void do_cmd_rest(void)
 
         /* Ask for duration
         if (!get_string(p, out_val, 4)) return;*/
-        if (!msg_input(p, out_val, 4)) return;
+        if (!msg_input(p, out_val, 5)) return;
 
         /* Rest until done */
         if (out_val[0] == '&')

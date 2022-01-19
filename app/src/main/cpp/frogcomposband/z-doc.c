@@ -1820,7 +1820,11 @@ int doc_display_aux(doc_ptr doc, cptr caption, int top, rect_t display)
                 }
                 strcat(nuname, ".html");
                 sprintf(prompt, "Please note that the FrogComposband Ladder at angband.oook.cz only accepts HTML dumps.\n<color:y>Save dump as</color> <color:R>%s</color><color:y>? [y/n]</color>", nuname);
-                if (msg_prompt(prompt, "ny", PROMPT_DEFAULT) == 'y') strcpy(buf, nuname);
+                if (msg_prompt(prompt, "ny", PROMPT_DEFAULT) == 'y')
+                {
+                    strcpy(buf, nuname);
+                    format = DOC_FORMAT_HTML;
+                }
             }
 
             fp2 = my_fopen(buf, "w");
