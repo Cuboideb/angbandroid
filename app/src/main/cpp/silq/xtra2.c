@@ -10,6 +10,8 @@
 
 #include "angband.h"
 
+#include "droid.h"
+
 /*
  * The saving throw is a will skill check.
  *
@@ -4135,6 +4137,9 @@ bool target_set_interactive(int mode, int range)
                 my_strcpy(info, "(m)anual, <dir>", sizeof(info));
             }
 
+            /* Android */
+            soft_kbd_flash("pm-*t");
+
             /* Describe and Prompt */
             query = target_set_interactive_aux(y, x, mode, info);
 
@@ -4319,6 +4324,9 @@ bool target_set_interactive(int mode, int range)
             {
                 my_strcpy(info, "(a)uto, <dir>", sizeof(info));
             }
+
+            /* Android */
+            soft_kbd_flash("pat");
 
             /* Describe and Prompt (enable "TARGET_LOOK") */
             query = target_set_interactive_aux(y, x, mode | TARGET_LOOK, info);
@@ -4922,6 +4930,9 @@ bool get_aim_dir(int* dp, int range)
         {
             p = "Direction ('f' for target, '*' to re-target, ESC to cancel)? ";
         }
+
+        /* Android */
+        soft_kbd_flash("f*");
 
         /* Get a command (or Cancel) */
         if (!get_com(p, &ch))
