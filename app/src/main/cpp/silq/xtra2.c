@@ -4138,7 +4138,7 @@ bool target_set_interactive(int mode, int range)
             }
 
             /* Android */
-            soft_kbd_flash("pm-*t");
+            soft_kbd_flash("pm-r*t");
 
             /* Describe and Prompt */
             query = target_set_interactive_aux(y, x, mode, info);
@@ -4326,7 +4326,7 @@ bool target_set_interactive(int mode, int range)
             }
 
             /* Android */
-            soft_kbd_flash("pat");
+            soft_kbd_flash("part");
 
             /* Describe and Prompt (enable "TARGET_LOOK") */
             query = target_set_interactive_aux(y, x, mode | TARGET_LOOK, info);

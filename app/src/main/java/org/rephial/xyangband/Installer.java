@@ -197,6 +197,11 @@ public class Installer {
 				String filename = abs_path + "/" + ze_name;
 				File myfile = new File(filename);
 
+				// Avoid path traversal vulnerability
+				if (!myfile.getCanonicalPath().startsWith(abs_path)) {
+					throw new SecurityException();
+				}
+
 				if (ze.isDirectory()) {
 					myfile.mkdirs();
 					continue;
