@@ -551,6 +551,10 @@ void do_cmd_change_song()
     char out_val[80];
     char tmp_val[80];
 
+    /* Android */
+    char buf[200] = "";
+    char *pbuf;
+
     char which;
 
     // count the abilities
@@ -589,12 +593,18 @@ void do_cmd_change_song()
     /* Repeat until done */
     while (!done)
     {
+        /* Reset */
+        pbuf = buf;
+
         /* Redraw if needed */
         if (p_ptr->command_see)
             show_songs();
 
         /* Begin the prompt */
         sprintf(out_val, "Songs: s");
+
+        /* Add the stop key */
+        *pbuf++ = 's';
 
         // count the abilities
         for (i = 0; i < SNG_WOVEN_THEMES; i++)
@@ -607,6 +617,8 @@ void do_cmd_change_song()
 
                 /* Append */
                 my_strcat(out_val, tmp_val, sizeof(out_val));
+
+                *pbuf++ = (char)('a'+i);
             }
         }
 
@@ -615,6 +627,8 @@ void do_cmd_change_song()
         {
             /* Append */
             my_strcat(out_val, ",x", sizeof(out_val));
+
+            *pbuf++ = 'x';
         }
 
         /* Indicate ability to "view" */
@@ -626,6 +640,10 @@ void do_cmd_change_song()
 
         /* Show the prompt */
         prt(tmp_val, 0, 0);
+
+        /* Android */
+        *pbuf = 0;
+        soft_kbd_flash(buf);
 
         /* Get a key */
         which = inkey();

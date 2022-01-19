@@ -10,6 +10,8 @@
 
 #include "angband.h"
 
+#include "droid.h"
+
 // These are copied from birth.c and needed for displaying the character sheet
 #define INSTRUCT_ROW 21
 #define QUESTION_COL 2
@@ -3280,6 +3282,8 @@ void do_cmd_suicide(void)
     /* Special Verification for suicide */
     prt("Please verify ABORTING by typing the '@' sign: ", 0, 0);
     flush();
+    /* Android */
+    soft_kbd_flash("@");
     ch = inkey();
     prt("", 0, 0);
     if (ch != '@')
