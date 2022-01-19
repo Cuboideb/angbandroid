@@ -603,7 +603,7 @@ bool msg_input_num(cptr prompt, int *num, int min, int max)
     auto_more_state = AUTO_MORE_PROMPT;
     msg_format("<color:y>%s <color:w>(%d to %d)</color>:</color> ", prompt, min, max);
     soft_kbd_linger("01234546789");
-    result = askfor_aux(buf, 10, FALSE);
+    result = askfor_aux(buf, 11, FALSE);
     soft_kbd_clear(true);
     if (result)
     {
