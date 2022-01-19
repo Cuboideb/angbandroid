@@ -10,6 +10,8 @@
 
 #include "angband.h"
 
+#include "droid.h"
+
 // These are copied from birth.c and needed for displaying the character sheet
 #define INSTRUCT_ROW 21
 #define QUESTION_COL 2
