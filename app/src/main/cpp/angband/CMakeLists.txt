@@ -56,8 +56,6 @@ add_library( # Sets the name of the library.
             guid.c
             init.c
             load.c
-            main-spoil.c
-            main-stats.c
             message.c
             mon-attack.c
             mon-blows.c
