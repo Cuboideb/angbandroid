@@ -3220,6 +3220,9 @@ public class TermView extends View implements OnGestureListener {
 
 	public void drawSilQEffects(TileGrid tile, boolean isTerrain)
 	{
+		// Save for later
+		int _attr = tile.attr;
+
 		// Terrain is "Glowing"
 		if (isTerrain && (tile.attr & 0x40) != 0) {
 			// Hack - Get tile
@@ -3248,6 +3251,10 @@ public class TermView extends View implements OnGestureListener {
 			else {
 				Log.d("Angband", "Cant load ALERT");
 			}
+		}
+
+		if ((_attr & (PLAYER_MASK|MONSTER_MASK)) != 0) {
+			drawLifeColor(_attr, tile.locateDest());
 		}
 	}
 

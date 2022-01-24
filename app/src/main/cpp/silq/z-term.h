@@ -36,16 +36,16 @@ struct term_win
     bool cu, cv;
     byte cx, cy;
 
-    byte** a;
-    char** c;
+    int** a;
+    char ** c;
 
-    byte* va;
+    int* va;
     char* vc;
 
-    byte** ta;
+    int** ta;
     char** tc;
 
-    byte* vta;
+    int* vta;
     char* vtc;
 };
 
@@ -174,7 +174,7 @@ struct term
     bool never_bored;
     bool never_frosh;
 
-    byte attr_blank;
+    int attr_blank;
     char char_blank;
 
     char* key_queue;
@@ -212,10 +212,10 @@ struct term
 
     errr (*wipe_hook)(int x, int y, int n);
 
-    errr (*text_hook)(int x, int y, int n, byte a, cptr s);
+    errr (*text_hook)(int x, int y, int n, int a, cptr s);
 
-    errr (*pict_hook)(int x, int y, int n, const byte* ap, const char* cp,
-        const byte* tap, const char* tcp);
+    errr (*pict_hook)(int x, int y, int n, const int* ap, const char* cp,
+        const int* tap, const char* tcp);
 };
 
 /**** Available Constants ****/
@@ -265,7 +265,7 @@ extern term* Term;
 extern errr Term_user(int n);
 extern errr Term_xtra(int n, int v);
 
-extern void Term_queue_char(int x, int y, byte a, char c, byte ta, char tc);
+extern void Term_queue_char(int x, int y, int a, char c, int ta, char tc);
 extern void Term_queue_chars(int x, int y, int n, byte a, cptr s);
 
 extern errr Term_fresh(void);

@@ -5587,7 +5587,7 @@ static void get_tile(int row, int col, byte* a_def, char* c_def)
  */
 static void get_default_tile(int row, int col, byte* a_def, char* c_def)
 {
-    byte a;
+    int a;
     char c;
 
     int wid, hgt;

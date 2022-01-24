@@ -915,9 +915,9 @@ int player_tile_offset()
 
 #define GRAF_BROKEN_BONE 440
 
-void map_info(int y, int x, byte* ap, char* cp, byte* tap, char* tcp)
+void map_info(int y, int x, int* ap, char* cp, int* tap, char* tcp)
 {
-    byte a = TERM_DARK; // these are defaults to soothe compilation warnings
+    int a = TERM_DARK; // these are defaults to soothe compilation warnings
     char c = ' '; //
 
     byte feat;
@@ -998,7 +998,9 @@ void map_info(int y, int x, byte* ap, char* cp, byte* tap, char* tcp)
             c = f_ptr->x_char;
 
             /* Skip special light for the player tile. */
-            special_lighting_floor(&a, &c, info, cave_light[y][x]);
+            byte aux = (byte)a;
+            special_lighting_floor(&aux, &c, info, cave_light[y][x]);
+            a = aux;
         }
 
         /* Unknown */
@@ -1040,7 +1042,9 @@ void map_info(int y, int x, byte* ap, char* cp, byte* tap, char* tcp)
             c = f_ptr->x_char;
 
             /* Special lighting effects (walls only) */
-            special_lighting_wall(&a, &c, feat, info);
+            byte aux = (byte)a;
+            special_lighting_wall(&aux, &c, feat, info);
+            a = aux;
         }
 
         /* Unknown */
@@ -1198,6 +1202,28 @@ void map_info(int y, int x, byte* ap, char* cp, byte* tap, char* tcp)
         }
     }
 
+#if defined(ANDROID)
+    /* For graphics mode */
+    if (m_idx < 0) {
+        int hp = MAX(p_ptr->chp,0);
+        hp = (hp * 10 / MAX(p_ptr->mhp,1)) & 0x0F;
+        /* Bits 8 and 9 are reserved for solid and hybrid walls (in V) */
+        a |= ((0x20 + hp) << 10);
+    }
+    /* Visible monster */
+    if (m_idx > 0 && !hide_square && !image) {
+        monster_type* m_ptr = &mon_list[m_idx];
+        if (m_ptr->ml) {
+            int hp = MAX(m_ptr->hp, 0);
+            hp = (hp * 10 / MAX(m_ptr->maxhp, 1)) & 0x0F;
+            /* Bits 8 and 9 are reserved for solid and hybrid walls (in V) */
+            a |= ((0x10 + hp) << 10);
+        }
+    }
+    /* Hack -- Always a tile */
+    a |= 0x80;
+#endif
+
     /* Result */
     (*ap) = a;
     (*cp) = c;
@@ -1210,9 +1236,9 @@ void map_info(int y, int x, byte* ap, char* cp, byte* tap, char* tcp)
  * other way it to hack map_info itself and put lots of if statements in it,
  * which could reduce speed.
  */
-void map_info_default(int y, int x, byte* ap, char* cp)
+void map_info_default(int y, int x, int* ap, char* cp)
 {
-    byte a;
+    int a;
     char c;
 
     byte feat;
@@ -1706,9 +1732,9 @@ void note_spot(int y, int x)
  */
 void lite_spot(int y, int x)
 {
-    byte a;
+    int a;
     char c;
-    byte ta;
+    int ta;
     char tc;
 
     int ky, kx;
@@ -1764,9 +1790,9 @@ void lite_spot(int y, int x)
  */
 void prt_map(void)
 {
-    byte a;
+    int a;
     char c;
-    byte ta;
+    int ta;
     char tc;
 
     int y, x;
@@ -1897,7 +1923,7 @@ void display_map(int* cy, int* cx)
 
     int x, y;
 
-    byte ta;
+    int ta;
     char tc;
 
     byte tp;

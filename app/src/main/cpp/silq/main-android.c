@@ -488,7 +488,7 @@ static errr Term_wipe_android(int x, int y, int n)
 /*
  * Draw some text on the screen
  */
-static errr Term_text_android(int x, int y, int n, byte a, cptr cp)
+static errr Term_text_android(int x, int y, int n, int a, cptr cp)
 {
 	term_data *td = (term_data*)(Term->data);
 
@@ -517,8 +517,8 @@ static errr Term_text_android(int x, int y, int n, byte a, cptr cp)
  * Draw some attr/char pairs on the screen
  */
 static errr Term_pict_android(int x, int y, int n,
-	const byte *ap, const char *cp,
-	const byte *tap, const char *tcp)
+	const int *ap, const char *cp,
+	const int *tap, const char *tcp)
 {
 	int resu;
 	int i;
@@ -529,8 +529,27 @@ static errr Term_pict_android(int x, int y, int n,
 
 	for (i = 0; i < n; i++) {
 
-		resu = waddtile(td->win, x, y, (byte)ap[i], (byte)cp[i],
-			(byte)tap[i], (byte)tcp[i]);
+		int a = ap[i];
+		byte c = (byte)cp[i];
+		int ta = tap[i];
+		byte tc = (byte)tcp[i];
+
+		// Drawing text, not tile
+		if ((c & 0x80) == 0) {
+			a &= 0x7F;
+			ta = TERM_DARK;
+			tc = ' ';
+		    int fg = a % MAX_COLORS;
+			switch (a / MAX_COLORS) {
+				case BG_SAME:   ta = fg;         break;
+				case BG_DARK:	ta = TERM_SHADE; break;
+			}
+			// Preserve hp bits
+			a = (ap[i] & 0x0FF00) | fg | 0x80;
+		}
+
+		resu = waddtile(td->win, x, y, a, c, ta, tc);
+
 		if (resu) break;
 	}
 	return resu;
