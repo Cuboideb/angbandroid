@@ -1205,8 +1205,7 @@ void map_info(int y, int x, int* ap, char* cp, int* tap, char* tcp)
 #if defined(ANDROID)
     /* For graphics mode */
     if (m_idx < 0) {
-        int hp = MAX(p_ptr->chp,0);
-        hp = (hp * 10 / MAX(p_ptr->mhp,1)) & 0x0F;
+        int hp = health_level(p_ptr->chp, p_ptr->mhp) & 0x0F;
         /* Bits 8 and 9 are reserved for solid and hybrid walls (in V) */
         a |= ((0x20 + hp) << 10);
     }
@@ -1214,8 +1213,7 @@ void map_info(int y, int x, int* ap, char* cp, int* tap, char* tcp)
     if (m_idx > 0 && !hide_square && !image) {
         monster_type* m_ptr = &mon_list[m_idx];
         if (m_ptr->ml) {
-            int hp = MAX(m_ptr->hp, 0);
-            hp = (hp * 10 / MAX(m_ptr->maxhp, 1)) & 0x0F;
+            int hp = health_level(m_ptr->hp, m_ptr->maxhp) & 0x0F;
             /* Bits 8 and 9 are reserved for solid and hybrid walls (in V) */
             a |= ((0x10 + hp) << 10);
         }

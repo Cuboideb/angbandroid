@@ -3035,10 +3035,44 @@ public class TermView extends View implements OnGestureListener {
 
 	public void drawLifeColor(int a, Rect dst)
 	{
+		// No-op
+		if ((a & (PLAYER_MASK|MONSTER_MASK)) == 0) {
+			return;
+		}
+
 		int pct = (a >> 10) & 0x0F;
 		int color = 0;
 
-		if ((a & PLAYER_MASK) != 0) {
+		boolean silMode = (Preferences.getActivePlugin() == Plugins.Plugin.silq);
+
+		// In sil the health level is encoded instead of the hp pct
+		if (silMode) {
+			switch(pct) {
+				case 0: // Dead
+					color = Color.RED;
+					pct = 0;
+					break;
+				case 1: // Almost Dead
+					color = Color.RED;
+					pct = 1;
+					break;
+				case 2: // Badly Wounded, light red
+					color = 0x0FF4040;
+					pct = 2;
+					break;
+				case 3: // Wounded, orange
+					color = 0x0FF8000;
+					pct = 5;
+					break;
+				case 4: // Somewhat Wounded
+					color = Color.YELLOW;
+					pct = 7;
+					break;
+				default: return; // Nothing
+			}
+		}
+		// Vanilla, FA
+		else if ((a & PLAYER_MASK) != 0) {
 
 			color = Color.RED;
 			if (pct >= 3) color = 0x0FF4040; // Light red
@@ -3046,12 +3080,13 @@ public class TermView extends View implements OnGestureListener {
 			if (pct >= 7) color = Color.YELLOW;
 			if (pct >= 9) return; // White, do nothing
 
+			// Draw some transparency
 			back.setColor(color);
 			back.setAlpha(90);
 			canvas.drawRect(dst, back);
 		}
-
-		if ((a & MONSTER_MASK) != 0) {
+		// Vanilla, FA
+		else if ((a & MONSTER_MASK) != 0) {
 
 			color = Color.RED;
 			if (pct >= 1) color = 0x0FF4040; // Light red
@@ -3067,7 +3102,7 @@ public class TermView extends View implements OnGestureListener {
 			pct = Math.min(pct+1,10);
 			int w = pct * (tile_wid_pix) / 10;
 			w = Math.max(w,2);
-			if (h >= 2) {
+			if (h >= 1) {
 				back.setColor(Color.BLACK);
 				back.setAlpha(255);
 				Rect r = new Rect(dst.left, dst.top, dst.right,
