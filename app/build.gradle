@@ -13,7 +13,7 @@ android {
         applicationId "org.rephial.xyangband"
         minSdkVersion 22
         targetSdkVersion 30
-        versionCode 83
+        versionCode 84
         versionName "1.32.3"
         externalNativeBuild {
             cmake {
@@ -42,6 +42,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            ndk { debugSymbolLevel 'FULL' }
         }
     }
     externalNativeBuild {
