@@ -3033,11 +3033,13 @@ public class TermView extends View implements OnGestureListener {
 		return result;
 	}
 
-	public void drawLifeColor(int a, Rect dst)
+	public int[] getLifeColorAndPct(int a)
 	{
+		int[] ret = {0,0}; // Color, Percentage
+
 		// No-op
 		if ((a & (PLAYER_MASK|MONSTER_MASK)) == 0) {
-			return;
+			return ret;
 		}
 
 		int pct = (a >> 10) & 0x0F;
@@ -3045,7 +3047,7 @@ public class TermView extends View implements OnGestureListener {
 
 		boolean silMode = (Preferences.getActivePlugin() == Plugins.Plugin.silq);
 
-		// In sil the health level is encoded instead of the hp pct
+		// In sil we get the health level
 		if (silMode) {
 			switch(pct) {
 				case 0: // Dead
@@ -3068,7 +3070,7 @@ public class TermView extends View implements OnGestureListener {
 					color = Color.YELLOW;
 					pct = 7;
 					break;
-				default: return; // Nothing
+				default: return ret; // Nothing
 			}
 		}
 		// Vanilla, FA
@@ -3078,12 +3080,7 @@ public class TermView extends View implements OnGestureListener {
 			if (pct >= 3) color = 0x0FF4040; // Light red
 			if (pct >= 5) color = 0x0FF8000; // Orange
 			if (pct >= 7) color = Color.YELLOW;
-			if (pct >= 9) return; // White, do nothing
-
-			// Draw some transparency
-			back.setColor(color);
-			back.setAlpha(90);
-			canvas.drawRect(dst, back);
+			if (pct >= 9) return ret; // White, do nothing
 		}
 		// Vanilla, FA
 		else if ((a & MONSTER_MASK) != 0) {
@@ -3092,29 +3089,64 @@ public class TermView extends View implements OnGestureListener {
 			if (pct >= 1) color = 0x0FF4040; // Light red
 			if (pct >= 3) color = 0x0FF8000; // Orange
 			if (pct >= 6) color = Color.YELLOW;
-			if (pct >= 9) return; // White, do nothing
+			if (pct >= 9) return ret; // White, do nothing
+		}
+
+		ret[0] = color;
+		ret[1] = pct;
+
+		return ret;
+	}
+
+	public void drawLifeColor(int a, Rect dst)
+	{
+		int[] data = getLifeColorAndPct(a);
+		int color = data[0];
+		int pct = data[1];
+
+		if (color == 0) return;
+
+		boolean silMode = (Preferences.getActivePlugin() == Plugins.Plugin.silq);
+
+		boolean drawShadow = false;
+
+		if ((a & PLAYER_MASK) != 0) {
+			drawShadow = true;
+		}
+
+		// In Sil-Q, draw a shadow over monsters
+		if (silMode && Preferences.getDrawHealthBars()) {
+			drawShadow = true;
+		}
+
+		if (drawShadow) {
+			back.setColor(color);
+			back.setAlpha(70);
+			canvas.drawRect(dst, back);
 		}
 
 		// Draw a health bar, for player and monster
 		if (Preferences.getDrawHealthBars()) {
-			int h = (int)(tile_hgt_pix * 0.07f);
+			// Get height
+			int h = (int)(tile_hgt_pix * 0.08f);
+			h = Math.max(h,3);
+
 			// Adjust pct like Vanilla
 			pct = Math.min(pct+1,10);
 			int w = pct * (tile_wid_pix) / 10;
 			w = Math.max(w,2);
-			if (h >= 1) {
-				back.setColor(Color.BLACK);
-				back.setAlpha(255);
-				Rect r = new Rect(dst.left, dst.top, dst.right,
-					dst.top + h);
-				canvas.drawRect(r, back);
 
-				back.setColor(color);
-				back.setAlpha(255);
-				Rect r2 = new Rect(dst.left, dst.top, dst.left + w,
-					dst.top + h);
-				canvas.drawRect(r2, back);
-			}
+			back.setColor(Color.BLACK);
+			back.setAlpha(255);
+			Rect r = new Rect(dst.left, dst.top, dst.right,
+				dst.top + h);
+			canvas.drawRect(r, back);
+
+			back.setColor(color);
+			back.setAlpha(255);
+			Rect r2 = new Rect(dst.left, dst.top, dst.left + w,
+				dst.top + h);
+			canvas.drawRect(r2, back);
 		}
 
 		back.setColor(Color.BLACK);
