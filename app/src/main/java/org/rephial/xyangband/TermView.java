@@ -34,8 +34,6 @@ import android.os.Looper;
 import android.os.Vibrator;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.util.LruCache;
-import android.util.Size;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
@@ -50,7 +48,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.HorizontalScrollView;
 import android.widget.PopupWindow;
 import android.widget.SeekBar;
 import android.widget.TableRow;
@@ -3285,34 +3282,34 @@ public class TermView extends View implements OnGestureListener {
 		paint.setTextSize(old);
 	}
 
-	public void drawSilQEffects(TileGrid tile, boolean isTerrain)
+	public void drawSilQEffects(TileGrid tile, boolean beforeTile)
 	{
-		// Save for later
-		int _attr = tile.attr;
-
-		// Terrain is "Glowing"
-		if (isTerrain && (tile.attr & 0x40) != 0) {
-			// Hack - Get tile
-			tile.changeSource(0x8C, 0x8E);
-			Bitmap glow = getTile(tile);
-			if (glow != null) {
-				//Log.d("Angband", "Loaded GLOWING");
-				Rect dst = tile.locateDest();
-				canvas.drawBitmap(glow, dst.left, dst.top, null);
+		// Object is "Glowing", draw the effect before the tile
+		if (beforeTile) {
+			if ((tile.attr & 0x40) != 0) {
+				// Hack - Get tile
+				TileGrid tileGlow = tile.copyChanged(0x8C, 0x8E);
+				Bitmap glow = getTile(tileGlow);
+				if (glow != null) {
+					//Log.d("Angband", "Loaded GLOWING");
+					Rect dst = tileGlow.locateDest();
+					canvas.drawBitmap(glow, dst.left, dst.top, null);
+				} else {
+					Log.d("Angband", "Cant load GLOWING");
+				}
 			}
-			else {
-				Log.d("Angband", "Cant load GLOWING");
-			}
+			// Done
+			return;
 		}
 
 		// Monster is "Alert"
-		if (!isTerrain && (tile.chr & 0x40) != 0) {
+		if ((tile.chr & 0x40) != 0) {
 			// Hack - Get tile
-			tile.changeSource(0x8C, 0x8B);
-			Bitmap alert = getTile(tile);
+			TileGrid tileAlert = tile.copyChanged(0x8C, 0x8B);
+			Bitmap alert = getTile(tileAlert);
 			if (alert != null) {
 				//Log.d("Angband", "Loaded ALERT");
-				Rect dst = tile.locateDest();
+				Rect dst = tileAlert.locateDest();
 				canvas.drawBitmap(alert, dst.left, dst.top, null);
 			}
 			else {
@@ -3320,8 +3317,8 @@ public class TermView extends View implements OnGestureListener {
 			}
 		}
 
-		if ((_attr & (PLAYER_MASK|MONSTER_MASK)) != 0) {
-			drawLifeColor(_attr, tile.locateDest());
+		if ((tile.attr & (PLAYER_MASK|MONSTER_MASK)) != 0) {
+			drawLifeColor(tile.attr, tile.locateDest());
 		}
 	}
 
@@ -3368,14 +3365,28 @@ public class TermView extends View implements OnGestureListener {
 
 		if (bm == null) return;
 
+		// Background, just draw and return
+		if (fill) {
+			canvas.drawBitmap(bm, dst.left, dst.top, null);
+			return;
+		}
+
+		boolean silMode = (useGraphics == Preferences.MICROCHASM_GX);
+
+		// Glowing effect
+		if (silMode) {
+			drawSilQEffects(tile, true);
+		}
+
+		// Draw the tile
 		canvas.drawBitmap(bm, dst.left, dst.top, null);
 
-		// Special sil-q effects, glowing and alert
-		if (useGraphics == Preferences.MICROCHASM_GX) {
-			drawSilQEffects(tile, fill);
+		// Alert effect, health
+		if (silMode) {
+			drawSilQEffects(tile, false);
 		}
-		// Vanilla and FAangband
-		else if (!fill) {
+		// Vanilla and FAangband effects
+		else {
 			drawVanillaEffects(tile, dst);
 		}
 	}

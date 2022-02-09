@@ -6,8 +6,13 @@ import android.graphics.Bitmap;
 
 class TileGrid
 {
+    // These aren't modified
     int attr;
     int chr;
+    int row;
+    int col;
+    // End
+
     Point srcPoint;
     TSize srcSize;
 
@@ -32,6 +37,9 @@ class TileGrid
 
         attr = pSrcRow;
         chr = pSrcCol;
+
+        row = pDstRow;
+        col = pDstCol;
 
         if (term.useGraphics == Preferences.MICROCHASM_GX) {
             srcPoint = new Point(chr & 0x3F, attr & 0x3F);
@@ -70,6 +78,11 @@ class TileGrid
             page.x = srcPoint.x / gm.pageSize;
             page.y = srcPoint.y / gm.pageSize;
         }
+    }
+
+    public TileGrid copyChanged(int a, int c)
+    {
+        return new TileGrid(this.gm, a, c, this.row, this.col, this.term);
     }
 
     public void changeSource(int a, int c)
