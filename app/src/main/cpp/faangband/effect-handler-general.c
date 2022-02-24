@@ -125,32 +125,6 @@ static bool item_tester_uncursable(const struct object *obj)
 }
 
 /**
- * Removes an individual curse from an object.
- */
-static void remove_object_curse(struct object *obj, int index, bool message)
-{
-	struct curse_data *c = &obj->curses[index];
-	char *name = curses[index].name;
-	int i;
-
-	c->power = 0;
-	c->timeout = 0;
-	if (message) {
-		msg("The %s curse is removed!", name);
-	}
-
-	/* Check to see if that was the last one */
-	for (i = 1; i < z_info->curse_max; i++) {
-		if (obj->curses[i].power) {
-			return;
-		}
-	}
-
-	mem_free(obj->curses);
-	obj->curses = NULL;
-}
-
-/**
  * Attempts to remove a curse from an object.
  */
 static bool uncurse_object(struct object *obj, int strength, char *dice_string)
@@ -1189,6 +1163,8 @@ bool effect_handler_DEEP_DESCENT(effect_handler_context_t *context)
 
 bool effect_handler_ALTER_REALITY(effect_handler_context_t *context)
 {
+	/* Don't allow in single combat arenas. */
+	if (player->upkeep->arena_level) return true;
 	msg("The world changes!");
 	player_change_place(player, player->place);
 	context->ident = true;
@@ -1951,8 +1927,8 @@ bool effect_handler_CREATE_STAIRS(effect_handler_context_t *context)
 		return false;
 	}
 
-	/* Fails for persistent levels (for now) */
-	if (OPT(player, birth_levels_persist)) {
+	/* Fails for persistent levels (for now) and arenas */
+	if (OPT(player, birth_levels_persist) || player->upkeep->arena_level) {
 		msg("Nothing happens!");
 		return false;
 	}
