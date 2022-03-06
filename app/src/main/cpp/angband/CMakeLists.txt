@@ -147,6 +147,7 @@ add_library( # Sets the name of the library.
             ui-options.c
             ui-output.c
             ui-player.c
+            ui-player-properties.c
             ui-prefs.c
             ui-score.c
             ui-signals.c

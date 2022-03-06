@@ -20,11 +20,20 @@
 #ifndef PLAYER_PROPS_H
 #define PLAYER_PROPS_H
 
+enum {
+    PLAYER_FLAG_NONE,
+    PLAYER_FLAG_SPECIAL,
+    PLAYER_FLAG_RACE,
+    PLAYER_FLAG_CLASS
+};
+
 struct player_ability *lookup_ability(const char *type, int index, int value);
 bool class_has_ability(const struct player_class *class,
 					   struct player_ability *ability);
 bool race_has_ability(const struct player_race *race,
 					  struct player_ability *ability);
+void gain_specialty(void);
+void view_abilities(void);
 void do_cmd_abilities(void);
 
 #endif /* !PLAYER_PROPS_H */

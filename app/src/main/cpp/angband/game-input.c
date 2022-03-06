@@ -19,7 +19,7 @@
 #include "angband.h"
 #include "cmd-core.h"
 #include "game-input.h"
-#include "ui-input.h"
+#include "player.h"
 
 bool (*get_string_hook)(const char *prompt, char *buf, size_t len);
 int (*get_quantity_hook)(const char *prompt, int max);
@@ -42,6 +42,8 @@ bool (*confirm_debug_hook)(void);
 void (*get_panel_hook)(int *min_y, int *min_x, int *max_y, int *max_x);
 bool (*panel_contains_hook)(unsigned int y, unsigned int x);
 bool (*map_is_visible_hook)(void);
+void (*view_abilities_hook)(struct player_ability *ability_list,
+							int num_abilities);
 
 /**
  * Prompt for a string from the user.
@@ -53,15 +55,11 @@ bool (*map_is_visible_hook)(void);
  */
 bool get_string(const char *prompt, char *buf, size_t len)
 {
-	bool status;
 	/* Ask the UI for it */
 	if (get_string_hook)
-		status = get_string_hook(prompt, buf, len);
+		return get_string_hook(prompt, buf, len);
 	else
-		status = false;
-	// Clean
-    soft_kbd_clear(true);
-	return status;
+		return false;
 }
 
 /**
@@ -293,4 +291,15 @@ bool map_is_visible(void)
 		return map_is_visible_hook();
 	else
 		return true;
+}
+
+/**
+ * Browse player abilities
+ */
+void view_ability_menu(struct player_ability *ability_list,
+					   int num_abilities)
+{
+	/* Ask the UI for it */
+	if (view_abilities_hook)
+		view_abilities_hook(ability_list, num_abilities);
 }
