@@ -282,7 +282,7 @@ static void list_saves(void)
 				details->desc);
 		} else {
 			printf(" %-15s\n", details->fnam + details->foff);
-	}
+		}
 	} while (got_savefile(&g));
 	printf("\nUse angband -u<name> to use savefile <name>.\n");
 

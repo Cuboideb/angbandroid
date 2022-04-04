@@ -503,9 +503,10 @@ static void init_birth_menu(struct menu *menu, int n_choices,
 	/* Initialise a basic menu */
 	menu_init(menu, MN_SKIN_SCROLL, &birth_iter);
 
-	/* A couple of behavioural flags - we want selections letters in
-	   lower case and a double tap to act as a selection. */
-	menu->selections = lower_case;
+	/* A couple of behavioural flags - we want selections as letters
+	   skipping the rogue-like cardinal direction movements and a
+	   double tap to act as a selection. */
+	menu->selections = all_letters_nohjkl;
 	menu->flags = MN_DBL_TAP;
 
 	/* Copy across the game's suggested initial selection, etc. */
@@ -714,33 +715,33 @@ static void finish_with_random_choices(enum birth_stage current)
 					sizeof(player->full_name));
 			}
 		} else {
-		int ntry = 0;
+			int ntry = 0;
 
-		while (1) {
-			if (ntry > 100) {
+			while (1) {
+				if (ntry > 100) {
 					quit("Likely bug:  could not generate "
 						"a random name that was not "
 						"in use for a savefile");
-			}
-		player_random_name(name, sizeof(name));
-			/*
+				}
+				player_random_name(name, sizeof(name));
+				/*
 				 * We're good to go if the frontend specified
 				 * a savefile to use or the savefile name
 				 * corresponding to the random name is not
 				 * already in use.
-			 */
-			if (savefile[0] || !savefile_name_already_used(name, true, true)) {
-				break;
+				 */
+				if (savefile[0] || !savefile_name_already_used(name, true, true)) {
+					break;
+				}
+				++ntry;
 			}
-			++ntry;
+			assert(ncmd < (int)N_ELEMENTS(cmds));
+			cmds[ncmd].code = CMD_NAME_CHOICE;
+			cmds[ncmd].arg_name = "name";
+			cmds[ncmd].arg_str = name;
+			cmds[ncmd].arg_is_choice = false;
+			++ncmd;
 		}
-		assert(ncmd < (int)N_ELEMENTS(cmds));
-		cmds[ncmd].code = CMD_NAME_CHOICE;
-		cmds[ncmd].arg_name = "name";
-		cmds[ncmd].arg_str = name;
-		cmds[ncmd].arg_is_choice = false;
-		++ncmd;
-	}
 	}
 
 	if (current <= BIRTH_HISTORY_CHOICE) {

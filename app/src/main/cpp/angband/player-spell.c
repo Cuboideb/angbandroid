@@ -685,9 +685,9 @@ static void spell_effect_append_value_info(const struct effect *effect,
 			|| (rv.dice > 0 && rv.sides > 0))
 			&& (ist->pre_rv.dice != rv.dice
 			|| ist->pre_rv.sides != rv.sides)))) {
-	if (offset) {
-		offset += strnfmt(p + offset, len - offset, ";");
-	}
+		if (offset) {
+			offset += strnfmt(p + offset, len - offset, ";");
+		}
 
 		offset += strnfmt(p + offset, len - offset, " %s ", type);
 		offset += append_random_value_string(p + offset, len - offset, &rv);
