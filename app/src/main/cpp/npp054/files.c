@@ -627,6 +627,7 @@ static const struct player_flag_record player_flag_table[RES_ROWS*4] =
 */
 
 
+
 /*
  * Hack -- see below
  */

@@ -2111,6 +2111,7 @@ void do_cmd_debug(void)
 		case 'K':
 		{
 			do_cmd_wiz_know_all();
+			break;
 		}
 
 		/* Learn about objects */

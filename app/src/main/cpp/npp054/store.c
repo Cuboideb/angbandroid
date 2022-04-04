@@ -4456,7 +4456,7 @@ static bool store_process_command(char cmd, void *db, int oid)
 
 	int next_cmd = 0;
 
-	/* Clear */
+	/* Clear any pending message */
 	prt("", 0, 0);
 
 	/* Parse the command */
@@ -4464,7 +4464,7 @@ static bool store_process_command(char cmd, void *db, int oid)
 	{
 		/* Leave */
 		case ESCAPE:
-		{
+		{			
 			command_processed = TRUE;
 			next_cmd = current_cmd;
 			break;
@@ -4500,7 +4500,7 @@ static bool store_process_command(char cmd, void *db, int oid)
 		case 'x':
 		{
 			prt("Select item to examine (ENTER for current): ", 0, 0);
-			next_cmd = cmd;
+			next_cmd = cmd;			
 			break;
 		}
 

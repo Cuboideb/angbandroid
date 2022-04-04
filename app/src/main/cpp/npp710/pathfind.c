@@ -55,8 +55,11 @@ static void fill_terrain_info(void)
 	ex = MIN(p_ptr->px + MAX_PF_RADIUS / 2 - 1, p_ptr->cur_map_wid);
 	ey = MIN(p_ptr->py + MAX_PF_RADIUS / 2 - 1, p_ptr->cur_map_hgt);
 
-	for (i = 0; i < MAX_PF_RADIUS * MAX_PF_RADIUS; i++)
-		terrain[0][i] = -1;
+	for (j = 0; j < MAX_PF_RADIUS; j++) {
+		for (i = 0; i < MAX_PF_RADIUS; i++) {
+			terrain[j][i] = -1;
+		}
+	}
 
 	for (j = oy; j < ey; j++)
 		for (i = ox; i < ex; i++)

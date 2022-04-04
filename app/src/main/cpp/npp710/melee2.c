@@ -626,18 +626,15 @@ void apply_monster_trap(int f_idx, int y, int x, byte mode)
 				{
 					text_out("  This monster trap will set off an explosion that will damage");
 					text_out(format(" any living creature within %d squares that is in line of sight of the blast.", rad));
-					break;
 				}
 
 				if (mode == MODE_ACTION)
 				{
-
-
 					/*ball of drain life*/
 					(void)explosion(SOURCE_PLAYER, rad, y, x, (3 * trap_power) / 4, GF_LIFE_DRAIN, PROJECT_KILL);
-
-					break;
 				}
+
+				break;
 			}
 
 			case FEAT_MTRAP_POISON:
@@ -648,16 +645,12 @@ void apply_monster_trap(int f_idx, int y, int x, byte mode)
 				{
 					text_out("  This monster trap will set off an explosion of poison gas that will affect");
 					text_out(format(" any creature within %d squares that is in line of sight of the blast.", rad));
-					break;
 				}
 
 				if (mode == MODE_ACTION)
 				{
-
-
 					/*ball of poison*/
 					(void)explosion(SOURCE_PLAYER, rad, y, x, (4 * trap_power) / 3, GF_POIS, (PROJECT_KILL | PROJECT_PLAY));
-
 				}
 
 				break;

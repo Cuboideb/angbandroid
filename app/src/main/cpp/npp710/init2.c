@@ -1024,6 +1024,7 @@ static errr init_other(void)
 
 	}
 
+
 	/*** Prepare the options ***/
 
 	/* Initialize the options */
