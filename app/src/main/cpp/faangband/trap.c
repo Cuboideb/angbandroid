@@ -482,6 +482,7 @@ void square_memorize_traps(struct chunk *c, struct loc grid)
 
 	/* Clear current knowledge */
 	square_remove_all_traps(player->cave, grid);
+	sqinfo_off(square(player->cave, grid)->info, SQUARE_TRAP);
 
 	/* Copy all visible traps to the known cave */
 	while (trap) {
@@ -499,6 +500,9 @@ void square_memorize_traps(struct chunk *c, struct loc grid)
 			current->next = NULL;
 		}
 		trap = trap->next;
+	}
+	if (square(player->cave, grid)->trap) {
+		sqinfo_on(square(player->cave, grid)->info, SQUARE_TRAP);
 	}
 }
 
@@ -586,8 +590,15 @@ extern void hit_trap(struct loc grid, int delayed)
 		}
 
 		/* Some traps drop you onto them */
-		if (trf_has(trap->kind->flags, TRF_PIT))
+		if (trf_has(trap->kind->flags, TRF_PIT)
+				&& !loc_eq(player->grid, trap->grid)) {
 			monster_swap(player->grid, trap->grid);
+			/*
+			 * Don't retrigger the trap, but handle the
+			 * other side effects of moving the player.
+			 */
+			player_handle_post_move(player, false);
+		}
 
 		/* Some traps disappear after activating, all have a chance to */
 		if (trf_has(trap->kind->flags, TRF_ONETIME) || one_in_(3)) {

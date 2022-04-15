@@ -339,6 +339,15 @@ static bool do_cmd_close_test(struct loc grid)
 		return (false);
 	}
 
+	/* Don't allow if player is in the way. */
+	if (square(cave, grid)->mon < 0) {
+		/* Message */
+		msg("You're standing in that doorway.");
+
+		/* Nope */
+		return (false);
+	}
+
 	/* Okay */
 	return (true);
 }
@@ -587,7 +596,7 @@ static bool do_cmd_tunnel_aux(struct loc grid)
 			msg("You dig in the rubble.");
 		else
 			msg("You tunnel into the %s.",
-				square_apparent_name(cave, player, grid));
+				square_apparent_name(player->cave, grid));
 		more = true;
 	} else {
 		/* Don't automatically repeat if there's no hope. */
@@ -595,7 +604,7 @@ static bool do_cmd_tunnel_aux(struct loc grid)
 			msg("You dig in the rubble with little effect.");
 		} else {
 			msg("You chip away futilely at the %s.",
-				square_apparent_name(cave, player, grid));
+				square_apparent_name(player->cave, grid));
 		}
 	}
 
@@ -1058,89 +1067,51 @@ void move_player(int dir, bool disarm)
 			else
 				msgt(MSG_HITWALL, "There is a wall blocking your way.");
 		}
-	} else if (square_isdamaging(cave, grid)) {
-		/* Some terrain can damage the player */
-		bool step = true;
-		struct feature *feat = square_feat(cave, grid);
-		int dam_taken = player_check_terrain_damage(player, grid);
-
-		/* Check if running, or going to cost more than a third of hp */
-		if (player->upkeep->running && dam_taken) {
-			if (!get_check(feat->run_msg)) {
-				player->upkeep->running = 0;
-				step = false;
-			}
-		} else {
-			if (dam_taken > player->chp / 3) {
-				step = get_check(feat->walk_msg);
-			}
-		}
-
-		/* Enter if OK or confirmed. */
-		if (step) {
-			/* Move player */
-			monster_swap(player->grid, grid);
-
-			/* Update view and search */
-			update_view(cave, player);
-			search(player);
-		}
 	} else {
 		/* See if trap detection status will change */
 		bool old_dtrap = square_isdtrap(cave, player->grid);
 		bool new_dtrap = square_isdtrap(cave, grid);
+		bool step = true;
 
 		/* Note the change in the detect status */
 		if (old_dtrap != new_dtrap)
 			player->upkeep->redraw |= (PR_DTRAP);
 
 		/* Disturb player if the player is about to leave the area */
-		if (player->upkeep->running && !player->upkeep->running_firststep &&
-			old_dtrap && !new_dtrap) {
+		if (player->upkeep->running
+				&& !player->upkeep->running_firststep
+				&& old_dtrap && !new_dtrap) {
 			disturb(player);
 			return;
 		}
 
-		/* Trap immune player learns that they are */
-		if (trap && player_of_has(player, OF_TRAP_IMMUNE)) {
-			equip_learn_flag(player, OF_TRAP_IMMUNE);
-		}
+		if (square_isdamaging(cave, grid)) {
+			/* Some terrain can damage the player */
+			struct feature *feat = square_feat(cave, grid);
+			int dam_taken =
+				player_check_terrain_damage(player, grid);
 
-		/* Move player */
-		monster_swap(player->grid, grid);
-
-		/* Handle store doors, or notice objects */
-		if (square_isshop(cave, grid)) {
-			if (player_is_shapechanged(player)) {
-				if (store_at(cave, grid)->sidx != STORE_HOME) {
-					msg("There is a scream and the door slams shut!");
+			/*
+			 * Check if running, or going to cost more than a
+			 * third of hp.
+			 */
+			if (player->upkeep->running && dam_taken) {
+				if (!get_check(feat->run_msg)) {
+					player->upkeep->running = 0;
+					step = false;
 				}
-				return;
+			} else {
+				if (dam_taken > player->chp / 3) {
+					step = get_check(feat->walk_msg);
+				}
 			}
-			disturb(player);
-			event_signal(EVENT_ENTER_STORE);
-			event_remove_handler_type(EVENT_ENTER_STORE);
-			event_signal(EVENT_USE_STORE);
-			event_remove_handler_type(EVENT_USE_STORE);
-			event_signal(EVENT_LEAVE_STORE);
-			event_remove_handler_type(EVENT_LEAVE_STORE);
-		} else {
-			square_know_pile(cave, grid);
-			cmdq_push(CMD_AUTOPICKUP);
 		}
 
-		/* Discover invisible traps, set off visible ones */
-		if (square_issecrettrap(cave, grid)) {
-			disturb(player);
-			hit_trap(grid, 0);
-		} else if (square_isdisarmabletrap(cave, grid) && !trapsafe) {
-			disturb(player);
-			hit_trap(grid, 0);
+		if (step) {
+			/* Move player */
+			monster_swap(player->grid, grid);
+			player_handle_post_move(player, true);
 		}
-
-		/* Update view and search */
-		update_view(cave, player);
-		search(player);
 	}
 
 	player->upkeep->running_firststep = false;

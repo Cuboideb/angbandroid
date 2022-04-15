@@ -30,6 +30,7 @@
 #include "mon-timed.h"
 #include "mon-util.h"
 #include "player-calcs.h"
+#include "player-util.h"
 #include "project.h"
 #include "source.h"
 
@@ -180,6 +181,10 @@ void thrust_away(struct loc centre, struct loc target, int grids_away)
 				if (square_ispassable(cave, next)) {
 					/* Travel down the path. */
 					monster_swap(grid, next);
+					if (square(cave, grid)->mon < 0) {
+						player_handle_post_move(
+							player, true);
+					}
 
 					/* Jump to new location. */
 					grid = next;
@@ -201,6 +206,9 @@ void thrust_away(struct loc centre, struct loc target, int grids_away)
 			} else {
 				/* Travel down the path. */
 				monster_swap(grid, next);
+				if (square(cave, grid)->mon < 0) {
+					player_handle_post_move(player, true);
+				}
 
 				/* Jump to new location. */
 				grid = next;
@@ -401,11 +409,11 @@ static void project_monster_teleport_away(project_monster_handler_context_t *con
 		context->teleport_distance = context->dam;
 		context->hurt_msg = MON_MSG_DISAPPEAR;
 		monster_wake(context->mon, false, 100);
+		if (context->seen) context->obvious = true;
 	} else {
 		context->skipped = true;
 	}
 
-	context->obvious = true;
 	context->dam = 0;
 }
 
@@ -421,7 +429,7 @@ static void project_monster_teleport_away(project_monster_handler_context_t *con
  */
 static void project_monster_scare(project_monster_handler_context_t *context, int flag)
 {
-    if (context->seen) rf_on(context->lore->flags, flag);
+	if (context->seen) rf_on(context->lore->flags, flag);
 
 	/* Class ability Holy */
 	if (context->origin.what == SRC_PLAYER && player_has(player, PF_HOLY)) {
@@ -434,13 +442,14 @@ static void project_monster_scare(project_monster_handler_context_t *context, in
 	}
 
 	if (rf_has(context->mon->race->flags, flag)) {
-        context->mon_timed[MON_TMD_FEAR] = adjust_radius(context, context->dam);
+		context->mon_timed[MON_TMD_FEAR] =
+			adjust_radius(context, context->dam);
 		monster_wake(context->mon, false, 100);
+		if (context->seen) context->obvious = true;
 	} else {
 		context->skipped = true;
 	}
 
-	context->obvious = true;
 	context->dam = 0;
 }
 
@@ -462,12 +471,11 @@ static void project_monster_dispel(project_monster_handler_context_t *context, i
 	if (rf_has(context->mon->race->flags, flag)) {
 		context->hurt_msg = MON_MSG_SHUDDER;
 		context->die_msg = MON_MSG_DISSOLVE;
+		if (context->seen) context->obvious = true;
 	} else {
 		context->skipped = true;
 		context->dam = 0;
 	}
-
-	context->obvious = true;
 }
 
 /**
@@ -498,9 +506,9 @@ static void project_monster_sleep(project_monster_handler_context_t *context, in
 		context->dam += context->dam / 2;
 	}
 	context->mon_timed[MON_TMD_SLEEP] = context->dam;
+	if (context->dam > 0 && context->seen) context->obvious = true;
 	context->dam = 0;
 
-	context->obvious = true;
 }
 
 /* Acid */
@@ -908,18 +916,19 @@ static void project_monster_handler_TURN_EVIL(project_monster_handler_context_t 
 /* Turn living (Use "dam" as "power") */
 static void project_monster_handler_TURN_LIVING(project_monster_handler_context_t *context)
 {
-    if (context->seen) {
+	if (context->seen) {
 		rf_on(context->lore->flags, RF_NONLIVING);
 		rf_on(context->lore->flags, RF_UNDEAD);
 	}
 
 	if (monster_is_living(context->mon)) {
-        context->mon_timed[MON_TMD_FEAR] = adjust_radius(context, context->dam);
+		context->mon_timed[MON_TMD_FEAR] =
+			adjust_radius(context, context->dam);
+		if (context->seen) context->obvious = true;
 	} else {
 		context->skipped = true;
 	}
 
-	context->obvious = true;
 	context->dam = 0;
 }
 
@@ -1358,7 +1367,7 @@ static void project_m_apply_side_effects(project_monster_handler_context_t *cont
 							  i,
 							  context->mon_timed[i],
 							  context->flag | MON_TMD_FLG_NOTIFY);
-				context->obvious = true;
+				if (context->seen) context->obvious = true;
 			}
 		}
 	}

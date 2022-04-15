@@ -359,7 +359,8 @@ static bool aux_reinit(struct chunk *c, struct player *p,
 		auxst->phrase2 = "on ";
 	} else {
 		/* Default */
-		auxst->phrase1 = "You see ";
+		auxst->phrase1 = (square_isseen(c, auxst->grid)) ?
+			"You see " : "You recall ";
 		auxst->phrase2 = "";
 	}
 
@@ -599,10 +600,10 @@ static bool aux_trap(struct chunk *c, struct player *p,
 	char out_val[TARGET_OUT_VAL_SIZE];
 	const char *lphrase3;
 
-	if (!square_isvisibletrap(c, auxst->grid)) return false;
+	if (!square_isvisibletrap(p->cave, auxst->grid)) return false;
 
 	/* A trap */
-	trap = square(c, auxst->grid)->trap;
+	trap = square(p->cave, auxst->grid)->trap;
 
 	/* Not boring */
 	auxst->boring = false;
@@ -671,8 +672,7 @@ static bool aux_object(struct chunk *c, struct player *p,
 
 	/* Scan all sensed objects in the grid */
 	floor_num = scan_distant_floor(floor_list, floor_max, p, auxst->grid);
-	if (floor_num <= 0 || (p->timed[TMD_BLIND]
-			&& !loc_eq(auxst->grid, p->grid))) {
+	if (floor_num <= 0) {
 		mem_free(floor_list);
 		return result;
 	}
@@ -800,16 +800,16 @@ static bool aux_terrain(struct chunk *c, struct player *p,
 		return false;
 
 	/* Terrain feature if needed */
-	name = square_apparent_name(c, p, auxst->grid);
+	name = square_apparent_name(p->cave, auxst->grid);
 
 	/* Hack -- handle unknown grids */
 
 	/* Pick a preposition if needed */
 	lphrase2 = (*auxst->phrase2) ?
-		square_apparent_look_in_preposition(c, p, auxst->grid) : "";
+		square_apparent_look_in_preposition(p->cave, auxst->grid) : "";
 
 	/* Pick prefix for the name */
-	lphrase3 = square_apparent_look_prefix(c, p, auxst->grid);
+	lphrase3 = square_apparent_look_prefix(p->cave, auxst->grid);
 
 	/* Display a message */
 	if (p->wizard) {
