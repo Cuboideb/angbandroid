@@ -2703,7 +2703,7 @@ void verify_panel(void)
 
     /* Scroll screen horizontally when off-center */
     if (center_player && (!p_ptr->running || !run_avoid_center)
-        && (px != wx + SCREEN_WID / 2))
+        /*&& (px != wx + SCREEN_WID / 2)*/)
     {
         wx = px - SCREEN_WID / 2;
     }
