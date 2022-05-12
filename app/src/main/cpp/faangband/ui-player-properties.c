@@ -336,6 +336,8 @@ void textui_interact_with_specialties(void)
 {
 	ui_event answer;
 
+	soft_kbd_flash("lv");
+
 	/* Interact and choose. */
 	while (get_com_ex
 		   ("View abilities or Learn specialty (l/v/ESC)?", &answer)) {
@@ -354,5 +356,7 @@ void textui_interact_with_specialties(void)
 		/* Exit */
 		if (answer.key.code == ESCAPE)
 			break;
+
+		soft_kbd_flash("lv");
 	}
 }
