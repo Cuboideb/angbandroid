@@ -2049,13 +2049,13 @@ public class TermView extends View implements OnGestureListener {
 		for (int i = 0; i < arrSource.length(); i++) {
 			JSONObject obj = arrSource.optJSONObject(i);
 
-			String label = obj.optString("action", "");
-			if (label.length() == 0) continue;
+			String action = obj.optString("action", "");
+			if (action.length() == 0) continue;
 
 			boolean found = false;
 			for (int j = 0; j < arrTarget.length(); j++) {
 				JSONObject obj2 = arrTarget.optJSONObject(j);
-				if (obj2.optString("action", "").equals(label)) {
+				if (obj2.optString("action", "").equals(action)) {
 					found = true;
 					break;
 				}

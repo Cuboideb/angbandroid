@@ -1,5 +1,6 @@
 package org.rephial.xyangband;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -192,5 +193,16 @@ class InputUtils
                 }
             }
         }
+    }
+
+    public static String join(Collection<String> coll, String __sep)
+    {
+        String txt = "";
+        String sep = "";
+        for (String s: coll) {
+            txt = (txt + sep + s);
+            sep = __sep;
+        }
+        return txt;
     }
 }

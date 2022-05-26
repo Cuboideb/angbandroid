@@ -129,12 +129,7 @@ public class Profile {
 			}
 			if (!found) parts.add(s1);
 		}
-		String ret = "";
-		String sep = "";
-		for (String s: parts) {
-			ret = ret + sep + s;
-			sep = "###";
-		}
+		String ret = InputUtils.join(parts, "###");
 		return ret;
 	}
 
