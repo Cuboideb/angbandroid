@@ -2295,7 +2295,7 @@ static void process_monster(int m_idx)
         int upkeep_factor = calculate_upkeep();
         while ((upkeep_factor > SAFE_UPKEEP_PCT) && (p_ptr->upset_okay)) /* Neglected pets */
         {
-            if (unique_is_friend(m_ptr->r_idx)) break;
+            if (unique_is_friend(real_r_idx(m_ptr))) break;
             if (m_ptr->r_idx == MON_MONKEY_CLONE) break;
             if (p_ptr->csp * 3 > p_ptr->msp) 
             {

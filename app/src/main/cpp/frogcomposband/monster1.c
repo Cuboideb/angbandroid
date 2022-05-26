@@ -603,7 +603,7 @@ void set_friendly_ingame(monster_type *m_ptr)
 {
     quests_on_kill_mon(m_ptr);
     m_ptr->smart |= (1U << SM_FRIENDLY);
-    if (!(m_ptr->smart & (1U << SM_CLONED))) politician_set_friend(m_ptr->r_idx, TRUE);
+    if (!(m_ptr->smart & (1U << SM_CLONED))) politician_set_friend(real_r_idx(m_ptr), TRUE);
 }
 
 void set_pet(monster_type *m_ptr)
@@ -617,7 +617,7 @@ void set_pet(monster_type *m_ptr)
     m_ptr->mflag2 |= MFLAG2_WASPET;
     if (!(r_info[m_ptr->r_idx].flags3 & (RF3_EVIL | RF3_GOOD)))
         m_ptr->sub_align = SUB_ALIGN_NEUTRAL;
-    politician_set_friend(m_ptr->r_idx, TRUE);
+    politician_set_friend(real_r_idx(m_ptr), TRUE);
 }
 
 /*
@@ -638,7 +638,7 @@ void set_hostile(monster_type *m_ptr)
 
     m_ptr->smart &= ~(1U << SM_PET);
     m_ptr->smart &= ~(1U << SM_FRIENDLY);
-    politician_set_friend(m_ptr->r_idx, FALSE);
+    politician_set_friend(real_r_idx(m_ptr), FALSE);
     for (i = 1; i < m_max; i++) /* The monster's dependents also turn hostile */
     {
         monster_type *mon = &m_list[i];

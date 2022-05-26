@@ -3182,7 +3182,7 @@ s16b get_quantity_aux(cptr prompt, int max, int default_amt)
      * Ask for a quantity
      * Don't allow to use numpad as cursor key.
      */
-    res = askfor_aux(buf, 6, FALSE);
+    res = askfor_aux(buf, 7, FALSE);
 
     soft_kbd_clear(true);
 

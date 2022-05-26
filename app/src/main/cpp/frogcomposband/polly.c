@@ -881,7 +881,8 @@ static void _birth(void)
     _peak_au = 0;
     _peak_exp = 0;
     _spent_exp = 0;
-    _ini_friend_list();
+    if (_list_init & _INIT_FRIENDS) (void)C_WIPE(friend_list, _mon_array_size, u32b);
+    else _ini_friend_list();
     ini_statup_list();
     _politician_check_magic(TRUE);
 }

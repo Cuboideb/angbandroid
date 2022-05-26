@@ -4137,6 +4137,7 @@ bool curse_armor(int slot)
         virtue_add(VIRTUE_ENCHANTMENT, -5);
         blast_object(o_ptr);
         o_ptr->curse_flags |= OFC_CURSED;
+        if (p_ptr->prace == RACE_ANDROID) android_calc_exp();
     }
 
     return TRUE;
@@ -4169,6 +4170,7 @@ bool curse_weapon(bool force, int slot)
         virtue_add(VIRTUE_ENCHANTMENT, -5);
         blast_object(o_ptr);
         o_ptr->curse_flags |= OFC_CURSED;
+        if (p_ptr->prace == RACE_ANDROID) android_calc_exp();
     }
     return TRUE;
 }

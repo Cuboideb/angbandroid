@@ -2712,6 +2712,12 @@ bool earthquake_aux(int cy, int cx, int r, int m_idx)
         return (FALSE);
     }
 
+    /* Mercy rule */
+    if ((m_idx) && (p_ptr->is_dead)) 
+    {
+        return (FALSE);
+    }
+
     if (d_info[dungeon_type].wild_type == TERRAIN_TREES)
     {
         tree = TRUE;
@@ -2873,7 +2879,7 @@ bool earthquake_aux(int cy, int cx, int r, int m_idx)
         /* Take some damage */
         if (damage)
         {
-            char *killer;
+            char killer[MAX_NLEN + 24] = "an earthquake";
 
             if (m_idx)
             {
@@ -2882,12 +2888,7 @@ bool earthquake_aux(int cy, int cx, int r, int m_idx)
 
                 /* Get the monster's real name */
                 monster_desc(m_name, m_ptr, MD_IGNORE_HALLU | MD_ASSUME_VISIBLE | MD_INDEF_VISIBLE);
-
-                killer = format("an earthquake caused by %s", m_name);
-            }
-            else
-            {
-                killer = "an earthquake";
+                strcat(killer, format(" caused by %s", m_name));
             }
 
             take_hit(DAMAGE_ATTACK, damage, killer);

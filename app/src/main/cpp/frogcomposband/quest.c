@@ -1275,8 +1275,9 @@ void quests_on_restore_floor(int dungeon, int level)
 void _dungeon_boss_death(mon_ptr mon)
 {
     monster_race *r_ptr = &r_info[mon->r_idx];
+    bool chameleon_king_hack = ((dungeon_type == DUNGEON_CHAMELEON) && (mon->mflag2 & MFLAG2_CHAMELEON) && (r_ptr->flags1 & RF1_UNIQUE));
     if (!dungeon_type) return;
-    if ((!(r_ptr->flags7 & RF7_GUARDIAN)) || (d_info[dungeon_type].final_guardian != mon->r_idx)) return;
+    if ((!chameleon_king_hack) && ((!(r_ptr->flags7 & RF7_GUARDIAN)) || (d_info[dungeon_type].final_guardian != mon->r_idx))) return;
     if (!politician_dungeon_on_statup(dungeon_type)) return;
     else {
         int k_idx = d_info[dungeon_type].final_object ? d_info[dungeon_type].final_object

@@ -287,7 +287,7 @@ static bool _transfer_essence(void)
     {
         if (dest_kind->level > src_kind->level) /* Double Check ... should already be excluded! */
         {
-            msg_print("Failed! You may only transfer to objects of greater or equal power.");
+            msg_print("Failed! The essence is too weak to be transferred to this object.");
             return FALSE;
         }
     }

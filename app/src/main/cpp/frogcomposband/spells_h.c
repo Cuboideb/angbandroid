@@ -88,7 +88,7 @@ void identify_spell(int cmd, variant *res)
         var_set_string(res, "Identify");
         break;
     case SPELL_DESC:
-        var_set_string(res, "Identify a single object.");
+        var_set_string(res, "Identifies a single object.");
         break;
     case SPELL_CAST:
         var_set_bool(res, ident_spell(NULL));
@@ -108,7 +108,7 @@ void identify_fully_spell(int cmd, variant *res)
         var_set_string(res, "Identify True");
         break;
     case SPELL_DESC:
-        var_set_string(res, "");
+        var_set_string(res, "Completely identifies a single object.");
         break;
     case SPELL_CAST:
         var_set_bool(res, identify_fully(NULL));
@@ -128,7 +128,7 @@ void hand_of_doom_spell(int cmd, variant *res)
         var_set_string(res, "Hand of Doom");
         break;
     case SPELL_DESC:
-        var_set_string(res, "Attempt to mortally wound a target monster, draining a large proportion of their remaining health.");
+        var_set_string(res, "Attempts to mortally wound a target monster, draining a large proportion of their remaining health.");
         break;
     case SPELL_CAST:
     {

@@ -3610,17 +3610,17 @@ int place_monster_one(int who, int y, int x, int r_idx, int pack_idx, u32b mode)
     if (mode & PM_FORCE_PET)
     {
         if (((r_ptr->flags1 & (RF1_UNIQUE)) || (r_ptr->flags7 & (RF7_NAZGUL))) &&
-            ((who > 0) || ((p_ptr->pclass == CLASS_POLITICIAN) && (!unique_is_friend(m_ptr->r_idx)))))
+            ((who > 0) || ((p_ptr->pclass == CLASS_POLITICIAN) && (!unique_is_friend(real_r_idx(m_ptr))))))
             set_friendly(m_ptr);
         else
             set_pet(m_ptr);
     }
     /* Friendly? */
-    else if (unique_is_friend(m_ptr->r_idx))
+    else if (unique_is_friend(real_r_idx(m_ptr)))
     {
         set_friendly(m_ptr);
     }
-    else if ((pack_idx) && (unique_is_friend(m_list[pack_info_list[pack_idx].leader_idx].r_idx))) /* Escorts of a friendly unique */
+    else if ((pack_idx) && (unique_is_friend(real_r_idx(&m_list[pack_info_list[pack_idx].leader_idx])))) /* Escorts of a friendly unique */
     {
         set_friendly(m_ptr);
     }
