@@ -2013,15 +2013,11 @@ public class TermView extends View implements OnGestureListener {
 		return str;
 	}
 
-	public int deserializeButtons()
+	public static JSONArray parseButtons(String str)
 	{
-		int n = 0;
+		JSONArray arr = new JSONArray();
 
-		String str = Preferences.getActiveProfile().getFloatingButtons();
-
-		//Log.d("Angband", "Buttons: " + str);
-
-		if (str.length() == 0) return n;
+		if (str.length() == 0) return arr;
 
 		byte[] data = Base64.decode(str, 0);
 
@@ -2030,20 +2026,59 @@ public class TermView extends View implements OnGestureListener {
 		}
 		catch (java.io.UnsupportedEncodingException ex) {
 			Log.d("Angband", ex.getMessage());
-			return n;
+			return arr;
 		}
 
-		//Log.d("Angband", str);
-
-		JSONArray arr;
-
 		try {
-			arr = new JSONArray(str);
+			JSONArray temp = new JSONArray(str);
+			arr = temp;
 		}
 		catch (JSONException ex) {
 			Log.d("Angband", ex.getMessage());
-			return n;
+			return arr;
 		}
+
+		return arr;
+	}
+
+	public static String mergeButtons(String target, String source)
+	{
+		JSONArray arrTarget = parseButtons(target);
+		JSONArray arrSource = parseButtons(source);
+
+		for (int i = 0; i < arrSource.length(); i++) {
+			JSONObject obj = arrSource.optJSONObject(i);
+
+			String label = obj.optString("action", "");
+			if (label.length() == 0) continue;
+
+			boolean found = false;
+			for (int j = 0; j < arrTarget.length(); j++) {
+				JSONObject obj2 = arrTarget.optJSONObject(j);
+				if (obj2.optString("action", "").equals(label)) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) arrTarget.put(obj);
+		}
+
+		String str = arrTarget.toString();
+
+		//Log.d("Angband", str);
+
+		str = Base64.encodeToString(str.getBytes(), 0);
+
+		return str;
+	}
+
+	public int deserializeButtons()
+	{
+		int n = 0;
+
+		String str = Preferences.getActiveProfile().getFloatingButtons();
+
+		JSONArray arr = parseButtons(str);
 
 		for (int i = 0; i < arr.length(); i++) {
 			JSONObject obj = arr.optJSONObject(i);

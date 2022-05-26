@@ -1,6 +1,10 @@
 package org.rephial.xyangband;
 
 import android.util.Base64;
+import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Profile {
 
@@ -110,6 +114,59 @@ public class Profile {
 		return id+dl+name+dl+saveFile+dl+flags+dl+plugin+dl+
 			escape(keymaps)+dl+escape(advBtnKeymaps)+dl+fab;
 	}
+
+	public String mergeKeymaps(String target, String source)
+	{
+		ArrayList<String> parts = new ArrayList<>();
+		parts.addAll(Arrays.asList(target.split("###")));
+		for (String s1: source.split("###")) {
+			boolean found = false;
+			for (String s2: parts) {
+				if (s2.equals(s1)) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) parts.add(s1);
+		}
+		String ret = "";
+		String sep = "";
+		for (String s: parts) {
+			ret = ret + sep + s;
+			sep = "###";
+		}
+		return ret;
+	}
+
+	public void importKeymaps(String txt)
+	{
+		String[] arrSource = txt.split("#rowsep#");
+		String[] arrTarget = keymaps.split("#rowsep#");
+
+		String[] dest = new String[]{"",""};
+		for (int i = 0; i < dest.length; i++) {
+			String source = arrSource.length > i ? arrSource[i]: "";
+			String target = arrTarget.length > i ? arrTarget[i]: "";
+			dest[i] = mergeKeymaps(target, source);
+		}
+		String keymaps2 = dest[0] + "#rowsep#" + dest[1];
+		keymaps = keymaps2;
+	}
+
+	public void importFromProfile(Profile source)
+	{
+		importKeymaps(source.getKeymaps());
+
+		String temp = AdvKeyboard.mergeKeymaps(getAdvButtonKeymaps(), source.getAdvButtonKeymaps());
+		//Log.d("Angband", temp);
+		setAdvButtonKeymaps(temp);
+
+		String temp2 = TermView.mergeButtons(getFloatingButtons(), source.getFloatingButtons());
+		setFloatingButtons(temp2);
+
+		Preferences.saveProfiles();
+	}
+
 	public static Profile deserialize(String value) {
 		String[] tk = value.split(dl);
 		Profile p = new Profile();

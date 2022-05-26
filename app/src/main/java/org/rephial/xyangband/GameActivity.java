@@ -47,6 +47,8 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -89,6 +91,7 @@ public class GameActivity extends Activity {
 	protected final int CONTEXTMENU_RESET_LAYOUT = 15;
 	protected final int CONTEXTMENU_ADD_FAB = 16;
 	protected final int CONTEXTMENU_FIX_FAB = 17;
+	protected final int CONTEXTMENU_IMPORT_KEYS = 18;
 
 	public static final int TERM_CONTROL_LIST_KEYS = 1;
 	public static final int TERM_CONTROL_CONTEXT = 2;
@@ -715,6 +718,11 @@ public class GameActivity extends Activity {
 		menu.add(0, CONTEXTMENU_RESET_DPAD, 0, "Reset D-Pad Position");
 		menu.add(0, CONTEXTMENU_PREFERENCES_ITEM, 0, "Preferences");
 		menu.add(0, CONTEXTMENU_PROFILES_ITEM, 0, "Profiles");
+
+		if (Preferences.getProfiles().size() > 1) {
+			menu.add(0, CONTEXTMENU_IMPORT_KEYS, 0, "Import Keymaps and Floating Buttons");
+		}
+
 		menu.add(0, CONTEXTMENU_HELP_ITEM, 0, "Help");
 		menu.add(0, CONTEXTMENU_QUIT_ITEM, 0, "Quit");
 	}
@@ -769,6 +777,9 @@ public class GameActivity extends Activity {
 		case CONTEXTMENU_FIX_FAB:
 			if (term != null) term.rearrangeFloatingButtons();
 			return true;
+		case CONTEXTMENU_IMPORT_KEYS:
+			importKeys();
+			return true;
 		case CONTEXTMENU_OPACITY:
 			runOpacityPopup();
 			return true;
@@ -789,6 +800,54 @@ public class GameActivity extends Activity {
 			return true;
 		}
 		return false;
+	}
+
+	public void importKeysAux(String nameSource, String nameTarget)
+	{
+		Profile source = Preferences.getProfiles().findByName(nameSource, -1);
+
+		Profile target = Preferences.getActiveProfile();
+
+		target.importFromProfile(source);
+
+		rebuildViews();
+	}
+
+	public void importKeys()
+	{
+		ArrayList<String> arr = new ArrayList<>();
+
+		final Profile current = Preferences.getActiveProfile();
+
+		if (current == null) return;
+
+		for (Profile prof: Preferences.getProfiles()) {
+			if (prof.getName().equals(current.getName())) continue;
+			arr.add(prof.getName());
+		}
+
+		if (arr.size() == 0) return;
+
+		final String[] list = new String[arr.size()];
+
+		arr.toArray(list);
+
+		listAlert("Select the source Profile", list,
+			new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					importKeysAux(list[which], current.getName());
+				}
+			}
+		);
+	}
+
+	public void listAlert(String title, String[] list,
+		DialogInterface.OnClickListener okHandler) {
+		new AlertDialog.Builder(this)
+				.setItems(list, okHandler)
+				.setTitle(title)
+				.show();
 	}
 
 	public void questionAlert(String msg,

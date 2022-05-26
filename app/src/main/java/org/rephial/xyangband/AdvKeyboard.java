@@ -32,6 +32,8 @@ import android.os.Looper;
 
 import androidx.core.graphics.ColorUtils;
 
+import java.lang.reflect.Array;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
@@ -72,8 +74,9 @@ class AdvKeyboard implements OnTouchListener
 	public int numRows = 5;
 	public int numCols = 10;
 
-	public class KeyInfo
+	public static class KeyInfo
 	{
+		String trigger;
 		String action;
 		boolean alwaysVisible;
 	};
@@ -567,6 +570,60 @@ class AdvKeyboard implements OnTouchListener
 	}
 	*/
 
+	public static ArrayList<KeyInfo> parseKeymaps(String txt)
+	{
+		ArrayList<KeyInfo> arr = new ArrayList<>();
+
+		for (String pair: txt.split(":sep:")) {
+			String[] parts = pair.split(":prop:");
+			if (parts.length > 2) {
+				KeyInfo info = new KeyInfo();
+				info.trigger = parts[0];
+				info.action = parts[1];
+				info.alwaysVisible = (parts[2].equals("yes"));
+				if (info.action.length() == 0) continue;
+				arr.add(info);
+			}
+		}
+
+		return arr;
+	}
+
+	public static String mergeKeymaps(String target, String source)
+	{
+		ArrayList<KeyInfo> arrTarget = parseKeymaps(target);
+
+		for (KeyInfo info: parseKeymaps(source)) {
+			boolean found = false;
+			for (KeyInfo info2: arrTarget) {
+				if (info2.trigger.equals(info.trigger)) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) arrTarget.add(info);
+		}
+
+		return encodeKeymaps(arrTarget);
+	}
+
+	public static String encodeKeymaps(Collection<KeyInfo> keys)
+	{
+		String txt = "";
+		String sep = "";
+		for (KeyInfo info: keys) {
+			if (info.action.length() == 0) continue;
+			txt += sep;
+			txt += info.trigger;
+			txt += ":prop:";
+			txt += info.action;
+			txt += ":prop:";
+			txt += (info.alwaysVisible ? "yes": "no");
+			sep = ":sep:";
+		}
+		return txt;
+	}
+
 	public void reloadKeymaps()
 	{
 		String txt = Preferences.getActiveProfile()
@@ -576,18 +633,12 @@ class AdvKeyboard implements OnTouchListener
 
 		//Log.d("Angband", "Decoding: " + txt);
 
-		for (String pair: txt.split(":sep:")) {
-			String[] parts = pair.split(":prop:");
-			if (parts.length > 2) {
-				try {
-					String trigger = parts[0];
-					KeyInfo info = new KeyInfo();
-					info.action = parts[1];
-					info.alwaysVisible = (parts[2].equals("yes"));
-					keys.put(trigger, info);
-				}
-				catch (Exception e) {}
-				continue;
+		for (KeyInfo info: parseKeymaps(txt)) {
+			try {
+				keys.put(info.trigger, info);
+			}
+			catch (Exception e) {
+				Log.d("Angband", "reloadKeymaps: " + e.getMessage());
 			}
 		}
 	}
@@ -596,6 +647,7 @@ class AdvKeyboard implements OnTouchListener
 		String action, boolean alwaysVisible)
 	{
 		KeyInfo info = new KeyInfo();
+		info.trigger = trigger;
 		info.action = action;
 		info.alwaysVisible = alwaysVisible;
 		keys.put(trigger, info);
@@ -603,18 +655,7 @@ class AdvKeyboard implements OnTouchListener
 
 	public void persistKeymaps()
 	{
-		String txt = "";
-		String sep = "";
-		for (String trigger: keys.keySet()) {
-			KeyInfo info = keys.get(trigger);
-			txt += sep;
-			txt += trigger;
-			txt += ":prop:";
-			txt += info.action;
-			txt += ":prop:";
-			txt += (info.alwaysVisible ? "yes": "no");
-			sep = ":sep:";
-		}
+		String txt = encodeKeymaps(keys.values());
 		//Log.d("Angband", "Encoding: " + txt);
 		Preferences.getActiveProfile().setAdvButtonKeymaps(txt);
 		Preferences.saveProfiles();
