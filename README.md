@@ -6,7 +6,7 @@ This work is based on the excellent port of **Angband** found [here](https://git
 
 The transparent keyboard was borrowed from [here](https://github.com/Shaosil/Android-Sil) (with modifications).
 
-To customize your game experience, please go to settings and preferences by long-pressing the screen. The port has many options and you have to play a bit with them to find your optimal setup.
+To customize your game experience, please go to the quick settings and preferences menu by long-pressing the screen. The port has many options and you have to play a bit with them to find your optimal setup.
 
 Recommended game experience: Landscape Orientation, button ribbon on, center_player option on (it must be set in the variant).
 
@@ -15,6 +15,8 @@ Recommended game experience: Landscape Orientation, button ribbon on, center_pla
 Profiles are designed to play with different characters. Each profile has its own savefile name and more importantly, its own keymaps.
 
 Some variants of Angband are included in the port: FrogComposband, FAangband, Sil-Q and NPPAngband. They are accessed from the Preferences. Using a different profile for each variant/character is adviced.
+
+To save time, in the quick settings menu there is an item to "Import" keymaps and buttons from another profile.
 
 ### Input methods
 
