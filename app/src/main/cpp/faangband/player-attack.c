@@ -771,7 +771,7 @@ static void blow_side_effects(struct player *p, struct monster *mon)
 {
 	/* Confusion attack */
 	if (p->timed[TMD_ATT_CONF]) {
-		player_clear_timed(p, TMD_ATT_CONF, true);
+		player_clear_timed(p, TMD_ATT_CONF, true, false);
 
 		mon_inc_timed(mon, MON_TMD_CONF, (10 + randint0(p->lev) / 10),
 					  MON_TMD_FLG_NOTIFY);
@@ -1178,7 +1178,7 @@ void py_attack(struct player *p, struct loc grid)
 
 	/* Reward BGs with 5% of max SPs, min 1/2 point */
 	if (player_has(p, PF_COMBAT_REGEN)) {
-		int32_t sp_gain = (int32_t)(MAX(p->msp, 10) << 16) / 20;
+		int32_t sp_gain = (((int32_t)MAX(p->msp, 10)) * 16384) / 5;
 		player_adjust_mana_precise(p, sp_gain);
 	}
 
@@ -1454,7 +1454,7 @@ static void ranged_helper(struct player *p,	struct object *bow,
 
 	/* Terminate piercing */
 	if (p->timed[TMD_POWERSHOT]) {
-		player_clear_timed(p, TMD_POWERSHOT, true);
+		player_clear_timed(p, TMD_POWERSHOT, true, false);
 	}
 
 	/* Drop (or break) near that location */
