@@ -254,10 +254,14 @@ void do_cmd_open(struct command *cmd)
 		n_closed_doors = count_feats(&grid1, square_iscloseddoor, false);
 		n_locked_chests = count_chests(&grid1, CHEST_OPENABLE);
 
+		/*
+		 * If prompting for a direction, allow the player's square as
+		 * an option if there's a chest nearby.
+		 */
 		if (n_closed_doors + n_locked_chests == 1) {
 			dir = motion_dir(player->grid, grid1);
 			cmd_set_arg_direction(cmd, "direction", dir);
-		} else if (cmd_get_direction(cmd, "direction", &dir, false)) {
+		} else if (cmd_get_direction(cmd, "direction", &dir, n_locked_chests > 0)) {
 			return;
 		}
 	}
@@ -832,12 +836,13 @@ void do_cmd_disarm(struct command *cmd)
 	err = cmd_get_arg_direction(cmd, "direction", &dir);
 	if (err || dir == DIR_UNKNOWN) {
 		struct loc grid1;
-		int n_traps, n_chests;
+		int n_traps, n_chests, n_unldoor;
 
-		n_traps = count_feats(&grid1, square_isdisarmabletrap, true);
+		n_traps = count_feats(&grid1, square_isdisarmabletrap, false);
 		n_chests = count_chests(&grid1, CHEST_TRAPPED);
+		n_unldoor = count_feats(&grid1, square_isunlockeddoor, false);
 
-		if (n_traps + n_chests == 1) {
+		if (n_traps + n_chests + n_unldoor == 1) {
 			dir = motion_dir(player->grid, grid1);
 			cmd_set_arg_direction(cmd, "direction", dir);
 		} else if (cmd_get_direction(cmd, "direction", &dir, n_chests > 0)) {

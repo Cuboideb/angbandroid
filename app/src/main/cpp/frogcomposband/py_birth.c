@@ -2634,10 +2634,15 @@ static void _stats_init(void)
         case CLASS_WEAPONMASTER:
         case CLASS_NINJA:
         case CLASS_SNIPER:
-        case CLASS_DUELIST:
         case CLASS_RAGE_MAGE:
         {
             int stats[6] = { 17, 13, 8, 16, 15, 10 };
+            _stats_init_aux(stats);
+            break;
+        }
+        case CLASS_DUELIST:
+        {
+            int stats[6] = { 16, 13, 8, 17, 15, 10 };
             _stats_init_aux(stats);
             break;
         }

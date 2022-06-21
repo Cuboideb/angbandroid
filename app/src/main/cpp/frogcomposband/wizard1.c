@@ -2609,7 +2609,7 @@ static int _deadly_mon_comp(_deadly_mon_info_ptr left, _deadly_mon_info_ptr righ
     return 0;
 }
 
-static void spoil_deadliest_mons(void)
+static void spoil_deadliest_mons(bool allow_thrall)
 {
     doc_ptr doc = doc_alloc(80);
     vec_ptr v = vec_alloc(NULL);
@@ -2626,6 +2626,7 @@ static void spoil_deadliest_mons(void)
         if (!score->status) continue;
         if (!score->killer) continue;
         if (strcmp(score->status, "Dead") != 0) continue;
+        if ((!allow_thrall) && (strpos("thrall", score->version))) continue;
         key = _lookup_monster(score->killer);
         if (!key) continue;
         laskuri++;
@@ -2724,6 +2725,7 @@ void do_cmd_spoilers(void)
         prt("(2) Device Fail Rates", row++, col);
         prt("(3) Device Tables", row++, col);
         prt("(4) Deadliest Monsters", row++, col);
+        prt("(5) Deadliest Monsters (Non-Thrall)", row++, col);
         row++;
 
         /* Prompt */
@@ -2805,7 +2807,10 @@ void do_cmd_spoilers(void)
             spoil_device_tables();
             break;
         case '4':
-            spoil_deadliest_mons();
+            spoil_deadliest_mons(TRUE);
+            break;
+        case '5':
+            spoil_deadliest_mons(FALSE);
             break;
 
         /* Oops */

@@ -1488,6 +1488,7 @@ static void innate_attacks(s16b m_idx, bool *fear, bool *mdeath, int mode)
             int ac = mon_ac(m_ptr);
 
             if (m_ptr->fy != old_fy || m_ptr->fx != old_fx) break; /* Teleport Effect? */
+            if (p_ptr->is_dead) break;
 
             to_h = a->to_h + p_ptr->to_h_m;
             chance = p_ptr->skills.thn + (to_h * BTH_PLUS_ADJ);

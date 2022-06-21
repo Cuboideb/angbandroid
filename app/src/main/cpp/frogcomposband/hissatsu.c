@@ -58,13 +58,14 @@ static int get_hissatsu_power(int *sn)
     int             ask = TRUE;
     char            choice;
     char            out_val[160];
-    char sentaku[32];
     cptr            p = "technique";
 
     magic_type spell;
     bool            flag, redraw, skip;
     int menu_line = (use_menu ? 1 : 0);
     byte            is_browsing = 0;
+    int             max_left_y = 4;
+    int             max_right_y = 4;
 
     /* Assume cancelled */
     *sn = (-1);
@@ -97,15 +98,19 @@ static int get_hissatsu_power(int *sn)
     {
         if (technic_info[TECHNIC_HISSATSU][i].slevel <= PY_MAX_LEVEL)
         {
-            sentaku[num] = i;
-            num++;
+            if (!(p_ptr->spell_learned1 >> i)) break;
+            if (technic_info[TECHNIC_HISSATSU][i].slevel > plev) continue;
+            if (!(p_ptr->spell_learned1 & (1L << i))) continue;
+            num = i;
+            if (i < 16) max_left_y = i + 4;
+            else max_right_y = i - 12;
         }
     }
 
     /* Build a prompt (accept all spells) */
     (void) strnfmt(out_val, 78, 
                "(%^ss %c-%c, ?=%s, !=Damage, ESC=exit) Use which %s? ",
-               p, I2A(0), "abcdefghijklmnopqrstuvwxyz012345"[num-1], is_browsing ? "Use" : "Browse", p);
+               p, I2A(0), "abcdefghijklmnopqrstuvwxyz012345"[num], is_browsing ? "Use" : "Browse", p);
 
 //    if (use_menu) screen_save();
     screen_save();
@@ -205,7 +210,7 @@ static int get_hissatsu_power(int *sn)
             is_browsing = (is_browsing == 1) ? 0 : 1;
             (void) strnfmt(out_val, 78,
                "(%^ss %c-%c, ?=%s, !=Damage, ESC=exit) %s which %s? ",
-               p, I2A(0), "abcdefghijklmnopqrstuvwxyz012345"[num-1], is_browsing ? "Use" : "Browse", is_browsing ? "Browse" : "Use", p);
+               p, I2A(0), "abcdefghijklmnopqrstuvwxyz012345"[num], is_browsing ? "Use" : "Browse", is_browsing ? "Browse" : "Use", p);
         }
 
         if (choice == '!')
@@ -213,7 +218,7 @@ static int get_hissatsu_power(int *sn)
             is_browsing = 2;
             (void) strnfmt(out_val, 78,
                "(%^ss %c-%c, ?=Browse, ESC=exit) Show damage for which %s? ",
-               p, I2A(0), "abcdefghijklmnopqrstuvwxyz012345"[num-1], p);
+               p, I2A(0), "abcdefghijklmnopqrstuvwxyz012345"[num], p);
         }
 
         if ((choice == '?') || (choice == '!') || (is_browsing >= 1))
@@ -230,7 +235,7 @@ static int get_hissatsu_power(int *sn)
                 int line;
 
                 /* Show list */
-                redraw = TRUE;
+                redraw = (choice != ' ');
 
 //                if ((use_menu) screen_save();
 
@@ -254,7 +259,11 @@ put_str("name              Lv  SP      name              Lv  SP ", y, x + 5);
                         if ((i < 16) && (p_ptr->spell_learned1 & (1L << (i + 16))))
                         {
                             Term_erase(x, y + (line%17) + (line >= 17), 30);
-                            if (i == 15) Term_erase(x, y + 1 + (line%17) + (line >= 17), 30);
+                            if (i == max_right_y - 4) Term_erase(x, y + 1 + (line%17) + (line >= 17), 30);
+                        }
+                        else if ((i < 16) && (((i % 16) + 4) < (MAX(max_left_y, max_right_y))))
+                        {
+                            prt("", y + (line%17), x);
                         }
                         continue;
                     }
@@ -320,22 +329,22 @@ put_str("name              Lv  SP      name              Lv  SP ", y, x + 5);
         }
 
         /* Totally Illegal */
-        if ((i < 0) || (i >= 32) || !(p_ptr->spell_learned1 & (1 << sentaku[i])))
+        if ((i < 0) || (i >= 32) || !(p_ptr->spell_learned1 & (1 << i)))
         {
             bell();
+            redraw = FALSE;
             continue;
         }
 
-        j = sentaku[i];
+        j = i;
 
         if (is_browsing == 1)
         {
             char spell_desc[512];
-            int desc_y = (num > 15) ? 19 : 3 + num;
-            prt("", desc_y, 17);
+            prt("", MAX(max_left_y, max_right_y), 17);
             (void)strnfmt(spell_desc, sizeof(spell_desc), "  <style:indent>%s</style>\n", do_spell(REALM_HISSATSU, j, SPELL_DESC));
             ask = FALSE;
-            _display(_menu_rect(desc_y), spell_desc);
+            _display(_menu_rect(MAX(max_left_y, max_right_y)), spell_desc);
             continue;
         }
         else if (is_browsing == 2)
@@ -354,6 +363,7 @@ put_str("name              Lv  SP      name              Lv  SP ", y, x + 5);
             /* Prompt */
             (void)strnfmt(tmp_val, 78, "Use %s? ", do_spell(REALM_HISSATSU, j, SPELL_NAME));
 
+            redraw = FALSE;
 
             /* Belay that order */
             if (!get_check(tmp_val)) continue;

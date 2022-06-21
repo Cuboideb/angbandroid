@@ -914,6 +914,9 @@ void destruction_spell(int cmd, variant *res)
     case SPELL_DESC:
         var_set_string(res, "Destroys everything in your nearby vicinity ... except you, of course.");
         break;
+    case SPELL_INFO:
+        var_set_string(res, info_power(spell_power(p_ptr->lev * 4)));
+        break;
     case SPELL_CAST:
         destroy_area(py, px, 12 + randint1(4), spell_power(4 * p_ptr->lev));
         var_set_bool(res, TRUE);

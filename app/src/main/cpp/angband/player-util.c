@@ -475,7 +475,7 @@ void player_adjust_hp_precise(struct player *p, int32_t hp_gain)
 	}
 
 	if (p->chp != old_16) {
-	p->upkeep->redraw |= (PR_HP);
+		p->upkeep->redraw |= (PR_HP);
 	}
 }
 
@@ -495,10 +495,10 @@ int32_t player_adjust_mana_precise(struct player *p, int32_t sp_gain)
 	/* Check for overflow */
 	if (sp_gain > 0) {
 		if (old_32 < INT32_MAX - sp_gain) {
-	new_32 = old_32 + sp_gain;
+			new_32 = old_32 + sp_gain;
 		} else {
-		new_32 = INT32_MAX;
-		sp_gain = 0;
+			new_32 = INT32_MAX;
+			sp_gain = 0;
 		}
 	} else if (old_32 > INT32_MIN - sp_gain) {
 		new_32 = old_32 + sp_gain;
@@ -1487,6 +1487,12 @@ void player_handle_post_move(struct player *p, bool eval_trap)
 	} else {
 		square_know_pile(cave, p->grid);
 		cmdq_push(CMD_AUTOPICKUP);
+		/*
+		 * The autopickup is a side effect of the move:  whatever
+		 * command triggered the move will be the target for CMD_REPEAT
+		 * rather than repeating the autopickup.
+		 */
+		cmdq_peek()->is_background_command = true;
 	}
 
 	/* Discover invisible traps, set off visible ones */

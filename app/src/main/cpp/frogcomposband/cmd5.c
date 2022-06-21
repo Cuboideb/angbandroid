@@ -2044,7 +2044,7 @@ static void do_name_pet(void)
         }
 
         /* Get a new inscription (possibly empty) */
-        if (get_string("Name: ", out_val, 15))
+        if (get_string("Name: ", out_val, 16))
         {
             if (out_val[0])
             {

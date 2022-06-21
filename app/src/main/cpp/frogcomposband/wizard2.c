@@ -813,7 +813,7 @@ static void do_cmd_wiz_jump(void)
         sprintf(tmp_val, "%d", dungeon_type);
 
         /* Ask for a level */
-        if (!get_string(ppp, tmp_val, 2)) return;
+        if (!get_string(ppp, tmp_val, 3)) return;
 
         tmp_dungeon_type = atoi(tmp_val);
         if (!d_info[tmp_dungeon_type].maxdepth || (tmp_dungeon_type > max_d_idx)) tmp_dungeon_type = DUNGEON_ANGBAND;

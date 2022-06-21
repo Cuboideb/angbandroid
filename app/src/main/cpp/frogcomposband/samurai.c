@@ -1129,13 +1129,13 @@ static bool _choose_kata(void)
     idx = menu_choose(&menu);
     if (idx < 0) return FALSE;
     if (idx == 0)
-        {
-            if (p_ptr->action == ACTION_KATA)
-                set_action(ACTION_NONE);
-            else
+    {
+        if (p_ptr->action == ACTION_KATA)
+            set_action(ACTION_NONE);
+        else
             msg_print("You are not assuming a posture.");
-            return TRUE;
-        }
+        return TRUE;
+    }
     else if ((idx <= MAX_KATA) && (p_ptr->lev >= kata_shurui[idx - 1].min_level)) new_kata = idx - 1;
     else return FALSE;
     set_action(ACTION_KATA);

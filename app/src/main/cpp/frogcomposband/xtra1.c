@@ -5532,28 +5532,28 @@ void update_stuff(void)
     /* mega-hack - prevent triggering repeated calls by resizing the window */
     if (((!redraw_hack) && (!resize_hack)) || (character_xtra))
     {
-    if (p_ptr->update & (PU_BONUS))
-    {
-        p_ptr->update &= ~(PU_BONUS);
-        calc_bonuses();
-    }
+        if (p_ptr->update & (PU_BONUS))
+        {
+            p_ptr->update &= ~(PU_BONUS);
+            calc_bonuses();
+        }
 
-    if (p_ptr->update & (PU_TORCH))
-    {
-        p_ptr->update &= ~(PU_TORCH);
-        calc_torch();
-    }
+        if (p_ptr->update & (PU_TORCH))
+        {
+            p_ptr->update &= ~(PU_TORCH);
+            calc_torch();
+        }
 
-    if (p_ptr->update & (PU_HP))
-    {
-        p_ptr->update &= ~(PU_HP);
-        calc_hitpoints();
-    }
+        if (p_ptr->update & (PU_HP))
+        {
+            p_ptr->update &= ~(PU_HP);
+            calc_hitpoints();
+        }
 
-    if (p_ptr->update & (PU_MANA))
-    {
-        p_ptr->update &= ~(PU_MANA);
-        calc_mana();
+        if (p_ptr->update & (PU_MANA))
+        {
+            p_ptr->update &= ~(PU_MANA);
+            calc_mana();
         }
     }
 

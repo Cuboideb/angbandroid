@@ -1481,7 +1481,7 @@ static void _bulwark_spell(int cmd, variant *res)
         var_set_string(res, "Bulwark");
         break;
     case SPELL_DESC:
-        var_set_string(res, "All melee damage that you receive is reduced.");
+        var_set_string(res, "All melee damage that you receive is reduced by one-third.");
         break;
     default:
         _toggle_spell(TOGGLE_BULWARK, cmd, res);

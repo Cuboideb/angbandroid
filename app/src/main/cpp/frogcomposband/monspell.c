@@ -3144,6 +3144,16 @@ static _custom_msg_t _mon_msg_tbl[] = {
         "$CASTER blows a horn!",
         "$CASTER blows in Gjallarhorn!",
         "You blow a horn." },
+   { MON_DOKKAEBI, {MST_ANNOY, ANNOY_SHRIEK},
+        "$CASTER bellows, <color:R>'30,000 gold to the monster who kills this adventurer!'</color>",
+        "$CASTER shrieks, <color:R>'Free artifact to the one who kills this adventurer!'</color>",
+        "$CASTER shrieks, <color:R>'30,000 gold to the killer of</color> $TARGET<color:R>!'</color>",
+        "You shriek." },
+   { MON_G_DOKKAEBI, {MST_ANNOY, ANNOY_SHRIEK},
+        "$CASTER bellows, <color:R>'Free artifacts to the monster who kills this adventurer!'</color>",
+        "$CASTER shrieks, <color:R>'500,000 gold to the one who kills this adventurer!'</color>",
+        "$CASTER shrieks, <color:R>'Free artifacts to the killer of</color> $TARGET<color:R>!'</color>",
+        "You shriek." },
     {0}
 };
 static cptr _custom_msg(void)

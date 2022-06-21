@@ -1050,7 +1050,7 @@ static void do_cmd_delay(const char *name, int unused)
 	prt("Command: Base Delay Factor", 20, 0);
 	prt("New base delay factor (0-255): ", 21, 0);
 	prt(format("Current base delay factor: %d msec",
-			   player->opts.delay_factor, msec), 22, 0);
+		player->opts.delay_factor, msec), 22, 0);
 	prt("", 23, 0);
 
 	/* Ask for a numeric value */
@@ -1885,7 +1885,7 @@ static char tag_options_item(struct menu *menu, int oid)
 	size_t line = (size_t) oid;
 
 	if (line < N_ELEMENTS(sval_dependent))
-		return I2A(oid);
+		return all_letters_nohjkl[oid];
 
 	/* Separator - blank line. */
 	if (line == N_ELEMENTS(sval_dependent))
@@ -1981,7 +1981,6 @@ void do_cmd_options_item(const char *title, int row)
 				 N_ELEMENTS(extra_item_options) + 1, NULL);
 
 	menu.title = title;
-	menu.selections = all_letters_nohjkl;
 	menu_layout(&menu, &SCREEN_REGION);
 
 	screen_save();
