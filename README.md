@@ -16,7 +16,7 @@ Profiles are designed to play with different characters. Each profile has its ow
 
 Some variants of Angband are included in the port: FrogComposband, FAangband, Sil-Q and NPPAngband. They are accessed from the Preferences. Using a different profile for each variant/character is adviced.
 
-To save time, in the quick settings menu there is an item to "Import" keymaps and buttons from another profile.
+To save time, in the quick settings menu there is an item to "Copy" keymaps and buttons from another profile.
 
 ### Input methods
 

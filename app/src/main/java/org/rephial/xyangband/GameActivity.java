@@ -720,7 +720,7 @@ public class GameActivity extends Activity {
 		menu.add(0, CONTEXTMENU_PROFILES_ITEM, 0, "Profiles");
 
 		if (Preferences.getProfiles().size() > 1) {
-			menu.add(0, CONTEXTMENU_IMPORT_KEYS, 0, "Import Keymaps and Floating Buttons");
+			menu.add(0, CONTEXTMENU_IMPORT_KEYS, 0, "Copy Keymaps and Floating Buttons");
 		}
 
 		menu.add(0, CONTEXTMENU_HELP_ITEM, 0, "Help");
