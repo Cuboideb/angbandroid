@@ -1120,31 +1120,154 @@ public class TermView extends View implements OnGestureListener {
 		paint.setAlpha(255);
 	}
 
+	public void drawMap(Canvas p_canvas, ButtonView btn)
+	{
+		String map = state.getMap();
+		if (map == null) return;
+
+		String[] parts = map.split(":");
+		if (parts.length < 3) return;
+
+		float x0 = btn.x + getScrollX();
+		float y0 = btn.y + getScrollY();
+		int tw = 2;
+		int th = 4;
+
+		int min = 1;
+		int max = 5;
+		int sizeMult = min + btn.sizeMult * (max-min) / 100;
+
+		min = MIN_OPACITY;
+		max = 255;
+
+		int opacity = min + btn.opacity * (max-min) / 100;
+
+		tw *= sizeMult;
+		th *= sizeMult;
+
+		int w = Integer.parseInt(parts[0]);
+		int h = Integer.parseInt(parts[1]);
+
+		int _alpha = Preferences.getKeyboardOpacity();
+
+		Paint paint = dirZoneFill;
+		if (btn.isBeingDragged()) {
+			paint.setColor(color_drag);
+		}
+		else {
+			paint.setColor(AdvButton.DEFAULT_BG);
+		}
+		paint.setAlpha(opacity);
+
+		// Remember size
+		btn.w = w*tw;
+		btn.h = h*th;
+
+		RectF rect = new RectF(x0, y0, x0+btn.w, y0+btn.h);
+		p_canvas.drawRect(rect, paint);
+
+		dirZoneStroke.setColor(color1_stroke);
+		dirZoneStroke.setAlpha(alpha);
+		p_canvas.drawRect(rect, dirZoneStroke);
+
+		String data = parts[2];
+
+		//Log.d("Angband", "MAP: " + w + " " + h + " " + data.length());
+
+		int i = 0;
+
+		opacity = Math.min(opacity*2,255);
+
+		for (int y = 0; y < h; y++) {
+			//String row = "";
+			for (int x = 0; x < w; x++) {
+				if (i >= data.length()) break;
+
+				char ch = data.charAt(i++);
+
+				//row += Character.toString(ch);
+
+				if (ch != '1') continue;
+
+				int color = Color.LTGRAY;
+
+				float x1 = x0 + x * tw;
+				float y1 = y0 + y * th;
+
+				paint.setColor(color);
+				paint.setAlpha(opacity);
+
+				RectF rect2 = new RectF(x1, y1, x1 + tw, y1 + th);
+				p_canvas.drawRect(rect2, paint);
+			}
+
+			//Log.d("Angband", "MAP: " + row);
+		}
+
+		i = 0;
+
+		for (int y = 0; y < h; y++) {
+			for (int x = 0; x < w; x++) {
+				if (i >= data.length()) break;
+
+				char ch = data.charAt(i++);
+
+				if (ch == '0' || ch == '1') continue;
+
+				int color = Color.BLACK;
+				if (ch == '2') color = Color.RED;
+				if (ch == '3') color = Color.YELLOW;
+				if (ch == '4') color = Color.GREEN;
+
+				int padX = tw/2;
+				int padY = th/2;
+
+				float x1 = x0 + x * tw - padX;
+				float y1 = y0 + y * th - padY;
+
+				paint.setColor(color);
+				paint.setAlpha(opacity);
+
+				RectF rect2 = new RectF(x1, y1, x1 + tw * 2, y1 + th * 2);
+				p_canvas.drawRect(rect2, paint);
+			}
+		}
+	}
+
 	public void drawFloatingButtons(Canvas p_canvas)
 	{
 		Paint paint = fore_fab;
 
 		if (paint == null) return;
 
-		// Percentage of current font size
-		int min = 150;
-		int max = 500;
-		int pct = min + Preferences.getFabMult() * (max-min) / 100;
-
-		int fab_font_size = font_text_size;
-		fab_font_size = pct * fab_font_size / 100;
-		fab_font_size = Math.max(fab_font_size, MIN_FONT);
-		//fab_font_size = Math.min(fab_font_size, MAX_FONT);
-
-		min = MIN_OPACITY;
-		max = 255;
-		int _alphaFg = min + Preferences.getKeyboardOpacity() * (max-min) / 100;
-
 		for (FloatingView v: views) {
 
 			if (!(v instanceof ButtonView)) continue;
 
 			ButtonView btn = (ButtonView)v;
+
+			if (btn.action.equals("overview")) {
+				drawMap(p_canvas, btn);
+				continue;
+			}
+
+			// Percentage of current font size
+			int min = 150;
+			int max = 500;
+			int mult = btn.sizeMult;
+			if (mult == 0) mult = Preferences.getFabMult();
+			int pct = min + mult * (max-min) / 100;
+
+			int fab_font_size = font_text_size;
+			fab_font_size = pct * fab_font_size / 100;
+			fab_font_size = Math.max(fab_font_size, MIN_FONT);
+			//fab_font_size = Math.min(fab_font_size, MAX_FONT);
+
+			min = MIN_OPACITY;
+			max = 255;
+			mult = btn.opacity;
+			if (mult == 0) mult = Preferences.getKeyboardOpacity();
+			int _alphaFg = min + mult * (max-min) / 100;
 
 			String label = btn.label;
 			String icon = "";
@@ -2099,6 +2222,8 @@ public class TermView extends View implements OnGestureListener {
 		String label = "";
 		String icon = "";
 		Boolean fixed = false;
+		Integer sizeMult = 0;
+		Integer opacity = 0;
 
 		public void fromJSON(JSONObject obj)
 		{
@@ -2108,6 +2233,8 @@ public class TermView extends View implements OnGestureListener {
 			label = obj.optString("label", "");
 			icon = obj.optString("icon", "");
 			fixed = obj.optBoolean("fixed", false);
+			sizeMult = obj.optInt("sizeMult", 0);
+			opacity = obj.optInt("opacity", 0);
 		}
 
 		public JSONObject toJSON()
@@ -2120,12 +2247,19 @@ public class TermView extends View implements OnGestureListener {
 				obj.put("x", x);
 				obj.put("y", y);
 				obj.put("fixed", fixed);
+				obj.put("sizeMult", sizeMult);
+				obj.put("opacity", opacity);
 			}
 			catch (JSONException ex) {
 				Log.d("Angband", ex.getMessage());
 				return null;
 			}
 			return obj;
+		}
+
+		public boolean specialButton()
+		{
+			return action.equals("overview");
 		}
 
 		@Override
@@ -2146,6 +2280,10 @@ public class TermView extends View implements OnGestureListener {
 
 			if (action.equals("opacity")) {
 				game_context.runOpacityPopup();
+				return;
+			}
+
+			if (specialButton()) {
 				return;
 			}
 
@@ -2177,6 +2315,13 @@ public class TermView extends View implements OnGestureListener {
 		{
 			float x2 = x+dx;
 			float y2 = y+dy;
+
+			// Special buttons. Accept
+			if (specialButton()) {
+				x = x2;
+				y = y2;
+				return;
+			}
 
 			RectF bounds = new RectF(0, 0, getWidth(), getHeight());
 
@@ -2233,7 +2378,9 @@ public class TermView extends View implements OnGestureListener {
 
 		public ButtonView target = null;
 
-		public SeekBar sizeBar = null;
+		public SeekBar globalSizeBar = null;
+		public SeekBar customSizeBar = null;
+		public SeekBar customOpacityBar = null;
 
 		public int max = 0;
 
@@ -2264,9 +2411,17 @@ public class TermView extends View implements OnGestureListener {
 
 			labelTxt.setText(target.label);
 
-			sizeBar = content.findViewById(R.id.size_mult);
+			globalSizeBar = content.findViewById(R.id.global_size_mult);
 
-			sizeBar.setProgress(Preferences.getFabMult());
+			globalSizeBar.setProgress(Preferences.getFabMult());
+
+			customSizeBar = content.findViewById(R.id.custom_size_mult);
+
+			customSizeBar.setProgress(target.sizeMult);
+
+			customOpacityBar = content.findViewById(R.id.custom_opacity);
+
+			customOpacityBar.setProgress(target.opacity);
 
 			SeekBar.OnTouchListener listener = new SeekBar.OnTouchListener()
 			{
@@ -2293,7 +2448,9 @@ public class TermView extends View implements OnGestureListener {
 				}
 			};
 
-			sizeBar.setOnTouchListener(listener);
+			globalSizeBar.setOnTouchListener(listener);
+			customSizeBar.setOnTouchListener(listener);
+			customOpacityBar.setOnTouchListener(listener);
 
 			assignText(target.action);
 
@@ -2446,11 +2603,15 @@ public class TermView extends View implements OnGestureListener {
 
 			target.fixed = ckFixed.isChecked();
 
+			target.sizeMult = customSizeBar.getProgress();
+
+			target.opacity = customOpacityBar.getProgress();
+
 			AdvButton.closeSoftKeyboard(game_context, actionTxt);
 
 			AdvButton.closeSoftKeyboard(game_context, labelTxt);
 
-			Preferences.setFabMult(sizeBar.getProgress());
+			Preferences.setFabMult(globalSizeBar.getProgress());
 
 			serializeButtons();
 			resetFloatingButtons();

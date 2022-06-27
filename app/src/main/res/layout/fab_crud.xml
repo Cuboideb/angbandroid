@@ -158,6 +158,7 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:orientation="horizontal"
+				android:paddingTop="10dp"
 				android:gravity="center_vertical">
 
 				<TextView
@@ -166,10 +167,61 @@
 					android:layout_weight="0"
 					android:paddingLeft="5dp"
 					android:paddingRight="5dp"
-					android:text="Size:" />
+					android:minWidth="200dp"
+					android:text="Global button size:" />
 
 				<SeekBar
-					android:id="@+id/size_mult"
+					android:id="@+id/global_size_mult"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:progress="0" />
+
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				android:paddingTop="10dp"
+				android:gravity="center_vertical">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_weight="0"
+					android:paddingLeft="5dp"
+					android:paddingRight="5dp"
+					android:minWidth="200dp"
+					android:text="This button size:" />
+
+				<SeekBar
+					android:id="@+id/custom_size_mult"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:progress="0" />
+
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				android:paddingTop="10dp"
+				android:gravity="center_vertical">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_weight="0"
+					android:paddingLeft="5dp"
+					android:paddingRight="5dp"
+					android:minWidth="200dp"
+					android:text="This button opacity:" />
+
+				<SeekBar
+					android:id="@+id/custom_opacity"
 					android:layout_width="0dp"
 					android:layout_height="wrap_content"
 					android:layout_weight="1"

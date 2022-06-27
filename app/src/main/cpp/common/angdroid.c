@@ -971,6 +971,85 @@ static char *get_grid_info(int row, int col)
 	return strdup(buf);
 }
 
+char *get_map()
+{
+	char *buf = NULL;
+	int w, h;
+	int n;
+	int x, y;
+	int x1, y1;
+	int max_len;
+
+	if (cave == NULL || player == NULL || player->cave == NULL || !IN_THE_DUNGEON) {
+		return NULL;
+	}
+
+	w = cave->width;
+	h = cave->height;
+
+	x1 = 0;
+	y1 = 0;
+
+	for (y = 0; y < h; y++) {
+		for (x = 0; x < w; x++) {
+			struct loc grid = {x, y};
+
+			if (!square_in_bounds_fully(cave, grid) || !square_isknown(cave, grid)) {
+				continue;
+			}
+
+			x1 = MAX(x1, x);
+			y1 = MAX(y1, y);
+		}
+	}
+
+	if (x1 == 0 || y1 == 0) return NULL;
+
+	w = x1+1;
+	h = y1+1;
+
+	max_len = w * h + 50;
+
+	buf = malloc(max_len);
+
+	if (buf == NULL) return NULL;
+
+	sprintf(buf, "%d:%d:", w, h);
+
+	n = strlen(buf);
+
+	for (y = 0; y < h; y++) {
+		for (x = 0; x < w; x++) {
+			struct loc grid = {x, y};
+			char ch = '0';
+
+			if (n >= max_len-1) break;
+
+			if (!square_in_bounds_fully(cave, grid) || !square_isknown(cave, grid)) {
+				ch = '0';
+			}
+			else if (square_isplayer(cave, grid)) {
+				ch = '2';
+			}
+			else if (square_isupstairs(cave, grid)) {
+				ch = '3';
+			}
+			else if (square_isdownstairs(cave, grid)) {
+				ch = '4';
+			}
+			else if (square_ispassable(cave, grid)) {
+				ch = '1';
+			}
+
+			buf[n++] = ch;
+		}
+	}
+
+	buf[n] = 0;
+
+	return buf;
+}
+
 char* queryString(const char* argv0)
 {
 	const char *CMD_DESC = "cmd_desc_";
@@ -990,6 +1069,9 @@ char* queryString(const char* argv0)
 	}
 	else if (strcmp(argv0, "cmd_list") == 0) {
 		buf = get_command_list();
+	}
+	else if (strcmp(argv0, "map") == 0) {
+		buf = get_map();
 	}
 	else if (strcmp(argv0, "get_tilesets") == 0) {
 		buf = get_tilesets();
