@@ -993,11 +993,11 @@ char *get_map()
 	x2 = 0;
 	y2 = 0;
 
-	for (y = 0; y < h; y++) {
-		for (x = 0; x < w; x++) {
+	for (y = 1; y < h-1; y++) {
+		for (x = 1; x < w-1; x++) {
 			struct loc grid = {x, y};
 
-			if (!square_in_bounds_fully(cave, grid) || !square_isknown(cave, grid)) {
+			if (!square_isknown(cave, grid)) {
 				continue;
 			}
 
@@ -1031,7 +1031,7 @@ char *get_map()
 
 			if (n >= max_len-1) break;
 
-			if (!square_in_bounds_fully(cave, grid) || !square_isknown(cave, grid)) {
+			if (!square_isknown(cave, grid)) {
 				ch = '0';
 			}
 			else if (square_isplayer(cave, grid)) {
