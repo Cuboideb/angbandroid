@@ -14,6 +14,7 @@
 #define TERM_CONTROL_VISUAL_STATE 4
 #define TERM_CONTROL_SHOW_CURSOR 5
 #define TERM_CONTROL_DEBUG 6
+#define TERM_CONTROL_QUANTITY 7
 
 extern int Term_control(int what, const char *msg);
 #define Term_control_keys(msg) Term_control(TERM_CONTROL_LIST_KEYS,msg)
@@ -21,6 +22,7 @@ extern int Term_control(int what, const char *msg);
 /*extern int Term_control_ws(int what, int n, const wchar_t *msg);*/
 extern int Term_control_context();
 extern int Term_control_visuals();
+extern int Term_control_quantity(const char *msg, int max_value, int initial_value);
 
 /* For control keys in android */
 extern void soft_kbd_flash(const char *keys);

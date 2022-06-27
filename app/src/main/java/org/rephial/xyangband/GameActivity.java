@@ -98,6 +98,7 @@ public class GameActivity extends Activity {
 	public static final int TERM_CONTROL_VISUAL_STATE = 4;
 	public static final int TERM_CONTROL_SHOW_CURSOR = 5;
 	public static final int TERM_CONTROL_DEBUG = 6;
+	public static final int TERM_CONTROL_QUANTITY = 7;
 
 	protected Handler handler = null;
 
@@ -234,6 +235,15 @@ public class GameActivity extends Activity {
 		}
 	}
 
+	public void runQuantityPopup(String message, int maxValue, int initialValue)
+	{
+		if (term != null) {
+			QuantityPopup win = new QuantityPopup(this, message, maxValue, initialValue);
+			int gravity = Gravity.CENTER;
+			win.showAtLocation(term, gravity, 0, 0);
+		}
+	}
+
 	@Override
 	public void onStart() {
 		Log.d("Angband", "Activity START");
@@ -341,6 +351,16 @@ public class GameActivity extends Activity {
 		}
 		if (what == TERM_CONTROL_SHOW_CURSOR) {
 			// Nothing
+		}
+		if (what == TERM_CONTROL_QUANTITY && term != null) {
+			Pattern pattern = Pattern.compile("(\\d+):(\\d+):(.+)");
+			Matcher matcher = pattern.matcher(msg);
+			if (matcher.matches()) {
+				int maxValue = Integer.parseInt(matcher.group(1));
+				int initialValue = Integer.parseInt(matcher.group(2));
+				String msg2 = matcher.group(3);
+				runQuantityPopup(msg2, maxValue, initialValue);
+			}
 		}
 	}
 

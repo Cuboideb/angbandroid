@@ -39,6 +39,14 @@ int Term_control_visuals()
 	return Term_control(TERM_CONTROL_VISUAL_STATE,"dummy");
 }
 
+int Term_control_quantity(const char *msg, int max_value, int initial_value)
+{
+	char buffer[2048];
+
+	strnfmt(buffer, sizeof(buffer), "%d:%d:%s", max_value, initial_value, msg);
+	return Term_control(TERM_CONTROL_QUANTITY, buffer);
+}
+
 void soft_kbd_flash(const char *keys)
 {
 	flashing_keys = true;

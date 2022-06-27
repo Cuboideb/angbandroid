@@ -1155,7 +1155,9 @@ static int textui_get_quantity(const char *prompt, int max)
 		/* Build the default */
 		strnfmt(buf, sizeof(buf), "%d", amt);
 
-		soft_kbd_linger("0123456789*");
+		/*soft_kbd_linger("0123456789*");*/
+
+		Term_control_quantity(prompt, max, amt);
 
 		/* Ask for a quantity */
 		if (!get_string(prompt, buf, 7)) return (0);

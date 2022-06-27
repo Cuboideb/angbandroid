@@ -3703,7 +3703,8 @@ s16b get_quantity(cptr prompt, int max)
         /* Build the default */
         sprintf(buf, "%d", amt);
 
-        soft_kbd_linger("0123456789");
+        /*soft_kbd_linger("0123456789");*/
+        Term_control_quantity(prompt, max, amt);
 
         /* Ask for a quantity */
         if (!term_get_string(prompt, buf, 7)) {
