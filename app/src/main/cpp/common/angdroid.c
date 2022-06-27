@@ -978,6 +978,7 @@ char *get_map()
 	int n;
 	int x, y;
 	int x1, y1;
+	int x2, y2;
 	int max_len;
 
 	if (cave == NULL || player == NULL || player->cave == NULL || !IN_THE_DUNGEON) {
@@ -987,8 +988,10 @@ char *get_map()
 	w = cave->width;
 	h = cave->height;
 
-	x1 = 0;
-	y1 = 0;
+	x1 = -1;
+	y1 = -1;
+	x2 = 0;
+	y2 = 0;
 
 	for (y = 0; y < h; y++) {
 		for (x = 0; x < w; x++) {
@@ -998,15 +1001,18 @@ char *get_map()
 				continue;
 			}
 
-			x1 = MAX(x1, x);
-			y1 = MAX(y1, y);
+			if (x1 == -1 || x < x1) x1 = x;
+			if (y1 == -1 || y < y1) y1 = y;
+
+			x2 = MAX(x2, x);
+			y2 = MAX(y2, y);
 		}
 	}
 
-	if (x1 == 0 || y1 == 0) return NULL;
+	if (x1 == -1 || y1 == -1) return NULL;
 
-	w = x1+1;
-	h = y1+1;
+	w = x2-x1+1;
+	h = y2-y1+1;
 
 	max_len = w * h + 50;
 
@@ -1018,8 +1024,8 @@ char *get_map()
 
 	n = strlen(buf);
 
-	for (y = 0; y < h; y++) {
-		for (x = 0; x < w; x++) {
+	for (y = y1; y <= y2; y++) {
+		for (x = x1; x <= x2; x++) {
 			struct loc grid = {x, y};
 			char ch = '0';
 

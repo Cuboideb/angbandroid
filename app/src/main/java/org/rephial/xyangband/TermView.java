@@ -2293,7 +2293,7 @@ public class TermView extends View implements OnGestureListener {
 		@Override
 		public void executeLongPress(MotionEvent me)
 		{
-			FabCrudPopup win = new FabCrudPopup(this);
+			FabCrudPopup win = new FabCrudPopup(this, false);
 			int gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
 			win.showAtLocation(TermView.this, gravity, 0, 10);
 		}
@@ -2363,7 +2363,7 @@ public class TermView extends View implements OnGestureListener {
 
 		views.add(b);
 
-		FabCrudPopup win = new FabCrudPopup(b);
+		FabCrudPopup win = new FabCrudPopup(b, true);
 		int gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
 		win.showAtLocation(this, gravity, 0, 10);
 	}
@@ -2382,15 +2382,19 @@ public class TermView extends View implements OnGestureListener {
 		public SeekBar customSizeBar = null;
 		public SeekBar customOpacityBar = null;
 
+		public boolean isNew = false;
+
 		public int max = 0;
 
 		public ArrayList<Button> buttons = new ArrayList<>();
 
-		public FabCrudPopup(ButtonView p_target)
+		public FabCrudPopup(ButtonView p_target, boolean p_isNew)
 		{
 			super(game_context);
 
 			target = p_target;
+
+			isNew = p_isNew;
 
 			String s = game_context.getResources().getString(R.string.def_keymap_len);
 			max = Integer.parseInt(s);
@@ -2606,6 +2610,10 @@ public class TermView extends View implements OnGestureListener {
 			target.sizeMult = customSizeBar.getProgress();
 
 			target.opacity = customOpacityBar.getProgress();
+
+			if (isNew && target.specialButton() && target.opacity == 0) {
+				target.opacity = 50;
+			}
 
 			AdvButton.closeSoftKeyboard(game_context, actionTxt);
 
