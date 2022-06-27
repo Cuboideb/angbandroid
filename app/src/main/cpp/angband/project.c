@@ -877,6 +877,9 @@ bool project(struct source origin, int rad, struct loc finish,
 
 		/* Store it. */
 		dam_at_dist[i] = dam_temp;
+
+		/* Android */
+		/*msg("distance %d - dam %d", i, dam_temp);*/
 	}
 
 

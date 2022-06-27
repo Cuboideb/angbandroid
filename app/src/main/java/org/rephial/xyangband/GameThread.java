@@ -217,12 +217,6 @@ public class GameThread implements Runnable {
 
 		Plugins.preparePlugin(Preferences.getActivePlugin());
 
-		//String pluginPath = Preferences.getActivityFilesDirectory()
-		//	+"/../lib/lib"+running_plugin+".so";
-
-		//String pluginPath = this.state.context.getApplicationInfo().nativeLibraryDir
-		//		+ "/lib" + running_plugin + ".so";
-
 		// Plain lib name, android set the folder?
 		String pluginPath = "lib" + running_plugin + ".so";
 
@@ -236,22 +230,27 @@ public class GameThread implements Runnable {
 
 		String pluginName = Preferences.getActivePluginName();
 
+		String rangeReduction = "" + (Preferences.getRangeReduction() ? 1: 0);
+
 		nativew.wipeAll();
 
 		nativew.disableGraphics();
 
+		String[] argv = new String[] {
+			Preferences.getAngbandFilesDirectory(),
+			Preferences.getActiveProfile().getSaveFile(),
+			width,
+			height,
+			visuals,
+			pluginName,
+			rangeReduction
+		};
+
 		/* game is not running, so start it up */
 		nativew.gameStart(
 			pluginPath,
-			6,
-			new String[]{
-				Preferences.getAngbandFilesDirectory(),
-				Preferences.getActiveProfile().getSaveFile(),
-				width,
-				height,
-				visuals,
-				pluginName
-			}
+			argv.length,
+			argv
 		);
 	}
 }

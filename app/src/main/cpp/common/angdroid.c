@@ -50,6 +50,7 @@ static int initial_tile_wid = 1;
 static int initial_tile_hgt = 1;
 static int initial_graphics = 0;
 static int initial_top_bar = 0;
+static int initial_range_reduction = 0;
 
 /*
  * Android's terms are boring.
@@ -1103,6 +1104,12 @@ void angdroid_process_argv(int i, const char* argv)
 				initial_graphics = 0;
 			}
 			break;
+		case 6:
+			aux = atoi(argv);
+			if (aux > initial_range_reduction) {
+				initial_range_reduction = aux;
+			}
+			break;
 		default:
 			break;
 	}
@@ -1133,12 +1140,18 @@ void angdroid_main()
 
 	init_display();
 	init_angband();
+
+	// EXPERIMENTAL
+	if (initial_range_reduction > 0) {
+		z_info->max_range = MAX(z_info->max_range / 2, 10);
+	}
+
 	textui_init();
 
 	/* Wait for response */
 	pause_line(Term);
 
-	/* Hack - Force grapchis reload */
+	/* Hack - Force graphics reload */
 	control_msg(TERM_CONTROL_CONTEXT, "dummy");
 
 	/* Play game */

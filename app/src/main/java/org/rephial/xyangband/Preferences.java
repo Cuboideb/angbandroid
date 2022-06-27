@@ -51,6 +51,7 @@ final public class Preferences {
 	static final String KEY_HORIZ_SUBW = "angband.horiz_subwindows";
 
 	static final String KEY_FAB_MULT = "angband.fab_mult";
+	static final String KEY_RANGE_REDUCTION = "angband.range_reduction";
 
 	static final String KEY_TOP_BAR = "angband.top_bar";
 	static final String KEY_MULT_TOP_BAR = "angband.mult_top_bar";
@@ -684,6 +685,11 @@ final public class Preferences {
 
 	public static boolean getTopBar() {
 		return pref.getBoolean(KEY_TOP_BAR, true);
+	}
+
+	public static boolean getRangeReduction()
+	{
+		return pref.getBoolean(KEY_RANGE_REDUCTION, false);
 	}
 
 	public static void setTopBar(boolean value) {

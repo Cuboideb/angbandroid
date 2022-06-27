@@ -754,6 +754,12 @@ bool effect_handler_BREATH(effect_handler_context_t *context)
 			diameter_of_source = 25;
 	}
 
+	/* For the ANDROID port*/
+	if (z_info->max_range < 20 && diameter_of_source > 0) {
+		diameter_of_source = (z_info->max_range * diameter_of_source) / 20;
+		diameter_of_source = MAX(diameter_of_source, 1);
+	}
+
 	/* Breathe at the target */
 	if (project(context->origin, rad, target, dam, type, flg, degrees_of_arc,
 				diameter_of_source, context->obj))
@@ -820,6 +826,12 @@ bool effect_handler_ARC(effect_handler_context_t *context)
 	/* Max */
 	if (diameter_of_source > 25) {
 		diameter_of_source = 25;
+	}
+
+	/* For the ANDROID port*/
+	if (z_info->max_range < 20 && diameter_of_source > 0) {
+		diameter_of_source = (z_info->max_range * diameter_of_source) / 20;
+		diameter_of_source = MAX(diameter_of_source, 1);
 	}
 
 	/* Aim at the target */

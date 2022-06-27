@@ -55,6 +55,10 @@
 			android:defaultValue="4x2"
 			android:entries="@array/tileMultValues"
 			android:entryValues="@array/tileMultValues"/>
+		<CheckBoxPreference
+			android:key="angband.range_reduction"
+			android:defaultValue="false"
+			android:title="Halve max distance of ranged attacks for V and FA (for small displays, needs restart)" />
 	  <CheckBoxPreference
 			android:key="angband.draw_health_bars"
 			android:defaultValue="true"
