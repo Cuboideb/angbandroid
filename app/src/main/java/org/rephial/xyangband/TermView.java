@@ -691,6 +691,7 @@ public class TermView extends View implements OnGestureListener {
 		// Get the height of the activity window
 		Point winSize = new Point();
 		windowDisplay.getSize(winSize);
+		// 10% of window size
 		int w = (int)(winSize.x * 0.10f);
 		int h = (int)(winSize.y * 0.10f);
 
@@ -703,7 +704,15 @@ public class TermView extends View implements OnGestureListener {
 		int margin = Math.max(padx, pady);
 
 		w = Math.min(w, h);
-		h = w = ((100 + Preferences.getTouchMultiplier()) * w) / 100;
+		int mult = Preferences.getTouchMultiplier();
+		if (mult == 0) {
+			mult = 80;
+			Preferences.setTouchMultiplier(mult);
+		}
+		// adjust up to 20% of window size
+		float pct = 1 + mult / 100.0f;
+		w = (int)(pct * w);
+		h = w;
 
 		for (int py = 1; py <= 3; py++) {
 			for (int px = 1; px <= 3; px++) {
@@ -1130,11 +1139,11 @@ public class TermView extends View implements OnGestureListener {
 
 		float x0 = btn.x + getScrollX();
 		float y0 = btn.y + getScrollY();
-		int tw = 2;
-		int th = 4;
+		int tw = 1;
+		int th = 2;
 
 		int min = 1;
-		int max = 5;
+		int max = 10;
 		int sizeMult = min + btn.sizeMult * (max-min) / 100;
 
 		min = MIN_OPACITY;
@@ -1216,8 +1225,8 @@ public class TermView extends View implements OnGestureListener {
 
 				int color = Color.BLACK;
 				if (ch == '2') color = Color.RED;
-				if (ch == '3') color = Color.YELLOW;
-				if (ch == '4') color = Color.GREEN;
+				if (ch == '3') color = Color.GREEN;
+				if (ch == '4') color = Color.YELLOW;
 
 				int padX = tw/2;
 				int padY = th/2;
@@ -2293,7 +2302,7 @@ public class TermView extends View implements OnGestureListener {
 		@Override
 		public void executeLongPress(MotionEvent me)
 		{
-			FabCrudPopup win = new FabCrudPopup(this, false);
+			FabCrudPopup win = new FabCrudPopup(this);
 			int gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
 			win.showAtLocation(TermView.this, gravity, 0, 10);
 		}
@@ -2363,7 +2372,7 @@ public class TermView extends View implements OnGestureListener {
 
 		views.add(b);
 
-		FabCrudPopup win = new FabCrudPopup(b, true);
+		FabCrudPopup win = new FabCrudPopup(b);
 		int gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
 		win.showAtLocation(this, gravity, 0, 10);
 	}
@@ -2382,19 +2391,15 @@ public class TermView extends View implements OnGestureListener {
 		public SeekBar customSizeBar = null;
 		public SeekBar customOpacityBar = null;
 
-		public boolean isNew = false;
-
 		public int max = 0;
 
 		public ArrayList<Button> buttons = new ArrayList<>();
 
-		public FabCrudPopup(ButtonView p_target, boolean p_isNew)
+		public FabCrudPopup(ButtonView p_target)
 		{
 			super(game_context);
 
 			target = p_target;
-
-			isNew = p_isNew;
 
 			String s = game_context.getResources().getString(R.string.def_keymap_len);
 			max = Integer.parseInt(s);
@@ -2487,6 +2492,10 @@ public class TermView extends View implements OnGestureListener {
 			btn.setTag("action:ret");
 			btn.setOnClickListener(this);
 
+			btn = content.findViewById(R.id.map_button);
+			btn.setTag("action:map");
+			btn.setOnClickListener(this);
+
 			ImageButton btn2 = content.findViewById(R.id.delete_button);
 			btn2.setTag("action:del");
 			btn2.setOnClickListener(this);
@@ -2571,6 +2580,14 @@ public class TermView extends View implements OnGestureListener {
 				return;
 			}
 
+			if (tag.equals("action:map")) {
+				assignText("overview");
+				if (customOpacityBar.getProgress() == 0) {
+					customOpacityBar.setProgress(50);
+				}
+				return;
+			}
+
 			if (tag.equals("action:ret")) {
 				addText("\\n");
 				return;
@@ -2610,10 +2627,6 @@ public class TermView extends View implements OnGestureListener {
 			target.sizeMult = customSizeBar.getProgress();
 
 			target.opacity = customOpacityBar.getProgress();
-
-			if (isNew && target.specialButton() && target.opacity == 0) {
-				target.opacity = 50;
-			}
 
 			AdvButton.closeSoftKeyboard(game_context, actionTxt);
 

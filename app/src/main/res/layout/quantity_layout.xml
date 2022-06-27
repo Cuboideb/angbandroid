@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/message"
-        android:layout_width="500dp"
+        android:layout_width="400dp"
         android:layout_height="wrap_content"
         android:text="Enter a quantity" />
 
@@ -49,21 +49,21 @@
                     android:id="@+id/okButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:minWidth="100dp"
+                    android:minWidth="70dp"
                     android:text="Confirm" />
 
                 <Button
                     android:id="@+id/allButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:minWidth="100dp"
+                    android:minWidth="70dp"
                     android:text="All" />
 
                 <Button
                     android:id="@+id/oneButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:minWidth="100dp"
+                    android:minWidth="70dp"
                     android:text="One" />
             </LinearLayout>
 

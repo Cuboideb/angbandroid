@@ -379,7 +379,7 @@
 			android:dependency="angband.touchright"
 			seekBar:min="0"
 			seekBar:max="100"
-			seekBar:defaultVal="40" />
+			seekBar:defaultVal="0" />
 		<CheckBoxPreference
 			android:key="angband.enable_touch_drag"
 			android:defaultValue="true"

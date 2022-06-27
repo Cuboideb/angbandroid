@@ -113,6 +113,13 @@
 					android:layout_weight="0"
 					android:text="l" />
 
+				<Button
+					android:id="@+id/map_button"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_weight="0"
+					android:text="Overview" />
+
 				<CheckBox
 					android:id="@+id/fixed"
 					android:layout_width="wrap_content"

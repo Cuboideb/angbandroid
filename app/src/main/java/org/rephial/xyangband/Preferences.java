@@ -346,7 +346,13 @@ final public class Preferences {
 	}
 
 	public static int getTouchMultiplier() {
-		return pref.getInt(Preferences.KEY_TOUCHMULTIPLIER, 40);
+		return pref.getInt(Preferences.KEY_TOUCHMULTIPLIER, 0);
+	}
+
+	public static void setTouchMultiplier(int value) {
+		SharedPreferences.Editor ed = pref.edit();
+		ed.putInt(Preferences.KEY_TOUCHMULTIPLIER, value);
+		ed.commit();
 	}
 
 	public static boolean getTouchDragEnabled() {
