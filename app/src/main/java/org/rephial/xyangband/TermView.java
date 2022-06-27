@@ -1126,13 +1126,15 @@ public class TermView extends View implements OnGestureListener {
 
 		if (paint == null) return;
 
+		// Percentage of current font size
 		int min = 150;
 		int max = 500;
 		int pct = min + Preferences.getFabMult() * (max-min) / 100;
+
 		int fab_font_size = font_text_size;
 		fab_font_size = pct * fab_font_size / 100;
 		fab_font_size = Math.max(fab_font_size, MIN_FONT);
-		fab_font_size = Math.min(fab_font_size, MAX_FONT);
+		//fab_font_size = Math.min(fab_font_size, MAX_FONT);
 
 		min = MIN_OPACITY;
 		max = 255;
