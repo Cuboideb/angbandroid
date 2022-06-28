@@ -1043,6 +1043,9 @@ char *get_map()
 			else if (square_isdownstairs(cave, grid)) {
 				ch = '4';
 			}
+			else if (square_isshop(cave, grid)) {
+				ch = '5';
+			}
 			else if (square_ispassable(cave, grid)) {
 				ch = '1';
 			}

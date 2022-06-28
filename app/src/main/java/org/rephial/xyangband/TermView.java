@@ -1157,8 +1157,6 @@ public class TermView extends View implements OnGestureListener {
 		int w = Integer.parseInt(parts[0]);
 		int h = Integer.parseInt(parts[1]);
 
-		int _alpha = Preferences.getKeyboardOpacity();
-
 		Paint paint = dirZoneFill;
 		if (btn.isBeingDragged()) {
 			paint.setColor(color_drag);
@@ -1183,62 +1181,48 @@ public class TermView extends View implements OnGestureListener {
 
 		//Log.d("Angband", "MAP: " + w + " " + h + " " + data.length());
 
-		int i = 0;
-
 		opacity = Math.min(opacity*2,255);
 
-		for (int y = 0; y < h; y++) {
-			//String row = "";
-			for (int x = 0; x < w; x++) {
-				if (i >= data.length()) break;
+		int __pad = Math.max(tw,th)/3;
 
-				char ch = data.charAt(i++);
+		for (int cycle = 1; cycle <= 3; cycle++) {
 
-				//row += Character.toString(ch);
+			int i = 0;
 
-				if (ch != '1') continue;
+			for (int y = 0; y < h; y++) {
+				for (int x = 0; x < w; x++) {
+					if (i >= data.length()) break;
 
-				int color = Color.LTGRAY;
+					char ch = data.charAt(i++);
 
-				float x1 = x0 + x * tw;
-				float y1 = y0 + y * th;
+					if (ch == '0') continue;
 
-				paint.setColor(color);
-				paint.setAlpha(opacity);
+					// Floors
+					if (cycle == 1 && ch != '1') continue;
+					// Stairs, shops
+					if (cycle == 2 && ch != '3' && ch != '4' && ch != '5') continue;
+					// Player
+					if (cycle == 3 && ch != '2') continue;
 
-				RectF rect2 = new RectF(x1, y1, x1 + tw, y1 + th);
-				p_canvas.drawRect(rect2, paint);
-			}
+					int pad = 0;
+					if (cycle > 1) pad = __pad;
 
-			//Log.d("Angband", "MAP: " + row);
-		}
+					int color = Color.LTGRAY;
+					if (ch == '2') color = Color.RED;
+					if (ch == '3') color = Color.GREEN;
+					if (ch == '4') color = Color.YELLOW;
+					if (ch == '5') color = Color.GREEN;
 
-		i = 0;
+					float x1 = x0 + x * tw;
+					float y1 = y0 + y * th;
 
-		for (int y = 0; y < h; y++) {
-			for (int x = 0; x < w; x++) {
-				if (i >= data.length()) break;
+					paint.setColor(color);
+					paint.setAlpha(opacity);
 
-				char ch = data.charAt(i++);
-
-				if (ch == '0' || ch == '1') continue;
-
-				int color = Color.BLACK;
-				if (ch == '2') color = Color.RED;
-				if (ch == '3') color = Color.GREEN;
-				if (ch == '4') color = Color.YELLOW;
-
-				int padX = tw/2;
-				int padY = th/2;
-
-				float x1 = x0 + x * tw - padX;
-				float y1 = y0 + y * th - padY;
-
-				paint.setColor(color);
-				paint.setAlpha(opacity);
-
-				RectF rect2 = new RectF(x1, y1, x1 + tw * 2, y1 + th * 2);
-				p_canvas.drawRect(rect2, paint);
+					RectF rect2 = new RectF(x1 - pad, y1 - pad,
+							x1 + tw + pad, y1 + th + pad);
+					p_canvas.drawRect(rect2, paint);
+				}
 			}
 		}
 	}
