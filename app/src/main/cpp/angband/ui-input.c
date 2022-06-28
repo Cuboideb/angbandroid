@@ -261,6 +261,8 @@ ui_event inkey_ex(void)
 		/* Get a key (see above) */
 		ke = inkey_aux(inkey_scan);
 
+		/*android_debug(format("keycode: %x", ke.key.code));*/
+
 		soft_kbd_clear(false);
 
 		if (inkey_scan && ke.type == EVT_NONE)
@@ -1155,9 +1157,9 @@ static int textui_get_quantity(const char *prompt, int max)
 		/* Build the default */
 		strnfmt(buf, sizeof(buf), "%d", amt);
 
-		/*soft_kbd_linger("0123456789*");*/
-
 		Term_control_quantity(prompt, max, amt);
+
+		soft_kbd_linger("[quant]*");
 
 		/* Ask for a quantity */
 		if (!get_string(prompt, buf, 7)) return (0);

@@ -62,6 +62,8 @@ void soft_kbd_linger(const char *keys)
 
 void soft_kbd_clear(int force)
 {
+	/*if (force) android_debug("Clearing!");*/
+
 	if (flashing_keys || force) {
 		soft_kbd_buffer[0] = 0;
 		flashing_keys = true;
@@ -72,6 +74,7 @@ void soft_kbd_clear(int force)
 void soft_kbd_flush()
 {
 	if (soft_kbd_buffer[0] != 0) {
+		/*android_debug("Flushing!");*/
 		Term_control_keys(soft_kbd_buffer);
 	}
 }
@@ -96,4 +99,9 @@ void strdeldup(char *str)
 		}
 	}
 	str[j] = 0;
+}
+
+void android_debug(const char *msg)
+{
+	LOGD("%s", msg);
 }

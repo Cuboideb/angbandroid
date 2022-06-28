@@ -2744,8 +2744,9 @@ s16b get_quantity(cptr prompt, int max)
 		/* Build the default */
 		strnfmt(buf, sizeof(buf), "%d", amt);
 
-		/*soft_kbd_linger("0123456789*");*/
 		Term_control_quantity(prompt, max, amt);
+
+		soft_kbd_linger("[quant]*");
 
 		/* Ask for a quantity */
 		if (!get_string(prompt, buf, 7)) {
@@ -2753,7 +2754,7 @@ s16b get_quantity(cptr prompt, int max)
 			return (0);
 		}
 
-		/*soft_kbd_clear(true);*/
+		soft_kbd_clear(true);
 
 		/* Extract a number */
 		amt = atoi(buf);

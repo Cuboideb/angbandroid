@@ -3176,8 +3176,9 @@ s16b get_quantity_aux(cptr prompt, int max, int default_amt)
     /* Build the default */
     sprintf(buf, "%d", amt);
 
-    /*soft_kbd_linger("0123456789");*/
     Term_control_quantity(prompt, max, amt);
+
+    soft_kbd_linger("[quant]");
 
     /*
      * Ask for a quantity
@@ -3185,7 +3186,7 @@ s16b get_quantity_aux(cptr prompt, int max, int default_amt)
      */
     res = askfor_aux(buf, 7, FALSE);
 
-    /*soft_kbd_clear(true);*/
+    soft_kbd_clear(true);
 
     /* Clear prompt */
     prt("", 0, 0);

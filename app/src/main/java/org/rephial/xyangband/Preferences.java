@@ -67,6 +67,8 @@ final public class Preferences {
 
 	static final String KEY_SIL_GX = "angband.sil_gx";
 
+	static final String KEY_QUANTITY_POPUP = "angband.quantity_popup";
+
 	static final String KEY_USE_ADV_KBD = "angband.use_adv_keyboard";
 	static final String KEY_SHOW_ADV_KEYMAP = "angband.show_adv_keymaps";
 	static final String KEY_USE_VERT_KBD = "angband.use_vert_keyboard";
@@ -266,6 +268,10 @@ final public class Preferences {
 
 	public static boolean getIconsEnabled() {
 		return pref.getBoolean(Preferences.KEY_USEICONS, true);
+	}
+
+	public static boolean getQuantityPopupEnabled() {
+		return pref.getBoolean(Preferences.KEY_QUANTITY_POPUP, true);
 	}
 
 	public static boolean getKeyboardOverlap() {

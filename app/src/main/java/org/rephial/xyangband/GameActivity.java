@@ -226,6 +226,11 @@ public class GameActivity extends Activity {
 		*/
 	}
 
+	public static void log(String msg)
+	{
+		Log.d("Angband", msg);
+	}
+
 	public void runOpacityPopup()
 	{
 		if (term != null) {
@@ -237,7 +242,7 @@ public class GameActivity extends Activity {
 
 	public void runQuantityPopup(String message, int maxValue, int initialValue)
 	{
-		if (term != null) {
+		if (term != null && Preferences.getQuantityPopupEnabled()) {
 			QuantityPopup win = new QuantityPopup(this, message, maxValue, initialValue);
 			int gravity = Gravity.CENTER;
 			win.showAtLocation(term, gravity, 0, 0);
@@ -386,12 +391,23 @@ public class GameActivity extends Activity {
 			keys = "";
 		}
 
+		if (keys.contains("[quant]")) {
+			if (Preferences.getQuantityPopupEnabled()) {
+				keys = "";
+			}
+			else {
+				keys = keys.replace("[quant]", "0123456789");
+			}
+		}
+
 		// If we are already deleting the fast keys, do nothing
 		if (keys.length() == 0 && keyHandlerIsRunning) {
 			return;
 		}
 
 		clearKeyTimer();
+
+		//Log.d("Angband", "Setting: " + keys);
 
 		if (ribbonZone != null && !keys.equals(lastKeys)) {
 			// Delay the deletion of the fast keys

@@ -31,6 +31,8 @@ extern void soft_kbd_clear(int force);
 extern void soft_kbd_flush();
 extern void soft_kbd_append(const char *keys);
 
+extern void android_debug(const char *msg);
+
 extern void strdeldup(char *str);
 
 extern void feed_keymap(const char *buf);

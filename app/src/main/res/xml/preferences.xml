@@ -407,6 +407,11 @@
 	</PreferenceScreen>
 
 	<CheckBoxPreference
+		android:key="angband.quantity_popup"
+		android:defaultValue="true"
+		android:title="Enable the quantity popup" />
+
+	<CheckBoxPreference
 		android:key="angband.debug_keycodes"
 		android:defaultValue="false"
 		android:title="Debug keycodes (external keyboards)"
