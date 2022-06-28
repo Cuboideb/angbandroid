@@ -13,8 +13,6 @@ public class KeyBuffer {
 
 	/* keyboard state */
 	private Queue<Integer> keybuffer = new LinkedList<Integer>();
-	private Queue<Integer> keymacro = new LinkedList<Integer>();
-	private Queue<Integer> keyspecial = new LinkedList<Integer>();
 	private boolean wait = false;
 	private int quit_key_seq = 0;
 	private boolean signal_game_exit = false;
@@ -159,39 +157,27 @@ public class KeyBuffer {
 			int check = getSpecialKey();
 			if (check != -1) {
 				key = check;
-				// we have a key, so we're done.
 			}
-			else if (keyspecial.peek() != null) {
-				key = keyspecial.poll();
-				return key;
-			}
+			// Avoid losing keys before wait
 			else if (keybuffer.peek() != null) {
-				//peek before wait -- fix issue #3 keybuffer loss
 				key = keybuffer.poll();
-				//Log.w("Angband", "process key = " + key);
 			}
 			else if (v == 1) {
-				// running a macro?
-				if (keymacro.peek() != null) {
-					key = keymacro.poll();
+				try {
+					//Log.d("Angband", "Wait keypress BEFORE");
+					wait = true;
+					keybuffer.wait();
+					wait = false;
+					//Log.d("Angband", "Wait keypress AFTER");
+				} catch (Exception e) {
+					wait = false;
+					Log.d("Angband", "getch() wait exception: " + e);
 				}
-				else { // otherwise wait for key press
-					try {
-						//Log.d("Angband", "Wait keypress BEFORE");
-						wait = true;
-						//keybuffer.clear(); //not necessary
-						keybuffer.wait();
-						wait = false;
-						//Log.d("Angband", "Wait keypress AFTER");
-					} catch (Exception e) {
-						Log.d("Angband", "The getch() wait exception" + e);
-					}
 
-					// return key after wait, if there is one
-					if (keybuffer.peek() != null) {
-						key = keybuffer.poll();
-						//Log.w("Angband", "process key = " + key);
-					}
+				// Return key after wait, if there is one
+				if (keybuffer.peek() != null) {
+					key = keybuffer.poll();
+					//Log.w("Angband", "process key = " + key);
 				}
 			}
 		}
@@ -212,11 +198,11 @@ public class KeyBuffer {
 		int mark = -200;
 		synchronized (keybuffer) {
 			//keybuffer.clear();
-			keyspecial.offer(mark);
+			keybuffer.offer(mark);
 			for (char c: command.toCharArray()) {
-				keyspecial.offer((int)c);
+				keybuffer.offer((int)c);
 			}
-			keyspecial.offer(mark);
+			keybuffer.offer(mark);
 			wakeUp();
 		}
 	}
