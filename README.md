@@ -78,7 +78,7 @@ Some floating buttons can trigger special actions, like changing the opacity of 
 
 The "overview" action creates a very special button. It shows a small drawing of the dungeon. It can be moved around like the other floating buttons and it has its own opacity and size.
 
-![alt text](https://github.com/Cuboideb/angbandroid/blob/master/app/src/main/assets/map_fab.jpg?raw=true)
+<img src="https://github.com/Cuboideb/angbandroid/blob/master/app/src/main/assets/map_fab.jpg?raw=true" height="300" />
 
 ### The touch directionals (DPad)
 
