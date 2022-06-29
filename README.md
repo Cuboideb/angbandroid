@@ -46,7 +46,7 @@ It's important to remember that directions can be used to cycle between equipmen
 
 To reduce the number of buttons in command mode, the Alter command can also open chests and close doors.
 
-![alt text](https://github.com/Cuboideb/angbandroid/blob/master/app/src/main/assets/ribbon_help.jpg?raw=true)
+<img src="https://github.com/Cuboideb/angbandroid/blob/master/app/src/main/assets/ribbon_help.jpg?raw=true" height="300" />
 
 In the preferences section, you can find some useful options for the ribbon, like "Button Size Multiplier".
 
@@ -62,7 +62,7 @@ Clicking on "Change Opacity" in Quick Settings shows a fast popup to adjust the 
 
 While using the button ribbon, the Quick Settings menu gets the item "Manage Keymaps". It can be used to quickly define common keymaps shortcuts.
 
-![alt text](https://github.com/Cuboideb/angbandroid/blob/master/app/src/main/assets/keymap_editor.jpg?raw=true)
+<img src="https://github.com/Cuboideb/angbandroid/blob/master/app/src/main/assets/keymap_editor.jpg?raw=true" height="300" />
 
 ### Android Pref file
 
@@ -72,7 +72,7 @@ Every variant can load internally a new pref file, android.prf. The content of t
 
 Also created from the Quick Settings menu, they allow you to place keymaps anywhere on the display. A floating buttons has a mandatory action (the sequence of keys that is sent to the core game), an optional label and an optional icon.
 
-![alt text](https://github.com/Cuboideb/angbandroid/blob/master/app/src/main/assets/floating_buttons.jpg?raw=true)
+<img src="https://github.com/Cuboideb/angbandroid/blob/master/app/src/main/assets/floating_buttons.jpg?raw=true" height="300" />
 
 Some floating buttons can trigger special actions, like changing the opacity of the keyboard/ribbon or running.
 
