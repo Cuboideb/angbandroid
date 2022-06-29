@@ -29,6 +29,8 @@ public class QuantityPopup extends PopupWindow
 
     public TextView msgView = null;
 
+    public ViewGroup root = null;
+
     public QuantityPopup(GameActivity p_context, String message,
                          int maxValue, int initialValue) {
         super(p_context);
@@ -39,36 +41,35 @@ public class QuantityPopup extends PopupWindow
         setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
         setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        ViewGroup content = (ViewGroup) context.getLayoutInflater().inflate
+        root = (ViewGroup) context.getLayoutInflater().inflate
                 (R.layout.quantity_layout, null);
 
-        setContentView(content);
+        setContentView(root);
 
-        msgView = content.findViewById(R.id.message);
-        //msgView.setTextSize(msgView.getTextSize()*1.5f);
-        msgView.setText(message);
+        msgView = root.findViewById(R.id.message);
 
-        valueBar = content.findViewById(R.id.valueBar);
+        valueBar = root.findViewById(R.id.valueBar);
 
-        valuePicker = content.findViewById(R.id.valuePicker);
+        valuePicker = root.findViewById(R.id.valuePicker);
 
         valuePicker.setMinValue(0);
-        valuePicker.setMaxValue(maxValue);
-        valuePicker.setValue(initialValue);
 
-        updateValueBar(valuePicker.getValue());
+        configure(message, maxValue, initialValue);
 
         valueBar.setOnSeekBarChangeListener(this);
 
         valuePicker.setOnValueChangedListener(this);
 
-        Button button = content.findViewById(R.id.okButton);
+        Button button = root.findViewById(R.id.okButton);
         button.setOnClickListener(this);
 
-        button = content.findViewById(R.id.allButton);
+        button = root.findViewById(R.id.allButton);
         button.setOnClickListener(this);
 
-        button = content.findViewById(R.id.oneButton);
+        button = root.findViewById(R.id.oneButton);
+        button.setOnClickListener(this);
+
+        button = root.findViewById(R.id.tenButton);
         button.setOnClickListener(this);
     }
 
@@ -81,25 +82,36 @@ public class QuantityPopup extends PopupWindow
         valuePicker.setMaxValue(maxValue);
         valuePicker.setValue(initialValue);
 
+        Button button = root.findViewById(R.id.allButton);
+        button.setText("" + maxValue);
+
+        button = root.findViewById(R.id.tenButton);
+        button.setVisibility(maxValue <= 10 ? View.GONE: View.VISIBLE);
+
         updateValueBar(valuePicker.getValue());
 
         locked = false;
 
         msgView.setText(message);
 
-        this.getContentView().requestLayout();
+        root.requestLayout();
     }
 
     @Override
     public void onClick(View v) {
         Button button = (Button)v;
-        if (button.getText().equals("All")) {
+        if (button.getId() == R.id.allButton) {
             valuePicker.setValue(valuePicker.getMaxValue());
             //updateValueBar(valuePicker.getValue());
         }
 
-        if (button.getText().equals("One")) {
+        if (button.getId() == R.id.oneButton) {
             valuePicker.setValue(1);
+            //updateValueBar(valuePicker.getValue());
+        }
+
+        if (button.getId() == R.id.tenButton) {
+            valuePicker.setValue(10);
             //updateValueBar(valuePicker.getValue());
         }
 

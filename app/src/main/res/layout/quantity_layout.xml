@@ -50,7 +50,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:minWidth="70dp"
-                    android:text="Confirm" />
+                    android:text="Accept" />
+
+                <Button
+                    android:id="@+id/oneButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="70dp"
+                    android:text="1" />
+
+                <Button
+                    android:id="@+id/tenButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="70dp"
+                    android:text="10" />
 
                 <Button
                     android:id="@+id/allButton"
@@ -59,12 +73,6 @@
                     android:minWidth="70dp"
                     android:text="All" />
 
-                <Button
-                    android:id="@+id/oneButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minWidth="70dp"
-                    android:text="One" />
             </LinearLayout>
 
         </FrameLayout>
