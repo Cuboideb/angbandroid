@@ -107,6 +107,8 @@ public class GameActivity extends Activity {
 	protected String lastKeys = "";
 	protected boolean keyHandlerIsRunning = false;
 
+	protected QuantityPopup quantPopup = null;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -243,9 +245,15 @@ public class GameActivity extends Activity {
 	public void runQuantityPopup(String message, int maxValue, int initialValue)
 	{
 		if (term != null && Preferences.getQuantityPopupEnabled()) {
-			QuantityPopup win = new QuantityPopup(this, message, maxValue, initialValue);
+			if (quantPopup == null) {
+				quantPopup = new QuantityPopup(this, message, maxValue, initialValue);
+			}
+			else {
+				if (quantPopup.isShowing()) return;
+				quantPopup.configure(message, maxValue, initialValue);
+			}
 			int gravity = Gravity.CENTER;
-			win.showAtLocation(term, gravity, 0, 0);
+			quantPopup.showAtLocation(term, gravity, 0, 0);
 		}
 	}
 

@@ -27,6 +27,8 @@ public class QuantityPopup extends PopupWindow
 
     public boolean locked = false;
 
+    public TextView msgView = null;
+
     public QuantityPopup(GameActivity p_context, String message,
                          int maxValue, int initialValue) {
         super(p_context);
@@ -42,7 +44,7 @@ public class QuantityPopup extends PopupWindow
 
         setContentView(content);
 
-        TextView msgView = content.findViewById(R.id.message);
+        msgView = content.findViewById(R.id.message);
         //msgView.setTextSize(msgView.getTextSize()*1.5f);
         msgView.setText(message);
 
@@ -70,17 +72,35 @@ public class QuantityPopup extends PopupWindow
         button.setOnClickListener(this);
     }
 
+    public void configure(String message, int maxValue, int initialValue)
+    {
+        locked = true;
+
+        selected = 0;
+
+        valuePicker.setMaxValue(maxValue);
+        valuePicker.setValue(initialValue);
+
+        updateValueBar(valuePicker.getValue());
+
+        locked = false;
+
+        msgView.setText(message);
+
+        this.getContentView().requestLayout();
+    }
+
     @Override
     public void onClick(View v) {
         Button button = (Button)v;
         if (button.getText().equals("All")) {
             valuePicker.setValue(valuePicker.getMaxValue());
-            updateValueBar(valuePicker.getValue());
+            //updateValueBar(valuePicker.getValue());
         }
 
         if (button.getText().equals("One")) {
             valuePicker.setValue(1);
-            updateValueBar(valuePicker.getValue());
+            //updateValueBar(valuePicker.getValue());
         }
 
         selected = valuePicker.getValue();
@@ -105,15 +125,9 @@ public class QuantityPopup extends PopupWindow
 
     public void updateValueBar(int newVal)
     {
-        if (locked) return;
-
-        locked = true;
-
         int range = valuePicker.getMaxValue() - valuePicker.getMinValue();
         int progress = 100 * newVal / range;
         valueBar.setProgress(progress);
-
-        locked = false;
     }
 
     @Override
@@ -139,7 +153,14 @@ public class QuantityPopup extends PopupWindow
     }
 
     @Override
-    public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+    public void onValueChange(NumberPicker picker, int oldVal, int newVal)
+    {
+        if (locked) return;
+
+        locked = true;
+
         updateValueBar(newVal);
+
+        locked = false;
     }
 }
