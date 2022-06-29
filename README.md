@@ -74,6 +74,12 @@ Also created from the Quick Settings menu, they allow you to place keymaps anywh
 
 ![alt text](https://github.com/Cuboideb/angbandroid/blob/master/app/src/main/assets/floating_buttons.jpg?raw=true)
 
+Some floating buttons can trigger special actions, like changing the opacity of the keyboard/ribbon or running.
+
+The "overview" action creates a very special button. It shows a small drawing of the dungeon. It can be moved around like the other floating buttons and it has its own opacity and size.
+
+![alt text](https://github.com/Cuboideb/angbandroid/blob/master/app/src/main/assets/map_fab.jpg?raw=true)
+
 ### The touch directionals (DPad)
 
 The game view can be configured to display 9 squares for moving the character in the dungeon. The action of the center square can be set to do different things.
