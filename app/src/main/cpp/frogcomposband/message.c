@@ -602,9 +602,14 @@ bool msg_input_num(cptr prompt, int *num, int min, int max)
     msg_boundary();
     auto_more_state = AUTO_MORE_PROMPT;
     msg_format("<color:y>%s <color:w>(%d to %d)</color>:</color> ", prompt, min, max);
-    soft_kbd_linger("01234546789");
+
+    Term_control_quantity(prompt, max, *num);
+    soft_kbd_linger("[quant]");
+
     result = askfor_aux(buf, 11, FALSE);
+
     soft_kbd_clear(true);
+
     if (result)
     {
         if (isalpha(buf[0]))

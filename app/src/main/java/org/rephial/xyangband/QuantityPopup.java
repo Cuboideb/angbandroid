@@ -23,7 +23,7 @@ public class QuantityPopup extends PopupWindow
 
     public NumberPicker valuePicker = null;
 
-    public int selected = 0;
+    public int selected = -1;
 
     public boolean locked = false;
 
@@ -77,7 +77,7 @@ public class QuantityPopup extends PopupWindow
     {
         locked = true;
 
-        selected = 0;
+        selected = -1;
 
         valuePicker.setMaxValue(maxValue);
         valuePicker.setValue(initialValue);
@@ -151,15 +151,22 @@ public class QuantityPopup extends PopupWindow
     @Override
     public void dismiss()
     {
-        String str = Integer.toString(selected);
-        List<Integer> list = InputUtils.parseCodeKeys(str);
         StateManager state = context.getStateManager();
-        for (Integer keycode: list) {
-            if (keycode > 0) {
-                state.addKey(keycode);
-            }
+
+        if (selected == -1) {
+            state.addKey(state.getKeyEsc());
         }
-        state.addKey(state.getKeyEnter());
+        else {
+            String str = Integer.toString(selected);
+            List<Integer> list = InputUtils.parseCodeKeys(str);
+
+            for (Integer keycode : list) {
+                if (keycode > 0) {
+                    state.addKey(keycode);
+                }
+            }
+            state.addKey(state.getKeyEnter());
+        }
 
         super.dismiss();
     }
