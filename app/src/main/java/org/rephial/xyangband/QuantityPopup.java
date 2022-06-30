@@ -23,11 +23,7 @@ public class QuantityPopup extends PopupWindow
 
     public NumberPicker valuePicker = null;
 
-    public int selected = -1;
-
     public boolean locked = false;
-
-    public TextView msgView = null;
 
     public ViewGroup root = null;
 
@@ -35,7 +31,6 @@ public class QuantityPopup extends PopupWindow
                          int maxValue, int initialValue) {
         super(p_context);
 
-        //setTouchModal(false);
         setOutsideTouchable(true);
         setFocusable(false);
 
@@ -49,8 +44,6 @@ public class QuantityPopup extends PopupWindow
 
         setContentView(root);
 
-        msgView = root.findViewById(R.id.message);
-
         valueBar = root.findViewById(R.id.valueBar);
 
         valuePicker = root.findViewById(R.id.valuePicker);
@@ -63,10 +56,7 @@ public class QuantityPopup extends PopupWindow
 
         valuePicker.setOnValueChangedListener(this);
 
-        Button button = root.findViewById(R.id.okButton);
-        button.setOnClickListener(this);
-
-        button = root.findViewById(R.id.allButton);
+        Button button = root.findViewById(R.id.allButton);
         button.setOnClickListener(this);
 
         button = root.findViewById(R.id.oneButton);
@@ -80,8 +70,6 @@ public class QuantityPopup extends PopupWindow
     {
         locked = true;
 
-        selected = -1;
-
         valuePicker.setMaxValue(maxValue);
         valuePicker.setValue(initialValue);
 
@@ -94,10 +82,6 @@ public class QuantityPopup extends PopupWindow
         updateValueBar(valuePicker.getValue());
 
         locked = false;
-
-        msgView.setText(message);
-
-        //root.requestLayout();
     }
 
     @Override
@@ -105,22 +89,37 @@ public class QuantityPopup extends PopupWindow
         Button button = (Button)v;
         if (button.getId() == R.id.allButton) {
             valuePicker.setValue(valuePicker.getMaxValue());
-            //updateValueBar(valuePicker.getValue());
         }
 
         if (button.getId() == R.id.oneButton) {
             valuePicker.setValue(1);
-            //updateValueBar(valuePicker.getValue());
         }
 
         if (button.getId() == R.id.tenButton) {
             valuePicker.setValue(10);
-            //updateValueBar(valuePicker.getValue());
         }
 
-        selected = valuePicker.getValue();
+        updateValueBar(valuePicker.getValue());
+        sendValue();
+    }
 
-        this.dismiss();
+    public void sendValue()
+    {
+        StateManager state = context.getStateManager();
+
+        String str = Integer.toString(valuePicker.getValue());
+        List<Integer> list = InputUtils.parseCodeKeys(str);
+
+        // Erase all past input
+        for (int i = 0; i < 15; i++) {
+            state.addKey(state.getKeyBackspace());
+        }
+
+        for (Integer keycode : list) {
+            if (keycode > 0) {
+                state.addKey(keycode);
+            }
+        }
     }
 
     @Override
@@ -134,6 +133,8 @@ public class QuantityPopup extends PopupWindow
         int range = valuePicker.getMaxValue() - valuePicker.getMinValue();
         int value = valuePicker.getMinValue() + progress * range / 100;
         valuePicker.setValue(value);
+
+        sendValue();
 
         locked = false;
     }
@@ -154,23 +155,6 @@ public class QuantityPopup extends PopupWindow
     @Override
     public void dismiss()
     {
-        StateManager state = context.getStateManager();
-
-        if (selected == -1) {
-            //state.addKey(state.getKeyEsc());
-        }
-        else {
-            String str = Integer.toString(selected);
-            List<Integer> list = InputUtils.parseCodeKeys(str);
-
-            for (Integer keycode : list) {
-                if (keycode > 0) {
-                    state.addKey(keycode);
-                }
-            }
-            state.addKey(state.getKeyEnter());
-        }
-
         super.dismiss();
     }
 
@@ -182,6 +166,8 @@ public class QuantityPopup extends PopupWindow
         locked = true;
 
         updateValueBar(newVal);
+
+        sendValue();
 
         locked = false;
     }

@@ -271,7 +271,8 @@ final public class Preferences {
 	}
 
 	public static boolean getQuantityPopupEnabled() {
-		return pref.getBoolean(Preferences.KEY_QUANTITY_POPUP, true);
+		return pref.getBoolean(Preferences.KEY_QUANTITY_POPUP, true)
+				&& Preferences.getEnableSoftInput();
 	}
 
 	public static boolean getKeyboardOverlap() {

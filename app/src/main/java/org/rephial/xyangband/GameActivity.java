@@ -196,7 +196,7 @@ public class GameActivity extends Activity {
 		boolean resetDim = false;
 
 		for (String key: Preferences.changed) {
-			Log.d("Angband", "Changed: " + key);
+			//Log.d("Angband", "Changed: " + key);
 
 			if (key.equals(Preferences.KEY_NUM_SUBW) ||
 				key.equals(Preferences.KEY_FONT_SUBW) ||
@@ -244,6 +244,12 @@ public class GameActivity extends Activity {
 		}
 	}
 
+	public float toDips(float dps)
+	{
+		return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dps,
+				this.getResources().getDisplayMetrics());
+	}
+
 	public void runQuantityPopup(String message, int maxValue, int initialValue)
 	{
 		if (term != null && Preferences.getQuantityPopupEnabled()) {
@@ -255,18 +261,18 @@ public class GameActivity extends Activity {
 				quantPopup.configure(message, maxValue, initialValue);
 			}
 			int gravity = Gravity.RIGHT | Gravity.TOP;
-			int pad = 10;
+			int pad = (int)toDips(20);
 			quantPopup.root.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED), 
 				MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
 			int y = term.getHeight()
 				- quantPopup.root.getMeasuredHeight()
 				- term.getVerticalGap()
 				- pad;
-			log("term h: " + term.getHeight());
-			log("root h: " + quantPopup.root.getMeasuredHeight());
-			log("vgap: " + term.getVerticalGap());
-			log("y: " + y);
-			quantPopup.showAtLocation(term, gravity, pad, y);
+			//log("term h: " + term.getHeight());
+			//log("root h: " + quantPopup.root.getMeasuredHeight());
+			//log("vgap: " + term.getVerticalGap());
+			//log("y: " + y);
+			quantPopup.showAtLocation(term, gravity, 0, y);
 		}
 	}
 

@@ -355,7 +355,7 @@ public class TermView extends View implements OnGestureListener {
 			{
 				// Clear flash text
 				if (msg.what == FLASH_TEXT) {
-					Log.d("Angband", "Timeout!");
+					//Log.d("Angband", "Timeout!");
 					flashText = "";
 					invalidate();
 					return;

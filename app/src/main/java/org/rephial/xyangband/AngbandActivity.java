@@ -146,7 +146,7 @@ public class AngbandActivity extends Activity
 		Thread splashTread = new Thread() {
 			@Override
 			public void run() {
-				Log.d("Angband", "splashThread.run");
+				//Log.d("Angband", "splashThread.run");
 				installer = new Installer(splash);
 				try {
 					int waited = 0;

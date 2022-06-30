@@ -943,7 +943,7 @@ public class ButtonRibbon implements OnClickListener,
 
 		autoListSolid = !autoListSolid;
 
-		Log.d("Angband", "Auto List Opacity");
+		//Log.d("Angband", "Auto List Opacity");
 
 		int i, j;
 

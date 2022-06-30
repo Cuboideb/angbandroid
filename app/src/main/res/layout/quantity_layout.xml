@@ -4,22 +4,14 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="10dp">
-
-    <TextView
-        android:id="@+id/message"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        android:text="Enter a quantity" />
+    android:padding="30dp">
 
     <SeekBar
         android:id="@+id/valueBar"
-        style="?android:attr/progressBarStyleHorizontal"
         android:progress="0"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
+        android:layout_marginBottom="10dp"
         />
 
     <LinearLayout
@@ -27,55 +19,49 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:layout_marginRight="10dp"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/allButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="70dp"
+                android:text="All" />
+
+            <Button
+                android:id="@+id/tenButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="70dp"
+                android:text="10" />
+
+            <Button
+                android:id="@+id/oneButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="70dp"
+                android:text="1" />
+
+        </LinearLayout>
+
         <NumberPicker
             android:id="@+id/valuePicker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0" />
-
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/okButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minWidth="70dp"
-                    android:text="Accept" />
-
-                <Button
-                    android:id="@+id/oneButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minWidth="70dp"
-                    android:text="1" />
-
-                <Button
-                    android:id="@+id/tenButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minWidth="70dp"
-                    android:text="10" />
-
-                <Button
-                    android:id="@+id/allButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minWidth="70dp"
-                    android:text="All" />
-
-            </LinearLayout>
-
-        </FrameLayout>
+            android:layout_weight="0"
+            android:minHeight="100dp"
+            />
 
     </LinearLayout>
 

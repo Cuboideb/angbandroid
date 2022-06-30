@@ -185,7 +185,7 @@ final public class Plugins {
 
 			path += "/user/bone";
 
-			Log.d("Angband", "Examining " + path + " - " + minDate);
+			//Log.d("Angband", "Examining " + path + " - " + minDate);
 
 			File f = new File(path);
 
@@ -197,8 +197,7 @@ final public class Plugins {
 				if (!ff.getName().startsWith("bone")) continue;
 
 				if (ff.lastModified() < minDate) {
-					Log.d("Angband", "Deleting " + ff.getName()
-						+ " - " + ff.lastModified());
+					//Log.d("Angband", "Deleting " + ff.getName() + " - " + ff.lastModified());
 
 					ff.delete();
 				}
