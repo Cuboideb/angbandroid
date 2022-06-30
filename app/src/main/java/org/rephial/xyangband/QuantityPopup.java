@@ -97,7 +97,7 @@ public class QuantityPopup extends PopupWindow
 
         msgView.setText(message);
 
-        root.requestLayout();
+        //root.requestLayout();
     }
 
     @Override

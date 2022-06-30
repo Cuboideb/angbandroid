@@ -42,6 +42,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.MeasureSpec;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
@@ -253,8 +254,19 @@ public class GameActivity extends Activity {
 				if (quantPopup.isShowing()) return;
 				quantPopup.configure(message, maxValue, initialValue);
 			}
-			int gravity = Gravity.CENTER;
-			quantPopup.showAtLocation(term, gravity, 0, 0);
+			int gravity = Gravity.RIGHT | Gravity.TOP;
+			int pad = 10;
+			quantPopup.root.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED), 
+				MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+			int y = term.getHeight()
+				- quantPopup.root.getMeasuredHeight()
+				- term.getVerticalGap()
+				- pad;
+			log("term h: " + term.getHeight());
+			log("root h: " + quantPopup.root.getMeasuredHeight());
+			log("vgap: " + term.getVerticalGap());
+			log("y: " + y);
+			quantPopup.showAtLocation(term, gravity, pad, y);
 		}
 	}
 
