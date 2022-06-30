@@ -35,9 +35,12 @@ public class QuantityPopup extends PopupWindow
                          int maxValue, int initialValue) {
         super(p_context);
 
+        //setTouchModal(false);
+        setOutsideTouchable(true);
+        setFocusable(false);
+
         context = p_context;
 
-        setFocusable(true);
         setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
         setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
 
@@ -154,7 +157,7 @@ public class QuantityPopup extends PopupWindow
         StateManager state = context.getStateManager();
 
         if (selected == -1) {
-            state.addKey(state.getKeyEsc());
+            //state.addKey(state.getKeyEsc());
         }
         else {
             String str = Integer.toString(selected);
