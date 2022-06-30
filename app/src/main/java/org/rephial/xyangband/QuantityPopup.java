@@ -86,7 +86,13 @@ public class QuantityPopup extends PopupWindow
 
     @Override
     public void onClick(View v) {
+
+        if (locked) return;
+
         Button button = (Button)v;
+
+        locked = true;
+
         if (button.getId() == R.id.allButton) {
             valuePicker.setValue(valuePicker.getMaxValue());
         }
@@ -100,10 +106,15 @@ public class QuantityPopup extends PopupWindow
         }
 
         updateValueBar(valuePicker.getValue());
-        sendValue();
+
+        sendValue(true);
+
+        locked = false;
+
+        dismiss();
     }
 
-    public void sendValue()
+    public void sendValue(boolean finish)
     {
         StateManager state = context.getStateManager();
 
@@ -120,6 +131,8 @@ public class QuantityPopup extends PopupWindow
                 state.addKey(keycode);
             }
         }
+
+        if (finish) state.addKey(state.getKeyEnter());
     }
 
     @Override
@@ -134,7 +147,7 @@ public class QuantityPopup extends PopupWindow
         int value = valuePicker.getMinValue() + progress * range / 100;
         valuePicker.setValue(value);
 
-        sendValue();
+        sendValue(false);
 
         locked = false;
     }
@@ -167,7 +180,7 @@ public class QuantityPopup extends PopupWindow
 
         updateValueBar(newVal);
 
-        sendValue();
+        sendValue(false);
 
         locked = false;
     }
