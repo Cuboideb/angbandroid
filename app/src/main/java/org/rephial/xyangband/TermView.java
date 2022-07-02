@@ -1129,6 +1129,55 @@ public class TermView extends View implements OnGestureListener {
 		paint.setAlpha(255);
 	}
 
+	public void executeMapAction(ButtonView btn, MotionEvent me)
+	{
+		float x = me.getX() - btn.x;
+		float y = me.getY() - btn.y;
+
+		//game_context.log("x: " + x + " y: " + y);
+		//game_context.log("w: " + btn.w + " h: " + btn.h);
+
+		if (x < 0 || y < 0) return;
+
+		float w = btn.w / 3;
+		float h = btn.h / 3;
+
+		if (w < 1 || h < 1) return;
+
+		int px = (int)(x / w);
+		int py = (int)(y / h);
+
+		px = Math.max(px, 0);
+		py = Math.max(py, 0);
+
+		px = Math.min(px, 2);
+		py = Math.min(py, 2);
+
+		//game_context.log("px: " + px + " py: " + py);
+
+		int[][] dir_tab = new int[][] {
+				{7, 8, 9},
+				{4, 5, 6},
+				{1, 2, 3},
+		};
+
+		int dir = dir_tab[py][px];
+
+		//game_context.log("dir: " + dir);
+
+		for (int i = 0; i < 5; i++) {
+			state.addKey(state.getKeyEsc());
+		}
+
+		if (dir == 5) {
+			state.addKey('M');
+		}
+		else {
+			state.addKey('L');
+			state.addDirectionKey('0' + dir);
+		}
+	}
+
 	public void drawMap(Canvas p_canvas, ButtonView btn)
 	{
 		String map = state.getMap();
@@ -1183,7 +1232,9 @@ public class TermView extends View implements OnGestureListener {
 
 		opacity = Math.min(opacity*2,255);
 
-		int __pad = Math.max(tw,th)/3;
+		int padObject = Math.max(tw,th)/3;
+		int padPlayer = Math.max(tw,th)/2;
+		padPlayer = Math.max(padPlayer, (int)game_context.toDips(4));
 
 		for (int cycle = 1; cycle <= 3; cycle++) {
 
@@ -1198,20 +1249,22 @@ public class TermView extends View implements OnGestureListener {
 					if (ch == '0') continue;
 
 					// Floors
-					if (cycle == 1 && ch != '1') continue;
+					if (cycle == 1 && ch != '1' && ch != '6') continue;
 					// Stairs, shops
 					if (cycle == 2 && ch != '3' && ch != '4' && ch != '5') continue;
 					// Player
 					if (cycle == 3 && ch != '2') continue;
 
 					int pad = 0;
-					if (cycle > 1) pad = __pad;
+					if (cycle == 2) pad = padObject;
+					if (cycle == 3) pad = padPlayer;
 
 					int color = Color.LTGRAY;
 					if (ch == '2') color = Color.RED;
 					if (ch == '3') color = Color.GREEN;
 					if (ch == '4') color = Color.YELLOW;
 					if (ch == '5') color = Color.GREEN;
+					if (ch == '6') color = Color.parseColor("#777777");
 
 					float x1 = x0 + x * tw;
 					float y1 = y0 + y * th;
@@ -2276,7 +2329,8 @@ public class TermView extends View implements OnGestureListener {
 				return;
 			}
 
-			if (specialButton()) {
+			if (action.equals("overview")) {
+				executeMapAction(this, me);
 				return;
 			}
 

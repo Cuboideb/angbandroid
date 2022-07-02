@@ -1049,6 +1049,9 @@ char *get_map()
 			else if (square_ispassable(cave, grid)) {
 				ch = '1';
 			}
+			else {
+				ch = '6';
+			}
 
 			buf[n++] = ch;
 		}
