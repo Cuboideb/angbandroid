@@ -631,7 +631,7 @@ public class ButtonRibbon implements OnClickListener,
 			alphaBg = 200;
 		}
 
-		if (cmd.action.toUpperCase().equals("USER_RUN") &&
+		if (cmd.action.toUpperCase().equals("RUN") &&
 			state.getRunningMode()) {
 			if (alphaLevel == 3) {
 				color = 0x006400;
