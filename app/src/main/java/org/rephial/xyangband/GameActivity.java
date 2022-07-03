@@ -46,6 +46,7 @@ import android.view.View.MeasureSpec;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -400,7 +401,7 @@ public class GameActivity extends Activity {
 	{
 		if (ribbonZone != null) {
 			topRibbon.setFastKeys(keys);
-			bottomRibbon.setShift(false);
+			ButtonRibbon.setShift(false);
 		}
 	}
 
@@ -463,14 +464,12 @@ public class GameActivity extends Activity {
 
 			ribbonZone.removeAllViews();
 
-			topRibbon = new ButtonRibbon(this, state,
-				true, false);
+			topRibbon = new ButtonRibbon(this, state, true);
 			ribbonZone.addView(topRibbon.rootView);
 
-			bottomRibbon = new ButtonRibbon(this, state,
-				false, false);
+			bottomRibbon = new ButtonRibbon(this, state, false);
 			ribbonZone.addView(bottomRibbon.rootView);
-			bottomRibbon.addSibling(topRibbon);
+			//bottomRibbon.addSibling(topRibbon);
 
 			/*
 			for (int i = 0; i < Preferences.getExtraRibbonRows(); i++) {
@@ -977,8 +976,7 @@ public class GameActivity extends Activity {
 		if (bottomRibbon != null) {
 			if (value > 3) value = 1;
 			if (value < 1) value = 3;
-			bottomRibbon.alphaLevel = value;
-			bottomRibbon.updateAlpha();
+			ButtonRibbon.updateAlpha(value);
 		}
 	}
 
