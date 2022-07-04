@@ -1170,11 +1170,15 @@ public class TermView extends View implements OnGestureListener {
 		}
 
 		if (dir == 5) {
-			state.addKey('M');
+			int cmd = state.cmdByName("map");
+			if (cmd > 0) state.addKey(cmd);
 		}
 		else {
-			state.addKey('L');
-			state.addDirectionKey('0' + dir);
+			int cmd = state.cmdByName("locate");
+			if (cmd > 0) {
+				state.addKey(cmd);
+				state.addDirectionKey('0' + dir);
+			}
 		}
 	}
 

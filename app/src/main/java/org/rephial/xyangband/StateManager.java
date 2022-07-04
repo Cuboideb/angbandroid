@@ -238,6 +238,12 @@ public class StateManager {
 		return nativew.queryString("map");
 	}
 
+	public int cmdByName(String name)
+	{
+		if (!gameThread.gameRunning()) return 0;
+		return nativew.gameQueryInt(1, new String[]{"cmd_by_name"});
+	}
+
 	public boolean isRoguelikeKeyboard()
 	{
 		if (!gameThread.gameRunning()) return false;

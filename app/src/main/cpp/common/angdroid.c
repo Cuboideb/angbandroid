@@ -1062,6 +1062,21 @@ char *get_map()
 	return buf;
 }
 
+int cmd_by_name(const char *name)
+{
+	if (strcmp(name, "map") == 0) {
+		return 'M';
+	}
+	if (strcmp(name, "locate") == 0) {
+		/* Roguelike */
+		if (player && OPT(player, rogue_like_commands)) {
+			return 'W';
+		}
+		return 'L';
+	}
+	return 0;
+}
+
 char* queryString(const char* argv0)
 {
 	const char *CMD_DESC = "cmd_desc_";
@@ -1101,6 +1116,7 @@ char* queryString(const char* argv0)
 int queryInt(const char* argv0) {
 	int result = -1;
 	const char *ROGUE_KEY = "rogue_key_";
+	const char *CMD_BY_NAME = "cmd_by_name";
 
 	if (strcmp(argv0, "pv") == 0) {
 		result = 1;
@@ -1151,6 +1167,9 @@ int queryInt(const char* argv0) {
 		if (key == 0) return 0;
 		key = translate_to_rogue(key);
 		return key;
+	}
+	else if (strncmp(argv0, CMD_BY_NAME, strlen(CMD_BY_NAME)) == 0) {
+		result = cmd_by_name(argv0 + strlen(CMD_BY_NAME));
 	}
 	else {
 		result = -1; //unknown command
