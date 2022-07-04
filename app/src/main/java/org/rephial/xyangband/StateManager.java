@@ -241,7 +241,8 @@ public class StateManager {
 	public int cmdByName(String name)
 	{
 		if (!gameThread.gameRunning()) return 0;
-		return nativew.gameQueryInt(1, new String[]{"cmd_by_name"});
+		String key =  "cmd_by_name_" + name;
+		return nativew.gameQueryInt(1, new String[]{key});
 	}
 
 	public boolean isRoguelikeKeyboard()

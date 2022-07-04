@@ -1116,7 +1116,7 @@ char* queryString(const char* argv0)
 int queryInt(const char* argv0) {
 	int result = -1;
 	const char *ROGUE_KEY = "rogue_key_";
-	const char *CMD_BY_NAME = "cmd_by_name";
+	const char *CMD_BY_NAME = "cmd_by_name_";
 
 	if (strcmp(argv0, "pv") == 0) {
 		result = 1;
