@@ -80,6 +80,8 @@ The "overview" action creates a very special button. It shows a small drawing of
 
 <img src="https://github.com/Cuboideb/angbandroid/blob/master/app/src/main/assets/map_fab.jpg?raw=true" height="300" />
 
+Also, the map view responds to touch events. In the center it triggers the "M"ap command and in the perimeter the "L"ocate command.
+
 ### The touch directionals (DPad)
 
 The game view can be configured to display 9 squares for moving the character in the dungeon. The action of the center square can be set to do different things.
