@@ -1237,8 +1237,7 @@ public class TermView extends View implements OnGestureListener {
 		opacity = Math.min(opacity*2,255);
 
 		int padObject = Math.max(tw,th)/3;
-		int padPlayer = Math.max(tw,th)/2;
-		padPlayer = Math.max(padPlayer, (int)game_context.toDips(4));
+		int padPlayer = 7 * Math.max(tw,th) / 6;
 
 		for (int cycle = 1; cycle <= 3; cycle++) {
 
@@ -1252,7 +1251,7 @@ public class TermView extends View implements OnGestureListener {
 
 					if (ch == '0') continue;
 
-					// Floors
+					// Floors, walls
 					if (cycle == 1 && ch != '1' && ch != '6') continue;
 					// Stairs, shops
 					if (cycle == 2 && ch != '3' && ch != '4' && ch != '5') continue;
@@ -1276,9 +1275,14 @@ public class TermView extends View implements OnGestureListener {
 					paint.setColor(color);
 					paint.setAlpha(opacity);
 
-					RectF rect2 = new RectF(x1 - pad, y1 - pad,
-							x1 + tw + pad, y1 + th + pad);
-					p_canvas.drawRect(rect2, paint);
+					if (ch == '2') {
+						p_canvas.drawCircle(x1 + tw / 2, y1 + th / 2, pad, paint);
+					}
+					else {
+						RectF rect2 = new RectF(x1 - pad, y1 - pad,
+											x1 + tw + pad, y1 + th + pad);
+						p_canvas.drawRect(rect2, paint);
+					}
 				}
 			}
 		}
