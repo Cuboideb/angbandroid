@@ -32,7 +32,7 @@
 ?:[EQU $RACE Dwarf]
 %:Dwarf.prf
 
-?:[EQU $RACE Drúadan]
+?:[EQU $RACE DrÃºadan]
 %:Druadan.prf
 
 ?:[EQU $RACE Longbeard]
@@ -79,3 +79,4 @@
 %:android.prf
 
 ?:1
+

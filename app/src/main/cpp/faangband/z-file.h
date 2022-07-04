@@ -120,6 +120,22 @@ bool file_exists(const char *fname);
 bool file_delete(const char *fname);
 
 /**
+ * Set filename to a new filename based on an existing filename, using
+ * the specified file extension.  Make it shorter than the specified
+ * maximum length.  Resulting filename doesn't usually exist yet.
+ */
+void file_get_savefile(char *filename, size_t max, const char *base,
+	const char *ext);
+
+/**
+ * Set filename to a new filename based on an existing filename, using
+ * the specified file extension.  Make it shorter than the specified
+ * maximum length.
+ */
+void file_get_tempfile(char *filename, size_t max, const char *base,
+	const char *ext);
+
+/**
  * Moves the file `fname` to `newname`.
  *
  * Returns true if successful, false otherwise.
@@ -201,7 +217,15 @@ bool file_put(ang_file *f, const char *buf);
 /**
  * Format (using strnfmt) the given args, and then call file_put().
  */
-bool file_putf(ang_file *f, const char *fmt, ...);
+bool file_putf(ang_file *f, const char *fmt, ...)
+/*
+ * This is to automate format string checking with gcc and clang:  see
+ * see https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#Common-Function-Attributes .
+ */
+#ifdef USE_FUNC_ATTR_FORMAT
+	__attribute__ ((format (printf, 2, 3)))
+#endif
+;
 bool file_vputf(ang_file *f, const char *fmt, va_list vp);
 
 
