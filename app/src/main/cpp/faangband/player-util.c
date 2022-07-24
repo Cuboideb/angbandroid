@@ -916,9 +916,14 @@ void player_over_exert(struct player *p, int flag, int chance, int amount)
 
 
 /**
- * See how much damage the player will take from damaging terrain
+ * See how much damage the player will take from terrain.
+ *
+ * \param p is the player to check
+ * \param grid is the location of the terrain
+ * \param actual, if true, will cause the player to learn the appropriate
+ * runes if equipment or effects mitigate the damage.
  */
-int player_check_terrain_damage(struct player *p, struct loc grid)
+int player_check_terrain_damage(struct player *p, struct loc grid, bool actual)
 {
 	int dam_taken = 0;
 
@@ -926,13 +931,15 @@ int player_check_terrain_damage(struct player *p, struct loc grid)
 		int base_dam = 100 + randint1(100);
 
 		/* Fire damage */
-		dam_taken = adjust_dam(p, ELEM_FIRE, base_dam, false);
+		dam_taken = adjust_dam(p, ELEM_FIRE, base_dam, actual);
 
 		/* Feather fall makes one lightfooted. */
 		if (player_of_has(p, OF_FEATHER)) {
 			equip_learn_flag(p, OF_FEATHER);
 			dam_taken /= 2;
-			equip_learn_flag(p, OF_FEATHER);
+			if (actual) {
+				equip_learn_flag(p, OF_FEATHER);
+			}
 		}
 	}
 
@@ -944,18 +951,18 @@ int player_check_terrain_damage(struct player *p, struct loc grid)
  */
 void player_take_terrain_damage(struct player *p, struct loc grid)
 {
-	int dam_taken = player_check_terrain_damage(p, grid);
+	int dam_taken = player_check_terrain_damage(p, grid, true);
 
 	if (!dam_taken) {
 		return;
 	}
 
 	/* Damage the player and inventory */
-	take_hit(p, dam_taken, square_feat(cave, grid)->die_msg);
 	if (square_isfiery(cave, grid)) {
 		msg(square_feat(cave, grid)->hurt_msg);
 		inven_damage(p, PROJ_FIRE, dam_taken);
 	}
+	take_hit(p, dam_taken, square_feat(cave, grid)->die_msg);
 }
 
 /**
@@ -1161,7 +1168,7 @@ void player_resume_normal_shape(struct player *p)
 /**
  * Check if the player is shapechanged
  */
-bool player_is_shapechanged(struct player *p)
+bool player_is_shapechanged(const struct player *p)
 {
 	return streq(p->shape->name, "normal") ? false : true;
 }
@@ -1169,7 +1176,7 @@ bool player_is_shapechanged(struct player *p)
 /**
  * Check if the player is immune from traps
  */
-bool player_is_trapsafe(struct player *p)
+bool player_is_trapsafe(const struct player *p)
 {
 	if (p->timed[TMD_TRAPSAFE]) return true;
 	if (player_of_has(p, OF_TRAP_IMMUNE)) return true;
@@ -1183,7 +1190,7 @@ bool player_is_trapsafe(struct player *p)
  * \param show_msg should be set to true if a failure message should be
  * displayed.
  */
-bool player_can_cast(struct player *p, bool show_msg)
+bool player_can_cast(const struct player *p, bool show_msg)
 {
 	if (!p->class->magic.total_spells) {
 		if (show_msg) {
@@ -1216,7 +1223,7 @@ bool player_can_cast(struct player *p, bool show_msg)
  * \param show_msg should be set to true if a failure message should be
  * displayed.
  */
-bool player_can_study(struct player *p, bool show_msg)
+bool player_can_study(const struct player *p, bool show_msg)
 {
 	if (!player_can_cast(p, show_msg))
 		return false;
@@ -1262,7 +1269,7 @@ bool player_can_study(struct player *p, bool show_msg)
  * \param show_msg should be set to true if a failure message should be
  * displayed.
  */
-bool player_can_read(struct player *p, bool show_msg)
+bool player_can_read(const struct player *p, bool show_msg)
 {
 	if (p->timed[TMD_BLIND]) {
 		if (show_msg)
@@ -1494,7 +1501,7 @@ bool player_resting_is_special(int16_t count)
 /**
  * Return true if the player is resting.
  */
-bool player_is_resting(struct player *p)
+bool player_is_resting(const struct player *p)
 {
 	return (p->upkeep->resting > 0 ||
 			player_resting_is_special(p->upkeep->resting));
@@ -1503,7 +1510,7 @@ bool player_is_resting(struct player *p)
 /**
  * Return the remaining number of resting turns.
  */
-int16_t player_resting_count(struct player *p)
+int16_t player_resting_count(const struct player *p)
 {
 	return p->upkeep->resting;
 }
@@ -1557,7 +1564,7 @@ void player_resting_cancel(struct player *p, bool disturb)
  * Return true if the player should get a regeneration bonus for the current
  * rest.
  */
-bool player_resting_can_regenerate(struct player *p)
+bool player_resting_can_regenerate(const struct player *p)
 {
 	return player_turns_rested >= REST_REQUIRED_FOR_REGEN ||
 		player_resting_is_special(p->upkeep->resting);
@@ -1651,7 +1658,7 @@ void player_set_resting_repeat_count(struct player *p, int16_t count)
 /**
  * Check if the player state has the given OF_ flag.
  */
-bool player_of_has(struct player *p, int flag)
+bool player_of_has(const struct player *p, int flag)
 {
 	assert(p);
 	return of_has(p->state.flags, flag);
@@ -1660,7 +1667,7 @@ bool player_of_has(struct player *p, int flag)
 /**
  * Check if the player is vulnerable to an element
  */
-bool player_is_vulnerable(struct player_state state, int element)
+bool player_is_vulnerable(const struct player_state state, int element)
 {
 	return (state.el_info[element].res_level > RES_LEVEL_BASE);
 }
@@ -1668,7 +1675,7 @@ bool player_is_vulnerable(struct player_state state, int element)
 /**
  * Check if the player resists (or better) an element
  */
-bool player_resists(struct player_state state, int element)
+bool player_resists(const struct player_state state, int element)
 {
 	return (state.el_info[element].res_level < RES_LEVEL_BASE);
 }
@@ -1676,7 +1683,7 @@ bool player_resists(struct player_state state, int element)
 /**
  * Check if the player resists (or better) an element
  */
-bool player_resists_effects(struct player_state state, int element)
+bool player_resists_effects(const struct player_state state, int element)
 {
 	return (state.el_info[element].res_level <= RES_LEVEL_EFFECT);
 }
@@ -1684,7 +1691,7 @@ bool player_resists_effects(struct player_state state, int element)
 /**
  * Check if the player resists (or better) an element
  */
-bool player_resists_strongly(struct player_state state, int element)
+bool player_resists_strongly(const struct player_state state, int element)
 {
 	return (state.el_info[element].res_level <= RES_LEVEL_STRONG);
 }
@@ -1692,7 +1699,7 @@ bool player_resists_strongly(struct player_state state, int element)
 /**
  * Check if the player is immune to an element
  */
-bool player_is_immune(struct player_state state, int element)
+bool player_is_immune(const struct player_state state, int element)
 {
 	return (state.el_info[element].res_level == RES_LEVEL_MAX);
 }
@@ -1774,21 +1781,9 @@ void player_handle_post_move(struct player *p, bool eval_trap,
 	player->upkeep->update |= (PU_BONUS);
 
 	/* Discover invisible traps, set off visible ones */
-	if (eval_trap) {
-		if (square_issecrettrap(cave, p->grid)) {
-			disturb(p);
-			hit_trap(p->grid, 0);
-		} else if (square_isdisarmabletrap(cave, p->grid)) {
-			if (player_is_trapsafe(p)) {
-				/* Trap immune player learns that they are */
-				if (player_of_has(p, OF_TRAP_IMMUNE)) {
-					equip_learn_flag(p, OF_TRAP_IMMUNE);
-				}
-			} else {
-				disturb(p);
-				hit_trap(p->grid, 0);
-			}
-		}
+	if (eval_trap && square_isplayertrap(cave, p->grid)
+			&& !square_isdisabledtrap(cave, p->grid)) {
+		hit_trap(p->grid, 0);
 	}
 
 	/* Update view and search */

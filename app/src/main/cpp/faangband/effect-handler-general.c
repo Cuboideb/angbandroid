@@ -149,6 +149,7 @@ static bool has_teleport_destination_prereqs(struct chunk *c, struct loc grid,
 	}
 	if (square(c, grid)->mon
 			|| square_isdamaging(c, grid)
+			|| square_isfall(c, grid)
 			|| square_iswebbed(c, grid)
 			|| square_isshop(c, grid)) {
 		return false;
@@ -203,7 +204,6 @@ static bool uncurse_object(struct object *obj, int strength, char *dice_string)
 			struct object *destroyed;
 			bool none_left = false;
 			msg("There is a bang and a flash!");
-			take_hit(player, damroll(5, 5), "Failed uncursing");
 			if (object_is_carried(player, obj)) {
 				destroyed = gear_object_for_use(player, obj,
 					1, false, &none_left);
@@ -216,6 +216,7 @@ static bool uncurse_object(struct object *obj, int strength, char *dice_string)
 			} else {
 				square_delete_object(cave, obj->grid, obj, true, true);
 			}
+			take_hit(player, damroll(5, 5), "Failed uncursing");
 		} else {
 			/* Non-destructive failure */
 			msg("The removal fails.");
@@ -1638,7 +1639,7 @@ static void forget_remembered_objects(struct chunk *c, struct chunk *knownc, str
 			object_delete(player->cave, NULL, &obj);
 			original->known = NULL;
 			delist_object(c, original);
-			object_delete(cave, player->cave, &original);
+			object_delete(c, player->cave, &original);
 		}
 		obj = next;
 	}
