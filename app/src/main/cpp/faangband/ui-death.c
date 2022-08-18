@@ -35,6 +35,8 @@
 #include "ui-score.h"
 #include "ui-spoil.h"
 
+#include "droid.h"
+
 /**
  * Write formatted string `fmt` on line `y`, centred between points x1 and x2.
  */

@@ -63,6 +63,8 @@
 #include "wizard.h"
 #include "z-util.h"
 
+#include "droid.h"
+
 /**
  * The first part of this file contains the knowledge menus.  Generic display
  * routines are followed  by sections which implement "subclasses" of the

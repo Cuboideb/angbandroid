@@ -24,6 +24,8 @@
 #include "ui-menu.h"
 #include "ui-player-properties.h"
 
+#include "droid.h"
+
 /**
  * ------------------------------------------------------------------------
  * Code for viewing race and class abilities

@@ -38,6 +38,8 @@
 #include "ui-term.h"
 #include "sound.h"
 
+#include "droid.h"
+
 char arg_name[PLAYER_NAME_LEN];		/* Command arg -- request character name */
 int arg_graphics;			/* Command arg -- Request graphics mode */
 bool arg_graphics_nice;		/* Command arg -- Request nice graphics mode */

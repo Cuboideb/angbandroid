@@ -44,6 +44,8 @@
 #include "trap.h"
 #include "ui-input.h"
 
+#include "droid.h"
+
 /**
  * Check if an underworld level is available
  */

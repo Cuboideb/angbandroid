@@ -59,6 +59,8 @@
 #include "ui-visuals.h"
 #include "wizard.h"
 
+#include "droid.h"
+
 /**
  * There are a few functions installed to be triggered by several 
  * of the basic player events.  For convenience, these have been grouped 
