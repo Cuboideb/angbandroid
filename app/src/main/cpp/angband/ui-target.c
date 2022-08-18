@@ -44,6 +44,8 @@
 #include "ui-target.h"
 #include "ui-term.h"
 
+#include "droid.h"
+
 /*
  * Holds state passed between target_set_interactive_aux() and the handlers
  * that help it handle different types of grids or situations.  In general,

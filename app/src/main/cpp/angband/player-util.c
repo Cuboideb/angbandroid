@@ -44,6 +44,8 @@
 #include "trap.h"
 #include "ui-input.h"
 
+#include "droid.h"
+
 /**
  * Increment to the next or decrement to the preceeding level
    accounting for the stair skip value in constants
