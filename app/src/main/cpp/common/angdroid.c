@@ -39,6 +39,8 @@
 #include "player-timed.h"
 #include "monster.h"
 
+#include "droid.h"
+
 static char variant_name[100];
 static char android_files_path[1024];
 static char android_savefile[50];

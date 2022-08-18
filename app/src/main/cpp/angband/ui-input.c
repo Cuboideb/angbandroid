@@ -48,6 +48,8 @@
 #include "ui-store.h"
 #include "ui-target.h"
 
+#include "droid.h"
+
 static bool inkey_xtra;
 uint32_t inkey_scan;		/* See the "inkey()" function */
 bool inkey_flag;		/* See the "inkey()" function */

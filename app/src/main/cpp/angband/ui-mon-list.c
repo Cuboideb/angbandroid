@@ -28,6 +28,8 @@
 #include "ui-term.h"
 #include "ui-input.h"
 
+#include "droid.h"
+
 /**
  * Format a section of the monster list: a header followed by monster list
  * entry rows.

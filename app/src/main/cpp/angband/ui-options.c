@@ -36,6 +36,7 @@
 #include "ui-prefs.h"
 #include "ui-target.h"
 
+#include "droid.h"
 
 /**
  * Prompt the user for a filename to save the pref file to.

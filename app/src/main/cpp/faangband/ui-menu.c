@@ -23,6 +23,8 @@
 #include "ui-input.h"
 #include "ui-menu.h"
 
+#include "droid.h"
+
 /**
  * Cursor colours
  */

@@ -24,10 +24,6 @@
 #include "ui-event.h"
 #include "ui-term.h"
 
-#ifdef ANDROID
-#include "droid.h"
-#endif
-
 /**
  * Holds a generic command.  If hook is not NULL, that function
  * will be called.  Otherwise, if cmd is not CMD_NULL, that command

@@ -37,6 +37,8 @@
 #include "ui-prefs.h"
 #include "ui-target.h"
 
+#include "droid.h"
+
 /**
  * Overview
  * ========
