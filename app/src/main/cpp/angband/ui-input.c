@@ -1595,7 +1595,7 @@ static bool textui_get_aim_dir(int *dp)
 					   ke.key.code == '0' || ke.key.code == '.') {
 				if (target_okay()) {
 					dir = 5;
-			} else {
+				} else {
 					need_beep = true;
 				}
 			} else {

@@ -26,7 +26,6 @@
 #include "ui-output.h"
 #include "ui-prefs.h"
 #include "ui-term.h"
-#include "ui-input.h"
 
 #include "droid.h"
 

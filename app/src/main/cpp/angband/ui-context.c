@@ -1173,33 +1173,33 @@ static bool cmd_menu(struct command_list *list, void *selection_p)
 	window_make(area.col - 2, area.row - 1, area.col + 39, area.row + 13);
 
 	while (1) {
-	/* Select an entry */
-	evt = menu_select(&menu, 0, true);
+		/* Select an entry */
+		evt = menu_select(&menu, 0, true);
 
-	if (evt.type == EVT_SELECT) {
-		if (list->list[menu.cursor].cmd ||
-				list->list[menu.cursor].hook) {
-			/* It's a proper command. */
-			*selection = &list->list[menu.cursor];
+		if (evt.type == EVT_SELECT) {
+			if (list->list[menu.cursor].cmd ||
+					list->list[menu.cursor].hook) {
+				/* It's a proper command. */
+				*selection = &list->list[menu.cursor];
 				break;
-		} else {
-			/*
-			 * It's a placeholder that's a parent for a
-			 * nested menu.
-			 */
+			} else {
+				/*
+				 * It's a placeholder that's a parent for a
+				 * nested menu.
+				 */
 				/*
 				 * Look up the list of commands for the nested
 				 * menu.
 				 */
-			if (list->list[menu.cursor].nested_cached_idx == -1) {
-				list->list[menu.cursor].nested_cached_idx =
-					cmd_list_lookup_by_name(list->list[menu.cursor].nested_name);
-			}
-			if (list->list[menu.cursor].nested_cached_idx >= 0) {
-				/* Display a menu for it. */
+				if (list->list[menu.cursor].nested_cached_idx == -1) {
+					list->list[menu.cursor].nested_cached_idx =
+						cmd_list_lookup_by_name(list->list[menu.cursor].nested_name);
+				}
+				if (list->list[menu.cursor].nested_cached_idx >= 0) {
+					/* Display a menu for it. */
 					if (!cmd_menu(&cmds_all[list->list[menu.cursor].nested_cached_idx], selection_p)) {
 						break;
-			}
+					}
 				} else {
 					break;
 				}

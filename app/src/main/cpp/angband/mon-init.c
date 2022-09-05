@@ -584,7 +584,7 @@ static enum parser_error parse_mon_spell_name(struct parser *p) {
 	const char *name = parser_getstr(p, "name");
 	int index;
 	s->next = h;
-	if (grab_name("monster spell", name, r_info_spell_flags, N_ELEMENTS(r_info_spell_flags), &index))
+	if (grab_name("monster spell", name, r_info_spell_flags, N_ELEMENTS(r_info_spell_flags) - 1, &index))
 		return PARSE_ERROR_INVALID_SPELL_NAME;
 	s->index = index;
 	s->level = mem_zalloc(sizeof(*(s->level)));
@@ -1371,10 +1371,6 @@ static enum parser_error parse_monster_spells(struct parser *p) {
 		s = strtok(NULL, " |");
 	}
 
-	/* Add the "base monster" flags to the monster */
-	if (r->base)
-		rsf_union(r->spell_flags, r->base->spell_flags);
-
 	/* Make sure innate frequency is set if necessary */
 	create_mon_spell_mask(current_flags, RST_INNATE, RST_NONE);
 	rsf_inter(current_flags, r->spell_flags);
@@ -1422,7 +1418,7 @@ static enum parser_error parse_monster_msg_vis(struct parser *p) {
 
 	if (!r) return PARSE_ERROR_MISSING_RECORD_HEADER;
 	if (grab_name("monster spell", spell, r_info_spell_flags,
-			N_ELEMENTS(r_info_spell_flags), &s_idx))
+			N_ELEMENTS(r_info_spell_flags) - 1, &s_idx))
 			return PARSE_ERROR_INVALID_SPELL_NAME;
 	add_alternate_spell_message(r, s_idx, MON_ALTMSG_SEEN, msg);
 
@@ -1438,7 +1434,7 @@ static enum parser_error parse_monster_msg_invis(struct parser *p) {
 
 	if (!r) return PARSE_ERROR_MISSING_RECORD_HEADER;
 	if (grab_name("monster spell", spell, r_info_spell_flags,
-			N_ELEMENTS(r_info_spell_flags), &s_idx))
+			N_ELEMENTS(r_info_spell_flags) - 1, &s_idx))
 			return PARSE_ERROR_INVALID_SPELL_NAME;
 	add_alternate_spell_message(r, s_idx, MON_ALTMSG_UNSEEN, msg);
 
@@ -1454,7 +1450,7 @@ static enum parser_error parse_monster_msg_miss(struct parser *p) {
 
 	if (!r) return PARSE_ERROR_MISSING_RECORD_HEADER;
 	if (grab_name("monster spell", spell, r_info_spell_flags,
-			N_ELEMENTS(r_info_spell_flags), &s_idx))
+			N_ELEMENTS(r_info_spell_flags) - 1, &s_idx))
 			return PARSE_ERROR_INVALID_SPELL_NAME;
 	add_alternate_spell_message(r, s_idx, MON_ALTMSG_MISS, msg);
 
@@ -2526,7 +2522,6 @@ static errr finish_parse_lore(struct parser *p) {
 		/* Base flag knowledge */
 		if (r->base) {
 			rf_union(l->flags, r->base->flags);
-			rsf_union(l->spell_flags, r->base->spell_flags);
 		}
 
 		/* Remove blows data for non-blows */

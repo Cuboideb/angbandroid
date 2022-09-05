@@ -310,7 +310,7 @@ static ui_event target_recall_loop_object(struct object *obj, int y, int x,
 				ODESC_PREFIX | ODESC_FULL, p);
 
 			/* Describe the object */
-			if (player->wizard) {
+			if (p->wizard) {
 				strnfmt(out_val, TARGET_OUT_VAL_SIZE,
 						"%s%s%s%s, %s (%d:%d, noise=%d, scent=%d).", s1, s2, s3,
 						o_name, coords, y, x, (int)cave->noise.grids[y][x],
@@ -1032,11 +1032,27 @@ static int draw_path(uint16_t path_n, struct loc *path_g, wchar_t *c, int *a,
 			colour = COLOUR_L_DARK;
 		} else if (mon && monster_is_visible(mon)) {
 			/* Mimics act as objects */
-			if (monster_is_camouflaged(mon)) 
+			if (monster_is_mimicking(mon)) {
 				colour = COLOUR_YELLOW;
-			else
+			} else if (!monster_is_camouflaged(mon)) {
 				/* Visible monsters are red. */
 				colour = COLOUR_L_RED;
+			} else if (obj) {
+				/*
+				 * The camouflaged monster is on a grid with
+				 * an object; make it act like an object.
+				 */
+				colour = COLOUR_YELLOW;
+			} else if (!square_isprojectable(cave, grid)) {
+				/* The camouflaged monster looks like a wall. */
+				colour = COLOUR_BLUE;
+			} else {
+				/*
+				 * The camouflaged monster looks like an
+				 * unoccupied square.
+				 */
+				colour = COLOUR_WHITE;
+			}
 		} else if (obj)
 			/* Known objects are yellow. */
 			colour = COLOUR_YELLOW;

@@ -275,7 +275,7 @@ size_t obj_desc_name_format(char *buf, size_t max, size_t end,
 			if (!pluralise)
 				strnfcat(buf, max, &end, "%.*s",
 					(int) (plural - singular) - 1,
-						 singular);
+					singular);
 			else
 				strnfcat(buf, max, &end, "%.*s",
 					(int) (endmark - plural), plural);

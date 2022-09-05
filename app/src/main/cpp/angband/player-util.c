@@ -822,9 +822,9 @@ int player_check_terrain_damage(struct player *p, struct loc grid, bool actual)
 		if (player_of_has(p, OF_FEATHER)) {
 			dam_taken /= 2;
 			if (actual) {
-			equip_learn_flag(p, OF_FEATHER);
+				equip_learn_flag(p, OF_FEATHER);
+			}
 		}
-	}
 	}
 
 	return dam_taken;
@@ -1511,7 +1511,7 @@ void player_handle_post_move(struct player *p, bool eval_trap,
 	/* Discover invisible traps, set off visible ones */
 	if (eval_trap && square_isplayertrap(cave, p->grid)
 			&& !square_isdisabledtrap(cave, p->grid)) {
-			hit_trap(p->grid, 0);
+		hit_trap(p->grid, 0);
 	}
 
 	/* Update view and search */

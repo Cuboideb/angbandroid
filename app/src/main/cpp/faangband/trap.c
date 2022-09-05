@@ -529,10 +529,10 @@ extern void hit_trap(struct loc grid, int delayed)
 			continue;
 
 		if (player_is_trapsafe(player)) {
-		/* Trap immune player learns the rune */
-		if (player_of_has(player, OF_TRAP_IMMUNE)) {
-			equip_learn_flag(player, OF_TRAP_IMMUNE);
-		}
+			/* Trap immune player learns the rune */
+			if (player_of_has(player, OF_TRAP_IMMUNE)) {
+				equip_learn_flag(player, OF_TRAP_IMMUNE);
+			}
 			/* Trap becomes visible. */
 			trf_on(trap->flags, TRF_VISIBLE);
 			continue;

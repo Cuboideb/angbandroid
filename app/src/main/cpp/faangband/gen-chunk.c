@@ -511,7 +511,7 @@ bool chunk_copy(struct chunk *dest, struct player *p, struct chunk *source,
 		dest->feat_count[i] += source->feat_count[i];
 
 	if (dest->obj_rating < UINT32_MAX - source->obj_rating) {
-	dest->obj_rating += source->obj_rating;
+		dest->obj_rating += source->obj_rating;
 	} else {
 		dest->obj_rating = UINT32_MAX;
 	}
