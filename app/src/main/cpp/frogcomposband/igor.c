@@ -123,6 +123,11 @@ static bool _igor_carry(object_type *o_ptr)
     object_type *ulos;
 //    msg_format("Sopiva paikka: %d", slot);
     if ((slot < 1) || (slot > _IB_MAX_ACTIVE)) return FALSE;
+    if ((slot == _IB_HANDS) && (psion_weapon_graft()))
+    {
+        msg_format("The weapon fused to your arm prevents you from replacing your hands!");
+        return FALSE;
+    }
     ulos = inv_obj(_igor_body, slot);
     if ((ulos) && (ulos->k_idx))
     {

@@ -1149,7 +1149,7 @@ static void _display_curses(object_type *o_ptr, u32b flgs[OF_ARRAY_SIZE], doc_pt
     vec_ptr v;
 
     if (object_is_device(o_ptr)) return;
-    if (!(o_ptr->ident & (IDENT_KNOWN | IDENT_SENSE))) return;
+    if (!(o_ptr->ident & (IDENT_KNOWN | IDENT_SENSE | IDENT_STORE))) return;
 
     v = vec_alloc((vec_free_f)string_free);
 

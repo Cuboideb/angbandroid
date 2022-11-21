@@ -297,7 +297,7 @@ Have a rest and a rumor in the inn over some comfortable pitchers of beer.
 The stakes are far too high for a weak bluff, so watch the scores?
 Be not like the others. Proceed carefully, cover yourself at all times.
 You wouldn't want to fool with the Trumps! Aren't they of Doom quality?
-Smeagols removal is high on your list of things that needed knowing or doing?
+Smeagol's removal is high on your list of things that needed knowing or doing?
 Matter of recollection: find the inn and nurse some rumors for a while.
 Served you right: 3 quarters dead. Wasn't it purely a result of your arrogance?
 Confident - Cocky - Lazy - Dead. The Old Man's mantra, and a serious good one.
@@ -771,4 +771,5 @@ Psycho-Spears always penetrate invulnerability spheres.
 The best way to kill things as a Balrog Monk is with archery.
 FOR A GOOD TIME, JOIN ANGBAND.LIVE!
 Throw the book at it and it will be appalled.
+Did you know that carrying a capture ball will give you a hidden Black Aura?
 Good luck, have fun, don't die!

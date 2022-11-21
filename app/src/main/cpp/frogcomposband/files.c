@@ -2773,7 +2773,7 @@ bool py_get_name(void)
     /* Check to see if this is for server play. If so, lock the player name. (--phantom) */
     if(!arg_lock_name)
     {
-        if (get_string("Enter a name for your character: ", tmp, PY_NAME_LEN))
+        if (get_string("Enter a name for your character: ", tmp, PY_NAME_LEN + 1))
         {
             /* Use the name */
             strcpy(player_name, tmp);

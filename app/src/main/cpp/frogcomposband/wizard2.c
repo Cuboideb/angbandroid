@@ -333,7 +333,7 @@ static void do_cmd_wiz_change_aux(void)
         sprintf(tmp_val, "%d", p_ptr->stat_max[i]);
 
         /* Query */
-        if (!get_string(ppp, tmp_val, 3)) return;
+        if (!get_string(ppp, tmp_val, 4)) return;
 
         /* Extract */
         tmp_int = atoi(tmp_val);
@@ -388,7 +388,7 @@ static void do_cmd_wiz_change_aux(void)
     sprintf(tmp_val, "%d", p_ptr->au);
 
     /* Query */
-    if (!get_string("Gold: ", tmp_val, 9)) return;
+    if (!get_string("Gold: ", tmp_val, 10)) return;
 
     /* Extract */
     tmp_long = atol(tmp_val);
@@ -404,7 +404,7 @@ static void do_cmd_wiz_change_aux(void)
     sprintf(tmp_val, "%d", p_ptr->max_exp);
 
     /* Query */
-    if (!get_string("Experience: ", tmp_val, 9)) return;
+    if (!get_string("Experience: ", tmp_val, 10)) return;
 
     /* Extract */
     tmp_long = atol(tmp_val);
@@ -423,7 +423,7 @@ static void do_cmd_wiz_change_aux(void)
     }
 
     sprintf(tmp_val, "%d", p_ptr->fame);
-    if (!get_string("Fame: ", tmp_val, 3)) return;
+    if (!get_string("Fame: ", tmp_val, 4)) return;
     tmp_long = atol(tmp_val);
     if (tmp_long < 0) tmp_long = 0L;
     p_ptr->fame = (s16b)tmp_long;
@@ -813,7 +813,7 @@ static void do_cmd_wiz_jump(void)
         sprintf(tmp_val, "%d", dungeon_type);
 
         /* Ask for a level */
-        if (!get_string(ppp, tmp_val, 3)) return;
+        if (!get_string(ppp, tmp_val, 4)) return;
 
         tmp_dungeon_type = atoi(tmp_val);
         if (!d_info[tmp_dungeon_type].maxdepth || (tmp_dungeon_type > max_d_idx)) tmp_dungeon_type = DUNGEON_ANGBAND;
@@ -1036,7 +1036,7 @@ static void do_cmd_wiz_create_feature(void)
     sprintf(tmp_val, "%d", prev_feat);
 
     /* Query */
-    if (!get_string("Feature: ", tmp_val, 3)) return;
+    if (!get_string("Feature: ", tmp_val, 4)) return;
 
     /* Extract */
     tmp_feat = atoi(tmp_val);
@@ -1047,7 +1047,7 @@ static void do_cmd_wiz_create_feature(void)
     sprintf(tmp_val, "%d", prev_mimic);
 
     /* Query */
-    if (!get_string("Feature (mimic): ", tmp_val, 3)) return;
+    if (!get_string("Feature (mimic): ", tmp_val, 4)) return;
 
     /* Extract */
     tmp_mimic = atoi(tmp_val);
@@ -1896,7 +1896,7 @@ void do_cmd_debug(void)
 
         sprintf(tmp_val, "%d", p_ptr->exp);
         /* Query */
-        if (!get_string("Experience: ", tmp_val, 9)) break;
+        if (!get_string("Experience: ", tmp_val, 10)) break;
 
         /* Extract */
         tmp_long = atol(tmp_val);
@@ -2056,5 +2056,4 @@ static int i = 0;
 #endif
 
 #endif
-
 

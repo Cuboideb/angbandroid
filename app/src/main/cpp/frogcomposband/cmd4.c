@@ -2426,7 +2426,7 @@ static bool cmd_visuals_aux(int i, int *num, int max)
 
         sprintf(str, "%d", *num);
 
-        if (!get_string(format("Input new number(0-%d): ", max-1), str, 4))
+        if (!get_string(format("Input new number(0-%d): ", max-1), str, 5))
             return FALSE;
 
         tmp = strtol(str, NULL, 0);

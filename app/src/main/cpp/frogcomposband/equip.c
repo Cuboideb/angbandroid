@@ -604,6 +604,13 @@ static bool _wield_confirm(obj_ptr obj, slot_t slot)
         return FALSE;
     }
 
+    /* Secondary psion verify */
+    if (old_obj && psion_weapon_graft() && object_is_melee_weapon(old_obj))
+    {
+        msg_print("Failed! Your weapon is currently grafted to your arm!");
+        return FALSE;
+    }
+
     if (confirm_wear)
     {
         bool do_prompt = FALSE;

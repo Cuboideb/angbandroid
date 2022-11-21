@@ -991,7 +991,7 @@ void autopick_load_pref(byte mode)
 
         while (err != 0)
         {
-            bump_numeral(player_name, -1);
+            if (!bump_numeral(player_name, -1)) break;
             process_player_name(FALSE);
 
             /* Try a filename with old player name */

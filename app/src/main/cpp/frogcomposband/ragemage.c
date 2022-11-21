@@ -272,6 +272,7 @@ static void _focus_rage_spell(int cmd, variant *res)
     {
         int hp = 10 + p_ptr->lev/2;
         take_hit(DAMAGE_NOESCAPE, hp, "Rage");
+        var_set_bool(res, TRUE);
         break;
     }
     case SPELL_CAST:
@@ -345,6 +346,7 @@ static void _greater_focus_rage_spell(int cmd, variant *res)
         if (p_ptr->shero)
             hp = 2 * p_ptr->lev;
         take_hit(DAMAGE_NOESCAPE, hp, "Rage");
+        var_set_bool(res, TRUE);
         break;
     }
     case SPELL_CAST:
@@ -449,6 +451,7 @@ static void _rage_strike_spell(int cmd, variant *res)
         break;
     case SPELL_FAIL:
         sp_player(-p_ptr->csp);
+        var_set_bool(res, TRUE);
         break;
     case SPELL_CAST:
     {

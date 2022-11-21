@@ -212,12 +212,15 @@ bool cast_spell(ang_spell spell)
     return b;
 }
 
-void fail_spell(ang_spell spell)
+bool fail_spell(ang_spell spell)
 {
+    bool b;
     variant res;
     var_init(&res);
     spell(SPELL_FAIL, &res);
+    b = var_get_bool(&res);
     var_clear(&res);
+    return b;
 }
 
 int get_spell_energy(ang_spell spell)
@@ -1154,7 +1157,15 @@ void do_cmd_spell(void)
         {
             sound(SOUND_FAIL); /* Doh! */
             spell_stats_on_fail(spell);
-            fail_spell(spell->fn);
+            if (!fail_spell(spell->fn))
+            { /* Give back the spell cost */
+                if ((!hp_caster) && (!poli) && (!(caster->options & (CASTER_USE_AU | CASTER_USE_CONCENTRATION))))
+                {
+                    p_ptr->csp += spell->cost;
+                    p_ptr->redraw |= PR_MANA;
+                }
+                return;
+            }
             if (flush_failure) flush();
             msg_print("You failed to concentrate hard enough!");
             if (prompt_on_failure) msg_print(NULL);
@@ -1308,7 +1319,8 @@ byte do_cmd_power(void)
         {
             spell_stats_on_fail(spell);
             sound(SOUND_FAIL); /* Doh! */
-            fail_spell(spell->fn);
+            if (!fail_spell(spell->fn))
+               return ongelma;
             if (flush_failure) flush();
             msg_print("You failed to concentrate hard enough!");
             if (prompt_on_failure) msg_print(NULL);

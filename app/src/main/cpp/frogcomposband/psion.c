@@ -44,6 +44,14 @@ static int _spell_stat_idx(void)
 #define _DISRUPTION  11
 #define _DRAIN       12
 
+#define _NO_COST_FAIL() \
+        if (cmd == SPELL_FAIL) \
+        { \
+            var_set_bool(res, TRUE); \
+            break; \
+        }
+
+
 bool psion_weapon_graft(void)
 {
     if (p_ptr->pclass != CLASS_PSION) return FALSE;
@@ -306,6 +314,7 @@ static void _archery_transformation_spell(int power, int cmd, variant *res)
     case SPELL_INFO:
         var_set_string(res, format("+%d Archery skill", power*20));
         break;
+    case SPELL_FAIL:
     case SPELL_CAST:
         var_set_bool(res, FALSE);
         if (p_ptr->magic_num1[_ARCHERY])
@@ -313,6 +322,7 @@ static void _archery_transformation_spell(int power, int cmd, variant *res)
             msg_print("You are already transformed into a shooting machine.");
             return;
         }
+        _NO_COST_FAIL()
         _clear_counter(_COMBAT, "Your combat transformation expires.");    
         msg_print("You transform into a shooting machine!");
         p_ptr->magic_num1[_ARCHERY] = spell_power(power*8 + 20);
@@ -388,6 +398,7 @@ static void _combat_transformation_spell(int power, int cmd, variant *res)
         if (prace_is_(RACE_TONBERRY)) var_set_string(res, format("Blows: +%d.%2.2d", power / 4, (power * 25) % 100));
         else var_set_string(res, format("Blows: +%d.%d", power * 2 / 5, (power * 4) % 10));
         break;
+    case SPELL_FAIL:
     case SPELL_CAST:
         var_set_bool(res, FALSE);
         if (p_ptr->magic_num1[_COMBAT])
@@ -395,6 +406,7 @@ static void _combat_transformation_spell(int power, int cmd, variant *res)
             msg_print("You are already transformed into a fighting machine.");
             return;
         }
+        _NO_COST_FAIL()
         _clear_counter(_ARCHERY, "Your archery transformation expires.");    
         msg_print("You transform into a fighting machine!");
         p_ptr->magic_num1[_COMBAT] = spell_power(power*8 + 20);
@@ -558,6 +570,7 @@ static void _graft_weapon_spell(int power, int cmd, variant *res)
     case SPELL_INFO:
         var_set_string(res, format("(+%2d,+%2d) melee", 6*power, 4*power));
         break;
+    case SPELL_FAIL:
     case SPELL_CAST:
         var_set_bool(res, FALSE);
         if (p_ptr->magic_num1[_WEAPON_GRAFT])
@@ -565,6 +578,7 @@ static void _graft_weapon_spell(int power, int cmd, variant *res)
             msg_print("Your weapon is already grafted!");
             return;
         }
+        _NO_COST_FAIL()
         if (!equip_find_first(object_is_melee_weapon))
         {
             msg_print("You are not wielding a weapon!");
@@ -637,6 +651,7 @@ static void _mental_fortress_spell(int power, int cmd, variant *res)
     case SPELL_INFO:
         var_set_string(res, format("Spell Power: +%d%%", spell_power_aux(100, power) - 100));
         break;
+    case SPELL_FAIL:
     case SPELL_CAST:
         var_set_bool(res, FALSE);
         if (p_ptr->magic_num1[_FORTRESS])
@@ -644,6 +659,7 @@ static void _mental_fortress_spell(int power, int cmd, variant *res)
             msg_print("You already have a mental fortress.");
             return;
         }
+        _NO_COST_FAIL()
         msg_print("You erect a mental fortress.");
         p_ptr->magic_num1[_FORTRESS] = spell_power(power + 3);
         p_ptr->magic_num2[_FORTRESS] = power;
@@ -676,6 +692,7 @@ static void _mindspring_spell(int power, int cmd, variant *res)
     case SPELL_INFO:
         var_set_string(res, format("Recover %d sp/rnd", 16*power));
         break;
+    case SPELL_FAIL:
     case SPELL_CAST:
         var_set_bool(res, FALSE);
         if (p_ptr->magic_num1[_MINDSPRING])
@@ -683,6 +700,7 @@ static void _mindspring_spell(int power, int cmd, variant *res)
             msg_print("Your mindspring is already flowing.");
             return;
         }
+        _NO_COST_FAIL()
         msg_print("Your mindspring flows.");
         p_ptr->magic_num1[_MINDSPRING] = spell_power(power*2 + 3);
         p_ptr->magic_num2[_MINDSPRING] = power;
@@ -715,6 +733,7 @@ static void _psionic_backlash_spell(int power, int cmd, variant *res)
     case SPELL_INFO:
         var_set_string(res, format("Revenge: %d%%", 25 + 25*power));
         break;
+    case SPELL_FAIL:
     case SPELL_CAST:
         var_set_bool(res, FALSE);
         if (p_ptr->magic_num1[_BACKLASH])
@@ -722,6 +741,7 @@ static void _psionic_backlash_spell(int power, int cmd, variant *res)
             msg_print("Your psionic revenge is already active.");
             return;
         }
+        _NO_COST_FAIL()
         msg_print("You contemplate revenge!");
         p_ptr->magic_num1[_BACKLASH] = spell_power(power*5 + 5);
         p_ptr->magic_num2[_BACKLASH] = power;
@@ -754,6 +774,7 @@ static void _psionic_blending_spell(int power, int cmd, variant *res)
     case SPELL_INFO:
         var_set_string(res, format("+%d stealth", 3*power));
         break;
+    case SPELL_FAIL:
     case SPELL_CAST:
         var_set_bool(res, FALSE);
         if (p_ptr->magic_num1[_BLENDING])
@@ -761,6 +782,7 @@ static void _psionic_blending_spell(int power, int cmd, variant *res)
             msg_print("You are already blending into your surroundings.");
             return;
         }
+        _NO_COST_FAIL()
         msg_print("You blend into your surroundings.");
         p_ptr->magic_num1[_BLENDING] = spell_power(power*25 + 50);
         p_ptr->magic_num2[_BLENDING] = power;
@@ -793,6 +815,7 @@ static void _psionic_clarity_spell(int power, int cmd, variant *res)
     case SPELL_INFO:
         var_set_string(res, format("Costs: %d%%", 85-7*power));
         break;
+    case SPELL_FAIL:
     case SPELL_CAST:
         var_set_bool(res, FALSE);
         if (p_ptr->magic_num1[_CLARITY])
@@ -800,6 +823,7 @@ static void _psionic_clarity_spell(int power, int cmd, variant *res)
             msg_print("Your mind is already focused.");
             return;
         }
+        _NO_COST_FAIL()
         msg_print("You focus your mind.");
         p_ptr->magic_num1[_CLARITY] = spell_power(2*power + 5);
         p_ptr->magic_num2[_CLARITY] = power;
@@ -933,6 +957,7 @@ static void _psionic_disruption_spell(int power, int cmd, variant *res)
     case SPELL_INFO:
         var_set_string(res, format("Power: %d", p_ptr->lev + 8*power));
         break;
+    case SPELL_FAIL:
     case SPELL_CAST:
         var_set_bool(res, FALSE);
         if (p_ptr->magic_num1[_DISRUPTION])
@@ -940,6 +965,7 @@ static void _psionic_disruption_spell(int power, int cmd, variant *res)
             msg_print("Your disruption is already active.");
             return;
         }
+        _NO_COST_FAIL()
         msg_print("You project disrupting thoughts!");
         p_ptr->magic_num1[_DISRUPTION] = spell_power(power*2 + 3);
         p_ptr->magic_num2[_DISRUPTION] = power;
@@ -972,6 +998,7 @@ static void _psionic_drain_spell(int power, int cmd, variant *res)
     case SPELL_INFO:
         var_set_string(res, format("Drain: %d%%", 5*power));
         break;
+    case SPELL_FAIL:
     case SPELL_CAST:
         var_set_bool(res, FALSE);
         if (p_ptr->magic_num1[_DRAIN])
@@ -979,6 +1006,7 @@ static void _psionic_drain_spell(int power, int cmd, variant *res)
             msg_print("Your drain is already active.");
             return;
         }
+        _NO_COST_FAIL()
         msg_print("You prepare to draw power from surrounding magics.");
         p_ptr->magic_num1[_DRAIN] = spell_power(power*5 + 10);
         p_ptr->magic_num2[_DRAIN] = power;
@@ -1011,6 +1039,7 @@ static void _psionic_foresight_spell(int power, int cmd, variant *res)
     case SPELL_INFO:
         var_set_string(res, format("Avoidance: %d%%", 7 + 12*power));
         break;
+    case SPELL_FAIL:
     case SPELL_CAST:
         var_set_bool(res, FALSE);
         if (p_ptr->magic_num1[_FORESIGHT])
@@ -1018,6 +1047,7 @@ static void _psionic_foresight_spell(int power, int cmd, variant *res)
             msg_print("Your foresight is already active.");
             return;
         }
+        _NO_COST_FAIL()
         msg_print("You see the future!");
         p_ptr->magic_num1[_FORESIGHT] = spell_power(power*2 + 3);
         p_ptr->magic_num2[_FORESIGHT] = power;
@@ -1218,6 +1248,7 @@ static void _psionic_shielding_spell(int power, int cmd, variant *res)
     case SPELL_INFO:
         var_set_string(res, format("AC: +%d", 15*power));
         break;
+    case SPELL_FAIL:
     case SPELL_CAST:
         var_set_bool(res, FALSE);
         if (p_ptr->magic_num1[_SHIELDING])
@@ -1225,6 +1256,7 @@ static void _psionic_shielding_spell(int power, int cmd, variant *res)
             msg_print("You already have a psionic shield.");
             return;
         }
+        _NO_COST_FAIL()
         msg_print("You create a psionic shield.");
         p_ptr->magic_num1[_SHIELDING] = spell_power(power*8 + 20);
         p_ptr->magic_num2[_SHIELDING] = power;
@@ -1257,6 +1289,7 @@ static void _psionic_speed_spell(int power, int cmd, variant *res)
     case SPELL_INFO:
         var_set_string(res, format("Speed: +%d", 4*power));
         break;
+    case SPELL_FAIL:
     case SPELL_CAST:
         var_set_bool(res, FALSE);
         if (p_ptr->magic_num1[_SPEED])
@@ -1264,6 +1297,7 @@ static void _psionic_speed_spell(int power, int cmd, variant *res)
             msg_print("You are already fast.");
             return;
         }
+        _NO_COST_FAIL()
         msg_print("You gain psionic speed.");
         p_ptr->magic_num1[_SPEED] = spell_power(power*10 + 20);
         p_ptr->magic_num2[_SPEED] = power;
@@ -2245,7 +2279,7 @@ class_t *psion_get_class(void)
                     "Psion can learn is very limited: one each at levels 1, 10, 15, 20, 30, 35, 40 and 50.\n\n"
                     "The potency of psionic powers can be scaled up or down as needed, within limits; "
                     "the more mana is spent, the more powerful the effect. All psionic powers require "
-                    "great concentration, leaving the Psion little time for pets. "
+                    "great concentration, leaving the Psion no time for pets. "
                     "Psions do not have one fixed spell stat; they can use either Intelligence, Wisdom "
                     "or Charisma, whichever is the highest. In this respect they are truly unique!";
 

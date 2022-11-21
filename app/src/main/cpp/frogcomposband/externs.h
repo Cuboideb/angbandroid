@@ -749,7 +749,7 @@ extern void py_birth_spellbooks(void);
 extern int find_roman_numeral(char *nimi, int *paikka);
 extern int find_arabic_numeral(char *nimi, int *paikka);
 extern bool num_to_roman(int _num, char *buf);
-extern void bump_numeral(char *nimi, int muutos);
+extern bool bump_numeral(char *nimi, int muutos);
 extern bool name_is_numbered(char *nimi);
 
 /* cave.c */

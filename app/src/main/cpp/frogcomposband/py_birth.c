@@ -318,11 +318,11 @@ int find_arabic_numeral(char *nimi, int *paikka)
     return arvo;
 }
 
-void bump_numeral(char *nimi, int muutos)
+bool bump_numeral(char *nimi, int muutos)
 {
     int _old_num = 0, _error = 0, paikka = 0;
-    if ((!nimi) || (!strlen(nimi))) return;
-    if (!muutos) return; /* Nothing to do */
+    if ((!nimi) || (!strlen(nimi))) return FALSE;
+    if (!muutos) return FALSE; /* Nothing to do */
     _old_num = find_roman_numeral(nimi, &paikka);
     while (_old_num > 0)
     {
@@ -334,11 +334,11 @@ void bump_numeral(char *nimi, int muutos)
         }
         else if (!clip_and_locate(luku, nimi)) break;
         _error = 1;
-        if ((_old_num + muutos) <= 0) return;
+        if ((_old_num + muutos) <= 0) return FALSE;
         if (!num_to_roman(_old_num + muutos, luku)) break;
         if (strlen(nimi) + strlen(luku) > PY_NAME_LEN) break;
         strcat(nimi, luku);
-        return;
+        return TRUE;
     }
     if (_old_num > 0) /* There was a Roman numeral but something went wrong */
     {
@@ -350,30 +350,31 @@ void bump_numeral(char *nimi, int muutos)
             {
                 if (nimi[tyhja] == ' ') break;
             }
-            if (!tyhja) return; /* Something weird is happening */
-            if ((_old_num + muutos) <= 0) return;
+            if (!tyhja) return FALSE; /* Something weird is happening */
+            if ((_old_num + muutos) <= 0) return FALSE;
             nimi[tyhja + 1] = '\0';
         }
-        else if ((_old_num + muutos) <= 0) return;
+        else if ((_old_num + muutos) <= 0) return FALSE;
         strcpy(luku, format("%d", _old_num + muutos));
-        if (strlen(nimi) + strlen(luku) > PY_NAME_LEN) return;
+        if (strlen(nimi) + strlen(luku) > PY_NAME_LEN) return FALSE;
         if ((_error) && (strlen(nimi) + strlen(luku) != PY_NAME_LEN) && (strlen(nimi) > 0) && (nimi[strlen(nimi) - 1] != ' ')) strcat(nimi, " ");
         strcat(nimi, luku);
-        return;
+        return TRUE;
     }
     else /* No Roman numeral - check for Arabic numeral */
     {
         char luku[PY_NAME_LEN + 2] = "";
         int paikka = -1;
         s32b arvo = find_arabic_numeral(nimi, &paikka);
-        if (arvo < 1) return;
-        if (paikka <= 0) return;
+        if (arvo < 1) return FALSE;
+        if (paikka <= 0) return FALSE;
         nimi[paikka - 1] = '\0';
-        if ((arvo + muutos) < 1) return;
+        if ((arvo + muutos) < 1) return FALSE;
         strcpy(luku, format(" %d", arvo + muutos));
-        if (strlen(nimi) + strlen(luku) > PY_NAME_LEN) return;
+        if (strlen(nimi) + strlen(luku) > PY_NAME_LEN) return FALSE;
         strcat(nimi, luku);
     }
+    return TRUE;
 }
 
 bool name_is_numbered(char *nimi)
@@ -3132,7 +3133,7 @@ static void _change_name(void)
         char tmp[64];
         strcpy(tmp, player_name);
         Term_gotoxy(7, 0); /* Hack */
-        if (askfor(tmp, PY_NAME_LEN))
+        if (askfor(tmp, PY_NAME_LEN + 1))
             strcpy(player_name, tmp);
         if (0 == strlen(player_name))
             strcpy(player_name, "PLAYER");
@@ -3480,4 +3481,3 @@ static void _birth_finalize(void)
     p_ptr->csp = p_ptr->msp;
     process_player_name(FALSE);
 }
-

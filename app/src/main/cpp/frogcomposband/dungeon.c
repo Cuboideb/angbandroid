@@ -5614,7 +5614,7 @@ static void load_all_pref_files(bool new_game)
 
         while (1)
         {
-            bump_numeral(player_name, -1);
+            if (!bump_numeral(player_name, -1)) break;
             process_player_name(FALSE);
 
             sprintf(buf, "%s.prf", player_base);

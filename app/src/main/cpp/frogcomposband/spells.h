@@ -12,7 +12,7 @@ extern void do_cmd_spell_browse(void);
 extern void wipe_labels(void);
 extern int get_power_table(power_info *spells);
 extern int get_spell_table(power_info *spells, int max, bool with_class);
-extern void fail_spell(ang_spell spell);
+extern bool fail_spell(ang_spell spell);
 extern int get_spell_energy(ang_spell spell);
 extern int get_spell_cost_extra(ang_spell spell);
 extern int get_spell_flags(ang_spell spell);
