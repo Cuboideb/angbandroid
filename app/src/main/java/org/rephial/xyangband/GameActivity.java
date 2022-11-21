@@ -51,6 +51,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -111,6 +113,8 @@ public class GameActivity extends Activity {
 	protected boolean keyHandlerIsRunning = false;
 
 	protected QuantityPopup quantPopup = null;
+
+	protected int prevOrientation = -1;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -279,7 +283,7 @@ public class GameActivity extends Activity {
 
 	@Override
 	public void onStart() {
-		Log.d("Angband", "Activity START");
+		log("GameActivity START");
 
 		super.onStart();
 
@@ -301,6 +305,8 @@ public class GameActivity extends Activity {
 		}
 
 		rebuildViews();
+
+		prevOrientation = this.getResources().getConfiguration().orientation;
 	}
 
 	@Override
@@ -313,7 +319,7 @@ public class GameActivity extends Activity {
 
 	@Override
 	public void onStop() {
-		Log.d("Angband", "Activity STOP");
+		log("GameActivity STOP");
 
 		super.onStop();
 
@@ -488,20 +494,20 @@ public class GameActivity extends Activity {
 	protected void rebuildViews() {
 
 		synchronized (state.progress_lock) {
-			Log.d("Angband","Rebuild Views");
+			log("GameActivity REBUILD VIEWS");
 			//dialog.dismissProgress();
 
 			int orient = Preferences.getOrientation();
 			switch (orient) {
-			case 0: // sensor
-				setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-				break;
-			case 1: // portrait
-				setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-				break;
-			case 2: // landscape
-				setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-				break;
+				case 0: // sensor
+					setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+					break;
+				case 1: // portrait
+					setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+					break;
+				case 2: // landscape
+					setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+					break;
 			}
 
 			String oldVisuals = "";
@@ -647,6 +653,8 @@ public class GameActivity extends Activity {
 	{
 		if (term == null) return false;
 
+		log("GameActivity ADJUST SIZE");
+
 		if (byWidth) {
 			term.autoSizeFontByWidth(0, 0);
 		}
@@ -727,6 +735,8 @@ public class GameActivity extends Activity {
 
 			resetAdvKeyboardHeight();
 		}
+
+		log("GameActivity " + (horizontal?"horizontal":"vertical"));
 
 		Preferences.setHorizontalSubWindows(!horizontal);
 		Preferences.setTopBar(true);
@@ -997,7 +1007,7 @@ public class GameActivity extends Activity {
 
 	@Override
 	protected void onResume() {
-		Log.d("Angband", "RESUME");
+		log("GameActivity RESUME");
 
 		super.onResume();
 
@@ -1010,7 +1020,7 @@ public class GameActivity extends Activity {
 
 	@Override
 	protected void onPause() {
-		Log.d("Angband", "PAUSE");
+		log("GameActivity PAUSE");
 
 		super.onPause();
 
@@ -1095,6 +1105,25 @@ public class GameActivity extends Activity {
 		}
 
 		return w;
+	}
+
+	//@Override
+	public void onConfigurationChanged_Test(@NonNull Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+
+		log("GameActivity CONFIG CHANGED: " + newConfig.orientation +
+				" - prev: " + prevOrientation);
+
+		if (prevOrientation != -1 && newConfig.orientation != prevOrientation) {
+			/*
+			boolean horizontal = newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE;
+			Preferences.setHorizontalSubWindows(!horizontal);
+			adjustSize(!horizontal);
+			rebuildViews();
+			*/
+			resetGameLayout();
+		}
+		prevOrientation = newConfig.orientation;
 	}
 
 	public int getKeyboardHeightAbsolute() {

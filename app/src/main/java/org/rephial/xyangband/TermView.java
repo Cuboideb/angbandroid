@@ -1832,7 +1832,7 @@ public class TermView extends View implements OnGestureListener {
 
 		setMeasuredDimension(width, height);
 
-		//Log.d("Angband","onMeasure "+canvas_width+","+canvas_height+";"+width+","+height);
+		game_context.log("onMeasure "+canvas_width+","+canvas_height+";"+width+","+height);
 	}
 
 	public void updateDrag(float fx, float fy)
