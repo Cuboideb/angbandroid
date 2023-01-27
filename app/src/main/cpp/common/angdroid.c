@@ -664,8 +664,10 @@ static void term_data_link(int i)
 	t->never_frosh = true;
 
 	/* Erase with "white space" XXX XXX XXX */
+	/*
 	t->attr_blank = COLOUR_WHITE;
 	t->char_blank = ' ';
+	*/
 
 	/* Prepare the init/nuke hooks */
 	t->init_hook = Term_init_android;
