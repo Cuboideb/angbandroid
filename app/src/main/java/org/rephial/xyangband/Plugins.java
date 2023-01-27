@@ -94,6 +94,13 @@ final public class Plugins {
 	public static int getKeyQuitAndSave(Plugin p) { return 0x18; }
 	public static int getKeyKill(Plugin p)        { return -2; }
 
+	public static int getKeyRightForQuantity(Plugin p)
+	{
+		if (p == Plugin.frogcomposband) return InputUtils.KTRL('f');
+
+		return 0;
+	}
+
 	public static ZipInputStream getPluginZip(int plugin) {
 		InputStream is = null;
 

@@ -121,6 +121,14 @@ public class QuantityPopup extends PopupWindow
         String str = Integer.toString(valuePicker.getValue());
         List<Integer> list = InputUtils.parseCodeKeys(str);
 
+        // For some variants, go to the right
+        int rightKey = state.getKeyRightForQuantity();
+        if (rightKey > 0) {
+            for (int i = 0; i < 15; i++) {
+                state.addKey(rightKey);
+            }
+        }
+
         // Erase all past input
         for (int i = 0; i < 15; i++) {
             state.addKey(state.getKeyBackspace());

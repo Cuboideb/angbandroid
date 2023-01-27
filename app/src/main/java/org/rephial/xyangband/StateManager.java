@@ -408,6 +408,10 @@ public class StateManager {
 		return Plugins.getKeyKill(currentPlugin);
 	}
 
+	public int getKeyRightForQuantity() {
+		return Plugins.getKeyRightForQuantity(currentPlugin);
+	}
+
 	public void clearKeys() {
 		if (this.keyBuffer != null)
 			this.keyBuffer.clear();
