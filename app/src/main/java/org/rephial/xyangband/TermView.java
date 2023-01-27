@@ -3609,6 +3609,12 @@ public class TermView extends View implements OnGestureListener {
 			return;
 		}
 
+		// Special case. Background is ascii
+		if (fill && (c & 0x80) == 0) {
+			drawText(row, col, a, c, 0, ' ');
+			return;
+		}
+
 		TileGrid tile = new TileGrid(currentGraf, a, c, row, col, this);
 
 		Rect dst = tile.locateDest();
