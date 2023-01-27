@@ -1107,6 +1107,7 @@ public class GameActivity extends Activity {
 		return w;
 	}
 
+	/*
 	//@Override
 	public void onConfigurationChanged_Test(@NonNull Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
@@ -1115,16 +1116,15 @@ public class GameActivity extends Activity {
 				" - prev: " + prevOrientation);
 
 		if (prevOrientation != -1 && newConfig.orientation != prevOrientation) {
-			/*
 			boolean horizontal = newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE;
 			Preferences.setHorizontalSubWindows(!horizontal);
 			adjustSize(!horizontal);
 			rebuildViews();
-			*/
 			resetGameLayout();
 		}
 		prevOrientation = newConfig.orientation;
 	}
+	*/
 
 	public int getKeyboardHeightAbsolute() {
 		int h = 0;
