@@ -19,6 +19,7 @@
 #include "angband.h"
 #include "init.h"
 #include "savefile.h"
+#include "ui-birth.h"
 #include "ui-command.h"
 #include "ui-display.h"
 #include "ui-game.h"
@@ -48,6 +49,14 @@
 #if defined(WIN32_CONSOLE_MODE) || !defined(WINDOWS) || defined(USE_SDL) || defined(USE_SDL2)
 
 #include "main.h"
+
+/*
+ * On some platforms, SDL2 uses a macro to replace main() with another name
+ * to hook into the platform-specific initialization.  Account for that here.
+ */
+#ifdef USE_SDL2
+#include "SDL_main.h"
+#endif
 
 /**
  * List of the available modules in the order they are tried.
@@ -293,20 +302,6 @@ static void list_saves(void)
 	cleanup_savefile_getter(g);
 }
 
-
-static void debug_opt(const char *arg) {
-	if (streq(arg, "mem-poison-alloc"))
-		mem_flags |= MEM_POISON_ALLOC;
-	else if (streq(arg, "mem-poison-free"))
-		mem_flags |= MEM_POISON_FREE;
-	else {
-		puts("Debug flags:");
-		puts("  mem-poison-alloc: Poison all memory allocations");
-		puts("   mem-poison-free: Poison all freed memory");
-		exit(0);
-	}
-}
-
 /**
  * Simple "main" function for multiple platforms.
  *
@@ -425,10 +420,6 @@ int main(int argc, char *argv[])
 				change_path(arg);
 				continue;
 
-			case 'x':
-				debug_opt(arg);
-				continue;
-
 			case '-':
 				argv[i] = argv[0];
 				argc = argc - i;
@@ -444,7 +435,6 @@ int main(int argc, char *argv[])
 				puts("  -l             Lists all savefiles you can play");
 				puts("  -w             Resurrect dead character (marks savefile)");
 				puts("  -g             Request graphics mode");
-				puts("  -x<opt>        Debug options; see -xhelp");
 				puts("  -u<who>        Use your <who> savefile");
 				puts("  -d<dir>=<path> Override a specific directory with <path>. <path> can be:");
 				for (i = 0; i < (int)N_ELEMENTS(change_path_values); i++) {

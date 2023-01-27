@@ -5471,7 +5471,8 @@ bool inc_stat(int stat)
         /* Gain one (sometimes two) points */
         if (value < 18)
         {
-            gain = ((randint0(100) < 75) ? 1 : 2);
+            int chance = ((value == 17) ? 58 : (mut_present(MUT_BAD_LUCK)) ? 80 : (p_ptr->good_luck) ? 70 : 75);
+            gain = ((randint0(100) < chance) ? 1 : 2);
             value += gain;
         }
         else if (value < (p_ptr->stat_max_max[stat]-2))
@@ -5934,9 +5935,12 @@ bool do_res_stat(int stat)
 bool do_inc_stat(int stat)
 {
     bool res;
+    static byte specmess = 0;
 
     /* Restore strength */
     res = res_stat(stat);
+
+    if (specmess) specmess--;
 
     /* Attempt to increase */
     if (inc_stat(stat))
@@ -5954,8 +5958,23 @@ bool do_inc_stat(int stat)
         else if (stat == A_CON)
             virtue_add(VIRTUE_VITALITY, 1);
 
-        /* Message */
-        msg_format("Wow! You feel very %s!", desc_stat_pos[stat]);
+        if ((p_ptr->stat_cur[stat] == 19) && (!specmess) && (one_in_(4)))
+        {
+            if ((!mut_present(MUT_BAD_LUCK)) || (!one_in_(2)))
+            {
+                msg_format("You get the rare double stat boost! Wow! You feel incredibly %s!", desc_stat_pos[stat]);
+                specmess = 6;
+            }
+            else
+            {
+                msg_format("<color:G>You are blessed by Lady Luck and get the rare double stat boost!</color> Wow! You feel incredibly %s! To think you felt so weighed down by that black aura, by the people who called you a bringer of bad luck! It just goes to show, it's not the names they call you that matter, it's the willpower that helps you persevere until in these moments of sweet bliss, against all odds, you triumph!", desc_stat_pos[stat]);
+                specmess = 12;
+            }
+        }        
+        else /* Normal message */
+        {
+            msg_format("Wow! You feel very %s!", desc_stat_pos[stat]);
+        }
 
 
         /* Notice */

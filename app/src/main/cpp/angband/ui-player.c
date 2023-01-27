@@ -30,6 +30,7 @@
 #include "player-timed.h"
 #include "player-util.h"
 #include "store.h"
+#include "ui-birth.h"
 #include "ui-display.h"
 #include "ui-entry.h"
 #include "ui-entry-renderers.h"
@@ -359,16 +360,17 @@ static void display_player_equippy(int y, int x)
 		/* Object */
 		obj = slot_object(player, i);
 
-		/* Skip empty objects */
-		if (!obj) continue;
-
-		/* Get attr/char for display */
-		a = object_attr(obj);
-		c = object_char(obj);
+		/* Get attr/char for display; clear if big tiles or no object */
+		if (obj && tile_width == 1 && tile_height == 1) {
+			a = object_attr(obj);
+			c = object_char(obj);
+		} else {
+			a = COLOUR_WHITE;
+			c = L' ';
+		}
 
 		/* Dump */
-		if ((tile_width == 1) && (tile_height == 1))
-		        Term_putch(x + i, y, a, c);
+		Term_putch(x + i, y, a, c);
 	}
 }
 
@@ -636,7 +638,7 @@ static const char *show_adv_exp(void)
 		static char buffer[30];
 		int32_t advance = (player_exp[player->lev - 1]
 			* player->expfact / 100L);
-		strnfmt(buffer, sizeof(buffer), "%d", advance);
+		strnfmt(buffer, sizeof(buffer), "%ld", (long)advance);
 		return buffer;
 	}
 	else {
@@ -919,7 +921,7 @@ void write_character_dump(ang_file *fff)
 	int a;
 	wchar_t c;
 
-	struct store *home = &stores[STORE_HOME];
+	struct store *home = &stores[f_info[FEAT_HOME].shopnum - 1];
 	struct object **home_list = mem_zalloc(sizeof(struct object *) *
 										   z_info->store_inven_max);
 	char o_name[80];
@@ -1160,7 +1162,7 @@ void write_character_dump(ang_file *fff)
 	 */
 	if (OPT(player, birth_randarts)) {
 		file_putf(fff, "  [Randart seed]\n\n");
-		file_putf(fff, "%08x\n\n", seed_randart);
+		file_putf(fff, "%08lx\n\n", (unsigned long)seed_randart);
 	}
 
 	mem_free(home_list);

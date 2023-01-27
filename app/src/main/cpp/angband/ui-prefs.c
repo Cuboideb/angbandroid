@@ -242,7 +242,7 @@ void dump_features(ang_file *fff)
 {
 	int i;
 
-	for (i = 0; i < z_info->f_max; i++) {
+	for (i = 0; i < FEAT_MAX; i++) {
 		struct feature *feat = &f_info[i];
 		size_t j;
 
@@ -257,7 +257,7 @@ void dump_features(ang_file *fff)
 			uint8_t attr = feat_x_attr[j][i];
 			wint_t chr = feat_x_char[j][i];
 
-			const char *light = NULL;
+			const char *light = "";
 			if (j == LIGHTING_TORCH)
 				light = "torch";
 			if (j == LIGHTING_LOS)
@@ -267,9 +267,10 @@ void dump_features(ang_file *fff)
 			else if (j == LIGHTING_DARK)
 				light = "dark";
 
-			assert(light);
+			assert(light[0]);
 
-			file_putf(fff, "feat:%s:%s:%d:%d\n", feat->name, light, attr, chr);
+			file_putf(fff, "feat:%s:%s:%d:%d\n",
+				get_feat_code_name(i), light, attr, chr);
 		}
 	}
 }
@@ -798,6 +799,7 @@ static enum parser_error parse_prefs_trap(struct parser *p)
 
 static enum parser_error parse_prefs_feat(struct parser *p)
 {
+	const char *sym = parser_getsym(p, "idx");
 	int idx;
 	const char *lighting;
 	int light_idx;
@@ -806,9 +808,20 @@ static enum parser_error parse_prefs_feat(struct parser *p)
 	assert(d != NULL);
 	if (d->bypass) return PARSE_ERROR_NONE;
 
-	idx = lookup_feat(parser_getsym(p, "idx"));
-	if (idx >= z_info->f_max)
+	idx = lookup_feat_code(sym);
+	if (idx < 0) {
+		/*
+		 * To tolerate user preference files written before the
+		 * post 4.2.4 change that introduced terrain codes,
+		 * try looking up by the feature's printable name.  This
+		 * could be dropped when a future version (4.3.*) drops
+		 * save file compatibility.
+		 */
+		idx = lookup_feat(sym);
+	}
+	if (idx < 0 || idx >= FEAT_MAX) {
 		return PARSE_ERROR_OUT_OF_BOUNDS;
+	}
 
 	lighting = parser_getsym(p, "lighting");
 	if (streq(lighting, "torch"))
@@ -1020,8 +1033,17 @@ static enum parser_error parse_prefs_color(struct parser *p)
 	if (d->bypass) return PARSE_ERROR_NONE;
 
 	idx = parser_getuint(p, "idx");
-	if (idx > MAX_COLORS)
-		return PARSE_ERROR_OUT_OF_BOUNDS;
+	if (idx >= MAX_COLORS) {
+		/*
+		 * Silently ignore indices that would have been in bounds for
+		 * Angband 4.2.4 or earlier (color table was 256 then) for
+		 * backwards compatibility with existing preference files.
+		 * Flag indices that would be out of bounds even with 4.2.4's
+		 * bigger color table.
+		 */
+		return (idx < 256) ?
+			PARSE_ERROR_NONE : PARSE_ERROR_OUT_OF_BOUNDS;
+	}
 
 	angband_color_table[idx][0] = parser_getint(p, "k");
 	angband_color_table[idx][1] = parser_getint(p, "r");
@@ -1276,9 +1298,10 @@ static bool process_pref_file_layered(const char *name, bool quiet, bool user,
  *
  * Because of the way this function works, there might be some unexpected
  * effects when a pref file triggers another pref file to be loaded.
- * For example, pref/pref.prf causes message.prf to load. This means that the
- * game will load pref/pref.prf, then pref/message.prf, then user/message.prf,
- * and finally user/pref.prf.
+ * For example, lib/customize/pref.prf causes message.prf to load. This means
+ * that the game will load lib/customize/pref.prf, then
+ * lib/customize/message.prf, then message.prf from the user location, and
+ * finally pref.prf from the user location.
  *
  * \param name is the name of the pref file.
  * \param quiet means "don't complain about not finding the file".
@@ -1292,8 +1315,8 @@ bool process_pref_file(const char *name, bool quiet, bool user)
 	bool user_success = false;
 	bool used_fallback = false;
 
-	/* This supports the old behavior: look for a file first in 'pref/', and
-	 * if not found there, then 'user/'. */
+	/* This supports the old behavior: first load from lib/customize then
+         * from the user location. */
 	root_success = process_pref_file_layered(name, quiet, user,
 											 ANGBAND_DIR_CUSTOMIZE,
 											 ANGBAND_DIR_USER,
@@ -1305,7 +1328,7 @@ bool process_pref_file(const char *name, bool quiet, bool user)
 												 current_graphics_mode->path,
 												 NULL, NULL);
 
-	/* Next, we want to force a check for the file in the user/ directory.
+	/* Next, we want to force a check for the file in the user location.
 	 * However, since we used the user directory as a fallback in the previous
 	 * check, we only want to do this if the fallback wasn't used. This cuts
 	 * down on unnecessary parsing. */
@@ -1336,7 +1359,7 @@ void reset_visuals(bool load_prefs)
 	struct flavor *f;
 
 	/* Extract default attr/char code for features */
-	for (i = 0; i < z_info->f_max; i++) {
+	for (i = 0; i < FEAT_MAX; i++) {
 		struct feature *feat = &f_info[i];
 
 		/* Assume we will use the underlying values */
@@ -1415,8 +1438,8 @@ void textui_prefs_init(void)
 	kind_x_attr = mem_zalloc(z_info->k_max * sizeof(uint8_t));
 	kind_x_char = mem_zalloc(z_info->k_max * sizeof(wchar_t));
 	for (i = 0; i < LIGHTING_MAX; i++) {
-		feat_x_attr[i] = mem_zalloc(z_info->f_max * sizeof(uint8_t));
-		feat_x_char[i] = mem_zalloc(z_info->f_max * sizeof(wchar_t));
+		feat_x_attr[i] = mem_zalloc(FEAT_MAX * sizeof(uint8_t));
+		feat_x_char[i] = mem_zalloc(FEAT_MAX * sizeof(wchar_t));
 	}
 	for (i = 0; i < LIGHTING_MAX; i++) {
 		trap_x_attr[i] = mem_zalloc(z_info->trap_max * sizeof(uint8_t));

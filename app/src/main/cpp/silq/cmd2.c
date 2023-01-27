@@ -137,7 +137,7 @@ void do_cmd_go_up(void)
 
     if (silmarils_possessed() == 0)
     {
-    p_ptr->oaths_broken |= OATH_IRON_FLAG;
+        p_ptr->oaths_broken |= OATH_IRON_FLAG;
     }
 
     /* Hack -- take a turn */

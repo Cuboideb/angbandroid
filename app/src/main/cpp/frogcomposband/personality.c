@@ -576,7 +576,7 @@ static void _munchkin_get_flags(u32b flgs[OF_ARRAY_SIZE])
     add_flag(flgs, OF_RES_BLIND);
     add_flag(flgs, OF_RES_CONF);
     add_flag(flgs, OF_HOLD_LIFE);
-    if ((!player_is_ninja) && (!prace_is_(RACE_MON_MUMMY)))
+    if ((!player_is_ninja) && (!prace_is_(RACE_MON_MUMMY)) && (!prace_is_(RACE_MON_VAMPIRE)) && (!prace_is_(RACE_VAMPIRE)))
         add_flag(flgs, OF_LITE);
     add_flag(flgs, OF_SPEED);
 }

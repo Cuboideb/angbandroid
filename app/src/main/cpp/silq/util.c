@@ -60,7 +60,7 @@ int usleep(unsigned long usecs)
  */
 void user_name(char* buf, size_t len, int id)
 {
-    struct passwd* pw;
+    struct passwd* pw = NULL;
 
     /* Look up the user name */
     if ((pw = getpwuid(id)))
@@ -133,7 +133,7 @@ void user_name(char* buf, size_t len, int id)
 errr path_parse(char* buf, size_t max, cptr file)
 {
     cptr u, s;
-    struct passwd* pw;
+    struct passwd* pw = NULL;
     char user[128];
 
     /* Assume no result */

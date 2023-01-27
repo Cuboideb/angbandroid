@@ -132,9 +132,9 @@ static void grid_get_attr(struct grid_data *g, int *a)
 	/* Hybrid or block walls */
 	if (use_graphics == GRAPHICS_NONE && feat_is_wall(g->f_idx)) {
 		if (OPT(player, hybrid_walls))
-			*a = *a + (MAX_COLORS * BG_DARK);
+			*a = *a + (MULT_BG * BG_DARK);
 		else if (OPT(player, solid_walls))
-			*a = *a + (MAX_COLORS * BG_SAME);
+			*a = *a + (MULT_BG * BG_SAME);
 	}
 }
 
@@ -681,12 +681,11 @@ static void prt_map_aux(void)
 				/* Check bounds */
 				if (!square_in_bounds(cave, loc(x, y))) {
 					Term_queue_char(t, vx, vy,
-						t->attr_blank, t->char_blank,
+						COLOUR_WHITE, ' ',
 						0, 0);
 					if (tile_width > 1 || tile_height > 1) {
 						Term_big_queue_char(t, vx, vy,
-							clipy, t->attr_blank,
-							t->char_blank, 0, 0);
+							clipy, COLOUR_WHITE, ' ', 0, 0);
 					}
 					continue;
 				}
@@ -702,15 +701,15 @@ static void prt_map_aux(void)
 			}
 			/* Clear partial tile at the end of each line. */
 			for (; vx < t->wid; ++vx) {
-				Term_queue_char(t, vx, vy, t->attr_blank,
-					t->char_blank, 0, 0);
+				Term_queue_char(t, vx, vy, COLOUR_WHITE,
+					' ', 0, 0);
 			}
 		}
 		/* Clear row of partial tiles at the bottom. */
 		for (; vy < t->hgt; ++vy) {
 			for (vx = 0; vx < t->wid; ++vx) {
-				Term_queue_char(t, vx, vy, t->attr_blank,
-					t->char_blank, 0, 0);
+				Term_queue_char(t, vx, vy, COLOUR_WHITE,
+					' ', 0, 0);
 			}
 		}
 	}
@@ -940,7 +939,7 @@ void do_cmd_view_map(void)
 	tile_width = 1;
 	tile_height = 1;
 
-	/* React to changes */
+	/* React to changes. Android */
 	Term_control_visuals();
 
 	/* Display the map */
@@ -959,7 +958,7 @@ void do_cmd_view_map(void)
 	tile_width = w;
 	tile_height = h;
 
-	/* React to changes */
+	/* React to changes. Android */
 	Term_control_visuals();
 
 	/* Load screen */

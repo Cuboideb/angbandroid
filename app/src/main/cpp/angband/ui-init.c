@@ -38,6 +38,8 @@
 #include "ui-prefs.h"
 #include "ui-term.h"
 
+#include "droid.h"
+
 /**
  * Initialise the UI
  */

@@ -1372,13 +1372,13 @@ bool my_dread(ang_dir *dir, char *fname, size_t len)
 	/* Try the first file */
 	if (dir->first_file) {
 		if (!dir->first_is_dir || !dir->only_files) {
-		/* Copy the string across, then free it */
-		my_strcpy(fname, dir->first_file, len);
-		mem_free(dir->first_file);
-		dir->first_file = NULL;
+			/* Copy the string across, then free it */
+			my_strcpy(fname, dir->first_file, len);
+			mem_free(dir->first_file);
+			dir->first_file = NULL;
 
-		/* Wild success */
-		return true;
+			/* Wild success */
+			return true;
 		} else {
 			mem_free(dir->first_file);
 			dir->first_file = NULL;

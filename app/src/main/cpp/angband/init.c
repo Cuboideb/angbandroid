@@ -698,7 +698,7 @@ static enum parser_error parse_constants_player(struct parser *p) {
 	return PARSE_ERROR_NONE;
 }
 
-struct parser *init_parse_constants(void) {
+static struct parser *init_parse_constants(void) {
 	struct angband_constants *z = mem_zalloc(sizeof *z);
 	struct parser *p = parser_new();
 
@@ -730,7 +730,7 @@ static void cleanup_constants(void)
 	mem_free(z_info);
 }
 
-static struct file_parser constants_parser = {
+struct file_parser constants_parser = {
 	"constants",
 	init_parse_constants,
 	run_parse_constants,
@@ -841,7 +841,7 @@ static void cleanup_world(void)
 	}
 }
 
-static struct file_parser world_parser = {
+struct file_parser world_parser = {
 	"world",
 	init_parse_world,
 	run_parse_world,
@@ -965,7 +965,12 @@ static enum parser_error parse_player_prop_bindui(struct parser *p) {
 			mem_free(boundui);
 			return PARSE_ERROR_NOT_NUMBER;
 		}
-		if (v < INT_MIN || v > INT_MAX) {
+		/*
+		 * Also reject INT_MIN and INT_MAX so we don't have to check
+		 * errno to detect out of range values on platforms where
+		 * sizeof(int) == sizeof(long).
+		 */
+		if (v <= INT_MIN || v >= INT_MAX) {
 			string_free(boundui->name);
 			mem_free(boundui);
 			return PARSE_ERROR_INVALID_VALUE;
@@ -1080,7 +1085,7 @@ static void cleanup_player_prop(void)
 	}
 }
 
-static struct file_parser player_property_parser = {
+struct file_parser player_property_parser = {
 	"player_property",
 	init_parse_player_prop,
 	run_parse_player_prop,
@@ -1127,7 +1132,7 @@ static enum parser_error parse_names_word(struct parser *p) {
 	return PARSE_ERROR_NONE;
 }
 
-struct parser *init_parse_names(void) {
+static struct parser *init_parse_names(void) {
 	struct parser *p = parser_new();
 	struct names_parse *n = mem_zalloc(sizeof *n);
 	n->section = 0;
@@ -1176,7 +1181,7 @@ static void cleanup_names(void)
 	mem_free(name_sections);
 }
 
-static struct file_parser names_parser = {
+struct file_parser names_parser = {
 	"names",
 	init_parse_names,
 	run_parse_names,
@@ -1581,7 +1586,7 @@ static enum parser_error parse_trap_msg_xtra(struct parser *p) {
 	return PARSE_ERROR_NONE;
 }
 
-struct parser *init_parse_trap(void) {
+static struct parser *init_parse_trap(void) {
     struct parser *p = parser_new();
     parser_setpriv(p, NULL);
     parser_reg(p, "name sym name str desc", parse_trap_name);
@@ -1663,7 +1668,7 @@ static void cleanup_trap(void)
 	mem_free(trap_info);
 }
 
-static struct file_parser trap_parser = {
+struct file_parser trap_parser = {
     "trap",
     init_parse_trap,
     run_parse_trap,
@@ -1676,14 +1681,37 @@ static struct file_parser trap_parser = {
  * Intialize terrain
  * ------------------------------------------------------------------------ */
 
+static enum parser_error parse_feat_code(struct parser *p) {
+	const char *code = parser_getstr(p, "code");
+	int idx = lookup_feat_code(code);
+	struct feature *f;
+
+	if (idx < 0) {
+		/*
+		 * Of the existing parser errors, PARSE_ERROR_INVALID_VALUE
+		 * could also be used; this matches what ui-prefs.c returns
+		 * for an unknown feature code or name.
+		 */
+		return PARSE_ERROR_OUT_OF_BOUNDS;
+	}
+	assert(idx < FEAT_MAX);
+	f = &f_info[idx];
+	f->fidx = idx;
+	parser_setpriv(p, f);
+	return PARSE_ERROR_NONE;
+}
+
 static enum parser_error parse_feat_name(struct parser *p) {
 	const char *name = parser_getstr(p, "name");
-	struct feature *h = parser_priv(p);
+	struct feature *f = parser_priv(p);
 
-	struct feature *f = mem_zalloc(sizeof *f);
-	f->next = h;
+	if (!f) {
+		return PARSE_ERROR_MISSING_RECORD_HEADER;
+	}
+	if (f->name) {
+		return PARSE_ERROR_REPEATED_DIRECTIVE;
+	}
 	f->name = string_make(name);
-	parser_setpriv(p, f);
 	return PARSE_ERROR_NONE;
 }
 
@@ -1707,14 +1735,19 @@ static enum parser_error parse_feat_graphics(struct parser *p) {
 }
 
 static enum parser_error parse_feat_mimic(struct parser *p) {
-	const char *mimic_feat = parser_getstr(p, "feat");
+	const char *mimic_name = parser_getstr(p, "feat");
 	struct feature *f = parser_priv(p);
+	int mimic_idx;
 
 	if (!f) {
 		return PARSE_ERROR_MISSING_RECORD_HEADER;
 	}
-	string_free(f->mimic);
-	f->mimic = string_make(mimic_feat);
+	/* Verify that it refers to a valid feature. */
+	mimic_idx = lookup_feat_code(mimic_name);
+	if (mimic_idx < 0) {
+		return PARSE_ERROR_OUT_OF_BOUNDS;
+	}
+	f->mimic = &f_info[mimic_idx];
 	return PARSE_ERROR_NONE;
 }
 
@@ -1750,13 +1783,16 @@ static enum parser_error parse_feat_flags(struct parser *p) {
 	return s ? PARSE_ERROR_INVALID_FLAG : PARSE_ERROR_NONE;
 }
 
-static enum parser_error parse_feat_info(struct parser *p) {
+static enum parser_error parse_feat_digging(struct parser *p) {
 	struct feature *f = parser_priv(p);
+	int dig_idx = parser_getint(p, "dig");
 
 	if (!f)
 		return PARSE_ERROR_MISSING_RECORD_HEADER;
-	f->shopnum = parser_getint(p, "shopnum");
-	f->dig = parser_getint(p, "dig");
+	if (dig_idx < DIGGING_RUBBLE + 1 || dig_idx >= DIGGING_MAX + 1) {
+		return PARSE_ERROR_OUT_OF_BOUNDS;
+	}
+	f->dig = dig_idx;
 	return PARSE_ERROR_NONE;
 }
 
@@ -1857,15 +1893,17 @@ static enum parser_error parse_feat_resist_flag(struct parser *p) {
 	return PARSE_ERROR_NONE;
 }
 
-struct parser *init_parse_feat(void) {
+static struct parser *init_parse_feat(void) {
 	struct parser *p = parser_new();
+
 	parser_setpriv(p, NULL);
+	parser_reg(p, "code str code", parse_feat_code);
 	parser_reg(p, "name str name", parse_feat_name);
 	parser_reg(p, "graphics char glyph sym color", parse_feat_graphics);
 	parser_reg(p, "mimic str feat", parse_feat_mimic);
 	parser_reg(p, "priority uint priority", parse_feat_priority);
 	parser_reg(p, "flags ?str flags", parse_feat_flags);
-	parser_reg(p, "info int shopnum int dig", parse_feat_info);
+	parser_reg(p, "digging int dig", parse_feat_digging);
 	parser_reg(p, "desc str text", parse_feat_desc);
 	parser_reg(p, "walk-msg str text", parse_feat_walk_msg);
 	parser_reg(p, "run-msg str text", parse_feat_run_msg);
@@ -1875,6 +1913,13 @@ struct parser *init_parse_feat(void) {
 	parser_reg(p, "look-prefix str text", parse_feat_look_prefix);
 	parser_reg(p, "look-in-preposition str text", parse_feat_look_in_preposition);
 	parser_reg(p, "resist-flag sym flag", parse_feat_resist_flag);
+
+	/*
+	 * Since the layout of the terrain array is fixed by list-terrain.h,
+	 * allocate it now and fill in the customizable parts when parsing.
+	 */
+	f_info = mem_zalloc(FEAT_MAX * sizeof(*f_info));
+
 	return p;
 }
 
@@ -1883,44 +1928,33 @@ static errr run_parse_feat(struct parser *p) {
 }
 
 static errr finish_parse_feat(struct parser *p) {
-	struct feature *f, *n;
-	int fidx;
+	int shop_idx = 0, fidx;
 
-	/* Scan the list for the max id */
-	z_info->f_max = 0;
-	f = parser_priv(p);
-	while (f) {
-		z_info->f_max++;
-		f = f->next;
-	}
-
-	/* Allocate the direct access list and copy the data to it */
-	f_info = mem_zalloc((z_info->f_max + 1) * sizeof(*f));
-	fidx = z_info->f_max - 1;
-	for (f = parser_priv(p); f; f = n, fidx--) {
-		assert(fidx >= 0);
-
-		memcpy(&f_info[fidx], f, sizeof(*f));
-		/* Add trailing space for ease of use with targeting code. */
-		if (f_info[fidx].look_prefix) {
-			f_info[fidx].look_prefix =
-				string_append(f_info[fidx].look_prefix, " ");
+	for (fidx = 0; fidx < FEAT_MAX; ++fidx) {
+		/*
+		 * Assign shop index based on the order within the other
+		 * terrain.
+		 */
+		if (tf_has(f_info[fidx].flags, TF_SHOP)) {
+			f_info[fidx].shopnum = ++shop_idx;
 		}
-		if (f_info[fidx].look_in_preposition) {
+		/*
+		 * Ensure the prefixes and prepositions end with a space for
+		 * ease of use with the targeting code.
+		 */
+		if (f_info[fidx].look_prefix && !suffix(
+				f_info[fidx].look_prefix, " ")) {
+			f_info[fidx].look_prefix = string_append(
+				f_info[fidx].look_prefix, " ");
+		}
+		if (f_info[fidx].look_in_preposition && !suffix(
+				f_info[fidx].look_in_preposition, " ")) {
 			f_info[fidx].look_in_preposition =
-				string_append(f_info[fidx].look_in_preposition, " ");
+				string_append(f_info[fidx].look_in_preposition,
+				" ");
 		}
-		f_info[fidx].fidx = fidx;
-		n = f->next;
-		if (fidx < z_info->f_max - 1)
-			f_info[fidx].next = &f_info[fidx + 1];
-		else
-			f_info[fidx].next = NULL;
-		mem_free(f);
 	}
-
-	/* Set the terrain constants */
-	set_terrain();
+	z_info->store_max = shop_idx;
 
 	parser_destroy(p);
 	return 0;
@@ -1928,7 +1962,7 @@ static errr finish_parse_feat(struct parser *p) {
 
 static void cleanup_feat(void) {
 	int idx;
-	for (idx = 0; idx < z_info->f_max; idx++) {
+	for (idx = 0; idx < FEAT_MAX; idx++) {
 		string_free(f_info[idx].look_in_preposition);
 		string_free(f_info[idx].look_prefix);
 		string_free(f_info[idx].confused_msg);
@@ -1936,14 +1970,13 @@ static void cleanup_feat(void) {
 		string_free(f_info[idx].hurt_msg);
 		string_free(f_info[idx].run_msg);
 		string_free(f_info[idx].walk_msg);
-		string_free(f_info[idx].mimic);
 		string_free(f_info[idx].desc);
 		string_free(f_info[idx].name);
 	}
 	mem_free(f_info);
 }
 
-static struct file_parser feat_parser = {
+struct file_parser feat_parser = {
 	"terrain",
 	init_parse_feat,
 	run_parse_feat,
@@ -2071,7 +2104,7 @@ static void cleanup_body(void)
 	}
 }
 
-static struct file_parser body_parser = {
+struct file_parser body_parser = {
 	"body",
 	init_parse_body,
 	run_parse_body,
@@ -2125,7 +2158,7 @@ static enum parser_error parse_history_phrase(struct parser *p) {
 	return PARSE_ERROR_NONE;
 }
 
-struct parser *init_parse_history(void) {
+static struct parser *init_parse_history(void) {
 	struct parser *p = parser_new();
 	parser_setpriv(p, NULL);
 	parser_reg(p, "chart uint chart int next int roll", parse_history_chart);
@@ -2191,7 +2224,7 @@ static void cleanup_history(void)
 	}
 }
 
-static struct file_parser history_parser = {
+struct file_parser history_parser = {
 	"history",
 	init_parse_history,
 	run_parse_history,
@@ -2435,7 +2468,7 @@ static enum parser_error parse_p_race_values(struct parser *p) {
 	return t ? PARSE_ERROR_INVALID_VALUE : PARSE_ERROR_NONE;
 }
 
-struct parser *init_parse_p_race(void) {
+static struct parser *init_parse_p_race(void) {
 	struct parser *p = parser_new();
 	parser_setpriv(p, NULL);
 	parser_reg(p, "name str name", parse_p_race_name);
@@ -2493,7 +2526,7 @@ static void cleanup_p_race(void)
 	}
 }
 
-static struct file_parser p_race_parser = {
+struct file_parser p_race_parser = {
 	"p_race",
 	init_parse_p_race,
 	run_parse_p_race,
@@ -2602,7 +2635,7 @@ static void cleanup_realm(void)
 	}
 }
 
-static struct file_parser realm_parser = {
+struct file_parser realm_parser = {
 	"realm",
 	init_parse_realm,
 	run_parse_realm,
@@ -2981,7 +3014,7 @@ static void cleanup_shape(void)
 	}
 }
 
-static struct file_parser shape_parser = {
+struct file_parser shape_parser = {
 	"shape",
 	init_parse_shape,
 	run_parse_shape,
@@ -3723,7 +3756,7 @@ static enum parser_error parse_class_desc(struct parser *p) {
 	return PARSE_ERROR_NONE;
 }
 
-struct parser *init_parse_class(void) {
+static struct parser *init_parse_class(void) {
 	struct parser *p = parser_new();
 	parser_setpriv(p, NULL);
 	parser_reg(p, "name str name", parse_class_name);
@@ -3824,7 +3857,7 @@ static void cleanup_class(void)
 	}
 }
 
-static struct file_parser class_parser = {
+struct file_parser class_parser = {
 	"class",
 	init_parse_class,
 	run_parse_class,
@@ -3887,7 +3920,7 @@ static enum parser_error parse_flavor_kind(struct parser *p) {
 	return PARSE_ERROR_NONE;
 }
 
-struct parser *init_parse_flavor(void) {
+static struct parser *init_parse_flavor(void) {
 	struct parser *p = parser_new();
 	parser_setpriv(p, NULL);
 
@@ -3948,7 +3981,7 @@ static enum parser_error parse_hint(struct parser *p) {
 	return PARSE_ERROR_NONE;
 }
 
-struct parser *init_parse_hints(void) {
+static struct parser *init_parse_hints(void) {
 	struct parser *p = parser_new();
 	parser_reg(p, "H str text", parse_hint);
 	return p;
@@ -3977,7 +4010,7 @@ static void cleanup_hints(void)
 	}
 }
 
-static struct file_parser hints_parser = {
+struct file_parser hints_parser = {
 	"hints",
 	init_parse_hints,
 	run_parse_hints,

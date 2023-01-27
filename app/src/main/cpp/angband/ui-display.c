@@ -260,7 +260,7 @@ static void prt_gold(int row, int col)
 	char tmp[32];
 
 	put_str("AU ", row, col);
-	strnfmt(tmp, sizeof(tmp), "%9d", player->au);
+	strnfmt(tmp, sizeof(tmp), "%9ld", (long)player->au);
 	c_put_str(COLOUR_L_GREEN, tmp, row, col + 3);
 }
 
@@ -277,15 +277,13 @@ static void prt_equippy(int row, int col)
 
 	struct object *obj;
 
-	/* No equippy chars in bigtile mode */
-	if (tile_width > 1 || tile_height > 1) return;
-
 	/* Dump equippy chars */
 	for (i = 0; i < player->body.count; i++) {
 		/* Object */
 		obj = slot_object(player, i);
 
-		if (obj) {
+		/* Get attr/char for display; clear if big tiles or no object */
+		if (obj && tile_width == 1 && tile_height == 1) {
 			c = object_char(obj);
 			a = object_attr(obj);
 		} else {
@@ -665,7 +663,7 @@ static int prt_gold_short(int row, int col)
 	char tmp[32];
 
 	put_str("AU:", row, col);
-	strnfmt(tmp, sizeof(tmp), "%d", player->au);
+	strnfmt(tmp, sizeof(tmp), "%ld", (long)player->au);
 	c_put_str(COLOUR_L_GREEN, tmp, row, col + 3);
 	return 4+strlen(tmp);
 }
@@ -1165,7 +1163,7 @@ static int longest_terrain_name(void)
 			max = strlen(trap_info[i].name);
 		}
 	}
-	for (i = 0; i < z_info->f_max; i++) {
+	for (i = 0; i < FEAT_MAX; i++) {
 		if (strlen(f_info[i].name) > max) {
 			max = strlen(f_info[i].name);
 		}
@@ -1181,6 +1179,7 @@ static size_t prt_terrain(int row, int col)
 	struct feature *feat = square_feat(cave, player->grid);
 	struct trap *trap = square_trap(cave, player->grid);
 	char buf[30];
+	uint8_t attr;
 
 	if (square_isdownstairs(cave, player->grid)) {
 		soft_kbd_flash(">");
@@ -1191,14 +1190,14 @@ static size_t prt_terrain(int row, int col)
 	}
 
 	if (trap && !square_isinvis(cave, player->grid)) {
-		my_strcpy(buf, trap->kind->name, strlen(trap->kind->name) + 1);
-		my_strcap(buf);
-		c_put_str(trap->kind->d_attr, format("%s ", buf), row, col);
+		my_strcpy(buf, trap->kind->name, sizeof(buf));
+		attr = trap->kind->d_attr;
 	} else {
-		my_strcpy(buf, feat->name, strlen(feat->name) + 1);
-		my_strcap(buf);
-		c_put_str(feat->d_attr, format("%s ", buf), row, col);
+		my_strcpy(buf, feat->name, sizeof(buf));
+		attr = feat->d_attr;
 	}
+	my_strcap(buf);
+	c_put_str(attr, format("%s ", buf), row, col);
 
 	return longest_terrain_name() + 1;
 }

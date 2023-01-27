@@ -77,7 +77,7 @@ static bool _shroomery_create(obj_ptr obj, u32b mode);
 static bool _dragon_will_buy(obj_ptr obj);
 static bool _dragon_create(obj_ptr obj, u32b mode);
 
-static _type_t _types[] =
+static _type_t _types[] = 
 {
     { SHOP_GENERAL, "General Store", _general_will_buy, _general_create,
         {{  1, "Bilbo the Friendly",         200, 108, RACE_HOBBIT },
@@ -112,7 +112,7 @@ static _type_t _types[] =
          { 30, "Hurk the Poor",              500, 108, RACE_SNOTLING },
          { 31, "Soalin the Wretched",        750, 107, RACE_ZOMBIE },
          { 32, "Merulla the Humble",        1000, 107, RACE_DEMIGOD }}},
-
+        
     { SHOP_ARMORY, "Armory", _armory_will_buy, _armory_create,
         {{  1, "Kon-Dar the Ugly",         15000, 115, RACE_SNOTLING },
          {  2, "Darg-Low the Grim",        20000, 111, RACE_HUMAN },
@@ -1316,7 +1316,7 @@ void shop_save(shop_ptr shop, savefile_ptr file)
 
 /************************************************************************
  * Pricing
- * Note: All functions take the point of view of the *shop*, not
+ * Note: All functions take the point of view of the *shop*, not 
  *       the player. So _buy is the shop buying or the player
  *       selling. This is appropriate for a shop module!
  ***********************************************************************/
@@ -1621,7 +1621,7 @@ static void _display(_ui_context_ptr context)
         doc_width(doc) - ct, shop->type->name, shop->owner->purse);
 
     _display_inv(doc, shop, context->top, context->page_size);
-
+    
     {
         slot_t max = inv_last(shop->inv, obj_exists);
         slot_t bottom = context->top + context->page_size - 1;
@@ -1642,7 +1642,7 @@ static void _display(_ui_context_ptr context)
         doc_insert(doc, "<color:keypress>s</color> to give. ");
     else
         doc_insert(doc, "<color:keypress>s</color> to sell. ");
-    doc_insert(doc,
+    doc_insert(doc, 
         "<color:keypress>x</color> to begin examining items.\n"
         "<color:keypress>B</color> to buyout inventory. "
 		"<color:keypress>S</color> to shuffle stock. "

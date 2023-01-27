@@ -1075,8 +1075,17 @@ static void _psionic_healing_spell(int power, int cmd, variant *res)
         var_set_string(res, format("Healing %s", _roman_numeral[power]));
         break;
     case SPELL_DESC:
-        var_set_string(res, "Use your mental powers to repair your body.");
+    {
+        const cptr _descriptions[_MAX_POWER] = {
+            "Cures blindness, stunning and cuts.",
+            "Cures blindness, stunning and cuts.",
+            "Cures blindness, stunning, cuts and hallucination.",
+            "Cures blindness, stunning, cuts and hallucination.",
+            "Cures blindness, stunning, cuts and hallucination. Restores all stats and experience."
+            };
+        var_set_string(res, _descriptions[power-1]);
         break;
+    }
     case SPELL_INFO:
         var_set_string(res, info_heal(0, 0, spell_power(79*power - (MAX(32, 5 * power +15)))));
         break;

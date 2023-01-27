@@ -20,7 +20,6 @@
 #include "cmd-core.h"
 #include "game-input.h"
 #include "player.h"
-#include "ui-input.h"
 
 #include "droid.h"
 

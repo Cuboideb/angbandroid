@@ -58,7 +58,7 @@ struct effect {
 	int subtype;	/**< Projection type, timed effect type, etc. */
 	int radius;		/**< Radius of the effect (if it has one) */
 	int other;		/**< Extra parameter to be passed to the handler */
-	char *msg;		/**< Message for deth or whatever */
+	char *msg;		/**< Message for death or whatever */
 };
 
 /**
@@ -366,9 +366,8 @@ struct ego_item {
 	int min_to_d;			/* Minimum to-dam value */
 	int min_to_a;			/* Minimum to-ac value */
 
-	struct effect *effect;	/**< Effect this item produces (effects.c) */
-	char *effect_msg;
-	random_value time;		/**< Recharge time (rods/activation) */
+	struct activation *activation;	/**< Activation */
+	random_value time;		/**< Recharge time for activation */
 
 	bool everseen;			/* Do not spoil ignore menus */
 };

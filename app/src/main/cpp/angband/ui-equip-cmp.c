@@ -2566,9 +2566,10 @@ static int initialize_summary(struct player *p,
 	}
 	visitor.selfunc = select_wearable;
 	visitor.selfunc_closure = NULL;
-	apply_visitor_to_pile(stores[STORE_HOME].stock, &visitor);
-	for (i = 0; i < MAX_STORES; ++i) {
-		if (i == STORE_HOME) {
+	apply_visitor_to_pile(stores[f_info[FEAT_HOME].shopnum - 1].stock,
+		&visitor);
+	for (i = 0; i < z_info->store_max; ++i) {
+		if (stores[i].feat == FEAT_HOME) {
 			continue;
 		}
 		apply_visitor_to_pile(stores[i].stock, &visitor);
@@ -2606,10 +2607,11 @@ static int initialize_summary(struct player *p,
 	add_obj_data.src = EQUIP_SOURCE_HOME;
 	visitor.selfunc = select_wearable;
 	visitor.selfunc_closure = NULL;
-	apply_visitor_to_pile(stores[STORE_HOME].stock, &visitor);
+	apply_visitor_to_pile(stores[f_info[FEAT_HOME].shopnum - 1].stock,
+		&visitor);
 	add_obj_data.src = EQUIP_SOURCE_STORE;
-	for (i = 0; i < MAX_STORES; ++i) {
-		if (i == STORE_HOME) {
+	for (i = 0; i < z_info->store_max; ++i) {
+		if (stores[i].feat == FEAT_HOME) {
 			continue;
 		}
 		apply_visitor_to_pile(stores[i].stock, &visitor);
@@ -2793,8 +2795,14 @@ static int display_page(struct equippable_summary *s, const struct player *p,
 		assert(isort >= 0 && isort < s->nitems);
 		e = s->items + isort;
 
-		Term_putch(s->icol_name - 4, rdetails.value_position.y,
-			e->at, e->ch);
+		if (tile_width == 1 && tile_height == 1) {
+			Term_putch(s->icol_name - 4, rdetails.value_position.y,
+				e->at, e->ch);
+		} else {
+			/* No equippy chars with big tiles. */
+			Term_putch(s->icol_name - 4, rdetails.value_position.y,
+				COLOUR_WHITE, L' ');
+		}
 		Term_putch(s->icol_name - 2, rdetails.value_position.y, color,
 			source_to_char(e->src));
 		if (isort == s->isel0 || isort == s->isel1 ||

@@ -108,7 +108,7 @@ static int _choose(menu_ptr menu)
     char choose_prompt[255];
     char browse_prompt[255];
     char keys[100];
-
+    
     if (menu->browse_prompt)
     {
         allow_browse = TRUE;
@@ -120,7 +120,7 @@ static int _choose(menu_ptr menu)
         sprintf(choose_prompt, "%s", menu->choose_prompt);
         sprintf(browse_prompt, "%s", "");
     }
-
+    
     _list(menu, keys);
 
     for (;;)

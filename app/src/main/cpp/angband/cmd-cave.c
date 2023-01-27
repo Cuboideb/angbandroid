@@ -526,7 +526,7 @@ static bool do_cmd_tunnel_aux(struct loc grid)
 	struct object *best_digger = NULL;
 	struct player_state local_state;
 	struct player_state *used_state = &player->state;
-	int oldn = 1;
+	int oldn = 1, dig_idx;
 
 	/* Verify legality */
 	if (!do_cmd_tunnel_test(grid)) return (false);
@@ -548,7 +548,15 @@ static bool do_cmd_tunnel_aux(struct loc grid)
 	calc_digging_chances(used_state, digging_chances);
 
 	/* Do we succeed? */
-	chance = digging_chances[square_digging(cave, grid) - 1];
+	dig_idx = square_digging(cave, grid);
+	if (dig_idx < 1 || dig_idx > DIGGING_MAX) {
+		msg("%s has misconfigured digging chance; please report this bug.",
+			(square_feat(cave, grid)->name) ?
+			square_feat(cave, grid)->name :
+			format("Terrain index %d", square_feat(cave, grid)->fidx));
+		dig_idx = DIGGING_GRANITE + 1;
+	}
+	chance = digging_chances[dig_idx - 1];
 	okay = (chance > randint0(1600));
 
 	/* Swap back */
@@ -1044,6 +1052,8 @@ void move_player(int dir, bool disarm)
 	} else if (trap && player->upkeep->running && !trapsafe) {
 		/* Stop running before known traps */
 		disturb(player);
+		/* No move made so no energy spent. */
+		player->upkeep->energy_use = 0;
 	} else if (!square_ispassable(cave, grid)) {
 		disturb(player);
 
@@ -1072,6 +1082,10 @@ void move_player(int dir, bool disarm)
 			else
 				msgt(MSG_HITWALL, "There is a wall blocking your way.");
 		}
+		/*
+		 * No move but do not refund energy:  primarily so that
+		 * confused moves while blind or without light take energy.
+		 */
 	} else {
 		/* See if trap detection status will change */
 		bool old_dtrap = square_isdtrap(cave, player->grid);
@@ -1087,11 +1101,17 @@ void move_player(int dir, bool disarm)
 				&& !player->upkeep->running_firststep
 				&& old_dtrap && !new_dtrap) {
 			disturb(player);
+			/* No move made so no energy spent. */
+			player->upkeep->energy_use = 0;
 			return;
 		}
 
-		if (square_isdamaging(cave, grid)) {
-			/* Some terrain can damage the player */
+		/*
+		 * If not confused, allow check before moving into damaging
+		 * terrain.
+		 */
+		if (square_isdamaging(cave, grid)
+				&& !player->timed[TMD_CONFUSED]) {
 			struct feature *feat = square_feat(cave, grid);
 			int dam_taken = player_check_terrain_damage(player,
 				grid, false);
@@ -1124,6 +1144,9 @@ void move_player(int dir, bool disarm)
 			 * autopickup.
 			 */
 			cmdq_peek()->is_background_command = true;
+		} else {
+			/* No move made so no energy spent. */
+			player->upkeep->energy_use = 0;
 		}
 	}
 
@@ -1352,7 +1375,7 @@ void do_cmd_hold(struct command *cmd)
 	/* Enter a store if we are on one, otherwise look at the floor */
 	if (square_isshop(cave, player->grid)) {
 		if (player_is_shapechanged(player)) {
-			if (store_at(cave, player->grid)->sidx != STORE_HOME) {
+			if (square(cave, player->grid)->feat != FEAT_HOME) {
 				msg("There is a scream and the door slams shut!");
 			}
 			return;

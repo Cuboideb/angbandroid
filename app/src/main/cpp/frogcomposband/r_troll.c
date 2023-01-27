@@ -104,7 +104,7 @@ static power_info _powers[] =
 {
     { A_STR, { 10, 10, 30, berserk_spell} },
     { A_STR, { 22, 20, 50, _super_attack_spell} },
-    { A_CON, { 28, 20, 50, resistance_spell} },
+//    { A_CON, { 28, 20, 50, resistance_spell} },
     {    -1, { -1, -1, -1, NULL}}
 };
 

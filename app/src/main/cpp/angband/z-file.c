@@ -918,10 +918,11 @@ void file_get_savefile(char *filename, size_t max, const char *base,
 		strnfmt(filename, max, "%s/temp%u.%s", dirname(base), count,
 			ext);
 #else
-	strnfmt(filename, max, "%s%u.%s", base, Rand_simple(1000000), ext);
+	strnfmt(filename, max, "%s%lu.%s",
+		base, (unsigned long)Rand_simple(1000000), ext);
 	while (file_exists(filename) && (count++ < 100))
-		strnfmt(filename, max, "%s%u%u.%s", base,
-			Rand_simple(1000000), count, ext);
+		strnfmt(filename, max, "%s%lu%u.%s",
+			base, (unsigned long)Rand_simple(1000000), count, ext);
 #endif /* ! DJGPP */
 	return;
 }
@@ -1277,7 +1278,7 @@ bool dir_create(const char *path)
 	if (isalpha(path[0]) && path[1] == ':') path += 2;
 	#endif
 
-	/* Iterate through the path looking for path segements. At each step,
+	/* Iterate through the path looking for path segments. At each step,
 	 * create the path segment if it doesn't already exist. */
 	for (ptr = path; *ptr; ptr++) {
 		if (*ptr == PATH_SEPC) {
@@ -1372,13 +1373,13 @@ bool my_dread(ang_dir *dir, char *fname, size_t len)
 	/* Try the first file */
 	if (dir->first_file) {
 		if (!dir->first_is_dir || !dir->only_files) {
-		/* Copy the string across, then free it */
-		my_strcpy(fname, dir->first_file, len);
-		mem_free(dir->first_file);
-		dir->first_file = NULL;
+			/* Copy the string across, then free it */
+			my_strcpy(fname, dir->first_file, len);
+			mem_free(dir->first_file);
+			dir->first_file = NULL;
 
-		/* Wild success */
-		return true;
+			/* Wild success */
+			return true;
 		} else {
 			mem_free(dir->first_file);
 			dir->first_file = NULL;

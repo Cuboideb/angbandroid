@@ -26,6 +26,7 @@
 #include "game-world.h"
 #include "grafmode.h"
 #include "init.h"
+#include "mon-init.h"
 #include "mon-lore.h"
 #include "mon-util.h"
 #include "monster.h"
@@ -134,6 +135,19 @@ typedef struct join {
 		int gid;
 } join_t;
 
+static struct parser *init_ui_knowledge_parser(void);
+static errr run_ui_knowledge_parser(struct parser *p);
+static errr finish_ui_knowledge_parser(struct parser *p);
+static void cleanup_ui_knowledge_parsed_data(void);
+
+struct file_parser ui_knowledge_parser = {
+	"ui_knowledge",
+	init_ui_knowledge_parser,
+	run_ui_knowledge_parser,
+	finish_ui_knowledge_parser,
+	cleanup_ui_knowledge_parsed_data
+};
+
 /**
  * A default group-by
  */
@@ -165,22 +179,18 @@ static int default_group_id(int oid)
  */
 static int feat_order(int feat)
 {
-	struct feature *f = &f_info[feat];
-
-	switch (f->d_char)
-	{
-		case L'.': 				return 0;
-		case L'\'': case L'+': 	return 1;
-		case L'<': case L'>':	return 2;
-		case L'#':				return 3;
-		case L'*': case L'%' :	return 4;
-		case L';': case L':' :	return 5;
-		case L' ':				return 7;
-		default:
-		{
-			return 6;
-		}
-	}
+	if (tf_has(f_info[feat].flags, TF_SHOP)) return 6;
+	if (tf_has(f_info[feat].flags, TF_STAIR)) return 2;
+	if (tf_has(f_info[feat].flags, TF_DOOR_ANY)) return 1;
+	/* These also have WALL set so check them first before checking WALL. */
+	if (tf_has(f_info[feat].flags, TF_MAGMA)
+		|| tf_has(f_info[feat].flags, TF_QUARTZ)) return 4;
+	/* These also have ROCK set so check them first before checking ROCK. */
+	if (tf_has(f_info[feat].flags, TF_WALL)) return 3;
+	if (tf_has(f_info[feat].flags, TF_ROCK)) return 5;
+	/* Many above have PASSABLE so do this last. */
+	if (tf_has(f_info[feat].flags, TF_PASSABLE)) return 0;
+	return 7;
 }
 
 
@@ -1118,62 +1128,18 @@ static void display_knowledge(const char *title, int *obj_list, int o_count,
  * ------------------------------------------------------------------------ */
 
 /**
- * Description of each monster group.
+ * Is a flat array describing each monster group.  Configured by
+ * ui_knowledge.txt.  The last element receives special treatment and is
+ * used to catch any type of monster not caught by the other categories.
+ * That's intended as a debugging tool while modding the game.
  */
-static struct
-{
-	const wchar_t *chars;
-	const char *name;
-} monster_group[] = {
-	{ (const wchar_t *)-1,   "Uniques" },
-	{ L"A",        "Ainur" },
-	{ L"a",        "Ants" },
-	{ L"b",        "Bats" },
-	{ L"B",        "Birds" },
-	{ L"C",        "Canines" },
-	{ L"c",        "Centipedes" },
-	{ L"uU",       "Demons" },
-	{ L"dD",       "Dragons" },
-	{ L"vE",       "Elementals/Vortices" },
-	{ L"e",        "Eyes/Beholders" },
-	{ L"f",        "Felines" },
-	{ L"G",        "Ghosts" },
-	{ L"OP",       "Giants/Ogres" },
-	{ L"g",        "Golems" },
-	{ L"H",        "Harpies/Hybrids" },
-	{ L"h",        "Hominids (Elves, Dwarves)" },
-	{ L"M",        "Hydras" },
-	{ L"i",        "Icky Things" },
-	{ L"FI",       "Insects" },
-	{ L"j",        "Jellies" },
-	{ L"K",        "Killer Beetles" },
-	{ L"k",        "Kobolds" },
-	{ L"L",        "Lichs" },
-	{ L"tp",       "Men" },
-	{ L".$!?=~_",  "Mimics" },
-	{ L"m",        "Molds" },
-	{ L",",        "Mushroom Patches" },
-	{ L"n",        "Nagas" },
-	{ L"o",        "Orcs" },
-	{ L"q",        "Quadrupeds" },
-	{ L"Q",        "Quylthulgs" },
-	{ L"R",        "Reptiles/Amphibians" },
-	{ L"r",        "Rodents" },
-	{ L"S",        "Scorpions/Spiders" },
-	{ L"s",        "Skeletons/Drujs" },
-	{ L"J",        "Snakes" },
-	{ L"l",        "Trees/Ents" },
-	{ L"T",        "Trolls" },
-	{ L"V",        "Vampires" },
-	{ L"W",        "Wights/Wraiths" },
-	{ L"w",        "Worms/Worm Masses" },
-	{ L"X",        "Xorns/Xarens" },
-	{ L"y",        "Yeeks" },
-	{ L"Y",        "Yeti" },
-	{ L"Z",        "Zephyr Hounds" },
-	{ L"z",        "Zombies" },
-	{ NULL,       NULL }
-};
+static struct ui_monster_category *monster_group = NULL;
+
+/**
+ * Is the number of entries, including the last one receiving special
+ * treatment, in monster_group.
+ */
+static int n_monster_group = 0;
 
 /**
  * Display a monster
@@ -1234,14 +1200,35 @@ static int m_cmp_race(const void *a, const void *b)
 	if (c)
 		return c;
 
-	/* Order results */
-	c = r_a->d_char - r_b->d_char;
-	if (c && gid != 0) {
-		/* UNIQUE group is ordered by level & name only */
-		/* Others by order they appear in the group symbols */
-		return text_wcschr(monster_group[gid].chars, r_a->d_char)
-			- text_wcschr(monster_group[gid].chars, r_b->d_char);
+	/*
+	 * If the group specifies monster bases, order those that are included
+	 * by the base by those bases.  Those that aren't in any of the bases
+	 * appear last.
+	 */
+	assert(gid >= 0 && gid < n_monster_group);
+	if (monster_group[gid].n_inc_bases) {
+		int base_a = monster_group[gid].n_inc_bases;
+		int base_b = monster_group[gid].n_inc_bases;
+		int i;
+
+		for (i = 0; i < monster_group[gid].n_inc_bases; ++i) {
+			if (r_a->base == monster_group[gid].inc_bases[i]) {
+				base_a = i;
+			}
+			if (r_b->base == monster_group[gid].inc_bases[i]) {
+				base_b = i;
+			}
+		}
+		c = base_a - base_b;
+		if (c) {
+			return c;
+		}
 	}
+
+	/*
+	 * Within the same base or outside of a specified base, order by level
+	 * and then by name.
+	 */
 	c = r_a->level - r_b->level;
 	if (c)
 		return c;
@@ -1316,23 +1303,43 @@ static void mon_summary(int gid, const int *item_list, int n, int top,
 
 static int count_known_monsters(void)
 {
-	int m_count = 0;
-	int i;
-	size_t j;
+	int m_count = 0, i;
 
-	for (i = 0; i < z_info->r_max; i++) {
+	for (i = 0; i < z_info->r_max; ++i) {
 		struct monster_race *race = &r_info[i];
+		bool classified = false;
+		int j;
+
 		if (!l_list[i].all_known && !l_list[i].sights) {
 			continue;
 		}
-
 		if (!race->name) continue;
 
-		if (rf_has(race->flags, RF_UNIQUE)) m_count++;
+		for (j = 0; j < n_monster_group - 1; ++j) {
+			bool has_base = false;
 
-		for (j = 1; j < N_ELEMENTS(monster_group) - 1; j++) {
-			const wchar_t *pat = monster_group[j].chars;
-			if (text_wcschr(pat, race->d_char)) m_count++;
+			if (monster_group[j].n_inc_bases) {
+				int k;
+
+				for (k = 0; k < monster_group[j].n_inc_bases;
+						++k) {
+					if (race->base == monster_group[j].inc_bases[k]) {
+						++m_count;
+						has_base = true;
+						classified = true;
+						break;
+					}
+				}
+			}
+			if (!has_base && rf_is_inter(race->flags,
+					monster_group[j].inc_flags)) {
+				++m_count;
+				classified = true;
+			}
+		}
+
+		if (!classified) {
+			++m_count;
 		}
 	}
 
@@ -1344,53 +1351,67 @@ static int count_known_monsters(void)
  */
 static void do_cmd_knowledge_monsters(const char *name, int row)
 {
-	group_funcs r_funcs = {race_name, m_cmp_race, default_group_id, mon_summary,
-						   N_ELEMENTS(monster_group), false};
+	group_funcs r_funcs = {race_name, m_cmp_race, default_group_id,
+		mon_summary, n_monster_group, false };
 
 	member_funcs m_funcs = {display_monster, mon_lore, m_xchar, m_xattr,
-							recall_prompt, 0, 0};
+		recall_prompt, 0, 0};
 
 	int *monsters;
-	int m_count = 0;
-	int i;
-	size_t j;
-
-	for (i = 0; i < z_info->r_max; i++) {
-		struct monster_race *race = &r_info[i];
-		if (!l_list[i].all_known && !l_list[i].sights) {
-			continue;
-		}
-
-		if (!race->name) continue;
-
-		if (rf_has(race->flags, RF_UNIQUE)) m_count++;
-
-		for (j = 1; j < N_ELEMENTS(monster_group) - 1; j++) {
-			const wchar_t *pat = monster_group[j].chars;
-			if (text_wcschr(pat, race->d_char)) m_count++;
-		}
-	}
+	int m_count = count_known_monsters(), i, ind;
 
 	default_join = mem_zalloc(m_count * sizeof(join_t));
 	monsters = mem_zalloc(m_count * sizeof(int));
 
-	m_count = 0;
-	for (i = 0; i < z_info->r_max; i++) {
+	ind = 0;
+	for (i = 0; i < z_info->r_max; ++i) {
 		struct monster_race *race = &r_info[i];
+		bool classified = false;
+		int j;
+
 		if (!l_list[i].all_known && !l_list[i].sights) {
 			continue;
 		}
 
 		if (!race->name) continue;
 
-		for (j = 0; j < N_ELEMENTS(monster_group) - 1; j++) {
-			const wchar_t *pat = monster_group[j].chars;
-			if (j == 0 && !rf_has(race->flags, RF_UNIQUE)) continue;
-			if (j > 0 && !text_wcschr(pat, race->d_char)) continue;
+		for (j = 0; j < n_monster_group - 1; ++j) {
+			bool has_base = false;
 
-			monsters[m_count] = m_count;
-			default_join[m_count].oid = i;
-			default_join[m_count++].gid = j;
+			if (monster_group[j].n_inc_bases) {
+				int k;
+
+				for (k = 0; k < monster_group[j].n_inc_bases;
+						++k) {
+					if (race->base == monster_group[j].inc_bases[k]) {
+						assert(ind < m_count);
+						monsters[ind] = ind;
+						default_join[ind].oid = i;
+						default_join[ind].gid = j;
+						++ind;
+						has_base = true;
+						classified = true;
+						break;
+					}
+				}
+			}
+			if (!has_base && rf_is_inter(race->flags,
+					monster_group[j].inc_flags)) {
+				assert(ind < m_count);
+				monsters[ind] = ind;
+				default_join[ind].oid = i;
+				default_join[ind].gid = j;
+				++ind;
+				classified = true;
+			}
+		}
+
+		if (!classified) {
+			assert(ind < m_count);
+			monsters[ind] = ind;
+			default_join[ind].oid = i;
+			default_join[ind].gid = n_monster_group - 1;
+			++ind;
 		}
 	}
 
@@ -1512,7 +1533,7 @@ static struct object *find_artifact(struct artifact *artifact)
 	}
 
 	/* Store objects */
-	for (i = 0; i < MAX_STORES; i++) {
+	for (i = 0; i < z_info->store_max; i++) {
 		struct store *s = &stores[i];
 		for (obj = s->stock; obj; obj = obj->next) {
 			if (obj->artifact == artifact) return obj;
@@ -1700,8 +1721,8 @@ static void do_cmd_knowledge_artifacts(const char *name, int row)
 	a_count = collect_known_artifacts(artifacts, z_info->a_max);
 
 	if (OPT(player, birth_randarts)) {
-		strnfmt(title, sizeof(title), "artifacts (seed %08x)",
-			seed_randart);
+		strnfmt(title, sizeof(title), "artifacts (seed %08lx)",
+			(unsigned long)seed_randart);
 	} else {
 		strnfmt(title, sizeof(title), "artifacts");
 	}
@@ -2359,20 +2380,20 @@ static wchar_t *f_xchar(int oid)
 static void feat_lore(int oid)
 {
 	struct feature *feat = &f_info[oid];
-	textblock *tb = textblock_new();
-	char *title = string_make(feat->name);
 
 	if (feat->desc) {
+		textblock *tb = textblock_new();
+		char *title = string_make(feat->name);
+
 		my_strcap(title);
 		textblock_append_c(tb, COLOUR_L_BLUE, "%s", title);
+		string_free(title);
 		textblock_append(tb, "\n");
 		textblock_append(tb, "%s", feat->desc);
 		textblock_append(tb, "\n");
 		textui_textblock_show(tb, SCREEN_REGION, NULL);
 		textblock_free(tb);
 	}
-
-	string_free(title);
 }
 static const char *feat_prompt(int oid)
 {
@@ -2428,9 +2449,9 @@ static void do_cmd_knowledge_features(const char *name, int row)
 	int f_count = 0;
 	int i;
 
-	features = mem_zalloc(z_info->f_max * sizeof(int));
+	features = mem_zalloc(FEAT_MAX * sizeof(int));
 
-	for (i = 0; i < z_info->f_max; i++) {
+	for (i = 0; i < FEAT_MAX; i++) {
 		/* Ignore non-features and mimics */
 		if (f_info[i].name == 0 || f_info[i].mimic)
 			continue;
@@ -2547,20 +2568,20 @@ static wchar_t *t_xchar(int oid)
 static void trap_lore(int oid)
 {
 	struct trap_kind *trap = &trap_info[oid];
-	textblock *tb = textblock_new();
-	char *title = string_make(trap->desc);
 
 	if (trap->text) {
+		textblock *tb = textblock_new();
+		char *title = string_make(trap->desc);
+
 		my_strcap(title);
 		textblock_append_c(tb, COLOUR_L_BLUE, "%s", title);
+		string_free(title);
 		textblock_append(tb, "\n");
 		textblock_append(tb, "%s", trap->text);
 		textblock_append(tb, "\n");
 		textui_textblock_show(tb, SCREEN_REGION, NULL);
 		textblock_free(tb);
 	}
-
-	string_free(title);
 }
 
 static const char *trap_prompt(int oid)
@@ -3233,15 +3254,224 @@ static void do_cmd_knowledge_shapechange(const char *name, int row)
 
 /**
  * ------------------------------------------------------------------------
+ * ui_knowledge.txt parsing
+ * ------------------------------------------------------------------------
+ */
+static enum parser_error parse_monster_category(struct parser *p)
+{
+	struct ui_knowledge_parse_state *s =
+		(struct ui_knowledge_parse_state*) parser_priv(p);
+	struct ui_monster_category *c;
+
+	assert(s);
+	c = mem_zalloc(sizeof(*c));
+	c->next = s->categories;
+	c->name = string_make(parser_getstr(p, "name"));
+	s->categories = c;
+	return PARSE_ERROR_NONE;
+}
+
+static enum parser_error parse_mcat_include_base(struct parser *p)
+{
+	struct ui_knowledge_parse_state *s =
+		(struct ui_knowledge_parse_state*) parser_priv(p);
+	struct monster_base *b;
+
+	assert(s);
+	if (!s->categories) {
+		return PARSE_ERROR_MISSING_RECORD_HEADER;
+	}
+	b = lookup_monster_base(parser_getstr(p, "name"));
+	if (!b) {
+		return PARSE_ERROR_INVALID_MONSTER_BASE;
+	}
+	assert(s->categories->n_inc_bases >= 0
+		&& s->categories->n_inc_bases <= s->categories->max_inc_bases);
+	if (s->categories->n_inc_bases == s->categories->max_inc_bases) {
+		if (s->categories->max_inc_bases > INT_MAX
+				/ (2 * (int) sizeof(struct monster_base*))) {
+			return PARSE_ERROR_TOO_MANY_ENTRIES;
+		}
+		s->categories->max_inc_bases = (s->categories->max_inc_bases)
+			? 2 * s->categories->max_inc_bases : 2;
+		s->categories->inc_bases = mem_realloc(
+			s->categories->inc_bases,
+			s->categories->max_inc_bases
+			* sizeof(struct monster_base*));
+	}
+	s->categories->inc_bases[s->categories->n_inc_bases] = b;
+	++s->categories->n_inc_bases;
+
+	return PARSE_ERROR_NONE;
+}
+
+static enum parser_error parse_mcat_include_flag(struct parser *p)
+{
+	struct ui_knowledge_parse_state *s =
+		(struct ui_knowledge_parse_state*) parser_priv(p);
+	char *flags, *next_flag;
+
+	assert(s);
+	if (!s->categories) {
+		return PARSE_ERROR_MISSING_RECORD_HEADER;
+	}
+
+	if (!parser_hasval(p, "flags")) {
+		return PARSE_ERROR_NONE;
+	}
+	flags = string_make(parser_getstr(p, "flags"));
+	next_flag = strtok(flags, " |");
+	while (next_flag) {
+		if (grab_flag(s->categories->inc_flags, RF_SIZE, r_info_flags,
+				next_flag)) {
+			string_free(flags);
+			return PARSE_ERROR_INVALID_FLAG;
+		}
+		next_flag = strtok(NULL, " |");
+	}
+	string_free(flags);
+
+	return PARSE_ERROR_NONE;
+}
+
+static struct parser *init_ui_knowledge_parser(void)
+{
+	struct ui_knowledge_parse_state *s = mem_zalloc(sizeof(*s));
+	struct parser *p = parser_new();
+
+	parser_setpriv(p, s);
+	parser_reg(p, "monster-category str name", parse_monster_category);
+	parser_reg(p, "mcat-include-base str name", parse_mcat_include_base);
+	parser_reg(p, "mcat-include-flag ?str flags", parse_mcat_include_flag);
+
+	return p;
+}
+
+static errr run_ui_knowledge_parser(struct parser *p)
+{
+	return parse_file_quit_not_found(p, "ui_knowledge");
+}
+
+static errr finish_ui_knowledge_parser(struct parser *p)
+{
+	struct ui_knowledge_parse_state *s =
+		(struct ui_knowledge_parse_state*) parser_priv(p);
+	struct ui_monster_category *cursor;
+	size_t count;
+
+	assert(s);
+
+	/* Count the number of categories and allocate a flat array for them. */
+	count = 0;
+	for (cursor = s->categories; cursor; cursor = cursor->next) {
+		++count;
+	}
+	if (count > INT_MAX - 1) {
+		/*
+		 * The sorting and display logic for monster groups assumes
+		 * the number of categories fits in an int.
+		 */
+		cursor = s->categories;
+		while (cursor) {
+			struct ui_monster_category *tgt = cursor;
+
+			cursor = cursor->next;
+			string_free((char*) tgt->name);
+			mem_free(tgt->inc_bases);
+			mem_free(tgt);
+		}
+		mem_free(s);
+		parser_destroy(p);
+		return PARSE_ERROR_TOO_MANY_ENTRIES;
+	}
+	if (monster_group) {
+		cleanup_ui_knowledge_parsed_data();
+	}
+	monster_group = mem_alloc((count + 1) * sizeof(*monster_group));
+	n_monster_group = (int) (count + 1);
+
+	/* Set the element at the end which receives special treatment. */
+	monster_group[count].next = NULL;
+	monster_group[count].name = string_make("***Unclassified***");
+	monster_group[count].inc_bases = NULL;
+	rf_wipe(monster_group[count].inc_flags);
+	monster_group[count].n_inc_bases = 0;
+	monster_group[count].max_inc_bases = 0;
+
+	/*
+	 * Set the others, restoring the order they had in the data file.
+	 * Release the memory for the linked list (but not pointed to data
+	 * as ownership for that is transferred to the flat array).
+	 */
+	cursor = s->categories;
+	while (cursor) {
+		struct ui_monster_category *src = cursor;
+
+		cursor = cursor->next;
+		--count;
+		monster_group[count].next = monster_group + count + 1;
+		monster_group[count].name = src->name;
+		monster_group[count].inc_bases = src->inc_bases;
+		rf_copy(monster_group[count].inc_flags, src->inc_flags);
+		monster_group[count].n_inc_bases = src->n_inc_bases;
+		monster_group[count].max_inc_bases = src->max_inc_bases;
+		mem_free(src);
+	}
+
+	mem_free(s);
+	parser_destroy(p);
+	return 0;
+}
+
+static void cleanup_ui_knowledge_parsed_data(void)
+{
+	int i;
+
+	for (i = 0; i < n_monster_group; ++i) {
+		string_free((char*) monster_group[i].name);
+		mem_free(monster_group[i].inc_bases);
+	}
+	mem_free(monster_group);
+	monster_group = NULL;
+	n_monster_group = 0;
+}
+
+/**
+ * ------------------------------------------------------------------------
  * Main knowledge menus
  * ------------------------------------------------------------------------ */
 
-/* The first row of the knowledge_actions menu which does store knowledge */
-#define STORE_KNOWLEDGE_ROW 8
+/**
+ * Holds information about the main knowledge menu.
+ */
+static struct {
+	menu_action *actions;
+	char **labels;
+	char *storekeys;
+	struct menu m;
+	int count;
+	int irune;
+	int iartifact;
+	int iego;
+	int imonster;
+	int ishape;
+	int istore1;
+} main_knowledge_menu = {
+	.actions = NULL,
+	.labels = NULL,
+	.storekeys = NULL,
+	.count = 0,
+	.irune = 0,
+	.iartifact = 0,
+	.iego = 0,
+	.imonster = 0,
+	.ishape = 0,
+	.istore1 = 0
+};
 
 static void do_cmd_knowledge_store(const char *name, int row)
 {
-	textui_store_knowledge(row - STORE_KNOWLEDGE_ROW);
+	textui_store_knowledge(row - main_knowledge_menu.istore1);
 }
 
 static void do_cmd_knowledge_scores(const char *name, int row)
@@ -3272,8 +3502,8 @@ static bool handle_store_shortcuts(struct menu *m, const ui_event *ev, int oid)
 			menu_action *acts = menu_priv(m);
 
 			do_cmd_knowledge_store(
-				acts[i + STORE_KNOWLEDGE_ROW].name,
-				i + STORE_KNOWLEDGE_ROW);
+				acts[i + main_knowledge_menu.istore1].name,
+				i + main_knowledge_menu.istore1);
 			return true;
 		}
 		++i;
@@ -3281,48 +3511,162 @@ static bool handle_store_shortcuts(struct menu *m, const ui_event *ev, int oid)
 }
 
 /**
- * Definition of the "player knowledge" menu.
+ * Release the information associated with the main knowledge menu.
  */
-static menu_action knowledge_actions[] =
+static void cleanup_main_knowledge_menu(void)
 {
-{ 0, 0, "Display object knowledge",   	   textui_browse_object_knowledge },
-{ 0, 0, "Display rune knowledge",   	   do_cmd_knowledge_runes },
-{ 0, 0, "Display artifact knowledge", 	   do_cmd_knowledge_artifacts },
-{ 0, 0, "Display ego item knowledge", 	   do_cmd_knowledge_ego_items },
-{ 0, 0, "Display monster knowledge",  	   do_cmd_knowledge_monsters  },
-{ 0, 0, "Display feature knowledge",  	   do_cmd_knowledge_features  },
-{ 0, 0, "Display trap knowledge",          do_cmd_knowledge_traps  },
-{ 0, 0, "Display shapechange effects",     do_cmd_knowledge_shapechange },
-{ 0, 0, "Display contents of general store (1)", do_cmd_knowledge_store },
-{ 0, 0, "Display contents of armourer (2)",      do_cmd_knowledge_store },
-{ 0, 0, "Display contents of weaponsmith (3)",   do_cmd_knowledge_store },
-{ 0, 0, "Display contents of bookseller (4)",    do_cmd_knowledge_store },
-{ 0, 0, "Display contents of alchemist (5)",     do_cmd_knowledge_store },
-{ 0, 0, "Display contents of magic shop (6)",    do_cmd_knowledge_store },
-{ 0, 0, "Display contents of black market (7)",  do_cmd_knowledge_store },
-{ 0, 0, "Display contents of home (8)",          do_cmd_knowledge_store },
-{ 0, 0, "Display hall of fame",       	   do_cmd_knowledge_scores    },
-{ 0, 0, "Display character history",  	   do_cmd_knowledge_history   },
-{ 0, 0, "Display equippable comparison",   do_cmd_knowledge_equip_cmp },
-};
+	mem_free(main_knowledge_menu.actions);
+	main_knowledge_menu.actions = NULL;
+	if (main_knowledge_menu.labels) {
+		int i;
 
-static struct menu knowledge_menu;
+		for (i = 0; i < main_knowledge_menu.count; ++i) {
+			string_free(main_knowledge_menu.labels[i]);
+		}
+		mem_free(main_knowledge_menu.labels);
+		main_knowledge_menu.labels = NULL;
+	}
+	mem_free(main_knowledge_menu.storekeys);
+	main_knowledge_menu.storekeys = NULL;
+	main_knowledge_menu.count = 0;
+	main_knowledge_menu.irune = 0;
+	main_knowledge_menu.iartifact = 0;
+	main_knowledge_menu.iego = 0;
+	main_knowledge_menu.imonster = 0;
+	main_knowledge_menu.ishape = 0;
+	main_knowledge_menu.istore1 = 0;
+}
+
+/**
+ * Reset the information associated with the main knowledge menu.
+ */
+static void reset_main_knowledge_menu(void)
+{
+	struct {
+		const char *label; void (*action)(const char*, int);
+	} pre_store_actions[] = {
+		{ "Display object knowledge", textui_browse_object_knowledge },
+		{ "Display rune knowledge", do_cmd_knowledge_runes },
+		{ "Display artifact knowledge", do_cmd_knowledge_artifacts },
+		{ "Display ego item knowledge", do_cmd_knowledge_ego_items },
+		{ "Display monster knowledge", do_cmd_knowledge_monsters },
+		{ "Display feature knowledge", do_cmd_knowledge_features },
+		{ "Display trap knowledge", do_cmd_knowledge_traps },
+		{ "Display shapechange effects", do_cmd_knowledge_shapechange },
+	};
+	struct {
+		const char *label; void (*action)(const char*, int);
+	} post_store_actions[] = {
+		{ "Display hall of fame", do_cmd_knowledge_scores },
+		{ "Display character history", do_cmd_knowledge_history },
+		{ "Display equippable comparison", do_cmd_knowledge_equip_cmp },
+	};
+	const char *shortcuts[] = {
+		" (1)", " (2)", " (3)",
+		" (4)", " (5)", " (6)",
+		" (7)", " (8)", " (9)"
+	};
+	int i = 0, scount, j;
+
+	cleanup_main_knowledge_menu();
+
+	/*
+	 * These have to be consistent with the arrangement of pre_store_actions
+	 * above.
+	 */
+	main_knowledge_menu.irune = 1;
+	main_knowledge_menu.iartifact = 2;
+	main_knowledge_menu.iego = 3;
+	main_knowledge_menu.imonster = 4;
+	main_knowledge_menu.ishape = 7;
+
+	main_knowledge_menu.count = (int) N_ELEMENTS(pre_store_actions)
+		+ z_info->store_max + (int) N_ELEMENTS(post_store_actions);
+	/*
+	 * Restrict the store entries to keep in the bounds of a 24 row display.
+	 * There's two extra rows used for title and prompt.
+	 */
+	if (main_knowledge_menu.count > 22) {
+		scount = MAX(0, z_info->store_max
+			- (main_knowledge_menu.count - 22));
+		main_knowledge_menu.count = 22;
+	} else {
+		scount = z_info->store_max;
+	}
+	main_knowledge_menu.istore1 = (scount > 0) ?
+		(int) N_ELEMENTS(pre_store_actions) : main_knowledge_menu.count;
+	main_knowledge_menu.actions = mem_zalloc(main_knowledge_menu.count
+		* sizeof(*main_knowledge_menu.actions));
+	main_knowledge_menu.labels = mem_zalloc(main_knowledge_menu.count
+		* sizeof(*main_knowledge_menu.labels));
+
+	for (j = 0; j < (int) N_ELEMENTS(pre_store_actions)
+			&& i < main_knowledge_menu.count; ++j, ++i) {
+		main_knowledge_menu.labels[i] =
+			string_make(pre_store_actions[j].label);
+		main_knowledge_menu.actions[i].name =
+			main_knowledge_menu.labels[i];
+		main_knowledge_menu.actions[i].action =
+			pre_store_actions[j].action;
+	}
+	for (j = 0; j < scount && i < main_knowledge_menu.count; ++j, ++i) {
+		const char *name = f_info[stores[j].feat].name;
+
+		main_knowledge_menu.labels[i] =
+			string_make((name) ?
+				format("Display %s'%s contents%s",
+				name, (suffix(name, "s")) ? "" : "s",
+				(j < 9) ? shortcuts[j] : "") :
+				format("Display store %d's contents%s",
+				j + 1, (j < 9) ? shortcuts[j] : ""));
+		main_knowledge_menu.actions[i].name =
+			main_knowledge_menu.labels[i];
+		main_knowledge_menu.actions[i].action =
+			do_cmd_knowledge_store;
+	}
+	for (j = 0; j < (int) N_ELEMENTS(pre_store_actions)
+			&& i < main_knowledge_menu.count; ++j, ++i) {
+		main_knowledge_menu.labels[i] =
+			string_make(post_store_actions[j].label);
+		main_knowledge_menu.actions[i].name =
+			main_knowledge_menu.labels[i];
+		main_knowledge_menu.actions[i].action =
+			post_store_actions[j].action;
+	}
+
+	menu_init(&main_knowledge_menu.m, MN_SKIN_SCROLL,
+		menu_find_iter(MN_ITER_ACTIONS));
+	menu_setpriv(&main_knowledge_menu.m, main_knowledge_menu.count,
+		main_knowledge_menu.actions);
+	main_knowledge_menu.m.title = "Display current knowledge";
+	main_knowledge_menu.m.selections = all_letters_nohjkl;
+	/*
+	 * These are shortcuts to get the contents of the stores by number;
+	 * can prevent (depending on the number of stores) the normal use of
+	 * 4 and 6 to go to the previous or next menu.
+	 */
+	if (scount > 0) {
+		const char digits[] = "123456789";
+		int kcount = 1 + ((scount > 9) ? 9 : scount);
+
+		main_knowledge_menu.storekeys = mem_alloc(kcount
+			* sizeof(*main_knowledge_menu.storekeys));
+		my_strcpy(main_knowledge_menu.storekeys, digits, kcount);
+		main_knowledge_menu.m.cmd_keys = main_knowledge_menu.storekeys;
+		main_knowledge_menu.m.keys_hook = handle_store_shortcuts;
+	}
+}
 
 void textui_knowledge_init(void)
 {
 	/* Initialize the menus */
-	struct menu *menu = &knowledge_menu;
-	menu_init(menu, MN_SKIN_SCROLL, menu_find_iter(MN_ITER_ACTIONS));
-	menu_setpriv(menu, N_ELEMENTS(knowledge_actions), knowledge_actions);
-
-	menu->title = "Display current knowledge";
-	menu->selections = all_letters_nohjkl;
-	/* Shortcuts to get the contents of the stores by number; does prevent
-	 * the normal use of 4 and 6 to go to the previous or next menu */
-	menu->cmd_keys = "12345678";
-	menu->keys_hook = handle_store_shortcuts;
+	reset_main_knowledge_menu();
 
 	/* initialize other static variables */
+	if (run_parser(&ui_knowledge_parser) != PARSE_ERROR_NONE) {
+		quit_fmt("Encountered error parsing ui_knowledge.txt");
+	}
+
 	if (!obj_group_order) {
 		int i;
 		int gid = -1;
@@ -3346,6 +3690,7 @@ void textui_knowledge_cleanup(void)
 {
 	mem_free(obj_group_order);
 	obj_group_order = NULL;
+	cleanup_parser(&ui_knowledge_parser);
 }
 
 
@@ -3355,48 +3700,59 @@ void textui_knowledge_cleanup(void)
  */
 void textui_browse_knowledge(void)
 {
-	int i, rune_max = max_runes();
-	region knowledge_region = { 0, 0, -1, 2 + (int)N_ELEMENTS(knowledge_actions) };
+	int i, flag, rune_max = max_runes();
+	region knowledge_region = { 0, 0, -1, 2 + main_knowledge_menu.count };
 
 	/* Runes */
-	knowledge_actions[1].flags = MN_ACT_GRAYED;
-	for (i = 0; i < rune_max; i++) {
-		if (player_knows_rune(player, i) || OPT(player, cheat_xtra)) {
-			knowledge_actions[1].flags = 0;
-		    break;
+	if (main_knowledge_menu.irune < main_knowledge_menu.count) {
+		flag = MN_ACT_GRAYED;
+		for (i = 0; i < rune_max; i++) {
+			if (player_knows_rune(player, i)
+					|| OPT(player, cheat_xtra)) {
+				flag = 0;
+				break;
+			}
 		}
+		main_knowledge_menu.actions[main_knowledge_menu.irune].flags =
+			flag;
 	}
 		
 	/* Artifacts */
-	if (collect_known_artifacts(NULL, 0) > 0)
-		knowledge_actions[2].flags = 0;
-	else
-		knowledge_actions[2].flags = MN_ACT_GRAYED;
+	if (main_knowledge_menu.iartifact < main_knowledge_menu.count) {
+		main_knowledge_menu.actions[main_knowledge_menu.iartifact].flags =
+			(collect_known_artifacts(NULL, 0) > 0) ?
+			0 : MN_ACT_GRAYED;
+	}
 
 	/* Ego items */
-	knowledge_actions[3].flags = MN_ACT_GRAYED;
-	for (i = 0; i < z_info->e_max; i++) {
-		if (e_info[i].everseen || OPT(player, cheat_xtra)) {
-			knowledge_actions[3].flags = 0;
-			break;
+	if (main_knowledge_menu.iego < main_knowledge_menu.count) {
+		flag = MN_ACT_GRAYED;
+		for (i = 0; i < z_info->e_max; i++) {
+			if (e_info[i].everseen || OPT(player, cheat_xtra)) {
+				flag = 0;
+				break;
+			}
 		}
+		main_knowledge_menu.actions[main_knowledge_menu.iego].flags = flag;
 	}
 
 	/* Monsters */
-	if (count_known_monsters() > 0)
-		knowledge_actions[4].flags = 0;
-	else
-		knowledge_actions[4].flags = MN_ACT_GRAYED;
+	if (main_knowledge_menu.imonster < main_knowledge_menu.count) {
+		main_knowledge_menu.actions[main_knowledge_menu.imonster].flags =
+			(count_known_monsters() > 0) ? 0 : MN_ACT_GRAYED;
+	}
 
 	/* Shapechanges */
-	knowledge_actions[7].flags = (count_interesting_shapes() > 0) ?
-		0 : MN_ACT_GRAYED;
+	if (main_knowledge_menu.ishape < main_knowledge_menu.count) {
+		main_knowledge_menu.actions[main_knowledge_menu.ishape].flags =
+			(count_interesting_shapes() > 0) ? 0 : MN_ACT_GRAYED;
+	}
 
 	screen_save();
-	menu_layout(&knowledge_menu, &knowledge_region);
+	menu_layout(&main_knowledge_menu.m, &knowledge_region);
 
 	clear_from(0);
-	menu_select(&knowledge_menu, 0, false);
+	menu_select(&main_knowledge_menu.m, 0, false);
 
 	screen_load();
 }
@@ -3938,7 +4294,7 @@ static void lookup_symbol(char sym, char *buf, size_t max)
 	/* Look through features */
 	/* Note: We need a better way of doing this. Currently '#' matches secret
 	 * door, and '^' matches trap door (instead of the more generic "trap"). */
-	for (i = 1; i < z_info->f_max; i++) {
+	for (i = 1; i < FEAT_MAX; i++) {
 		if (char_matches_key(f_info[i].d_char, sym)) {
 			strnfmt(buf, max, "%c - %s.", sym, f_info[i].name);
 			return;

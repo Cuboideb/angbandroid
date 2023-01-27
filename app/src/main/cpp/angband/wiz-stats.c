@@ -427,7 +427,7 @@ static bool first_find(stat_first_find st)
 }
 
 /*
- * Add the number of drops for a specifci stat
+ * Add the number of drops for a specific stat
  */
 static void add_stats(stat_code st, bool vault, bool mon, int number)
 {
@@ -753,7 +753,7 @@ static void get_obj_data(const struct object *obj, int y, int x, bool mon,
 				add_stats(ST_RESTOREMANA_POTIONS, vault, mon, number);
 			} else if ((strstr(obj->kind->name, "Life")) ||
 					   (strstr(obj->kind->name, "*Healing*"))) {
-				add_stats(ST_ELVEN_RINGS, vault, mon, number);
+				add_stats(ST_BIGHEAL_POTIONS, vault, mon, number);
 			} else if (strstr(obj->kind->name, "Healing")) {
 				add_stats(ST_HEALING_POTIONS, vault, mon, number);
 			}
@@ -1228,6 +1228,12 @@ static void print_stats(int lvl)
 	file_putf(stats_log,"\n");
 	file_putf(stats_log,"******** LEVEL %d , %d tries********* \n",lvl, tries);
 	file_putf(stats_log,"\n");
+
+	/* print gold info */
+	file_putf(stats_log," GOLD INFO \n");
+	file_putf(stats_log," Gold total: %f\n", gold_total[lvl]);
+	file_putf(stats_log," Gold monster: %f\n", gold_mon[lvl]);
+	file_putf(stats_log," Gold floor: %f\n", gold_floor[lvl]);
 
 	/* print monster heading */
 	file_putf(stats_log," MONSTER INFO \n");

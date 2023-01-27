@@ -2018,7 +2018,7 @@ static cptr do_sorcery_spell(int spell, int mode)
 
     case 29:
         if (name) return "Alchemy";
-        if (desc) return "Turns an item into 1/3 of its value in gold.";
+        if (desc) return (no_selling) ? "Turns an item into 1/9 of its value in gold." : "Turns an item into 1/3 of its value in gold.";
 
         {
             if (cast)
