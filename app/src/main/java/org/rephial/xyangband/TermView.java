@@ -3609,8 +3609,8 @@ public class TermView extends View implements OnGestureListener {
 			return;
 		}
 
-		// Special case. Background is ascii
-		if (fill && (c & 0x80) == 0) {
+		// Special case. In FA the background tile can be ascii
+		if ((c & 0x80) == 0) {
 			drawText(row, col, a, c, 0, ' ');
 			return;
 		}

@@ -200,6 +200,7 @@ void send_key_to_term(int key) {
 
 		if (key == KTRL('X')) {
 			LOGD("Quit and save");
+			try_save();
 		}
 
 		if (key == -2) {

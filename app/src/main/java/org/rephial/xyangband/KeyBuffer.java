@@ -227,6 +227,7 @@ public class KeyBuffer {
 	public int getSpecialKey()
 	{
 		int key = -1;
+
 		if (signal_game_exit) {
 
 			int[] keys = {
