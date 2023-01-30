@@ -122,10 +122,10 @@ public class QuantityPopup extends PopupWindow
         List<Integer> list = InputUtils.parseCodeKeys(str);
 
         // For some variants, go to the right
-        int rightKey = state.getKeyRightForQuantity();
-        if (rightKey > 0) {
+        int keyRight = state.getKeyRightForQuantity();
+        if (keyRight > 0) {
             for (int i = 0; i < 15; i++) {
-                state.addKey(rightKey);
+                state.addKey(keyRight);
             }
         }
 

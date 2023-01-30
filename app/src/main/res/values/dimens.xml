@@ -23,4 +23,5 @@
 	<dimen name="key_gap">0dp</dimen>
 	<dimen name="candidate_font_height">16sp</dimen>
 	<dimen name="candidate_vertical_padding">6sp</dimen>
+	<dimen name="fast_key_bmw">90dp</dimen>
 </resources>

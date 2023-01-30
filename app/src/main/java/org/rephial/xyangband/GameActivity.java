@@ -116,6 +116,8 @@ public class GameActivity extends Activity {
 
 	protected int prevOrientation = -1;
 
+	protected FastKeysPopup fkeyPopup = null;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -409,6 +411,38 @@ public class GameActivity extends Activity {
 			topRibbon.setFastKeys(keys);
 			ButtonRibbon.setShift(false);
 		}
+
+		/*
+		log("keys: " + keys);
+		if (fkeyPopup == null)
+			log("********* fkeypopup is null");
+		else if (!fkeyPopup.isShowing())
+			log("********* fkeypopup is invisible");
+		*/
+
+		if (keys.length() == 0) {
+			if (fkeyPopup != null) {
+				fkeyPopup.close();
+				fkeyPopup = null;
+			}
+			// Current command ended. Enable for next run
+			FastKeysPopup.unhide();
+		}
+		else if (fkeyPopup == null || !fkeyPopup.isShowing()) {
+			if (fkeyPopup != null) {
+				fkeyPopup.close();
+				fkeyPopup = null;
+			}
+			// Hack -- For targetting
+			// If the close button was not pressed last time...
+			if (FastKeysPopup.isVisible()) {
+				fkeyPopup = new FastKeysPopup(this, keys);
+				fkeyPopup.run(term);
+			}
+		}
+		else {
+			fkeyPopup.configure(keys);
+		}
 	}
 
 	public void clearKeyTimer()
@@ -443,12 +477,13 @@ public class GameActivity extends Activity {
 
 		//Log.d("Angband", "Setting: " + keys);
 
-		if (ribbonZone != null && !keys.equals(lastKeys)) {
+		if (!keys.equals(lastKeys)) {
 			// Delay the deletion of the fast keys
 			if (keys.length() == 0) {
 				keyHandler.postDelayed(keyRunnable, 200);
 				keyHandlerIsRunning = true;
 			}
+			// Keys are different
 			else {
 				setFastKeysAux(keys);
 			}
