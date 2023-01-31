@@ -295,7 +295,7 @@ static void make_bones(void)
 
 	while (no_answer) {
 
-		soft_kbd_flash("[^yes_no$]");
+		soft_kbd_flash("${yes_no}");
 
 		answer = inkey_ex();
 

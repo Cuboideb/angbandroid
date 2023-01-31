@@ -1,5 +1,7 @@
 package org.rephial.xyangband;
 
+import android.graphics.Point;
+import android.graphics.RectF;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,13 +25,9 @@ public class FastKeysPopup extends PopupWindow
 
     public Button[] buttons = null;
 
-    public int maxButtons = 6;
+    public int maxButtons = 4;
 
     public String keys = "";
-
-    // We include a close button to cancel the popup
-    // while targeting is active
-    public static boolean visible = true;
 
     public FastKeysPopup(GameActivity p_context, String p_keys) {
         super(p_context);
@@ -62,9 +60,6 @@ public class FastKeysPopup extends PopupWindow
             buttons[i] = button;
         }
 
-        Button button2 = root.findViewById(R.id.btn_hide);
-        button2.setOnClickListener(this);
-
         configure(p_keys);
     }
 
@@ -82,19 +77,38 @@ public class FastKeysPopup extends PopupWindow
 
     public void run(TermView term)
     {
-        int gravity = Gravity.RIGHT | Gravity.TOP;
-        int pad = (int)context.toDips(20);
+        String position = Preferences.getFastKeysPopupPosition();
+
+        if (position.equals("Hidden")) return;
+
+        int gravity = Gravity.TOP;
+        int pad = (int)context.toDips(5);
+        int y = pad;
+        int x = pad;
+
         root.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
                 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-        int y = term.getHeight()
+
+        if (position.contains("Bottom")) {
+            y = term.getHeight()
                 - root.getMeasuredHeight()
                 - term.getVerticalGap()
                 - pad;
+        }
+
+        if (position.contains("Left")) {
+            gravity |= Gravity.LEFT;
+        }
+
+        if (position.contains("Right")) {
+            gravity |= Gravity.RIGHT;
+        }
+
         //log("term h: " + term.getHeight());
         //log("root h: " + quantPopup.root.getMeasuredHeight());
         //log("vgap: " + term.getVerticalGap());
         //log("y: " + y);
-        this.showAtLocation(term, gravity, 0, y);
+        this.showAtLocation(term, gravity, x, y);
     }
 
     public void configure(String p_keys)
@@ -103,7 +117,7 @@ public class FastKeysPopup extends PopupWindow
 
         locked = true;
 
-        p_keys = p_keys.replace("[^yes_no$]", "ny");
+        p_keys = p_keys.replace("${yes_no}", "ny");
 
         if (!p_keys.equals(keys)) {
             keys = p_keys;
@@ -112,16 +126,6 @@ public class FastKeysPopup extends PopupWindow
         }
 
         locked = false;
-    }
-
-    public static boolean isVisible()
-    {
-        return visible;
-    }
-
-    public static void unhide()
-    {
-        visible = true;
     }
 
     @Override
@@ -133,11 +137,7 @@ public class FastKeysPopup extends PopupWindow
 
         String str = ((Button)v).getText().toString();
 
-        if (str.equals("hide")) {
-            visible = false;
-            close();
-        }
-        else if (str.length() > 0) {
+        if (str.length() > 0) {
             sendValue(str);
         }
 

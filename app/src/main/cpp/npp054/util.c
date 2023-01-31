@@ -2817,7 +2817,7 @@ int get_check_other(cptr prompt, cptr other_text, char other, cptr explain)
 	/* Get an acceptable answer */
 	while (TRUE)
 	{
-		soft_kbd_flash("[^yes_no$]");
+		soft_kbd_flash("${yes_no}");
 		soft_kbd_append(format("%c", other));
 		ke = inkey_ex();
 		if (quick_messages) break;
@@ -2878,7 +2878,7 @@ bool get_check(cptr prompt)
 	/* Get an acceptable answer */
 	while (TRUE)
 	{
-		soft_kbd_flash("[^yes_no$]");
+		soft_kbd_flash("${yes_no}");
 		ke = inkey_ex();
 		if (quick_messages) break;
 		if (ke.key == ESCAPE) break;

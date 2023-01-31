@@ -545,7 +545,7 @@ static struct keypress keymap_get_trigger(void)
 	/* Flush */
 	event_signal(EVENT_INPUT_FLUSH);
 
-	soft_kbd_flash("[^fkeys$]");
+	soft_kbd_flash("${fkeys}");
 
 	/* Get a key */
 	buf[0] = inkey();

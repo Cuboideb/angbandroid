@@ -406,6 +406,13 @@
 			android:entryValues="@array/DPadColors"/>
 	</PreferenceScreen>
 
+	<ListPreference
+		android:title="Position of Fast Keys Popup"
+		android:key="angband.fk_popup_pos"
+		android:defaultValue="Bottom-Right"
+		android:entries="@array/FastKeysPopupPosition"
+		android:entryValues="@array/FastKeysPopupPosition"/>
+
 	<CheckBoxPreference
 		android:key="angband.quantity_popup"
 		android:defaultValue="true"

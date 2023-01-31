@@ -67,7 +67,7 @@ void soft_kbd_clear(int force)
 	if (flashing_keys || force) {
 		soft_kbd_buffer[0] = 0;
 		flashing_keys = true;
-		Term_control_keys("[[:clear:]]");
+		Term_control_keys("${clear}");
 	}
 }
 

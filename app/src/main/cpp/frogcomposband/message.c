@@ -418,7 +418,7 @@ char msg_prompt(cptr prompt, char keys[], int options)
 {
     if (strncasecmp(keys, "ny", 2) == 0
         || strncasecmp(keys, "yn", 2) == 0) {
-        soft_kbd_linger("[^yes_no$]");
+        soft_kbd_linger("${yes_no}");
         soft_kbd_append(keys+2);
     }
     else {
@@ -604,7 +604,7 @@ bool msg_input_num(cptr prompt, int *num, int min, int max)
     msg_format("<color:y>%s <color:w>(%d to %d)</color>:</color> ", prompt, min, max);
 
     Term_control_quantity(prompt, max, *num);
-    soft_kbd_linger("[quant]");
+    soft_kbd_linger("${quant}");
 
     result = askfor_aux(buf, 11, FALSE);
 

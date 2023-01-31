@@ -1161,7 +1161,7 @@ static int textui_get_quantity(const char *prompt, int max)
 
 		Term_control_quantity(prompt, max, amt);
 
-		soft_kbd_linger("[quant]*");
+		soft_kbd_linger("${quant}*");
 
 		/* Ask for a quantity */
 		if (!get_string(prompt, buf, 7)) return (0);
@@ -1206,7 +1206,7 @@ static bool textui_get_check(const char *prompt)
 	/* Paranoia */
 	event_signal(EVENT_MESSAGE_FLUSH);
 
-	soft_kbd_flash("[^yes_no$]");
+	soft_kbd_flash("${yes_no}");
 
 	/* Prompt for it */
 	prt(buf, 0, 0);

@@ -405,6 +405,14 @@ public class GameActivity extends Activity {
 		}
 	}
 
+	public void destroyFastKeyPopup()
+	{
+		if (fkeyPopup != null) {
+			fkeyPopup.close();
+			fkeyPopup = null;
+		}
+	}
+
 	public void setFastKeysAux(String keys)
 	{
 		if (ribbonZone != null) {
@@ -412,33 +420,21 @@ public class GameActivity extends Activity {
 			ButtonRibbon.setShift(false);
 		}
 
-		/*
-		log("keys: " + keys);
-		if (fkeyPopup == null)
-			log("********* fkeypopup is null");
-		else if (!fkeyPopup.isShowing())
-			log("********* fkeypopup is invisible");
-		*/
-
 		if (keys.length() == 0) {
-			if (fkeyPopup != null) {
-				fkeyPopup.close();
-				fkeyPopup = null;
-			}
-			// Current command ended. Enable for next run
-			FastKeysPopup.unhide();
+			destroyFastKeyPopup();
+			return;
 		}
-		else if (fkeyPopup == null || !fkeyPopup.isShowing()) {
-			if (fkeyPopup != null) {
-				fkeyPopup.close();
-				fkeyPopup = null;
-			}
-			// Hack -- For targetting
-			// If the close button was not pressed last time...
-			if (FastKeysPopup.isVisible()) {
-				fkeyPopup = new FastKeysPopup(this, keys);
-				fkeyPopup.run(term);
-			}
+
+		if (keys.length() <= 6  || keys.equals("${yes_no}") ||
+				Preferences.getFastKeysPopupPosition().equals("Hidden")) {
+			destroyFastKeyPopup();
+			return;
+		}
+
+		if (fkeyPopup == null || !fkeyPopup.isShowing()) {
+			destroyFastKeyPopup();
+			fkeyPopup = new FastKeysPopup(this, keys);
+			fkeyPopup.run(term);
 		}
 		else {
 			fkeyPopup.configure(keys);
@@ -455,16 +451,16 @@ public class GameActivity extends Activity {
 
 	public void setFastKeys(String keys)
 	{
-		if (keys.equals("[[:clear:]]")) {
+		if (keys.equals("${clear}")) {
 			keys = "";
 		}
 
-		if (keys.contains("[quant]")) {
+		if (keys.contains("${quant}")) {
 			if (Preferences.getQuantityPopupEnabled()) {
 				keys = "";
 			}
 			else {
-				keys = keys.replace("[quant]", "0123456789");
+				keys = keys.replace("${quant}", "0123456789");
 			}
 		}
 

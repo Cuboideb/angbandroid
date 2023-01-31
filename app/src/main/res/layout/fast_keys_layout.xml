@@ -4,24 +4,12 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="20dp">
+    android:padding="10dp">
 
     <GridLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:columnCount="3">
-
-        <Space></Space>
-
-        <Space></Space>
-
-        <Button
-            android:id="@+id/btn_hide"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textFontWeight="700"
-            android:minWidth="@dimen/fast_key_bmw"
-            android:text="hide" />
+        android:columnCount="4">
 
         <Button
             android:id="@+id/btn1"
@@ -52,20 +40,6 @@
             android:layout_height="wrap_content"
             android:minWidth="@dimen/fast_key_bmw"
             android:text="" />
-
-        <Button
-            android:id="@+id/btn5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="@dimen/fast_key_bmw"
-            android:text="" />
-
-        <Button
-            android:id="@+id/btn6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="@dimen/fast_key_bmw"
-            android:text="" />
     </GridLayout>
 
     <SeekBar
@@ -73,7 +47,7 @@
         android:progress="0"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         />
 
 </LinearLayout>

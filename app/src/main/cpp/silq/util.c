@@ -3705,7 +3705,7 @@ s16b get_quantity(cptr prompt, int max)
 
         Term_control_quantity(prompt, max, amt);
 
-        soft_kbd_linger("[quant]");
+        soft_kbd_linger("${quant}");
 
         /* Ask for a quantity */
         if (!term_get_string(prompt, buf, 7)) {
@@ -3772,7 +3772,7 @@ int get_check_other(cptr prompt, char other)
     /* Prompt for it */
     prt(buf, 0, 0);
 
-    soft_kbd_linger("[^yes_no$]");
+    soft_kbd_linger("${yes_no}");
     soft_kbd_append(format("%c", other));
 
     /* Get an acceptable answer */
@@ -3831,7 +3831,7 @@ bool get_check(cptr prompt)
     /* Prompt for it */
     prt(buf, 0, 0);
 
-    soft_kbd_linger("[^yes_no$]");
+    soft_kbd_linger("${yes_no}");
 
     /* Get an acceptable answer */
     while (TRUE)

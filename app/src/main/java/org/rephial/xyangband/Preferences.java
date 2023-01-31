@@ -303,6 +303,11 @@ final public class Preferences {
 		return pref.getBoolean(Preferences.KEY_SHOW_ADV_KEYMAP, true);
 	}
 
+	public static String getFastKeysPopupPosition()
+	{
+		return pref.getString("angband.fk_popup_pos", "Bottom-Right");
+	}
+
 	public static void setUseAdvKeyboard(boolean value)
 	{
 		SharedPreferences.Editor ed = pref.edit();

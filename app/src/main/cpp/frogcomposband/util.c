@@ -2955,7 +2955,7 @@ bool get_check(cptr prompt)
 /*  return get_check_strict(prompt, 0);*/
     char buf[255];
     sprintf(buf, "%s<color:y>[y/n]</color>", prompt);
-    soft_kbd_flash("[^yes_no$]");
+    soft_kbd_flash("${yes_no}");
     if (msg_prompt(buf, "ny", PROMPT_DEFAULT) == 'y')
         return TRUE;
     return FALSE;
@@ -3178,7 +3178,7 @@ s16b get_quantity_aux(cptr prompt, int max, int default_amt)
 
     Term_control_quantity(prompt, max, amt);
 
-    soft_kbd_linger("[quant]");
+    soft_kbd_linger("${quant}");
 
     /*
      * Ask for a quantity

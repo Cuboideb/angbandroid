@@ -527,7 +527,7 @@ public class ButtonRibbon implements OnClickListener,
 					showList = true;
 				}
 
-				String pattern = "[^fkeys$]";
+				String pattern = "${fkeys}";
 				if (keys.contains(pattern)) {
 					addFKeys(loc);
 					// Remove the pattern
@@ -536,7 +536,7 @@ public class ButtonRibbon implements OnClickListener,
 					showList = true;
 				}
 
-				pattern = "[^yes_no$]";
+				pattern = "${yes_no}";
 				if (keys.contains(pattern)) {
 					rebuildTopFixed("yes_no");
 					// Remove the pattern

@@ -2820,7 +2820,7 @@ public class TermView extends View implements OnGestureListener {
 		return true;
 	}
 
-	public boolean inZoneOfDPad(float y, float x)
+	public RectF getDPadZone()
 	{
 		float padPct = 0.2f;
 
@@ -2829,16 +2829,26 @@ public class TermView extends View implements OnGestureListener {
 			DPadView first = getViewByDirection('7');
 			DPadView last = getViewByDirection('3');
 
-			if (last == null || first == null) return false;
+			if (last == null || first == null) return null;
 
 			float side = first.h;
 			float pad = side * padPct;
 
 			RectF bigZone = new RectF(first.x - pad, first.y - pad,
-				last.x + side + pad, last.y + side + pad);
-			if (bigZone.contains(x, y)) {
-				return true;
-			}
+					last.x + side + pad, last.y + side + pad);
+
+			return bigZone;
+		}
+
+		return null;
+	}
+
+	public boolean inZoneOfDPad(float y, float x)
+	{
+		RectF bigZone = getDPadZone();
+
+		if (bigZone != null && bigZone.contains(x, y)) {
+			return true;
 		}
 
 		return false;
