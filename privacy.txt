@@ -1,0 +1,16 @@
+** Privacy Policy of "Angband for Android 4.2.4 (plus Variants)" **
+
+Date: 2023-02-06
+
+Data Collection
+==== ==========
+
+Angband for Android does not collect any personally identifiable information.
+
+I use Google Play Console to get statistics and bug reports for the app. That platform doesn't give me any personal data about the users of the game, just general information in aggregate form. Visit https://policies.google.com/privacy (Google's privacy policy) to know more.
+
+Contact
+=======
+I'm Cuboideb (Diego González) and you can contact me at cuboideb@gmail.com
+
+Enjoy the game!
