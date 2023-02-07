@@ -6,13 +6,13 @@ apply plugin: 'com.android.application'
 def my_abi_filters = local_props("ABI_FILTERS")
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     buildToolsVersion "30.0.3"
     ndkVersion "21.0.6113669"
     defaultConfig {
         applicationId "org.rephial.xyangband"
         minSdkVersion 22
-        targetSdkVersion 30
+        targetSdk 31
         versionCode 92
         versionName "1.34.1"
         externalNativeBuild {
