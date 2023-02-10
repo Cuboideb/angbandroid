@@ -220,6 +220,19 @@
 		  android:defaultValue="true"
 		  android:title="Use Icons"
 		  android:summary="Use Icons for ribbon buttons" />
+
+	  	<ListPreference
+			android:title="Position of Fast Keys Popup"
+			android:key="angband.fk_popup_pos"
+			android:defaultValue="Bottom-Right"
+			android:entries="@array/FastKeysPopupPosition"
+			android:entryValues="@array/FastKeysPopupPosition"/>
+
+		<CheckBoxPreference
+			android:key="angband.quantity_popup"
+			android:defaultValue="true"
+			android:title="Enable the quantity popup" />
+
 	</PreferenceScreen>
 
 	<PreferenceScreen
@@ -405,18 +418,6 @@
 			android:entries="@array/DPadColors"
 			android:entryValues="@array/DPadColors"/>
 	</PreferenceScreen>
-
-	<ListPreference
-		android:title="Position of Fast Keys Popup"
-		android:key="angband.fk_popup_pos"
-		android:defaultValue="Bottom-Right"
-		android:entries="@array/FastKeysPopupPosition"
-		android:entryValues="@array/FastKeysPopupPosition"/>
-
-	<CheckBoxPreference
-		android:key="angband.quantity_popup"
-		android:defaultValue="true"
-		android:title="Enable the quantity popup" />
 
 	<CheckBoxPreference
 		android:key="angband.debug_keycodes"
