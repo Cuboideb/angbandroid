@@ -1706,7 +1706,7 @@ static cptr _do_scroll(int sval, int mode)
         }
         break;
     case SV_SCROLL_GENOCIDE:
-        if (desc) return "It eliminates an entire class of monster, exhausting you. Powerful or unique monsters may resist.";
+        if (desc) return "Attempts to remove from the level all monsters of a specified species, exhausting you.";
         if (cast)
         {
             if (((!quests_allow_all_spells()) || (p_ptr->inside_arena) || (p_ptr->inside_battle))
@@ -1716,7 +1716,7 @@ static cptr _do_scroll(int sval, int mode)
         }
         break;
     case SV_SCROLL_MASS_GENOCIDE:
-        if (desc) return "It eliminates all nearby monsters, exhausting you. Powerful or unique monsters may be able to resist.";
+        if (desc) return "Attempts to eliminate all nearby monsters, exhausting you.";
         if (cast)
         {
             if (((!quests_allow_all_spells()) || (p_ptr->inside_arena) || (p_ptr->inside_battle))
@@ -3785,7 +3785,7 @@ cptr do_effect(effect_t *effect, int mode, int boost)
     {
         int power = _extra(effect, effect->power * 3);
         if (name) return "Genocide";
-        if (desc) return "It eliminates an entire class of monster, exhausting you. Powerful or unique monsters may resist.";
+        if (desc) return "Attempts to remove from the level all monsters of a specified species, exhausting you.";
         if (info) return format("power %d", _BOOST(power));
         if (value) return format("%d", power*50);
         if (color) return format("%d", TERM_L_DARK);
@@ -3800,7 +3800,7 @@ cptr do_effect(effect_t *effect, int mode, int boost)
     {
         int power = _extra(effect, 100 + effect->power * 3);
         if (name) return "Mass Genocide";
-        if (desc) return "It eliminates all nearby monsters, exhausting you. Powerful or unique monsters may be able to resist.";
+        if (desc) return "Attempts to eliminate all nearby monsters, exhausting you.";
         if (info) return format("power %d", _BOOST(power));
         if (value) return format("%d", power*60);
         if (color) return format("%d", TERM_L_DARK);

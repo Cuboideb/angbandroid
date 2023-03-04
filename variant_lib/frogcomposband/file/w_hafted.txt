@@ -17,6 +17,7 @@ N: 3:BIAS_FIRE
 'Fist of the Phoenix'
 'Desert Sun'
 'Flamingo'
+'Flame of Udun'
 of Flaming
 of Duruin
 

@@ -223,6 +223,7 @@ extern bool silent_drop_hack;
 extern bool check_useless_pickup_hack;
 extern bool drop_near_stack_hack;
 extern bool advance_time_hack;
+extern bool appl_hack; /* autopick preference load compatibility */
 extern byte attack_spell_hack;
 enum
 {

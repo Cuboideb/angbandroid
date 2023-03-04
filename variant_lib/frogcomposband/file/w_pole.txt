@@ -78,6 +78,7 @@ N: 7:BIAS_INT
 of Napoleon
 of Raistlin
 of Imladris
+of Miss Marple
 
 N:18:BIAS_WARRIOR
 N: 6:BIAS_STR
@@ -96,6 +97,7 @@ N: 9:BIAS_DEX
 'Cleaver'
 'Limbslicer'
 'Fine Art'
+of Jondalar
 
 N:19:BIAS_RANGER
 'Bisonaxe'

@@ -16,6 +16,7 @@ of the Master Smith
 of Ogun
 'Blacknail'
 'Oven Mitts'
+'Red Paw'
 
 N: 4:BIAS_COLD
 of the Snow Castle
@@ -75,6 +76,7 @@ of Magni
 'Terminater'
 'Steelgrip'
 'Boarfist'
+'Iron Fist'
 'Thumper'
 
 N:19:BIAS_RANGER

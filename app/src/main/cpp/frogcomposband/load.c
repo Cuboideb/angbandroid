@@ -426,6 +426,8 @@ static void rd_extra(savefile_ptr file)
     int i,j;
     char buf[1024];
 
+    if (savefile_is_older_than(file, 7, 1, 3, 5)) appl_hack = TRUE;
+
     if (savefile_is_older_than(file, 7, 0, 0, 4))
         p_ptr->id = scores_next_id();
     else

@@ -87,6 +87,7 @@ of Angantyr
 of Dernhelm
 of the Shieldmaiden
 of Okeewana
+of Artimpasa
 
 N:*:Default
 'Yay'

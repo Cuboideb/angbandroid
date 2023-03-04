@@ -1898,7 +1898,7 @@ void genocide_spell(int cmd, variant *res)
         var_set_string(res, "Genocide");
         break;
     case SPELL_DESC:
-        var_set_string(res, "Eliminates an entire class of monster, exhausting you. Powerful or unique monsters may resist.");
+        var_set_string(res, "Attempts to remove from the level all monsters of a specified species, exhausting you.");
         break;
     case SPELL_INFO:
         var_set_string(res, info_power(spell_power(p_ptr->lev*3)));

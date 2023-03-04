@@ -4023,6 +4023,8 @@ void process_monsters(void)
 
         else if (m_ptr->mflag2 & MFLAG2_HURT) test = TRUE;
 
+        else if (mon_is_superbuff(m_ptr, TRUE)) test = TRUE;
+
         /* Do nothing */
         if (!test)
             continue;

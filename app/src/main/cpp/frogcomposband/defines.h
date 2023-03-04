@@ -19,7 +19,7 @@
 #define VER_MAJOR 7
 #define VER_MINOR 1
 #define VER_PATCH "salmiak"
-#define VER_EXTRA 4
+#define VER_EXTRA 5
 #define VERSION_IS_DEVELOPMENT (TRUE)
 
 #define GAME_MODE_BEGINNER  0
@@ -4792,6 +4792,7 @@ extern int PlayerUID;
 #define MON_ORC_WARLOCK         1189
 #define MON_ORC_WARLORD         1190
 #define MON_WIRUIN              1192
+#define MON_LUCIFER             1195
 #define MON_MIDNIGHT_DRAGON     1214
 #define MON_NIGHTMARE_DRAGON    1215
 #define MON_JUSTSHORN           1225

@@ -175,6 +175,7 @@ extern mon_ptr        mon_current(void);
 
 extern bool mon_could_splash(mon_ptr mon, point_t tgt);
 extern bool mon_is_magical(mon_ptr mon);
+extern bool mon_is_superbuff(mon_ptr mon, bool check_hp);
 extern bool mon_race_is_magical(mon_race_ptr race);
 extern bool mon_has_attack_spell(mon_ptr mon);
 extern bool mon_race_has_attack_spell(mon_race_ptr race);

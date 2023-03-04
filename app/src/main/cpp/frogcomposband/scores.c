@@ -343,6 +343,25 @@ int scores_next_id(void)
     return next;
 }
 
+bool _score_check2(vec_ptr scores, score_ptr current, bool is_cur)
+{
+    if (!current) return FALSE;
+    if (current->id < 20) return TRUE;
+    if (current->clvl >= 20) return TRUE;
+    if (current->score >= 10000) return TRUE;
+    if (!is_cur) return FALSE; /* purge mode */
+    if ((scores) && (vec_length(scores)))
+    {
+        score_ptr score = vec_get(scores, 0); /* assume this is the top score */
+        if (current->clvl >= score->clvl) return TRUE;
+        if (current->score >= score->score) return TRUE;
+    }
+    if (current->score < 300) return FALSE;
+    if (playtime > ((p_ptr->id < 40) ? 1200 : 1800)) return TRUE;
+    if (playtime < 150) return FALSE;
+    return (current->score >= (current->id * 100));
+}
+
 void scores_update(void)
 {
     int       i;
@@ -350,6 +369,7 @@ void scores_update(void)
     score_ptr current = score_current();
     FILE     *fp;
     char      name[100];
+    bool      make_dump = _score_check2(scores, current, TRUE);
 
     for (i = 0; i < vec_length(scores); i++)
     {
@@ -365,6 +385,10 @@ void scores_update(void)
     scores_save(scores);
     vec_free(scores); /* current is now in scores[] and need not be freed */
 
+    /* Try to limit disk space usage and dump proliferation by only creating
+     * dumps if some effort was put into the character */
+    if (!make_dump) return;
+
     sprintf(name, "dump%d.doc", p_ptr->id);
     fp = _scores_fopen(name, "w");
     if (fp)
@@ -375,6 +399,25 @@ void scores_update(void)
         doc_free(doc);
         fclose(fp);
     } 
+}
+
+void _purge_docs(vec_ptr scores)
+{
+    int i;
+    /* Dangerous function. Use responsibly */
+    if (!strpos("sulkimus", ANGBAND_DIR_USER)) return;
+    for (i = 0; i < vec_length(scores); i++)
+    {
+        score_ptr test_me = vec_get(scores, i);
+        if (!test_me) break;
+        if (!_score_check2(scores, test_me, FALSE)) /* purge docs */
+        {
+            char name[100], buf [1024];
+            sprintf(name, "dump%d.doc", test_me->id);
+            path_build(buf, sizeof(buf), ANGBAND_DIR_APEX, name);
+            (void)fd_kill(buf);
+        }
+    }
 }
 
 /************************************************************************
@@ -534,6 +577,9 @@ void scores_display(vec_ptr scores)
         case KTRL('N'):
             vec_sort(scores, (vec_cmp_f)score_cmp_name);
             top = 0;
+            break;
+        case KTRL('Y'):
+            _purge_docs(scores);
             break;
         default:
             if (islower(cmd))

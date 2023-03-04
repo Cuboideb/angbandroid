@@ -199,6 +199,7 @@ bool silent_drop_hack = FALSE;
 bool check_useless_pickup_hack = FALSE;
 bool drop_near_stack_hack = FALSE;
 bool advance_time_hack = FALSE;
+bool appl_hack = FALSE;
 byte attack_spell_hack = ASH_USELESS_ATTACK;
 byte troika_spell_hack = 0;
 s16b vampirism_hack = 1000;
@@ -484,7 +485,7 @@ char player_name[32];
 char player_base[32];
 
 /*
- * Default pref file save name (except for the Mogaminator)
+ * Default pref file save name (now including the Mogaminator)
  */
 char pref_save_base[32] = "";
 

@@ -959,12 +959,17 @@ static void _pers_ui(void)
         }
         else
         {
-            if (cmd == '*') i = randint0(vec_length(v));
+            bool is_random_pick = FALSE;
+            if (cmd == '*')
+            {
+                i = randint0(vec_length(v));
+                is_random_pick = TRUE;
+            }
             else i = A2I(cmd);
             if (0 <= i && i < vec_length(v))
             {
                 personality_ptr pers_ptr = vec_get(v, i);
-                p_ptr->personality = pers_ptr->id;
+                if ((!is_random_pick) || (pers_ptr->id != PERS_MUNCHKIN)) p_ptr->personality = pers_ptr->id;
                 break;
             }
         }

@@ -83,6 +83,7 @@ of Victory
 of Triumph
 of Achilles
 of Slorpik
+of Curbstomping
 'Crusher of Thrones'
 
 N:19:BIAS_RANGER

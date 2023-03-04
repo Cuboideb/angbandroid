@@ -3841,6 +3841,9 @@ static void _ai_direct(mon_spell_cast_ptr cast)
     spell = mon_spells_find(spells, _id(MST_BUFF, BUFF_INVULN));
     if (spell && cast->mon->mtimed[MTIMED_INVULNER])
         spell->prob = 0;
+    else if (spell && (cast->race->id == MON_LUCIFER) &&
+        (!mon_is_superbuff(cast->mon, TRUE)))
+        spell->prob = 0;
 
     spell = mon_spells_find(spells, _id(MST_BUFF, BUFF_HASTE));
     if (spell && cast->mon->mtimed[MTIMED_FAST])
@@ -3961,6 +3964,7 @@ static void _ai_indirect(mon_spell_cast_ptr cast)
     int            prob = 0;
     bool           hurt = (cast->mon->mflag2 & (MFLAG2_HURT)) ? TRUE : FALSE;
 
+    if (mon_is_superbuff(cast->mon, TRUE)) hurt = TRUE;
     if (hurt) prob = 100;
     else if (smart) prob = 75;
     else prob = 50;
@@ -3978,6 +3982,7 @@ static void _ai_indirect(mon_spell_cast_ptr cast)
     _remove_group(spells->groups[MST_BOLT], NULL);
     _remove_group(spells->groups[MST_BEAM], NULL);
     _remove_group(spells->groups[MST_BIFF], NULL);
+    if ((!hurt) || (!mon_is_superbuff(cast->mon, FALSE)))
     _remove_group(spells->groups[MST_BUFF], NULL);
     _remove_group(spells->groups[MST_CURSE], NULL);
     _remove_group(spells->groups[MST_WEIRD], NULL);
@@ -4406,6 +4411,10 @@ static void _ai_think_mon(mon_spell_cast_ptr cast)
     spell = mon_spells_find(spells, _id(MST_BUFF, BUFF_INVULN));
     if (spell && cast->mon->mtimed[MTIMED_INVULNER])
         spell->prob = 0;
+    else if (spell && (cast->race->id == MON_LUCIFER) &&
+        (!mon_is_superbuff(cast->mon, TRUE)))
+        spell->prob = 0;
+        
 
     spell = mon_spells_find(spells, _id(MST_BUFF, BUFF_HASTE));
     if (spell && cast->mon->mtimed[MTIMED_FAST])
@@ -4711,6 +4720,13 @@ int mon_race_spell_freq(mon_race_ptr race)
 bool mon_is_magical(mon_ptr mon)
 {
     return mon_race_is_magical(mon_race(mon));
+}
+bool mon_is_superbuff(mon_ptr mon, bool check_hp)
+{
+    if (mon_race(mon)->id != MON_LUCIFER) return FALSE;
+    if (mon->max_maxhp < 24200) return FALSE;
+    if ((check_hp) && (mon->hp > 12100)) return FALSE;
+    return TRUE;
 }
 bool mon_race_is_magical(mon_race_ptr race)
 {

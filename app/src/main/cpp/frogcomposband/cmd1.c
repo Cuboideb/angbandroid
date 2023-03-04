@@ -1047,7 +1047,7 @@ static void hit_trap(bool break_trap, bool do_jump)
             int evil_idx = 0, good_idx = 0;
 
             int lev;
-            msg_print("Suddenly, you are surrounded by immotal beings!");
+            msg_print("Suddenly, you are surrounded by immortal beings!");
 
             /* Summon Demons and Angels */
             for (lev = dun_level; lev >= 20; lev -= 1 + lev/16)

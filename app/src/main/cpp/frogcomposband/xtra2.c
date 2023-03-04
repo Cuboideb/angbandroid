@@ -2980,6 +2980,19 @@ bool mon_take_hit(int m_idx, int dam, int type, bool *fear, cptr note)
                     msg_print("The Phoenix rises again!");
                     return FALSE;
                 }
+                if (m_ptr->r_idx == MON_LUCIFER && m_ptr->max_maxhp < 24200)
+                {
+                    m_ptr->hp = 24200;
+                    m_ptr->maxhp = 24200;
+                    m_ptr->max_maxhp = 24200;
+                    m_ptr->mpower = MAX(1250, m_ptr->mpower + 200);
+                    m_ptr->mspeed = 160;
+                    m_ptr->ac_adj = 0;
+                    if (strpos("Epic Space Hero", player_name)) msg_format("<color:R>%^s</color> <color:y>says:</color> <color:v>\'Epic Space Hero, I am your father! Abandon hope! MUAHAHAHAHA!!!!!'</color>", m_name);
+                    else if (one_in_(2)) msg_format("<color:R>%^s</color> <color:y>says:</color> <color:v>\'Thank you for killing the bits of me... THAT WERE HOLDING ME BACK! MUAHAHAHAHA!!!!!'</color>", m_name);
+                    else msg_format("<color:R>%^s</color> <color:y>says:</color> <color:v>\'I am Lucifer, created to be creation's shadow! You cannot destroy me... without destroying the universe! MUAHAHAHAHA!!!!!'</color>", m_name);
+                    return FALSE;
+                }
 
                 r_ptr->max_num = 0;
 

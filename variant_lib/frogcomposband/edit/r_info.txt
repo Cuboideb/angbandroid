@@ -21561,7 +21561,7 @@ F:POS_HOLD_LIFE | POS_SEE_INVIS | POS_GAIN_AC | POS_TELEPATHY
 P:Copy:Archon:Paladin
 S:FREQ_30 |
 S:BR_COLD | BR_NETHER | BR_SHARDS | PSY_SPEAR(1d200+150) | S_ANGEL | BA_LITE
-S:S_HI_DEMON
+S:S_HI_DEMON | INVULN
 D:The bringer of dawn, tempter of men's souls, the angel of the
 D: thirty-one-level pit; he twists reality around him and appears
 D: cloaked in both ice and flames.
