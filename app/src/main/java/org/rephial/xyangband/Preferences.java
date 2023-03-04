@@ -309,7 +309,7 @@ final public class Preferences {
 		if (!getEnableSoftInput() || isKeyboardVisible()) {
 			return "Hidden";
 		}
-		return pref.getString("angband.fk_popup_pos", "Bottom-Right");
+		return pref.getString("angband.fk_popup_pos", "Hidden");
 	}
 
 	public static void setUseAdvKeyboard(boolean value)
@@ -765,20 +765,17 @@ final public class Preferences {
 	}
 
 	public static String getAngbandBaseDirectory() {
-		//return Environment.getExternalStorageDirectory()
-		//		+ "/"
-		//		+ "Android/data/org.rephial.xyangband/files/lib";
-		return context.getExternalFilesDir(null) + "/lib";
+		return context.getExternalFilesDir(null).getAbsolutePath();
 	}
 
 	public static String getAngbandFilesDirectory(int pluginId) {
-		return getAngbandBaseDirectory()
-			+ Plugins.getFilesDir(Plugins.Plugin.convert(pluginId));
+		String dir = Plugins.getFilesDir(Plugins.Plugin.convert(pluginId));
+		return getAngbandBaseDirectory() + "/lib" + dir;
 	}
 
 	public static String getAngbandFilesDirectory() {
 		String dir = Plugins.getFilesDir(getActivePlugin());
-		return getAngbandBaseDirectory() + dir;
+		return getAngbandBaseDirectory() + "/lib" + dir;
 	}
 
 	public static String getActivityFilesDirectory() {

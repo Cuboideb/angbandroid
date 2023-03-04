@@ -97,6 +97,7 @@ public class GameActivity extends Activity {
 	protected final int CONTEXTMENU_ADD_FAB = 16;
 	protected final int CONTEXTMENU_FIX_FAB = 17;
 	protected final int CONTEXTMENU_IMPORT_KEYS = 18;
+	protected final int CONTEXTMENU_LIBDIR = 19;
 
 	public static final int TERM_CONTROL_LIST_KEYS = 1;
 	public static final int TERM_CONTROL_CONTEXT = 2;
@@ -826,6 +827,8 @@ public class GameActivity extends Activity {
 			menu.add(0, CONTEXTMENU_IMPORT_KEYS, 0, "Copy Keymaps and Floating Buttons");
 		}
 
+		menu.add(0, CONTEXTMENU_LIBDIR, 0, "Location of App Files");
+
 		menu.add(0, CONTEXTMENU_HELP_ITEM, 0, "Help");
 		menu.add(0, CONTEXTMENU_QUIT_ITEM, 0, "Quit");
 	}
@@ -879,6 +882,9 @@ public class GameActivity extends Activity {
 			return true;
 		case CONTEXTMENU_FIX_FAB:
 			if (term != null) term.rearrangeFloatingButtons();
+			return true;
+		case CONTEXTMENU_LIBDIR:
+			infoAlert(Preferences.getAngbandBaseDirectory());
 			return true;
 		case CONTEXTMENU_IMPORT_KEYS:
 			importKeys();

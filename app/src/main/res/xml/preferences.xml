@@ -20,11 +20,13 @@
 		   android:summary="@string/preferences_skipwelcome_summary" />
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/display_category">
+		<!--
 		<CheckBoxPreference
 		   android:key="angband.vibrate"
 		   android:defaultValue="false"
 		   android:title="@string/preferences_vibrate_title"
 		   android:summary="@string/preferences_vibrate_summary" />
+		-->
 		<CheckBoxPreference
 		   android:key="angband.fullscreen"
 		   android:defaultValue="true"
@@ -224,7 +226,7 @@
 	  	<ListPreference
 			android:title="Position of Fast Keys Popup"
 			android:key="angband.fk_popup_pos"
-			android:defaultValue="Bottom-Right"
+			android:defaultValue="Hidden"
 			android:entries="@array/FastKeysPopupPosition"
 			android:entryValues="@array/FastKeysPopupPosition"/>
 

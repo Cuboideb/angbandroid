@@ -265,8 +265,7 @@ public class TermView extends View implements OnGestureListener {
 		dirZoneStroke.setStrokeWidth(2);
 		dirZoneStroke.setStrokeCap(Paint.Cap.ROUND);
 
-		vibrator = (Vibrator) context
-				.getSystemService(Context.VIBRATOR_SERVICE);
+		//vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
 
 		setFocusableInTouchMode(true);
 
@@ -3706,9 +3705,11 @@ public class TermView extends View implements OnGestureListener {
 	}
 
 	public void noise() {
+		/*
 		if (vibrate) {
-			//vibrator.vibrate(50);
+			vibrator.vibrate(50);
 		}
+		*/
 	}
 
 	public void onResume() {

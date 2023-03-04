@@ -56,7 +56,7 @@ public class Installer {
 			
 			installWorker = new Thread() {  
 					public void run() {
-
+						/* Old permission check
 						// Check write permission
 						if (ContextCompat.checkSelfPermission(activity,
 								Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -81,6 +81,10 @@ public class Installer {
 						else {
 							install();
 						}
+						*/
+
+						// In 2023, just install in scoped storage
+						install();
 					}
 				};
 			installWorker.start();
