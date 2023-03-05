@@ -416,26 +416,22 @@ public class GameActivity extends Activity {
 
 	public void setFastKeysAux(String keys)
 	{
-		if (ribbonZone != null) {
-			topRibbon.setFastKeys(keys);
-			ButtonRibbon.setShift(false);
-		}
-
-		if (keys.length() == 0) {
-			destroyFastKeyPopup();
-			return;
-		}
-
-		if (keys.length() <= 0 /*6*/  || keys.equals("${yes_no}") ||
+		if (keys.length() <= 6  || keys.equals("${yes_no}") ||
 				Preferences.getFastKeysPopupPosition().equals("Hidden")) {
+
 			destroyFastKeyPopup();
+
+			if (ribbonZone != null) {
+				topRibbon.setFastKeys(keys);
+				ButtonRibbon.setShift(false);
+			}
+
 			return;
 		}
 
 		if (fkeyPopup == null || !fkeyPopup.isShowing()) {
 			destroyFastKeyPopup();
 			fkeyPopup = new FastKeysPopupV2(this, keys);
-			//fkeyPopup.run(term);
 			fkeyPopup.run();
 		}
 		else {

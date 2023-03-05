@@ -7,7 +7,7 @@
     android:padding="10dp">
 
     <include layout="@layout/fast_key_button"
-        android:id="@+id/dpad_btn" />
+        android:id="@+id/dpad_btn"/>
 
     <ScrollView
         android:id="@+id/scroll_view"

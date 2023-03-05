@@ -1,6 +1,7 @@
 package org.rephial.xyangband;
 
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -28,13 +29,16 @@ public class FastKeysPopupV2 extends PopupWindow
     public FastKeysPopupV2(GameActivity p_context, String p_keys) {
         super(p_context);
 
-        setOutsideTouchable(true);
         setFocusable(false);
+        setOutsideTouchable(true);
 
         context = p_context;
 
         setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
         setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
 
         root = (ViewGroup) context.getLayoutInflater().inflate
                 (R.layout.fast_keys_layout_v2, null);
@@ -45,6 +49,7 @@ public class FastKeysPopupV2 extends PopupWindow
 
         dpad = root.findViewById(R.id.dpad);
         dpad.setVisibility(dpadVisible ? View.VISIBLE: View.GONE);
+        dpad.requestLayout();
 
         for (int i = 0; i < dpad.getChildCount(); i++) {
             Button btn = (Button)dpad.getChildAt(i);
@@ -56,6 +61,7 @@ public class FastKeysPopupV2 extends PopupWindow
         btnDPad.setText("DPad");
         ButtonRibbon.resizeButtonAux(btnDPad, 0.6f);
         btnDPad.setOnClickListener(this);
+        btnDPad.requestLayout();
 
         for (int i = 0; i < grid.getChildCount(); i++) {
             Button btn = (Button)grid.getChildAt(i);
@@ -109,9 +115,11 @@ public class FastKeysPopupV2 extends PopupWindow
 
         TermView term = context.term;
 
+        int height = root.getMeasuredHeight();
+
         if (position.contains("Bottom")) {
             y = term.getHeight()
-                - root.getMeasuredHeight()
+                - height
                 - term.getVerticalGap()
                 - pad;
         }
@@ -125,7 +133,7 @@ public class FastKeysPopupV2 extends PopupWindow
         }
 
         //log("term h: " + term.getHeight());
-        //log("root h: " + quantPopup.root.getMeasuredHeight());
+        //log("root h: " + root.getMeasuredHeight());
         //log("vgap: " + term.getVerticalGap());
         //log("y: " + y);
         if (!this.isShowing()) {
@@ -146,14 +154,6 @@ public class FastKeysPopupV2 extends PopupWindow
         }
 
         final ScrollView sv = root.findViewById(R.id.scroll_view);
-        /*
-        sv.post(new Runnable() {
-            @Override
-            public void run() {
-                sv.scrollTo(0, 0);
-            }
-        });
-        */
         sv.scrollTo(0, 0);
     }
 
@@ -195,10 +195,10 @@ public class FastKeysPopupV2 extends PopupWindow
     @Override
     public void dismiss()
     {
-        // Do nothing
+        super.dismiss();
+        //context.log("dismiss");
     }
 
-    // The "real" dismiss
     public void close()
     {
         super.dismiss();
