@@ -205,4 +205,16 @@ class InputUtils
         }
         return txt;
     }
+
+    public static String arrowFromIndex(int idx)
+    {
+        int arrows[] = {0x2196, 0x2191, 0x2197,
+                0x2190, 0, 0x2192,
+                0x2199, 0x2193, 0x2198};
+        int key = arrows[idx];
+        if (key > 0) {
+            return Character.toString((char)key);
+        }
+        return "";
+    }
 }

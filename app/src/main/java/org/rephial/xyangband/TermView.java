@@ -3727,4 +3727,12 @@ public class TermView extends View implements OnGestureListener {
 
 		stopTimers();
 	}
+
+	public static int directionKeyFromIndex(int idx)
+	{
+		int directions[] = {7,8,9,4,5,6,1,2,3};
+		idx = Math.max(idx, 0);
+		int dir = directions[idx % directions.length];
+		return '0' + dir;
+	}
 }

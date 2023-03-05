@@ -242,7 +242,7 @@ public class ButtonRibbon implements OnClickListener,
 		controlDown = false;
 	}
 
-	public void resizeButtonAux(Button btn, float pct)
+	public static void resizeButtonAux(Button btn, float pct)
 	{
 		int w = btn.getMinWidth();
 

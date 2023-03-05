@@ -117,7 +117,7 @@ public class GameActivity extends Activity {
 
 	protected int prevOrientation = -1;
 
-	protected FastKeysPopup fkeyPopup = null;
+	protected FastKeysPopupV2 fkeyPopup = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -426,7 +426,7 @@ public class GameActivity extends Activity {
 			return;
 		}
 
-		if (keys.length() <= 6  || keys.equals("${yes_no}") ||
+		if (keys.length() <= 0 /*6*/  || keys.equals("${yes_no}") ||
 				Preferences.getFastKeysPopupPosition().equals("Hidden")) {
 			destroyFastKeyPopup();
 			return;
@@ -434,8 +434,9 @@ public class GameActivity extends Activity {
 
 		if (fkeyPopup == null || !fkeyPopup.isShowing()) {
 			destroyFastKeyPopup();
-			fkeyPopup = new FastKeysPopup(this, keys);
-			fkeyPopup.run(term);
+			fkeyPopup = new FastKeysPopupV2(this, keys);
+			//fkeyPopup.run(term);
+			fkeyPopup.run();
 		}
 		else {
 			fkeyPopup.configure(keys);
