@@ -114,8 +114,8 @@ public class TermView extends View implements OnGestureListener {
 	public ArrayList<FloatingView> views = new ArrayList<>();
 	public static int SCREEN_VIEW = 1;
 
-	private static int longRepeatDelay = 350;
-	private static int shortRepeatDelay = 80;
+	public static int longRepeatDelay = 350;
+	public static int shortRepeatDelay = 80;
 	private static int dragDelay = 250;
 	private static int longPressDelay = 700;
 	private static int longPressDelay2 = 1000;

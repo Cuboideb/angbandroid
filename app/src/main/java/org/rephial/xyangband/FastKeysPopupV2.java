@@ -53,8 +53,18 @@ public class FastKeysPopupV2 extends PopupWindow
 
         for (int i = 0; i < dpad.getChildCount(); i++) {
             Button btn = (Button)dpad.getChildAt(i);
-            btn.setOnClickListener(this);
             btn.setText(InputUtils.arrowFromIndex(i));
+            // For directions keys
+            if (i != 4) {
+                btn.setOnTouchListener(new RepeatListener
+                        (TermView.longRepeatDelay,
+                        TermView.shortRepeatDelay,
+                        this));
+            }
+            // Center key
+            else {
+                btn.setOnClickListener(this);
+            }
         }
 
         Button btnDPad = root.findViewById(R.id.dpad_btn);
