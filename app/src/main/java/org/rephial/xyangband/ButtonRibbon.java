@@ -255,7 +255,7 @@ public class ButtonRibbon implements OnClickListener,
 		btn.setTextSize(TypedValue.COMPLEX_UNIT_PX, fw * pct);
 	}
 
-	public void resizeButton(Button btn)
+	public static void resizeButton(Button btn)
 	{
 		int mult = Preferences.getRibbonButtonMult();
 

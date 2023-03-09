@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridLayout;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ScrollView;
 
@@ -35,10 +36,10 @@ public class FastKeysPopupV2 extends PopupWindow
         context = p_context;
 
         setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
-        setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        //setHeight((int)context.toDips(350));
 
-        setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
+        //setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT,
+        //        ViewGroup.LayoutParams.WRAP_CONTENT);
 
         root = (ViewGroup) context.getLayoutInflater().inflate
                 (R.layout.fast_keys_layout_v2, null);
@@ -54,6 +55,8 @@ public class FastKeysPopupV2 extends PopupWindow
         for (int i = 0; i < dpad.getChildCount(); i++) {
             Button btn = (Button)dpad.getChildAt(i);
             btn.setText(InputUtils.arrowFromIndex(i));
+            ButtonRibbon.resizeButton(btn);
+            btn.requestLayout();
             // For directions keys
             if (i != 4) {
                 btn.setOnTouchListener(new RepeatListener
@@ -69,14 +72,25 @@ public class FastKeysPopupV2 extends PopupWindow
 
         Button btnDPad = root.findViewById(R.id.dpad_btn);
         btnDPad.setText("DPad");
-        ButtonRibbon.resizeButtonAux(btnDPad, 0.6f);
-        btnDPad.setOnClickListener(this);
         btnDPad.requestLayout();
+        ButtonRibbon.resizeButton(btnDPad);
+        ButtonRibbon.resizeButtonAux(btnDPad, 0.7f);
+        btnDPad.setOnClickListener(this);
 
+        int bw = 0;
         for (int i = 0; i < grid.getChildCount(); i++) {
             Button btn = (Button)grid.getChildAt(i);
             btn.setOnClickListener(this);
+            ButtonRibbon.resizeButton(btn);
+            btn.requestLayout();
+            bw = btn.getMinWidth();
         }
+
+        LinearLayout ly = (LinearLayout)root;
+        int height = ly.getPaddingBottom() + ly.getPaddingTop() +
+                (int)(bw * 5.2f);
+        // Set a fixed height
+        setHeight(height);
 
         configure(p_keys);
     }
@@ -90,9 +104,12 @@ public class FastKeysPopupV2 extends PopupWindow
                     (R.layout.fast_key_button, null);
             grid.addView(btn);
             btn.setOnClickListener(this);
+            ButtonRibbon.resizeButton(btn);
             btn.requestLayout();
             ++numButtons;
         }
+
+        context.log("mult: " + Preferences.getRibbonButtonMult());
 
         for (int i = 0; i < numButtons; i++) {
             String txt = "";
@@ -125,7 +142,8 @@ public class FastKeysPopupV2 extends PopupWindow
 
         TermView term = context.term;
 
-        int height = root.getMeasuredHeight();
+        //int height = root.getMeasuredHeight();
+        int height = getHeight();
 
         if (position.contains("Bottom")) {
             y = term.getHeight()
