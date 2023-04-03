@@ -68,8 +68,8 @@
     <string name="preferences_fullscreen_summary">Enable or disable game in full screen</string>
     <string name="preferences_orientation_title">Orientation</string>
     <string name="preferences_orientation_summary">Select screen orientation</string>
-    <string name="preferences_keyboardOverlap_title">Keyboard Overlap</string>
-    <string name="preferences_keyboardOverlap_summary">Overlay the keyboard on top of the game view</string>
+    <string name="preferences_keyboardOverlap_title">Overlap Input Controls</string>
+    <string name="preferences_keyboardOverlap_summary">Put the keyboard/ribbon on top of the game view</string>
     <string name="preferences_gameplugin_title">Selected variant</string>
     <string name="preferences_gameplugin_summary">Note that these Game settings stick to the active profile</string>
     <string name="preferences_enablevkey_title">Enable virtual keyboard</string>

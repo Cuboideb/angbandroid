@@ -1,430 +1,164 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:seekBar="http://schemas.android.com/apk/res-auto">
-  <PreferenceCategory android:title="@string/game_category">
-	<Preference android:title="Game Profile"
-		android:key="angband.gameprofile">
-		<intent android:action="org.rephial.xyangband.PROFILES" />
-	</Preference>
-		<org.rephial.xyangband.ProfileListPreference
-		   android:title="@string/preferences_gameplugin_title"
-		   android:key="angband.gameplugin"
-		   android:summary="@string/preferences_gameplugin_summary"
-		   android:entries="@array/gamePluginDescriptions"
-		   android:entryValues="@array/gamePlugins" />
-		<org.rephial.xyangband.ProfileCheckBoxPreference
-		   android:title="@string/preferences_skipwelcome_title"
-		   android:key="angband.skipwelcome"
-		   android:defaultValue="false"
-		   android:summary="@string/preferences_skipwelcome_summary" />
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" xmlns:seekBar="http://schemas.android.com/apk/res-auto">
+	<PreferenceCategory android:title="@string/game_category">
+		<Preference android:title="Game Profile" android:key="angband.gameprofile">
+			<intent android:action="org.rephial.xyangband.PROFILES" />
+		</Preference>
+		<org.rephial.xyangband.ProfileListPreference android:title="@string/preferences_gameplugin_title" android:key="angband.gameplugin" android:summary="@string/preferences_gameplugin_summary" android:entries="@array/gamePluginDescriptions" android:entryValues="@array/gamePlugins" />
+		<org.rephial.xyangband.ProfileCheckBoxPreference android:title="@string/preferences_skipwelcome_title" android:key="angband.skipwelcome" android:defaultValue="false" android:summary="@string/preferences_skipwelcome_summary" />
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/display_category">
-		<!--
-		<CheckBoxPreference
-		   android:key="angband.vibrate"
-		   android:defaultValue="false"
-		   android:title="@string/preferences_vibrate_title"
-		   android:summary="@string/preferences_vibrate_summary" />
-		-->
-		<CheckBoxPreference
-		   android:key="angband.fullscreen"
-		   android:defaultValue="true"
-		   android:title="@string/preferences_fullscreen_title"
-		   android:summary="@string/preferences_fullscreen_summary" />
-		<ListPreference
-		   android:key="angband.orientation"
-		   android:defaultValue="0"
-		   android:title="@string/preferences_orientation_title"
-		   android:summary="@string/preferences_orientation_summary"
-		   android:entries="@array/orientationDescriptions"
-		   android:entryValues="@array/orientations" />
-		<ListPreference
-			android:title="Graphics"
-			android:summary="Select the tileset"
-			android:key="angband.graphics"
-			android:defaultValue="6"
-			android:entries="@array/graphicsModesDesc"
-			android:entryValues="@array/graphicsModesKeys"/>
-		<CheckBoxPreference
-			android:key="angband.sil_gx"
-			android:defaultValue="false"
-			android:title="Use graphics for Sil-Q" />
-		<ListPreference
-			android:title="Tile Multiplier"
-			android:summary="Columns x Rows"
-			android:key="angband.tile_multiplier"
-			android:defaultValue="4x2"
-			android:entries="@array/tileMultValues"
-			android:entryValues="@array/tileMultValues"/>
-		<CheckBoxPreference
-			android:key="angband.range_reduction"
-			android:defaultValue="false"
-			android:title="Halve max distance of ranged attacks for V and FA (for small displays, needs restart)" />
-	  <CheckBoxPreference
-			android:key="angband.draw_health_bars"
-			android:defaultValue="true"
-			android:title="Draw health bars"
-			android:summary="Above player and monsters" />
-		<org.rephial.xyangband.SeekBarPreference
-			android:key="angband.ascii_helper"
-			android:title="Show small ascii helper for tiles (suggested value: 40%)"
-			seekBar:min="0"
-			seekBar:max="100"
-			seekBar:defaultVal="0" />
-		<CheckBoxPreference
-			android:key="angband.top_bar"
-			android:defaultValue="true"
-			android:title="Angband Top Bar"
-			android:summary="Stats and other indicators go to top instead of left" />
-		<org.rephial.xyangband.SeekBarPreference
-			android:key="angband.mult_top_bar"
-			android:title="Font Multiplier for Top Bar (100% to 200%)"
-			android:dependency="angband.top_bar"
-			seekBar:min="0"
-			seekBar:max="100"
-			seekBar:defaultVal="0" />
-		<CheckBoxPreference
-			android:key="angband.show_mouse_icon"
-			android:defaultValue="false"
-			android:title="Show Mouse Icon"
-			android:summary="It allows you to execute actions on a grid" />
-		<PreferenceScreen
-			android:title="Sub-Windows settings"
-			android:summary="(Map views in graphics mode are not supported)">
-			<ListPreference
-				android:key="angband.n_subwindows"
-				android:title="Number of sub-windows"
-				android:summary="Issue a redraw (Ctrl-R) after modifying this"
-				android:defaultValue="@string/def_number_subwindows"
-				android:entries="@array/subWindowValues"
-				android:entryValues="@array/subWindowValues"/>
-			<org.rephial.xyangband.SeekBarPreference
-				android:key="angband.cols_subwindows"
-				android:title="Number of columns (Max: 80)"
-				seekBar:min="0"
-				seekBar:max="100"
-				seekBar:defaultVal="@string/def_cols_subwindows" />
-			<org.rephial.xyangband.SeekBarPreference
-				android:key="angband.rows_subwindows"
-				android:title="Number of rows (Max: 24)"
-				android:dependency="angband.horiz_subwindows"
-				seekBar:min="0"
-				seekBar:max="100"
-				seekBar:defaultVal="@string/def_rows_subwindows" />
-			<org.rephial.xyangband.SeekBarPreference
-				android:key="angband.font_size_subwindows"
-				android:title="Font multiplier (50% to 150%)"
-				seekBar:min="0"
-				seekBar:max="100"
-				seekBar:defaultVal="@string/def_font_subwindows" />
-			<CheckBoxPreference
-				android:key="angband.horiz_subwindows"
-				android:defaultValue="true"
-				android:title="Layout sub-windows horizontally" />
+		<CheckBoxPreference android:key="angband.fullscreen" android:defaultValue="true" android:title="@string/preferences_fullscreen_title" android:summary="@string/preferences_fullscreen_summary" />
+		<ListPreference android:key="angband.orientation" android:defaultValue="0" android:title="@string/preferences_orientation_title" android:summary="@string/preferences_orientation_summary" android:entries="@array/orientationDescriptions" android:entryValues="@array/orientations" />
+		<CheckBoxPreference android:key="angband.range_reduction" android:defaultValue="false" android:title="Halve max distance of ranged attacks for V and FA (for small displays, needs restart)" />
+		<PreferenceScreen android:title="Graphics options" android:summary="Tileset, tile multiplier, decoration, etc.">
+			<ListPreference android:title="Tileset" android:summary="Select the tileset" android:key="angband.graphics" android:defaultValue="6" android:entries="@array/graphicsModesDesc" android:entryValues="@array/graphicsModesKeys" />
+			<CheckBoxPreference android:key="angband.sil_gx" android:defaultValue="false" android:title="Use graphics for Sil-Q" />
+			<ListPreference android:title="Tile Multiplier" android:summary="Columns x Rows" android:key="angband.tile_multiplier" android:defaultValue="4x2" android:entries="@array/tileMultValues" android:entryValues="@array/tileMultValues" />
+			<CheckBoxPreference android:key="angband.draw_health_bars" android:defaultValue="true" android:title="Draw health bars" android:summary="Above player and monsters" />
+			<org.rephial.xyangband.SeekBarPreference android:key="angband.ascii_helper" android:title="Show small ascii helper for tiles (suggested value: 40%)" seekBar:min="0" seekBar:max="100" seekBar:defaultVal="0" />
+			<CheckBoxPreference android:key="angband.show_mouse_icon" android:defaultValue="false" android:title="Show Mouse Icon" android:summary="It allows you to execute actions on a grid" />
+		</PreferenceScreen>
+		<PreferenceScreen android:title="Sub-Windows settings" android:summary="(Map views in graphics mode are not supported)">
+			<ListPreference android:key="angband.n_subwindows" android:title="Number of sub-windows" android:summary="Issue a redraw (Ctrl-R) after modifying this" android:defaultValue="@string/def_number_subwindows" android:entries="@array/subWindowValues" android:entryValues="@array/subWindowValues" />
+			<org.rephial.xyangband.SeekBarPreference android:key="angband.cols_subwindows" android:title="Number of columns (Max: 80)" seekBar:min="0" seekBar:max="100" seekBar:defaultVal="@string/def_cols_subwindows" />
+			<org.rephial.xyangband.SeekBarPreference android:key="angband.rows_subwindows" android:title="Number of rows (Max: 24)" android:dependency="angband.horiz_subwindows" seekBar:min="0" seekBar:max="100" seekBar:defaultVal="@string/def_rows_subwindows" />
+			<org.rephial.xyangband.SeekBarPreference android:key="angband.font_size_subwindows" android:title="Font multiplier (50% to 150%)" seekBar:min="0" seekBar:max="100" seekBar:defaultVal="@string/def_font_subwindows" />
+			<CheckBoxPreference android:key="angband.horiz_subwindows" android:defaultValue="true" android:title="Layout sub-windows horizontally" />
+			<CheckBoxPreference android:key="angband.top_bar" android:defaultValue="true" android:title="Angband Top Bar" android:summary="Stats and other indicators go to top instead of left" />
+			<org.rephial.xyangband.SeekBarPreference android:key="angband.mult_top_bar" android:title="Font Multiplier for Top Bar (100% to 200%)" android:dependency="angband.top_bar" seekBar:min="0" seekBar:max="100" seekBar:defaultVal="0" />
 		</PreferenceScreen>
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/control_category">
-	  <CheckBoxPreference
-			android:key="angband.enable_soft_input"
-			android:defaultValue="true"
-			android:title="Enable Software Input"
-			android:summary="If hidden, tap bottom left corner to enable" />
-	  <CheckBoxPreference
-			android:key="angband.allowKeyboardOverlap"
-			android:defaultValue="true"
-			android:title="@string/preferences_keyboardOverlap_title"
-			android:summary="@string/preferences_keyboardOverlap_summary" />
-	  <org.rephial.xyangband.SeekBarPreference
-		  android:key="angband.keyboardOpacity"
-		  android:title="Keyboard Opacity"
-		  seekBar:min="0"
-		  seekBar:max="100"
-		  seekBar:defaultVal="50" />
-	  <org.rephial.xyangband.SeekBarPreference
-		  android:key="angband.middleOpacity"
-		  android:title="Middle Opacity"
-		  seekBar:min="0"
-		  seekBar:max="100"
-		  seekBar:defaultVal="100" />
-
-		<!--
-		<CheckBoxPreference
-			android:key="angband.qwertynumpad"
-			android:defaultValue="false"
-			android:title="Qwerty NumPad"
-			android:summary="Qwerty keyboard comes with NumPad" />
-	    -->
-
-		<CheckBoxPreference
-			android:key="angband.use_adv_keyboard"
-			android:defaultValue="true"
-			android:title="Use Full Keyboard"
-			android:summary="Turn OFF to display a mini-keyboard" />
-
-		<CheckBoxPreference
-			android:key="angband.show_adv_keymaps"
-			android:defaultValue="true"
-			android:dependency="angband.use_adv_keyboard"
-			android:title="Show keymaps if keymap mode is ON" />
-
-		<!--
-		<CheckBoxPreference
-			android:key="angband.use_vert_keyboard"
-			android:defaultValue="false"
-			android:dependency="angband.use_adv_keyboard"
-			android:title="Use Vertical Layout for Advanced Keyboard" />
-		-->
-
-		<CheckBoxPreference
-			android:key="angband.auto_hide_adv_kbd"
-			android:defaultValue="false"
-			android:dependency="angband.use_adv_keyboard"
-			android:title="Hide keys after 5 seconds" />
-
-	  <org.rephial.xyangband.SeekBarPreference
-		  android:key="angband.keyboard_width"
-		  android:title="Keyboard Width"
-		  android:dependency="angband.use_adv_keyboard"
-		  seekBar:min="0"
-		  seekBar:max="100"
-		  seekBar:defaultVal="100" />
-	  <org.rephial.xyangband.SeekBarPreference
-		  android:key="angband.keyboard_height"
-		  android:title="Keyboard Height"
-		  seekBar:min="0"
-		  seekBar:max="100"
-		  seekBar:defaultVal="0" />
-
-	<PreferenceScreen android:title="Button Ribbon options"
-		android:summary="Configure things like button size or management of long lists">
-
-	  <org.rephial.xyangband.SeekBarPreference
-		  android:key="angband.ribbonbuttonmult"
-		  android:title="Ribbon button size multiplier"
-		  seekBar:min="0"
-		  seekBar:max="100"
-		  seekBar:defaultVal="50" />
-	  <org.rephial.xyangband.SeekBarPreference
-		  android:key="angband.reduce_buttons"
-		  android:title="Button width for long selections lists (try with 50%)"
-		  seekBar:min="0"
-		  seekBar:max="100"
-		  seekBar:defaultVal="0" />
-	  <CheckBoxPreference
-		  android:key="angband.showautolist"
-		  android:defaultValue="false"
-		  android:title="Auto display long lists"
-		  android:summary="When you are prompted for selection" />
-
-	  <CheckBoxPreference
-		  android:key="angband.useicons"
-		  android:defaultValue="true"
-		  android:title="Use Icons"
-		  android:summary="Use Icons for ribbon buttons" />
-
-	  	<ListPreference
-			android:title="Position of Fast Keys Popup"
-			android:key="angband.fk_popup_pos"
-			android:defaultValue="Hidden"
-			android:entries="@array/FastKeysPopupPosition"
-			android:entryValues="@array/FastKeysPopupPosition"/>
-
-		<CheckBoxPreference
-			android:key="angband.quantity_popup"
-			android:defaultValue="true"
-			android:title="Enable the quantity popup" />
-
-	</PreferenceScreen>
-
-	<PreferenceScreen
-	   android:title="Hardware Key Mapping"
-	   android:summary="Configure hardware buttons on your device to perform various functions">
-	  <PreferenceScreen
-		 android:title="Display Functions"
-		 android:summary="Change display, font size, virtual keyboard">
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.virtkeykey" android:title="Toggle Virtual Keyboard"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.zoominkey" android:title="Zoom In"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.zoomoutkey" android:title="Zoom Out"/>
-	  </PreferenceScreen>
-	  <PreferenceScreen
-		 android:title="Letters and Numbers"
-		 android:summary="A-Z, 0-9">
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.akey" android:title="A"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.bkey" android:title="B"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.ckey" android:title="C"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.dkey" android:title="D"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.ekey" android:title="E"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.fkey" android:title="F"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.gkey" android:title="G"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.hkey" android:title="H"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.ikey" android:title="I"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.jkey" android:title="J"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.kkey" android:title="K"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.lkey" android:title="L"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.mkey" android:title="M"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.nkey" android:title="N"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.okey" android:title="O"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.pkey" android:title="P"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.qkey" android:title="Q"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.rkey" android:title="R"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.skey" android:title="S"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.tkey" android:title="T"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.ukey" android:title="U"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.vkey" android:title="V"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.wkey" android:title="W"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.xkey" android:title="X"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.ykey" android:title="Y"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.zkey" android:title="Z"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.0key" android:title="0"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.1key" android:title="1"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.2key" android:title="2"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.3key" android:title="3"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.4key" android:title="4"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.5key" android:title="5"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.6key" android:title="6"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.7key" android:title="7"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.8key" android:title="8"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.9key" android:title="9"/>
-	  </PreferenceScreen>
-	  <PreferenceScreen
-		 android:title="Modifiers and Movers"
-		 android:summary="Esc, Ctrl, Shift, Alt, Space, Enter, Directions">
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.downkey" android:title="Arrow Down"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.leftkey" android:title="Arrow Left"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.rightkey" android:title="Arrow Right"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.upkey" android:title="Arrow Up"/>
-		<org.rephial.xyangband.KeyMapPreference
-			android:key="angband.dpadcenterkey" android:title="DPad Center"/>
-		<org.rephial.xyangband.KeyMapPreference
-			android:key="angband.homekey" android:title="Home"/>
-		<org.rephial.xyangband.KeyMapPreference
-			android:key="angband.endkey" android:title="End"/>
-		<org.rephial.xyangband.KeyMapPreference
-			android:key="angband.pageupkey" android:title="Page Up"/>
-		<org.rephial.xyangband.KeyMapPreference
-			android:key="angband.pagedownkey" android:title="Page Down"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.bkspacekey" android:title="Backspace"/>
-		<org.rephial.xyangband.KeyMapModPreference android:key="angband.ctrlkey" android:title="Control Key"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.enterkey" android:title="Enter Key"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.backkey" android:title="Back"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.esckey" android:title="Esc Key"/>
-		<org.rephial.xyangband.KeyMapModPreference android:key="angband.laltkey" android:title="Left Alt/Fn Key"/>
-		<org.rephial.xyangband.KeyMapModPreference android:key="angband.lshiftkey" android:title="Left Shift Key"/>
-		<org.rephial.xyangband.KeyMapModPreference android:key="angband.raltkey" android:title="Right Alt/Fn Key"/>
-		<org.rephial.xyangband.KeyMapModPreference android:key="angband.rshiftkey" android:title="Right Shift Key"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.spacekey" android:title="Space"/>
-	  </PreferenceScreen>
-	  <PreferenceScreen
-		 android:title="Symbols"
-		 android:summary="Punctuation and other non-alpha numeric keys">
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.ampkey" android:title="Ampersand &amp;"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.astkey" android:title="Asterisk *"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.atkey" android:title="At @"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.bquotekey" android:title="Back Quote `"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.bslashkey" android:title="Back Slash \\"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.colonkey" android:title="Colon :"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.commakey" android:title="Comma ,"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.dollarkey" android:title="Dollar $"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.dquotekey" android:title="Double Quote &quot;"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.equalkey" android:title="Equals ="/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.exclkey" android:title="Exclamation !"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.fslashkey" android:title="Forward Slash /"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.gtkey" android:title="Greater Than &gt;"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.lbkey" android:title="Left Brace ["/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.lckey" android:title="Left Curly {"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.lpkey" android:title="Left Paren ("/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.ltkey" android:title="Less Than &lt;"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.minuskey" android:title="Minus -"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.percentkey" android:title="Percent %"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.periodkey" android:title="Period ."/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.pipekey" android:title="Pipe |"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.pluskey" android:title="Plus +"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.poundkey" android:title="Pound #"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.questkey" android:title="Question ?"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.rbkey" android:title="Right Brace ]"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.rckey" android:title="Right Curly }"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.rpkey" android:title="Right Paren )"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.scolonkey" android:title="Semicolon ;"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.squotekey" android:title="Single Quote '"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.tildekey" android:title="Tilde ~"/>
-		<org.rephial.xyangband.KeyMapPreference android:key="angband.underkey" android:title="Underscore _"/>
-	  </PreferenceScreen>
-	  <ListPreference
-		 android:title="Ctrl Key Double-Tap"
-		 android:summary="Double tap function for hardware button mapped to the Ctrl Key function"
-		 android:key="angband.ctrldoubletap"
-		 android:defaultValue="EnterKey"
-		 android:entries="@array/virtKeyActionDescriptions"
-		 android:entryValues="@array/virtKeyActions"/>
-	  <org.rephial.xyangband.KeyMapResetPreference
-		 android:key="angband.resetallkeys"
-		 android:title="Reset all hardware keys"
-		 android:summary="Restores all key mappings back to the default configuration"/>
-	</PreferenceScreen>
-	<!--
-	<CheckBoxPreference
-	   android:key="angband.portraitkb"
-	   android:title="@string/preferences_portraitkb_title"
-	   android:summary="@string/preferences_portraitkb_summary"
-	   android:defaultValue="true"/>
-	<CheckBoxPreference
-	   android:key="angband.landscapekb"
-	   android:title="@string/preferences_landscapekb_title"
-	   android:summary="@string/preferences_landscapekb_summary"
-	   android:defaultValue="false"/>
-	-->
-
-	<PreferenceScreen
-		android:title="Directional Pad (D-Pad)"
-		android:summary="Configure options for the D-Pad">
-		<CheckBoxPreference
-			android:key="angband.enabletouch"
-			android:defaultValue="true"
-			android:title="@string/preferences_enabletouch_title"
-			android:summary="@string/preferences_enabletouch_summary" />
-		<CheckBoxPreference
-			android:key="angband.touchright"
-			android:defaultValue="true"
-			android:title="@string/preferences_touchright_title"
-			android:summary="@string/preferences_touchright_summary" />
-		<org.rephial.xyangband.SeekBarPreference
-			android:key="angband.touchmultiplier"
-			android:title="Touch directional size multiplier"
-			android:dependency="angband.touchright"
-			seekBar:min="0"
-			seekBar:max="100"
-			seekBar:defaultVal="0" />
-		<CheckBoxPreference
-			android:key="angband.enable_touch_drag"
-			android:defaultValue="true"
-			android:dependency="angband.touchright"
-			android:title="Allow drag-and-drop of the touch directionals"	/>
-		<ListPreference
-			android:title="Center screen tap action"
-			android:summary="Select functionality for center screen tap"
-			android:key="angband.centerscreentap"
-			android:defaultValue="Five"
-			android:entries="@array/virtKeyActionDescriptions"
-			android:entryValues="@array/virtKeyActions"/>
-		<ListPreference
-			android:title="D-Pad Color 1"
-			android:key="angband.dpad_color1"
-			android:defaultValue="@string/def_dpad_color1"
-			android:entries="@array/DPadColors"
-			android:entryValues="@array/DPadColors"/>
-		<ListPreference
-			android:title="D-Pad Color 2"
-			android:key="angband.dpad_color2"
-			android:defaultValue="@string/def_dpad_color2"
-			android:entries="@array/DPadColors"
-			android:entryValues="@array/DPadColors"/>
-	</PreferenceScreen>
-
-	<CheckBoxPreference
-		android:key="angband.debug_keycodes"
-		android:defaultValue="false"
-		android:title="Debug keycodes (external keyboards)"
-		android:summary="Display the numeric codes on screen" />
-  </PreferenceCategory>
+		<CheckBoxPreference android:key="angband.enable_soft_input" android:defaultValue="true" android:title="Enable Software Input" android:summary="If hidden, tap bottom left corner to enable" />
+		<CheckBoxPreference android:key="angband.allowKeyboardOverlap" android:defaultValue="true" android:title="@string/preferences_keyboardOverlap_title" android:summary="@string/preferences_keyboardOverlap_summary" />
+		<PreferenceScreen android:title="Soft Keyboard options" android:summary="Configure type and size of qwerty keyboard">
+			<org.rephial.xyangband.SeekBarPreference android:key="angband.keyboardOpacity" android:title="Keyboard Opacity" seekBar:min="0" seekBar:max="100" seekBar:defaultVal="50" />
+			<org.rephial.xyangband.SeekBarPreference android:key="angband.middleOpacity" android:title="Middle Opacity" seekBar:min="0" seekBar:max="100" seekBar:defaultVal="100" />
+			<CheckBoxPreference android:key="angband.use_adv_keyboard" android:defaultValue="true" android:title="Use Full Keyboard" android:summary="Turn OFF to display a mini-keyboard" />
+			<CheckBoxPreference android:key="angband.show_adv_keymaps" android:defaultValue="true" android:dependency="angband.use_adv_keyboard" android:title="Show keymaps if keymap mode is ON" />
+			<CheckBoxPreference android:key="angband.auto_hide_adv_kbd" android:defaultValue="false" android:dependency="angband.use_adv_keyboard" android:title="Hide keys after 5 seconds" />
+			<org.rephial.xyangband.SeekBarPreference android:key="angband.keyboard_width" android:title="Keyboard Width" android:dependency="angband.use_adv_keyboard" seekBar:min="0" seekBar:max="100" seekBar:defaultVal="100" />
+			<org.rephial.xyangband.SeekBarPreference android:key="angband.keyboard_height" android:title="Keyboard Height" seekBar:min="0" seekBar:max="100" seekBar:defaultVal="0" />
+		</PreferenceScreen>
+		<PreferenceScreen android:title="Button Ribbon options" android:summary="Configure things like button size or management of long lists">
+			<org.rephial.xyangband.SeekBarPreference android:key="angband.ribbonbuttonmult" android:title="Ribbon button size multiplier" seekBar:min="0" seekBar:max="100" seekBar:defaultVal="50" />
+			<org.rephial.xyangband.SeekBarPreference android:key="angband.reduce_buttons" android:title="Button width for long selections lists (try with 50%)" seekBar:min="0" seekBar:max="100" seekBar:defaultVal="0" />
+			<CheckBoxPreference android:key="angband.showautolist" android:defaultValue="false" android:title="Auto display long lists" android:summary="When you are prompted for selection" />
+			<CheckBoxPreference android:key="angband.useicons" android:defaultValue="true" android:title="Use Icons" android:summary="Use Icons for ribbon buttons" />
+			<ListPreference android:title="Position of Fast Keys Popup" android:key="angband.fk_popup_pos" android:defaultValue="Hidden" android:entries="@array/FastKeysPopupPosition" android:entryValues="@array/FastKeysPopupPosition" />
+			<CheckBoxPreference android:key="angband.quantity_popup" android:defaultValue="true" android:title="Enable the quantity popup" />
+		</PreferenceScreen>
+		<PreferenceScreen android:title="Hardware Key Mapping" android:summary="Configure hardware buttons on your device to perform various functions">
+			<PreferenceScreen android:title="Display Functions" android:summary="Change display, font size, virtual keyboard">
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.virtkeykey" android:title="Toggle Virtual Keyboard" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.zoominkey" android:title="Zoom In" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.zoomoutkey" android:title="Zoom Out" />
+			</PreferenceScreen>
+			<PreferenceScreen android:title="Letters and Numbers" android:summary="A-Z, 0-9">
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.akey" android:title="A" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.bkey" android:title="B" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.ckey" android:title="C" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.dkey" android:title="D" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.ekey" android:title="E" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.fkey" android:title="F" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.gkey" android:title="G" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.hkey" android:title="H" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.ikey" android:title="I" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.jkey" android:title="J" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.kkey" android:title="K" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.lkey" android:title="L" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.mkey" android:title="M" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.nkey" android:title="N" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.okey" android:title="O" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.pkey" android:title="P" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.qkey" android:title="Q" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.rkey" android:title="R" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.skey" android:title="S" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.tkey" android:title="T" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.ukey" android:title="U" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.vkey" android:title="V" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.wkey" android:title="W" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.xkey" android:title="X" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.ykey" android:title="Y" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.zkey" android:title="Z" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.0key" android:title="0" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.1key" android:title="1" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.2key" android:title="2" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.3key" android:title="3" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.4key" android:title="4" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.5key" android:title="5" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.6key" android:title="6" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.7key" android:title="7" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.8key" android:title="8" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.9key" android:title="9" />
+			</PreferenceScreen>
+			<PreferenceScreen android:title="Modifiers and Movers" android:summary="Esc, Ctrl, Shift, Alt, Space, Enter, Directions">
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.downkey" android:title="Arrow Down" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.leftkey" android:title="Arrow Left" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.rightkey" android:title="Arrow Right" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.upkey" android:title="Arrow Up" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.dpadcenterkey" android:title="DPad Center" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.homekey" android:title="Home" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.endkey" android:title="End" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.pageupkey" android:title="Page Up" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.pagedownkey" android:title="Page Down" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.bkspacekey" android:title="Backspace" />
+				<org.rephial.xyangband.KeyMapModPreference android:key="angband.ctrlkey" android:title="Control Key" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.enterkey" android:title="Enter Key" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.backkey" android:title="Back" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.esckey" android:title="Esc Key" />
+				<org.rephial.xyangband.KeyMapModPreference android:key="angband.laltkey" android:title="Left Alt/Fn Key" />
+				<org.rephial.xyangband.KeyMapModPreference android:key="angband.lshiftkey" android:title="Left Shift Key" />
+				<org.rephial.xyangband.KeyMapModPreference android:key="angband.raltkey" android:title="Right Alt/Fn Key" />
+				<org.rephial.xyangband.KeyMapModPreference android:key="angband.rshiftkey" android:title="Right Shift Key" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.spacekey" android:title="Space" />
+			</PreferenceScreen>
+			<PreferenceScreen android:title="Symbols" android:summary="Punctuation and other non-alpha numeric keys">
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.ampkey" android:title="Ampersand &amp;" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.astkey" android:title="Asterisk *" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.atkey" android:title="At @" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.bquotekey" android:title="Back Quote `" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.bslashkey" android:title="Back Slash \\" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.colonkey" android:title="Colon :" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.commakey" android:title="Comma ," />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.dollarkey" android:title="Dollar $" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.dquotekey" android:title="Double Quote &quot;" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.equalkey" android:title="Equals =" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.exclkey" android:title="Exclamation !" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.fslashkey" android:title="Forward Slash /" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.gtkey" android:title="Greater Than &gt;" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.lbkey" android:title="Left Brace [" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.lckey" android:title="Left Curly {" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.lpkey" android:title="Left Paren (" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.ltkey" android:title="Less Than &lt;" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.minuskey" android:title="Minus -" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.percentkey" android:title="Percent %" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.periodkey" android:title="Period ." />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.pipekey" android:title="Pipe |" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.pluskey" android:title="Plus +" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.poundkey" android:title="Pound #" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.questkey" android:title="Question ?" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.rbkey" android:title="Right Brace ]" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.rckey" android:title="Right Curly }" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.rpkey" android:title="Right Paren )" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.scolonkey" android:title="Semicolon ;" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.squotekey" android:title="Single Quote '" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.tildekey" android:title="Tilde ~" />
+				<org.rephial.xyangband.KeyMapPreference android:key="angband.underkey" android:title="Underscore _" />
+			</PreferenceScreen>
+			<ListPreference android:title="Ctrl Key Double-Tap" android:summary="Double tap function for hardware button mapped to the Ctrl Key function" android:key="angband.ctrldoubletap" android:defaultValue="EnterKey" android:entries="@array/virtKeyActionDescriptions" android:entryValues="@array/virtKeyActions" />
+			<org.rephial.xyangband.KeyMapResetPreference android:key="angband.resetallkeys" android:title="Reset all hardware keys" android:summary="Restores all key mappings back to the default configuration" />
+		</PreferenceScreen>
+		<PreferenceScreen android:title="Directional Pad (D-Pad)" android:summary="Configure options for the D-Pad">
+			<CheckBoxPreference android:key="angband.enabletouch" android:defaultValue="true" android:title="@string/preferences_enabletouch_title" android:summary="@string/preferences_enabletouch_summary" />
+			<CheckBoxPreference android:key="angband.touchright" android:defaultValue="true" android:title="@string/preferences_touchright_title" android:summary="@string/preferences_touchright_summary" />
+			<org.rephial.xyangband.SeekBarPreference android:key="angband.touchmultiplier" android:title="Touch directional size multiplier" android:dependency="angband.touchright" seekBar:min="0" seekBar:max="100" seekBar:defaultVal="0" />
+			<CheckBoxPreference android:key="angband.enable_touch_drag" android:defaultValue="true" android:dependency="angband.touchright" android:title="Allow drag-and-drop of the touch directionals" />
+			<ListPreference android:title="Center screen tap action" android:summary="Select functionality for center screen tap" android:key="angband.centerscreentap" android:defaultValue="Five" android:entries="@array/virtKeyActionDescriptions" android:entryValues="@array/virtKeyActions" />
+			<ListPreference android:title="D-Pad Color 1" android:key="angband.dpad_color1" android:defaultValue="@string/def_dpad_color1" android:entries="@array/DPadColors" android:entryValues="@array/DPadColors" />
+			<ListPreference android:title="D-Pad Color 2" android:key="angband.dpad_color2" android:defaultValue="@string/def_dpad_color2" android:entries="@array/DPadColors" android:entryValues="@array/DPadColors" />
+		</PreferenceScreen>
+		<CheckBoxPreference android:key="angband.debug_keycodes" android:defaultValue="false" android:title="Debug keycodes (external keyboards)" android:summary="Display the numeric codes on screen" />
+	</PreferenceCategory>
 </PreferenceScreen>
