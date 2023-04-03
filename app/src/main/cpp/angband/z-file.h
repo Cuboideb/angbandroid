@@ -246,7 +246,6 @@ bool file_putf(ang_file *f, const char *fmt, ...)
 	ATTRIBUTE ((format (printf, 2, 3)));
 bool file_vputf(ang_file *f, const char *fmt, va_list vp);
 
-
 /** Byte-based IO */
 
 /**

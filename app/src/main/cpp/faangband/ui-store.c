@@ -304,14 +304,14 @@ static void store_display_entry(struct menu *menu, int oid, bool cursor, int row
 		x = price_item(store, obj, false, 1);
 
 		/* Make sure the player can afford it */
-		if ((int) player->au < (int) x)
+		if (player->au < x)
 			colour = curs_attrs[CURS_UNKNOWN][(int)cursor];
 
 		/* Actually draw the price */
 		if (tval_can_have_charges(obj) && (obj->number > 1))
-			strnfmt(out_val, sizeof out_val, "%9d avg", x);
+			strnfmt(out_val, sizeof out_val, "%9ld avg", (long)x);
 		else
-			strnfmt(out_val, sizeof out_val, "%9d    ", x);
+			strnfmt(out_val, sizeof out_val, "%9ld    ", (long)x);
 
 		c_put_str(colour, out_val, row, ctx->scr_places_x[LOC_PRICE]);
 	}
@@ -352,8 +352,8 @@ static void store_display_frame(struct store_context *ctx)
 		put_str(buf, ctx->scr_places_y[LOC_OWNER], 1);
 
 		/* Show the max price in the store (above prices) */
-		strnfmt(buf, sizeof(buf), "%s (%d)", store_name,
-				proprietor->max_cost);
+		strnfmt(buf, sizeof(buf), "%s (%ld)", store_name,
+				(long)proprietor->max_cost);
 		prt(buf, ctx->scr_places_y[LOC_OWNER],
 			ctx->scr_places_x[LOC_OWNER] - strlen(buf));
 
@@ -452,7 +452,7 @@ static void store_redraw(struct store_context *ctx)
 	}
 
 	if (ctx->flags & (STORE_GOLD_CHANGE)) {
-		prt(format("Gold Remaining: %9d", player->au),
+		prt(format("Gold Remaining: %9ld", (long)player->au),
 				ctx->scr_places_y[LOC_AU], ctx->scr_places_x[LOC_AU]);
 		ctx->flags &= ~(STORE_GOLD_CHANGE);
 	}
@@ -553,14 +553,14 @@ static bool store_sell(struct store_context *ctx)
 	/* Real store */
 	if (!store_is_home(store)) {
 		/* Extract the value of the items */
-		uint32_t price = price_item(store, temp_obj, true, amt);
+		int32_t price = price_item(store, temp_obj, true, amt);
 
 		object_wipe(temp_obj);
 		screen_save();
 
 		/* Show price */
 		if (!OPT(player, birth_no_selling))
-			prt(format("Price: %d", price), 1, 0);
+			prt(format("Price: %ld", (long)price), 1, 0);
 
 		/* Confirm sale */
 		if (!store_get_check(format("%s %s? [ESC, any other key to accept]",
@@ -618,7 +618,7 @@ static bool store_purchase(struct store_context *ctx, int item, bool single)
 
 		/* Check if the player can afford any at all */
 		if (!store_is_home(store) &&
-				(int)player->au < (int)price_item(store, obj, false, 1)) {
+				player->au < price_item(store, obj, false, 1)) {
 			msg("You do not have enough gold for this item.");
 			return false;
 		}
@@ -710,7 +710,7 @@ static bool store_purchase(struct store_context *ctx, int item, bool single)
 		screen_save();
 
 		/* Show price */
-		prt(format("Price: %d", price), 1, 0);
+		prt(format("Price: %ld", (long)price), 1, 0);
 
 		/* Confirm purchase */
 		response = store_get_check(format("Buy %s?%s %s",
@@ -960,7 +960,7 @@ static bool handle_g_context_store_item(struct menu *menu,
 }
 
 /* pick the context menu options appropiate for an item available in a store */
-static void context_menu_store_item(struct store_context *ctx, const int oid, int mx, int my)
+static bool context_menu_store_item(struct store_context *ctx, const int oid, int mx, int my)
 {
 	bool home = store_is_home(ctx->store);
 
@@ -1015,14 +1015,13 @@ static void context_menu_store_item(struct store_context *ctx, const int oid, in
 	switch (selected) {
 		case ACT_EXAMINE:
 			store_examine(ctx, oid);
-			break;
+			return false;
 		case ACT_BUY:
-			store_purchase(ctx, oid, false);
-			break;
+			return store_purchase(ctx, oid, false);
 		case ACT_BUY_ONE:
-			store_purchase(ctx, oid, true);
-			break;
+			return store_purchase(ctx, oid, true);
 	}
+	return false;
 }
 
 /**
@@ -1037,7 +1036,7 @@ static bool store_menu_handle(struct menu *m, const ui_event *event, int oid)
 	if (event->type == EVT_SELECT) {
 		/* Hack -- there's no mouse event coordinates to use for */
 		/* menu_store_item, so fake one as if mouse clicked on letter */
-		context_menu_store_item(ctx, oid, 1, m->active.row + oid);
+		bool purchased = context_menu_store_item(ctx, oid, 1, m->active.row + oid);
 		ctx->flags |= (STORE_FRAME_CHANGE | STORE_GOLD_CHANGE);
 
 		/* Let the game handle any core commands (equipping, etc) */
@@ -1047,10 +1046,12 @@ static bool store_menu_handle(struct menu *m, const ui_event *event, int oid)
 		notice_stuff(player);
 		handle_stuff(player);
 
-		/* Display the store */
-		store_display_recalc(ctx);
-		store_menu_recalc(m);
-		store_redraw(ctx);
+		if (purchased) {
+			/* Display the store */
+			store_display_recalc(ctx);
+			store_menu_recalc(m);
+			store_redraw(ctx);
+		}
 
 		return true;
 	} else if (event->type == EVT_MOUSE) {

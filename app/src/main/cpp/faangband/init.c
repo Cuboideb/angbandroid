@@ -1212,7 +1212,12 @@ static enum parser_error parse_player_prop_bindui(struct parser *p) {
 			mem_free(boundui);
 			return PARSE_ERROR_NOT_NUMBER;
 		}
-		if (v < INT_MIN || v > INT_MAX) {
+		/*
+		 * Also reject INT_MIN and INT_MAX so we don't have to check
+		 * errno to detect out of range values on platforms where
+		 * sizeof(int) == sizeof(long).
+		 */
+		if (v <= INT_MIN || v >= INT_MAX) {
 			string_free(boundui->name);
 			mem_free(boundui);
 			return PARSE_ERROR_INVALID_VALUE;
@@ -3812,8 +3817,9 @@ static enum parser_error parse_class_book_properties(struct parser *p) {
 	k->alloc_prob = parser_getint(p, "common");
 
 	tmp = parser_getstr(p, "minmax");
-	if (sscanf(tmp, "%d to %d", &amin, &amax) != 2)
+	if (grab_int_range(&amin, &amax, tmp, "to")) {
 		return PARSE_ERROR_INVALID_ALLOCATION;
+	}
 	k->level = amin;
 	k->alloc_min = amin;
 	k->alloc_max = amax;
@@ -4558,6 +4564,7 @@ void cleanup_angband(void)
 	if (cave) {
 		cave_free(cave);
 		cave = NULL;
+		character_dungeon = false;
 	}
 
 	monster_list_finalize();

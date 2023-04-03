@@ -6,15 +6,15 @@ apply plugin: 'com.android.application'
 def my_abi_filters = local_props("ABI_FILTERS")
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
     buildToolsVersion "30.0.3"
     ndkVersion "21.0.6113669"
     defaultConfig {
         applicationId "org.rephial.xyangband"
         minSdkVersion 22
-        targetSdk 31
-        versionCode 95
-        versionName "1.34.4"
+        targetSdk 33
+        versionCode 96
+        versionName "1.34.5"
         externalNativeBuild {
             cmake {
                 // flags for the c++ compiler eg "-std=c++14 -frtti -fexceptions"

@@ -138,7 +138,6 @@ void Rand_init(void)
 		seed = (uint32_t)(time(NULL));
 
 #ifdef UNIX
-
 		/* Mutate the seed on Unix machines */
 		seed = ((seed >> 3) * (getpid() << 1));
 #elif defined(_WIN32)
