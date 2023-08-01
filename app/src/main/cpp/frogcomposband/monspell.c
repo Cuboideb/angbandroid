@@ -1662,6 +1662,21 @@ static int _avg_roll(dice_t dice)
         roll += dice.dd * (dice.ds + 1)/2;
     return roll;
 }
+static int _min_roll(dice_t dice)
+{
+    int roll = dice.base;
+    if (dice.dd && dice.ds)
+        roll += dice.dd;
+    return roll;
+}
+static int _max_roll(dice_t dice)
+{
+    int roll = dice.base;
+    if (dice.dd && dice.ds)
+        roll += dice.dd * dice.ds;
+    return roll;
+}
+
 static bool _ball_stop_hack = FALSE;
 
 static void _ball(void)
@@ -3983,7 +3998,7 @@ static void _ai_indirect(mon_spell_cast_ptr cast)
     _remove_group(spells->groups[MST_BEAM], NULL);
     _remove_group(spells->groups[MST_BIFF], NULL);
     if ((!hurt) || (!mon_is_superbuff(cast->mon, FALSE)))
-    _remove_group(spells->groups[MST_BUFF], NULL);
+      _remove_group(spells->groups[MST_BUFF], NULL);
     _remove_group(spells->groups[MST_CURSE], NULL);
     _remove_group(spells->groups[MST_WEIRD], NULL);
     _remove_spell(spells, _id(MST_BALL, GF_ROCKET));
@@ -4506,14 +4521,20 @@ static int _align_dam(mon_spell_ptr spell, int dam)
     }
     return dam;
 }
-static int _avg_spell_dam_aux(mon_spell_ptr spell, int hp, bool apply_resist)
+static int _spell_dam_aux(mon_spell_ptr spell, int hp, bool apply_resist, byte roll_type)
 {
     if (!_is_attack_spell(spell)) return 0;
     if (spell->parm.tag == MSP_DICE)
     {
         dice_t dice = spell->parm.v.dice;
-        int dam = _avg_roll(dice);
+        int dam = 0;
         int res = apply_resist ? _spell_res(spell) : 0;
+        switch (roll_type)
+        {
+            case 1: dam = _min_roll(dice); break;
+            case 2: dam = _max_roll(dice); break;
+            default: dam = _avg_roll(dice); break;
+        }
         dam = _align_dam(spell, dam);
         if (res)
             dam -= dam * res / 100;
@@ -4534,18 +4555,52 @@ static int _avg_spell_dam_aux(mon_spell_ptr spell, int hp, bool apply_resist)
     }
     return 0;
 }
+int _adjust_dam_weird_stuff(int tulos, mon_spell_ptr spell, bool apply_resist)
+{
+    if (!tulos) return 0;
+    if ((spell->id.effect == GF_AIR) && ((apply_resist) || (p_ptr->no_air))) tulos = tulos * 9 / 5;
+    if (!apply_resist) return tulos;
+    if (((spell->id.effect == GF_POIS) || (spell->id.effect == GF_NUKE)))
+        tulos = tulos * 7 / 4; /* Poison adjustment */
+    if ((spell->id.effect == GF_ACID) && (equip_find_first(object_is_armour))) tulos /= 2;
+    return tulos;
+}
+void mon_spell_dam_range(string_ptr s, mon_spell_ptr spell, mon_race_ptr race, bool apply_resist)
+{
+    int min, max;
+    if (!_is_attack_spell(spell))
+    {
+      string_append_c(s, '0');
+      return;
+    }
+    min = _spell_dam_aux(spell, _avg_hp(race), apply_resist, 1);
+    max = _spell_dam_aux(spell, _avg_hp(race), apply_resist, 2);
+    apply_resist = (apply_resist && (_spell_res(spell)));
+    if (min != max)
+    {
+        char *approx = (apply_resist ? "~" : "");
+        if ((spell->parm.tag == MSP_DICE) && (spell->parm.v.dice.dd > 1) && (!apply_resist))
+        {
+             mon_spell_parm_print(&spell->parm, s, race);
+             return;
+        }
+        string_printf(s, "%s%d-%s%d", approx, min, approx, max);
+    }
+    else
+    {
+        string_printf(s, "%s%d", apply_resist ? "~" : "", min);
+    }
+    return;
+}
 int mon_spell_avg_dam(mon_spell_ptr spell, mon_race_ptr race, bool apply_resist)
 {
-    int tulos = _avg_spell_dam_aux(spell, _avg_hp(race), apply_resist);
-    if ((tulos) && (apply_resist) && ((spell->id.effect == GF_POIS) || (spell->id.effect == GF_NUKE)))
-        tulos = tulos * 7 / 4; /* Poison adjustment */
-    if (((p_ptr->no_air) || (apply_resist)) && (spell->id.effect == GF_AIR)) tulos = tulos * 9 / 5;
-    if ((apply_resist) && (spell->id.effect == GF_ACID) && (equip_find_first(object_is_armour))) tulos /= 2;
-    return tulos;
+    int tulos = _spell_dam_aux(spell, _avg_hp(race), apply_resist, 0);
+    if ((!apply_resist) && (p_ptr->no_air) && (spell->id.effect == GF_AIR)) tulos = tulos * 9 / 5;
+    return _adjust_dam_weird_stuff(tulos, spell, apply_resist);
 }
 int _avg_spell_dam(mon_ptr mon, mon_spell_ptr spell)
 {
-    return _avg_spell_dam_aux(spell, mon->hp, TRUE);
+    return _spell_dam_aux(spell, mon->hp, TRUE, 0);
 }
 void mon_spell_wizard(mon_ptr mon, mon_spell_ai ai, doc_ptr doc)
 {

@@ -34,7 +34,6 @@
 #include "project.h"
 #include "trap.h"
 
-#include "droid.h"
 
 int eff_level(struct player *p)
 {
@@ -214,11 +213,7 @@ bool effect_handler_ALTER(effect_handler_context_t *context)
  */
 bool effect_handler_HEAL_HP(effect_handler_context_t *context)
 {
-	int num;
-
-	/* Paranoia */
-	if ((context->value.m_bonus <= 0) && (context->value.base <= 0))
-		return (true);
+	int num, minh;
 
 	/* Always ID */
 	context->ident = true;
@@ -230,7 +225,16 @@ bool effect_handler_HEAL_HP(effect_handler_context_t *context)
 	num = ((player->mhp - player->chp) * context->value.m_bonus) / 100;
 
 	/* Enforce minimum */
-	if (num < context->value.base) num = context->value.base;
+	minh = context->value.base
+		+ damroll(context->value.dice, context->value.sides);
+	if (num < minh) num = minh;
+	if (num <= 0) {
+		/*
+		 * There's no healing: either because not damaged enough for the
+		 * the bonus amount to matter or the effect was misconfigured.
+		 */
+		return true;
+	}
 
 	/* Gain hitpoints */
 	player->chp += num;
@@ -908,12 +912,6 @@ bool effect_handler_BREATH(effect_handler_context_t *context)
 			diameter_of_source = 25;
 	}
 
-	/* For the ANDROID port*/
-	if (z_info->max_range < 20 && diameter_of_source > 0) {
-		diameter_of_source = (z_info->max_range * diameter_of_source) / 20;
-		diameter_of_source = MAX(diameter_of_source, 1);
-	}
-
 	/* Breathe at the target */
 	if (project(context->origin, rad, target, dam, type, flg, degrees_of_arc,
 				diameter_of_source, context->obj))
@@ -980,12 +978,6 @@ bool effect_handler_ARC(effect_handler_context_t *context)
 	/* Max */
 	if (diameter_of_source > 25) {
 		diameter_of_source = 25;
-	}
-
-	/* For the ANDROID port*/
-	if (z_info->max_range < 20 && diameter_of_source > 0) {
-		diameter_of_source = (z_info->max_range * diameter_of_source) / 20;
-		diameter_of_source = MAX(diameter_of_source, 1);
 	}
 
 	/* Aim at the target */
@@ -1657,6 +1649,17 @@ bool effect_handler_EARTHQUAKE(effect_handler_context_t *context)
 
 	context->ident = true;
 
+	/* Sometimes ask for a target */
+	if (targeted) {
+		int dir = DIR_TARGET;
+		if (!get_aim_dir(&dir)) {
+			return false;
+		}
+		if ((dir == DIR_TARGET) && target_okay()) {
+			target_get(&centre);
+		}
+	}
+
 	if ((player->depth) && ((!player->upkeep->arena_level)
 							|| (context->origin.what == SRC_MONSTER))) {
 		msg("The ground shakes! The ceiling caves in!");
@@ -1664,15 +1667,6 @@ bool effect_handler_EARTHQUAKE(effect_handler_context_t *context)
 		/* No effect in town or arena */
 		msg("The ground shakes for a moment.");
 		return true;
-	}
-
-	/* Sometimes ask for a target */
-	if (targeted) {
-		int dir = DIR_TARGET;
-		get_aim_dir(&dir);
-		if ((dir == DIR_TARGET) && target_okay()) {
-			target_get(&centre);
-		}
 	}
 
 	/* Paranoia -- Enforce maximum range */

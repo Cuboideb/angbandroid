@@ -324,6 +324,9 @@ static void rd_options(savefile_ptr file)
         list_stairs = FALSE;
     }
 
+    /* Changed default (not really applicable in all cases, but it's okay) */
+    if (savefile_is_older_than(file, 7, 1, 3, 6)) show_damage_range = !show_damage_range;
+
     /* Former slot of coffee_break mode option is now occupied by show_rogue_keys */
     if (savefile_is_older_than(file, 7, 1, 2, 1))
     {

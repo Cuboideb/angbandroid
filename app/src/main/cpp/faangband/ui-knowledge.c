@@ -1205,7 +1205,7 @@ static int m_cmp_race(const void *a, const void *b)
 			}
 			if (r_b->base == monster_group[gid].inc_bases[i]) {
 				base_b = i;
-	}
+			}
 		}
 		c = base_a - base_b;
 		if (c) {
@@ -1343,7 +1343,7 @@ static void do_cmd_knowledge_monsters(const char *name, int row)
 		mon_summary, n_monster_group, false };
 
 	member_funcs m_funcs = {display_monster, mon_lore, m_xchar, m_xattr,
-							recall_prompt, 0, 0};
+		recall_prompt, 0, 0};
 
 	int *monsters;
 	int m_count = count_known_monsters(), i, ind;
@@ -1380,8 +1380,8 @@ static void do_cmd_knowledge_monsters(const char *name, int row)
 						classified = true;
 						break;
 					}
-		}
-	}
+				}
+			}
 			if (!has_base && rf_is_inter(race->flags,
 					monster_group[j].inc_flags)) {
 				assert(ind < m_count);

@@ -1511,9 +1511,9 @@ bool gf_affect_m(int who, mon_ptr mon, int type, int dam, int flags)
     byte old_ash = attack_spell_hack;
     bool ash_changed = FALSE; /* Paranoia - try to handle potential loops */
 
-    bool who_is_pet = FALSE;
+    /* bool who_is_pet = FALSE;
     if (who > 0 && is_pet(&m_list[who]))
-        who_is_pet = TRUE;
+        who_is_pet = TRUE; */
 
     /* Never affect projector */
     if (mon->id == who) return FALSE;
@@ -2881,13 +2881,14 @@ bool gf_affect_m(int who, mon_ptr mon, int type, int dam, int flags)
         }
         else if (race->level > randint1((dam - 10) < 1 ? 1 : (dam - 10)) + 10)
         {
-            note = " resists.";
+            note = MON_SLOW(mon) ? " remains slowed." : " resists.";
             obvious = FALSE;
         }
         else
         {
             if (set_monster_slow(mon->id, MON_SLOW(mon) + 50))
                 note = " starts moving <color:s>slower</color>.";
+            else note = " continues moving <color:s>slower</color>.";
         }
         dam = 0;
         break;
@@ -4549,17 +4550,7 @@ bool gf_affect_m(int who, mon_ptr mon, int type, int dam, int flags)
                 msg_format("%^s%s", m_name, note);
             }
 
-            if (who > 0) monster_gain_exp(who, mon->id);
-
-            pack_on_slay_monster(mon->id);
-
-            mon_check_kill_unique(mon->id);
-
-            /* Generate treasure, etc */
-            monster_death(mon->id, who_is_pet);
-
-            /* Delete the monster */
-            delete_monster_idx(mon->id);
+            mon_kill_mon(mon, who);
 
             if (sad)
             {

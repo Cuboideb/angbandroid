@@ -830,7 +830,9 @@ static obj_ptr _unwield_get_obj(void)
     prompt.where[1] = INV_QUIVER;
     if (get_race()->bonus_pack) prompt.where[2] = INV_SPECIAL1;
 
+    if (black_curses) od_xtra_context = OD_BLACK_CURSES;
     obj_prompt(&prompt);
+    od_xtra_context = 0;
     return prompt.obj;
 }
 

@@ -348,6 +348,7 @@ static bool _object_gives_esdm(object_type *o_ptr, u32b flgs[OF_ARRAY_SIZE],  bo
             if (warlock_is_(WARLOCK_DEMONS)) return (o_ptr->name1 == ART_STONE_OF_DAEMON);
             return FALSE;
         }
+        if (p_ptr->pclass == CLASS_ROGUE) return ((!easy_spell) & (p_ptr->realm1 == REALM_BURGLARY) && (o_ptr->name1 == ART_DOGRAM));
     }
     else if (o_ptr->name2)
     {

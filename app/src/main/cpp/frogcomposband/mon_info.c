@@ -490,6 +490,10 @@ static void _display_spell_group(mon_race_ptr r_ptr, mon_spell_group_ptr group, 
                         if (spell->id.type == MST_CURSE && spell->id.effect == GF_HAND_DOOM)
                             string_append_c(s, '%');
                     }
+                    else if (show_damage_range)
+                    {
+                        mon_spell_dam_range(s, spell, r_ptr, !_possessor_hack);
+                    }
                     else
                         string_printf(s, "%d", mon_spell_avg_dam(spell, r_ptr, !_possessor_hack));
                     if (!spoiler_hack && !_possessor_hack && spell->lore) /* XXX stop repeating yourself! */

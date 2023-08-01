@@ -7373,7 +7373,7 @@ static cptr do_music_spell(int spell, int mode)
 
     case 9:
         if (name) return "Soul Shriek";
-        if (desc) return "Damages all monsters in sight with PSI damages.";
+        if (desc) return "Inflicts psionic damage on all monsters in sight.";
 
         /* Stop singing before start another */
         if (cast || fail) bard_stop_singing();

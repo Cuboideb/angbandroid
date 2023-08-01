@@ -718,7 +718,7 @@ static void _build_flags2(doc_ptr doc, _flagzilla_ptr flagzilla)
     doc_printf(doc, " %3d%%\n", _regen / PY_REGEN_NORMAL * mutant_regenerate_mod / 100);
 
     _build_flags_imp(doc, " SP Regen", OF_REGEN_MANA, OF_INVALID, flagzilla);
-    if (p_ptr->msp) doc_printf(doc, " %3d%%", (p_ptr->mana_regen ? _regen * 2 : _regen) / PY_REGEN_NORMAL);
+    if (p_ptr->msp) doc_printf(doc, " %3d%%", ((p_ptr->pclass == CLASS_RUNE_KNIGHT || p_ptr->pclass == CLASS_RAGE_MAGE || mimic_no_regen()) ? 0 : (p_ptr->mana_regen ? _regen * 2 : _regen) / PY_REGEN_NORMAL));
     doc_newline(doc);
 
     _build_flags_imp(doc, "Hold Life", OF_HOLD_LIFE, OF_INVALID, flagzilla);

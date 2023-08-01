@@ -1964,9 +1964,10 @@ static int remove_curse_aux(int all)
         {
             o_ptr->curse_flags &= (OFC_CURSED | OFC_HEAVY_CURSE | OFC_PERMA_CURSE);
             o_ptr->known_curse_flags &= (OFC_CURSED | OFC_HEAVY_CURSE | OFC_PERMA_CURSE);
+            p_ptr->update |= PU_BONUS;
+            p_ptr->redraw |= PR_EFFECTS;
             continue;
         }
-
         o_ptr->curse_flags = 0;
         o_ptr->known_curse_flags = 0; /* Forget lore in preparation for next cursing */
         o_ptr->ident  |= IDENT_SENSE;

@@ -300,6 +300,34 @@ static bool get_enemy_dir(int m_idx, int *mm)
     return TRUE;
 }
 
+void mon_kill_mon(mon_ptr mon, int who)
+{
+    monster_race *r_ptr = &r_info[mon->r_idx];
+    bool do_drop = FALSE;
+
+    if ((who > 0) && (is_pet(&m_list[who])))
+        do_drop = TRUE;
+
+    /* Mega-hack - silver angels shouldn't drop a can of toys every time */
+    if ((do_drop) && (mon->r_idx == MON_A_SILVER))
+    {
+        if (r_ptr->r_akills < MAX_SHORT) r_ptr->r_akills++;
+        if (r_ptr->r_tkills < MAX_SHORT) r_ptr->r_tkills++;
+    }
+
+    pack_on_slay_monster(mon->id);
+
+    if (who > 0) monster_gain_exp(who, mon->id);
+
+    mon_check_kill_unique(mon->id);
+
+    /* Generate treasure */
+    monster_death(mon->id, do_drop);
+
+    /* Delete the monster */
+    delete_monster_idx(mon->id);
+}
+
 
 /*
  * Hack, based on mon_take_hit... perhaps all monster attacks on
@@ -310,17 +338,12 @@ void mon_take_hit_mon(int m_idx, int dam, bool *fear, cptr note, int who)
     monster_type    *m_ptr = &m_list[m_idx];
 
     monster_race    *r_ptr = &r_info[m_ptr->r_idx];
-    bool             who_is_pet = FALSE;
 
     char m_name[160];
 
     bool seen = mon_show_msg(m_ptr);
-
     /* Can the player be aware of this attack? */
     bool known = (m_ptr->cdis <= MAX_SIGHT);
-
-    if (who && is_pet(&m_list[who]))
-        who_is_pet = TRUE;
 
     /* Extract monster name */
     monster_desc(m_name, m_ptr, 0);
@@ -414,17 +437,7 @@ void mon_take_hit_mon(int m_idx, int dam, bool *fear, cptr note, int who)
                 }
             }
 
-            pack_on_slay_monster(m_idx);
-
-            monster_gain_exp(who, m_idx);
-
-            mon_check_kill_unique(m_idx);
-
-            /* Generate treasure */
-            monster_death(m_idx, who_is_pet);
-
-            /* Delete the monster */
-            delete_monster_idx(m_idx);
+            mon_kill_mon(m_ptr, who);
 
             /* Not afraid */
             (*fear) = FALSE;

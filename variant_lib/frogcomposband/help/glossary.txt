@@ -148,6 +148,8 @@ See <link:objects.txt#InscriptionAbbrev> for item attribute abbreviations.
 
 <color:keyword>HP</color>: Hit points. A character or monster whose hit points drop below 0 will die.
 
+<color:keyword>icky floor</color>: An area with the specific quality of not being a valid teleport destination, irrespective of terrain features, traps or occupying monsters. An icky tile also prevents any objects on it from being fetched with telekinesis. Teleporting into a vault is usually impossible due to the area inside being icky, although earthquakes or other terrain-modifying effects may result in the ickiness being lost.
+
 <color:keyword>icky wield</color>: Equipping an item unsuitable for the class, giving class-dependent penalties while the icky item remains equipped.
 
 <color:keyword>ID</color>: Identify. <color:o>*ID*</color>: *Identify*, full identification of an item.

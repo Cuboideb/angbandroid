@@ -157,12 +157,7 @@ static bool _purge_curse_which(object_type *o_ptr)
 
     object_desc(o_name, o_ptr, OD_COLOR_CODED | OD_NAME_ONLY | OD_OMIT_PREFIX);
 
-    if (!mummy_can_remove(o_ptr))
-    {
-        msg_format("You are not powerful enough to uncurse this object.");
-        return FALSE;
-    }
-    else if (o_ptr->curse_flags & OFC_PERMA_CURSE)
+    if ((o_ptr->curse_flags & OFC_PERMA_CURSE) && (p_ptr->lev >= 25))
     {
         if (o_ptr->curse_flags == (o_ptr->curse_flags & (OFC_PERMA_CURSE | OFC_HEAVY_CURSE | OFC_CURSED)))
         {
@@ -178,6 +173,11 @@ static bool _purge_curse_which(object_type *o_ptr)
         p_ptr->redraw |= PR_EFFECTS;
         msg_format("The curse on your %s is permanent. Lesser curses are stripped away.", o_name);
         return TRUE;
+    }
+    else if (!mummy_can_remove(o_ptr))
+    {
+        msg_format("You are not powerful enough to uncurse this object.");
+        return FALSE;
     }
     else if (o_ptr->curse_flags & OFC_HEAVY_CURSE)
     {

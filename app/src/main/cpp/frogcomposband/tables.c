@@ -2301,6 +2301,9 @@ option_type option_info[] =
     { &reforge_details,              TRUE,  OPT_PAGE_TEXT, 2, 16,
     "reforge_details",              "Show statistics before proceeding with a reforge" },
 
+    { &show_damage_range,            FALSE, OPT_PAGE_TEXT, 4, 22,
+    "show_damage_range",            "Show non-melee damages as ranges in monster info" },
+
 
     /*** Game-Play ***/
 
@@ -2588,6 +2591,9 @@ option_type option_info[] =
 
     { &shops_mark_unseen,           FALSE, OPT_PAGE_LIST, 0, 31,
     "shops_mark_unseen",            "Indicate unknown flavors in shop inventories" },
+
+    { &black_curses,                TRUE,  OPT_PAGE_LIST, 4, 23,
+    "black_curses",                 "Show cursed items as black in unwield menu" },
 
     { &display_distance,            FALSE,  OPT_PAGE_LIST, 1, 4,
     "display_distance",             "Display distance in monster list" },

@@ -337,6 +337,9 @@ If this option is on, the character sheet displays the player's skills numerical
 <topic:reforge_details><color:U>Show statistics before proceeding with a reforge</color> <color:D>(reforge_details)</color>
 This option shows statistics about how good a reforge result is likely to be (and why), gives warnings in case of reforges that look particularly misguided, and allows you to cancel the reforge if the statistics are not to your liking.
 
+<topic:show_damage_range><color:U>Show non-melee damages as ranges in monster info</color> <color:D>(show_damage_range)</color>
+If this option is on, monster recall will display known non-melee damage information as ranges or dice rolls, as opposed to the traditional averages. (The ranges shown do not account for the slight randomness in damage reduction from resistances, although the ~ sign is included in such cases to indicate an approximation. The ranges displayed also assume a monster power of 100% and an average max HP for the race.)
+
 </indent>
 <topic:GamePlay><style:heading>Game Play Options</style>
   <indent>
@@ -513,6 +516,9 @@ Displays graphical representations of items (<color:B>/</color>, <color:g>(</col
 
 <topic:shops_mark_unseen><color:U>Indicate unknown flavors in shop inventories</color> <color:D>(shops_mark_unseen)</color>
 If this option is on, potions, scrolls and mushrooms whose flavor has not yet been identified will be marked {unseen} in shop inventories.
+
+<topic:black_curses><color:U>Show cursed items as black in unwield menu</color> <color:D>(black_curses)</color>
+If this option is on, sticky items will be displayed in black while taking off equipment.
 
 <topic:display_distance><color:U>Display distance in monster list</color> <color:D>(display_distance)</color>
 If this option is on, the distance between a player and a monster will be displayed when the monster is targeted; for example, "Rng 4" for a monster 4 squares away. The distance will also be displayed in the monster list if only one monster of that race is visible; with the option off, the list instead displays the monster's coordinates relative to the player.

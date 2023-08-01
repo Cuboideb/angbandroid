@@ -1044,7 +1044,10 @@ void object_desc(char *buf, object_type *o_ptr, u32b mode)
     object_kind    *k_ptr = &k_info[o_ptr->k_idx];
     object_kind    *flavor_k_ptr = &k_info[k_ptr->flavor];
 
-    int             number = (mode & OD_SINGULAR) ? 1 : o_ptr->number;
+    int             number;
+
+    mode |= (od_xtra_context);
+    number = (mode & OD_SINGULAR) ? 1 : o_ptr->number;
 
     /* Extract some flags */
     obj_flags(o_ptr, flgs); /* TR_FULL_NAME and TR_SHOW_MODS should never really be hidden ... */
@@ -2431,7 +2434,10 @@ void object_desc(char *buf, object_type *o_ptr, u32b mode)
 
 object_desc_done:
     if (mode & OD_COLOR_CODED)
-        sprintf(buf, "<color:%c>%s</color>", tval_to_attr_char(o_ptr->tval), tmp_val);
+    {
+        char attr = ((mode & OD_BLACK_CURSES) && (object_is_cursed(o_ptr))) ? 'D' : tval_to_attr_char(o_ptr->tval);
+        sprintf(buf, "<color:%c>%s</color>", attr, tmp_val);
+    }
     else
         my_strcpy(buf, tmp_val, MAX_NLEN);
 }

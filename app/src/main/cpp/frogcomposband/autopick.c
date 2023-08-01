@@ -980,14 +980,14 @@ void autopick_load_pref(byte mode)
         /* Try a filename with pref base */
         my_strcpy(buf, pickpref_filename(PT_WITH_PREFNAME, NULL), sizeof(buf));
 
-    /* Load the file */
-    err = process_autopick_file(buf);
+        /* Load the file */
+        err = process_autopick_file(buf);
 
-    if (err == 0 && disp_mes)
-    {
-        /* Success */
-        msg_format("Loaded '%s'.", buf);
-    }
+        if (err == 0 && disp_mes)
+        {
+            /* Success */
+            msg_format("Loaded '%s'.", buf);
+        }
     }
 
     /* Compatibility */
@@ -1045,7 +1045,7 @@ void autopick_load_pref(byte mode)
      * in lib/pref, nor does it look for lib/user/pickpref-UserDefault.prf.
      * It looks for a copy of pickpref.prf in lib/user */
     if (err)
-        {
+    {
         /* Use default name */
         my_strcpy(buf, pickpref_filename(PT_DEFAULT, NULL), sizeof(buf));
 
@@ -3464,9 +3464,9 @@ static cptr *read_pickpref_text_lines(int *filename_mode_p, char *other_base)
     if ((!lines_list) && (!streq(player_base, pref_save_base)))
     {
         /* Compatibility - try full name */
-    *filename_mode_p = PT_WITH_PNAME;
-    strcpy(buf, pickpref_filename(*filename_mode_p, NULL));
-    lines_list = read_text_lines(buf);
+        *filename_mode_p = PT_WITH_PNAME;
+        strcpy(buf, pickpref_filename(*filename_mode_p, NULL));
+        lines_list = read_text_lines(buf);
 
         if (lines_list)
         {

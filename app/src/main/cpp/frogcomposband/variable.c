@@ -174,6 +174,7 @@ s16b shuffling_hack_hp = 0;
 byte poison_warning_hack = 0;
 byte energy_need_hack = 40;
 s16b energy_cost_hack = 0;
+s32b od_xtra_context = 0; /* for indirect calls to object_desc() */
 bool show_energy_cost;
 bool spawn_hack = FALSE;
 bool atlantis_hack = FALSE;
@@ -301,8 +302,10 @@ bool reforge_details; /* Show statistics before proceeding with reforge */
 bool auto_sticky_labels; /* Automatically make power labels sticky */
 bool show_power; /* Display device powers in inventory */
 bool show_rogue_keys; /* Display roguelike keys if possible */
+bool show_damage_range; /* Show non-melee damages as ranges in monster info */
 bool decimal_stats; /* Decimalized stat display */
 bool percentage_life; /* Show life rating as a percentage */
+bool black_curses; /* Show cursed items as black in unwielding menu */
 bool obj_list_width;
 byte object_list_width = 50;
 bool mon_list_width;

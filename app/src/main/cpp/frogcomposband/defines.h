@@ -19,7 +19,7 @@
 #define VER_MAJOR 7
 #define VER_MINOR 1
 #define VER_PATCH "salmiak"
-#define VER_EXTRA 5
+#define VER_EXTRA 6
 #define VERSION_IS_DEVELOPMENT (TRUE)
 
 #define GAME_MODE_BEGINNER  0
@@ -1353,6 +1353,7 @@ enum {
 #define ART_THANOS              58
 #define ART_FINGOLFIN           59
 #define ART_PAURNIMMEN          185
+#define ART_DOGRAM              355
 #define ART_MAGNI               379
 
 /* Boots */
@@ -2499,6 +2500,7 @@ enum {
 #define OD_THROWING         0x00000400  /* buggy otherwise for throwing weapon info */
 #define OD_SINGULAR         0x00000800  /* pretend obj->number = 1 */
 #define OD_SHOW_DEVICE_INFO 0x00001000
+#define OD_BLACK_CURSES     0x00002000  /* show cursed items as black */
 
 #define OD_LORE (OD_NAME_ONLY | OD_OMIT_PREFIX | OD_COLOR_CODED)
 

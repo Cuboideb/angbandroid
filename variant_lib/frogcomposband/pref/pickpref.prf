@@ -65,6 +65,8 @@ potions:restore mana#!kq
 !scrolls
 !ammo
 !quiver
+!^capture ball
+!^magic whistle
 ?:1
 
 ?:[AND [EQU $SELLING Off] [EQU $CLASS Berserker] [NOT [EQU $RACE Skeleton Golem Zombie Spectre]] ]

@@ -196,6 +196,7 @@ extern s16b shuffling_hack_hp;
 extern byte poison_warning_hack;
 extern byte energy_need_hack;
 extern s16b energy_cost_hack;
+extern s32b od_xtra_context;
 extern bool atlantis_hack;
 extern bool spawn_hack;
 extern bool mystery_cave_ready;
@@ -332,8 +333,10 @@ extern bool auto_sticky_labels; /* Automatically make power labels sticky */
 extern bool show_power; /* Display device powers in inventory */
 extern bool show_rogue_keys; /* Display roguelike keys if possible */
 extern bool show_energy_cost;
+extern bool show_damage_range; /* Show damages as ranges in monster info */
 extern bool decimal_stats;
 extern bool percentage_life; /* Show life rating as a percentage */
+extern bool black_curses; /* Show cursed items as black in unwielding menu */
 extern bool obj_list_width;
 extern byte object_list_width;
 extern bool mon_list_width;
@@ -1216,6 +1219,7 @@ extern bool set_monster_paralyzed(int m_idx, int v);
 extern void dispel_monster_status(int m_idx);
 extern u32b get_curse(int power, object_type *o_ptr);
 extern void curse_equipment(int chance, int heavy_chance);
+extern void mon_kill_mon(mon_ptr mon, int who);
 extern void mon_take_hit_mon(int m_idx, int dam, bool *fear, cptr note, int who);
 extern bool process_the_world(int num, int who, bool vs_player);
 extern void monster_gain_exp(int m_idx, int s_idx);

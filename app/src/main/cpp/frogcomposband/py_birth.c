@@ -334,6 +334,7 @@ bool bump_numeral(char *nimi, int muutos)
         }
         else if (!clip_and_locate(luku, nimi)) break;
         _error = 1;
+        if ((_old_num == 1) && (muutos == -1)) return TRUE;
         if ((_old_num + muutos) <= 0) return FALSE;
         if (!num_to_roman(_old_num + muutos, luku)) break;
         if (strlen(nimi) + strlen(luku) > PY_NAME_LEN) break;
@@ -369,6 +370,7 @@ bool bump_numeral(char *nimi, int muutos)
         if (arvo < 1) return FALSE;
         if (paikka <= 0) return FALSE;
         nimi[paikka - 1] = '\0';
+        if ((arvo == 1) && (muutos == -1)) return TRUE;
         if ((arvo + muutos) < 1) return FALSE;
         strcpy(luku, format(" %d", arvo + muutos));
         if (strlen(nimi) + strlen(luku) > PY_NAME_LEN) return FALSE;
