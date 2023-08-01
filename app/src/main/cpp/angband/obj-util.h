@@ -54,6 +54,7 @@ bool obj_can_browse(const struct object *obj);
 bool obj_can_cast_from(const struct object *obj);
 bool obj_can_study(const struct object *obj);
 bool obj_can_takeoff(const struct object *obj);
+bool obj_can_throw(const struct object *obj);
 bool obj_can_wear(const struct object *obj);
 bool obj_can_fire(const struct object *obj);
 bool obj_is_throwing(const struct object *obj);
@@ -62,7 +63,7 @@ bool obj_has_inscrip(const struct object *obj);
 bool obj_has_flag(const struct object *obj, int flag);
 bool obj_is_useable(const struct object *obj);
 struct effect *object_effect(const struct object *obj);
-bool obj_needs_aim(struct object *obj);
+bool obj_needs_aim(const struct object *obj);
 bool obj_can_fail(const struct object *o);
 
 int get_use_device_chance(const struct object *obj);
@@ -71,8 +72,8 @@ int number_charging(const struct object *obj);
 bool recharge_timeout(struct object *obj);
 bool verify_object(const char *prompt, const struct object *obj,
 		const struct player *p);
-void print_custom_message(struct object *obj, const char *string, int msg_type,
-		const struct player *p);
+void print_custom_message(const struct object *obj, const char *string,
+		int msg_type, const struct player *p);
 
 bool is_artifact_created(const struct artifact *art);
 bool is_artifact_seen(const struct artifact *art);

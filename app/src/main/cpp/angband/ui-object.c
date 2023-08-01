@@ -638,7 +638,7 @@ bool get_item_allow(const struct object *obj, unsigned char ch, cmd_code cmd,
 	/* Look for the inscription */
 	n = check_for_inscrip(obj, verify_inscrip);
 
-	/* Also look for for the inscription '!*' */
+	/* Also look for the inscription '!*' */
 	if (!is_harmless)
 		n += check_for_inscrip(obj, "!*");
 
@@ -1251,7 +1251,7 @@ bool textui_get_item(struct object **choice, const char *pmt, const char *str,
 		z_info->floor_size;
 
 	floor_list = mem_zalloc(floor_max * sizeof(*floor_list));
-	throwing_list = mem_zalloc(throwing_max * sizeof(*floor_list));
+	throwing_list = mem_zalloc(throwing_max * sizeof(*throwing_list));
 	olist_mode = 0;
 	item_mode = mode;
 	item_cmd = cmd;

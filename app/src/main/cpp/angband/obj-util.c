@@ -711,6 +711,16 @@ bool obj_can_takeoff(const struct object *obj)
 	return !obj_has_flag(obj, OF_STICKY);
 }
 
+/*
+ * Can only throw an item that is not equipped or the equipped weapon if it
+ * can be taken off.
+ */
+bool obj_can_throw(const struct object *obj)
+{
+	return !object_is_equipped(player->body, obj)
+		|| (tval_is_melee_weapon(obj) && obj_can_takeoff(obj));
+}
+
 /* Can only put on wieldable items */
 bool obj_can_wear(const struct object *obj)
 {
@@ -801,9 +811,9 @@ struct effect *object_effect(const struct object *obj)
 /**
  * Does the given object need to be aimed?
  */ 
-bool obj_needs_aim(struct object *obj)
+bool obj_needs_aim(const struct object *obj)
 {
-	struct effect *effect = object_effect(obj);
+	const struct effect *effect = object_effect(obj);
 
 	/* If the effect needs aiming, or if the object type needs
 	   aiming, this object needs aiming. */
@@ -1000,8 +1010,8 @@ static msg_tag_t msg_tag_lookup(const char *tag)
 /**
  * Print a message from a string, customised to include details about an object
  */
-void print_custom_message(struct object *obj, const char *string, int msg_type,
-		const struct player *p)
+void print_custom_message(const struct object *obj, const char *string,
+		int msg_type, const struct player *p)
 {
 	char buf[1024] = "\0";
 	const char *next;

@@ -1372,7 +1372,6 @@ static void do_cmd_knowledge_monsters(const char *name, int row)
 		if (!l_list[i].all_known && !l_list[i].sights) {
 			continue;
 		}
-
 		if (!race->name) continue;
 
 		for (j = 0; j < n_monster_group - 1; ++j) {

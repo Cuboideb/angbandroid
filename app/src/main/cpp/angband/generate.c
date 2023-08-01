@@ -35,7 +35,6 @@
 #include "game-world.h"
 #include "generate.h"
 #include "init.h"
-#include "math.h"
 #include "mon-make.h"
 #include "mon-move.h"
 #include "mon-spell.h"
@@ -255,9 +254,9 @@ static errr finish_parse_profile(struct parser *p) {
 			while (r_old) {
 				++cave_profiles[num].n_room_profiles;
 				r_old = r_old->next;
-		}
+			}
 
-		/* Now allocate the room profile array */
+			/* Now allocate the room profile array */
 			r_new = mem_zalloc(cave_profiles[num].n_room_profiles
 				* sizeof(*r_new));
 
@@ -1131,9 +1130,14 @@ static struct chunk *cave_generate(struct player *p, int height, int width)
 		/* Choose a profile and build the level */
 		dun->profile = choose_profile(p);
 		event_signal_string(EVENT_GEN_LEVEL_START, dun->profile->name);
-		chunk = dun->profile->builder(p, height, width);
+		chunk = dun->profile->builder(p, height, width, &error);
 		if (!chunk) {
-			error = "Failed to find builder";
+			if (!error) {
+				error = "unspecified level builder failure";
+			}
+			if (OPT(p, cheat_room)) {
+				msg("Generation restarted: %s.", error);
+			}
 			cleanup_dun_data(dun);
 			event_signal_flag(EVENT_GEN_LEVEL_END, false);
 			continue;
@@ -1192,6 +1196,7 @@ static struct chunk *cave_generate(struct player *p, int height, int width)
 			if (OPT(p, cheat_room)) {
 				msg("Generation restarted: %s.", error);
 			}
+			uncreate_artifacts(chunk);
 			cave_clear(chunk, p);
 			event_signal_flag(EVENT_GEN_LEVEL_END, false);
 		}
