@@ -664,6 +664,9 @@ static void _stasis_spell(int cmd, variant *res)
     case SPELL_DESC:
         var_set_string(res, "Attempts to suspend all monsters in view.");
         break;
+    case SPELL_INFO:
+        var_set_string(res, info_power(spell_power(7 * p_ptr->lev / 3)));
+        break;
     case SPELL_CAST:
         stasis_monsters(spell_power(7 * p_ptr->lev / 3));
         var_set_bool(res, TRUE);

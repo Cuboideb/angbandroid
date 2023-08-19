@@ -1,5 +1,3 @@
-
-
 /* File: misc.c */
 
 /*
@@ -3473,9 +3471,10 @@ static int _calc_xtra_hp_aux(int amt)
                 w1 = 1; w2 = 1; w3 = 0;
                 break;
             default:
-                w1 = 2; w2 = 1; w3 = 0;
+                w1 = 1; w2 = 1; w3 = 0;
                 break;
         }
+        break;
     }
 
     case CLASS_ROGUE:

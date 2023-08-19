@@ -5312,13 +5312,6 @@ static void dungeon(bool load_game)
 
     (void)calculate_upkeep();
 
-    redraw_hack = load_game;
-
-    /* Verify the panel */
-    viewport_verify();
-
-    redraw_hack = load_game;
-
     /* Flush messages
     msg_print(NULL);*/
 
@@ -5343,6 +5336,14 @@ static void dungeon(bool load_game)
 
     /* Update monsters */
     p_ptr->update |= (PU_MONSTERS | PU_DISTANCE | PU_FLOW);
+
+    redraw_hack = load_game;
+
+    /* Verify the panel
+     * (must be done AFTER setting the PU flags) */
+    viewport_verify();
+
+    redraw_hack = load_game;
 
     /* Handle "p_ptr->update" and "p_ptr->redraw" and "p_ptr->window" */
     handle_stuff();
@@ -6726,5 +6727,4 @@ void prevent_turn_overflow(void)
 
     towns_on_turn_overflow(rollback_turns);
 }
-
 

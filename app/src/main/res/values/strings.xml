@@ -4,7 +4,7 @@
     <string name="app_name">Angband</string>
 
     <string-array name="gamePluginDescriptions">
-        <item>Angband 4.2.4</item>
+        <item>Angband 4.2.5</item>
         <item>FrogComposband 7.1.salmiak</item>
         <item>NPPAngband 0.4.1</item>
         <item>NPPAngband 0.5.4</item>

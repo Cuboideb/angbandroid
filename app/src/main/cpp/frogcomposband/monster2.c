@@ -2686,7 +2686,6 @@ void update_mon(int m_idx, bool full)
     /* Detected */
     if (m_ptr->mflag2 & (MFLAG2_MARK)) flag = TRUE;
 
-
     /* Nearby */
     if (d <= (in_darkness ? MAX_SIGHT / 2 : MAX_SIGHT))
     {
@@ -2907,8 +2906,8 @@ void update_mon(int m_idx, bool full)
                     }
                     else if ((m_ptr->invis_turn == player_turn) && (!full))
                     {
-                        easy = (flag || m_ptr->ml);
-                        flag = easy;
+                        flag = (flag || m_ptr->ml);
+                        easy = (flag && !old_fuzzy);
                     }
                     else if ((m_ptr->ml) && (!full) && (!old_fuzzy))
                     { /* The main purpose of this is to retain visibility on

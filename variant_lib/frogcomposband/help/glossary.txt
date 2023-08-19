@@ -8,6 +8,8 @@ See <link:objects.txt#InscriptionAbbrev> for item attribute abbreviations.
 
 <color:keyword>AC</color>: Armor Class; a measure of how hard you are to hit, or of how hard a monster is to hit; also directly reduces the damage you take from some types of melee attacks.
 
+<color:keyword>aggravation</color>: 1) An object flag, awakens and offends all nearby monsters; also, a removable curse with the same effect. 2) A scroll and shriek effect; awakens nearby monsters, makes them charming-immune, and temporarily hastes all monsters in line of sight.
+
 <color:keyword>ambush</color>: A random situation that forces you to leave the global map. Ambushes often surround you with a large number of hostile monsters.
 
 <color:keyword>Arena</color>: 1) A level 50 to 80 dungeon with the Metal Babble as its bottom guardian, characterized by its distinctive winding corridors and bubble rooms each containing a single high-level monster. 2) A special building, found in Thalos and Lite-Town, where you can fight one monster at a time until you lose. 3) Monster arena; a building where you can bet on cloned monsters fighting each other. 4) Arena level; a description of a dungeon level where rooms are connected by open space.
