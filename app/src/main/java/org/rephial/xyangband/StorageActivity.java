@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,7 +54,7 @@ public class StorageActivity extends Activity {
 
 		setContentView(this.rootView);
 
-		this.fileList = (ListView) this.findViewById(R.id.list_files);
+		this.fileList = this.findViewById(R.id.list_files);
 		this.fileList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
 		this.root = this.cwd = Preferences.getAngbandBaseDirectory();
@@ -89,20 +91,43 @@ public class StorageActivity extends Activity {
 
 		File dir = new File(this.cwd);
 
-		((TextView)this.rootView.findViewById(R.id.txt_desc)).setText(dir.getAbsolutePath());
+		((TextView)this.rootView.findViewById(R.id.txt_desc)).setText(this.cwd);
 
-		this.names.clear();
+		this.names = new ArrayList<>();
+
 		if (!this.cwd.equals(this.root)) {
 			this.names.add("..");
 		}
+
+		ArrayList<File> temp = new ArrayList<>();
+
 		for (File f: dir.listFiles()) {
+			temp.add(f);
+		}
+
+		Collections.sort(temp, new Comparator<File>() {
+			@Override
+			public int compare(File fa, File fb) {
+				int da = (fa.isDirectory() ? 1: 0);
+				int db = (fb.isDirectory() ? 1: 0);
+				if (da == db) {
+					return fa.getName().compareTo(fb.getName());
+				}
+				return (db - da);
+			}
+		});
+
+		for (File f: temp) {
 			String name = f.getName();
+			//GameActivity.log(name);
 			if (f.isDirectory()) {
 				name = this.prefix + name;
 			}
 			this.names.add(name);
 		}
-		this.fileList.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, this.names));
+
+		ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, this.names);
+		this.fileList.setAdapter(adapter);
 	}
 
 	private void onClick(int position) {
@@ -200,7 +225,7 @@ public class StorageActivity extends Activity {
 						if (input.equals(source.getName())) return;
 
 						// Most have a letter or number
-						Pattern pattern = Pattern.compile("[a-zA-Z0-9]");
+						Pattern pattern = Pattern.compile(".*[a-zA-Z0-9].*");
 						Matcher matcher = pattern.matcher(input);
 						if (!matcher.matches()) return;
 
@@ -256,7 +281,7 @@ public class StorageActivity extends Activity {
 
 		try {
 			final OutputStream targetStream = this.getContentResolver().openOutputStream(exported.getUri());
-			final InputStream sourceStream = new FileInputStream(source.getName());
+			final InputStream sourceStream = new FileInputStream(source);
 
 			this.copyStream(sourceStream, targetStream);
 
@@ -296,7 +321,7 @@ public class StorageActivity extends Activity {
 						return;
 					}
 
-					File newFile = new File(this.cwd, name + "_" + copy);
+					File newFile = new File(this.cwd, name + "_old" + copy);
 					if (!newFile.exists()) {
 						if (!oldFile.renameTo(newFile)) {
 							GameActivity.infoAlert(this, "Can't rename " + oldFile.getName());
