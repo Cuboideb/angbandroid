@@ -178,7 +178,8 @@ public class AngbandActivity extends Activity
 					}
 					else {
 						finish();
-						Intent intent = new Intent(splash, GameActivity.class);
+						//Intent intent = new Intent(splash, GameActivity.class);
+						Intent intent = new Intent(splash, StorageActivity.class);
 						startActivity(intent);
 					}
 				}

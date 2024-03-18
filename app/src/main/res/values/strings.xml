@@ -53,6 +53,7 @@
     <string name="preferences">Preferences</string>
     <string name="profiles">Profiles</string>
     <string name="profileadd">New Profile</string>
+    <string name="storage">Storage</string>
 
     <string name="profile_name_caption">Name or description of profile</string>
     <string name="profile_savefile_caption">Filename for saved game</string>

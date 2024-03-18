@@ -80,6 +80,16 @@
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
+
+		<activity android:name=".StorageActivity"
+			android:label="@string/storage"
+			android:exported="false"
+			android:screenOrientation="sensor">
+			<intent-filter>
+				<action android:name="org.rephial.xyangband.STORAGE" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+		</activity>
 	</application>
 
 	<!--
