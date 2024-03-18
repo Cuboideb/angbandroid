@@ -881,7 +881,7 @@ public class GameActivity extends Activity {
 			if (term != null) term.rearrangeFloatingButtons();
 			return true;
 		case CONTEXTMENU_LIBDIR:
-			infoAlert(Preferences.getAngbandBaseDirectory());
+			infoAlert(this, Preferences.getAngbandBaseDirectory());
 			return true;
 		case CONTEXTMENU_IMPORT_KEYS:
 			importKeys();
@@ -1007,8 +1007,8 @@ public class GameActivity extends Activity {
 		}
 	}
 
-	public void infoAlert(String msg) {
-		new AlertDialog.Builder(this)
+	public static void infoAlert(Activity owner, String msg) {
+		new AlertDialog.Builder(owner)
 			//.setTitle("Angband")
 			.setMessage(msg)
 			.setCancelable(true)

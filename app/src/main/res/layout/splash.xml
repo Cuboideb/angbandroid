@@ -24,7 +24,7 @@
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:visibility="invisible"
-			android:text="Start" />
+			android:text="START" />
 
 		<Button
 			android:id="@+id/btn_storage"
@@ -32,6 +32,6 @@
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:visibility="invisible"
-			android:text="Storage" />
+			android:text="STORAGE" />
 	</LinearLayout>
 </LinearLayout>
