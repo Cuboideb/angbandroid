@@ -195,9 +195,9 @@ public class StorageActivity extends Activity {
 				new InputDialog.InputDialogListener() {
 					@Override
 					public void onInputEntered(String input) {
-						if (input.length() < 1) return;
+						if (input.length() == 0 || input.indexOf('/') >= 0) return;
 
-						// Most have a letter
+						// Most have a letter or number
 						Pattern pattern = Pattern.compile("[a-zA-Z0-9]");
 						Matcher matcher = pattern.matcher(input);
 						if (!matcher.matches()) return;
@@ -281,7 +281,7 @@ public class StorageActivity extends Activity {
 			if (targetFile.exists()) {
 
 				if (targetFile.isDirectory()) {
-					GameActivity.infoAlert(this, "A directory already exists with this name");
+					GameActivity.infoAlert(this, "A directory already exists with this name " + name);
 					return;
 				}
 
