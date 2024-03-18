@@ -197,6 +197,8 @@ public class StorageActivity extends Activity {
 					public void onInputEntered(String input) {
 						if (input.length() == 0 || input.indexOf('/') >= 0) return;
 
+						if (input.equals(source.getName())) return;
+
 						// Most have a letter or number
 						Pattern pattern = Pattern.compile("[a-zA-Z0-9]");
 						Matcher matcher = pattern.matcher(input);
