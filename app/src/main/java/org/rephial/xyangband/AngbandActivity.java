@@ -31,6 +31,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback;
 
@@ -43,12 +46,17 @@ public class AngbandActivity extends Activity
 	protected int splashTime = 500;
 	protected ProgressDialog progressDialog = null;
 	protected Handler handler = null;
-	protected Installer installer = null;	
+	protected Installer installer = null;
+	protected ViewGroup rootView = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.splash);
+
+		this.rootView = (ViewGroup) this.getLayoutInflater().inflate
+				(R.layout.splash, null);
+
+		setContentView(this.rootView);
 
 		String version = "unknown";
 		long versionCode = 0;
@@ -80,7 +88,7 @@ public class AngbandActivity extends Activity
 		Preferences.setHorizontalSubWindows(true);
 		*/
 
-		final Activity splash = this;
+		final AngbandActivity splash = this;
 		handler = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
@@ -107,6 +115,9 @@ public class AngbandActivity extends Activity
 								splash.finish();
 							}
 						}).show();
+					break;
+				case 3:
+					splash.showButtons();
 					break;
 				}
 			}
@@ -139,6 +150,38 @@ public class AngbandActivity extends Activity
 	public void onStart() {
 		super.onStart();
 		StatPublisher.start(this);
+	}
+
+	public void showButtons()
+	{
+		final Activity splash = this;
+
+		GameActivity.log("SHOW BUTTONS");
+
+		Button b1 = this.rootView.findViewById(R.id.btn_start);
+		b1.setOnClickListener(
+			new View.OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					splash.finish();
+					Intent intent = new Intent(splash, GameActivity.class);
+					startActivity(intent);
+				}
+			}
+		);
+		b1.setVisibility(View.VISIBLE);
+
+		Button b2 = this.rootView.findViewById(R.id.btn_storage);
+		b2.setOnClickListener(
+				new View.OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						Intent intent = new Intent(splash, StorageActivity.class);
+						startActivity(intent);
+					}
+				}
+		);
+		b2.setVisibility(View.VISIBLE);
 	}
 
 	public synchronized void checkInstall() {
@@ -177,10 +220,7 @@ public class AngbandActivity extends Activity
 						return;
 					}
 					else {
-						finish();
-						//Intent intent = new Intent(splash, GameActivity.class);
-						Intent intent = new Intent(splash, StorageActivity.class);
-						startActivity(intent);
+						handler.sendEmptyMessage(3); // show buttons
 					}
 				}
 			}

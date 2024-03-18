@@ -3,13 +3,35 @@
 	android:gravity="center" 
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    >
-  <ImageView 
-	  android:id="@+id/icon" 
-	  android:layout_width="fill_parent" 
-	  android:layout_height="fill_parent"
-	  android:scaleType="centerInside"
-	  android:src="@drawable/att256" 
-	  >		
-  </ImageView>
+	android:orientation="vertical">
+	<ImageView
+		android:id="@+id/icon"
+		android:layout_width="fill_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1"
+		android:scaleType="centerInside"
+		android:src="@drawable/att256"
+	  >
+	</ImageView>
+	<LinearLayout
+		android:orientation="horizontal"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content">
+
+		<Button
+			android:id="@+id/btn_start"
+			android:layout_weight="1"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:visibility="invisible"
+			android:text="Start" />
+
+		<Button
+			android:id="@+id/btn_storage"
+			android:layout_weight="1"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:visibility="invisible"
+			android:text="Storage" />
+	</LinearLayout>
 </LinearLayout>

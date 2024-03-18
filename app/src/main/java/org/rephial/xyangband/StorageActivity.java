@@ -28,6 +28,7 @@ public class StorageActivity extends Activity {
 	protected String root = "";
 	protected int selection = -1;
 	protected ArrayList<String> names = new ArrayList();
+	protected String prefix = "> ";
 
 	@Override
 	public void onCreate(Bundle icicle) {
@@ -50,7 +51,11 @@ public class StorageActivity extends Activity {
 			this.names.add("..");
 		}
 		for (File f: dir.listFiles()) {
-			this.names.add(f.getName());
+			String name = f.getName();
+			if (f.isDirectory()) {
+				name = this.prefix + name;
+			}
+			this.names.add(name);
 		}
 		this.fileList.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, this.names));
 	}
@@ -73,6 +78,9 @@ public class StorageActivity extends Activity {
 			}
 		}
 		else {
+			if (item.startsWith(this.prefix)) {
+				item = item.substring(this.prefix.length());
+			}
 			File f = new File(this.cwd, item);
 			if (f != null && f.isDirectory()) {
 				this.cwd = f.getAbsolutePath();
