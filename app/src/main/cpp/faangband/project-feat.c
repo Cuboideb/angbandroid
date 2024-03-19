@@ -221,15 +221,15 @@ static void project_feature_handler_KILL_TRAP(project_feature_handler_context_t 
 	if (square_issecretdoor(cave, grid)) {
 		place_closed_door(cave, grid);
 
-		/* Check line of sight */
+		/* Check if visible */
 		if (square_isseen(cave, grid))
 			context->obvious = true;
 	}
 
 	/* Disable traps, unlock doors */
 	if (square_isdisarmabletrap(cave, grid)) {
-		/* Check line of sight */
-		if (square_isview(cave, grid)) {
+		/* Check if visible */
+		if (square_isseen(cave, grid)) {
 			msg("The trap seizes up.");
 			context->obvious = true;
 		}
@@ -240,7 +240,7 @@ static void project_feature_handler_KILL_TRAP(project_feature_handler_context_t 
 		/* Unlock the door */
 		square_unlock_door(cave, grid);
 
-		/* Check line of sound */
+		/* Check line of sound; approximated with square_isview() */
 		if (square_isview(cave, grid)) {
 			msg("Click!");
 			context->obvious = true;
@@ -275,7 +275,7 @@ static void project_feature_handler_MAKE_DOOR(project_feature_handler_context_t 
 	square_add_door(cave, grid, true);
 
 	/* Observe */
-	if (square_isknown(cave, grid))
+	if (square_isseen(cave, grid))
 		context->obvious = true;
 
 	/* Update the visuals */
@@ -327,7 +327,10 @@ static void project_feature_handler_FIRE(project_feature_handler_context_t *cont
 
 	/* Removes webs */
 	if (square_iswebbed(cave, context->grid)) {
-		square_destroy_trap(cave, context->grid);
+		struct trap_kind *web = lookup_trap("web");
+
+		assert(web);
+		square_remove_all_traps_of_type(cave, context->grid, web->tidx);
 	}
 
 	/* Can create lava if extremely powerful. */

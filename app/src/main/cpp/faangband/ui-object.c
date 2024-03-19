@@ -233,7 +233,7 @@ static void show_obj(int obj_num, int row, int col, bool cursor,
 
 	/* Weight */
 	if (mode & OLIST_WEIGHT) {
-		int weight = obj->weight * obj->number;
+		int weight = obj->number * object_weight_one(obj);
 		strnfmt(buf, sizeof(buf), "%4d.%1d lb", weight / 10, weight % 10);
 		put_str(buf, row + obj_num, col + ex_offset_ctr);
 	}
@@ -301,7 +301,21 @@ static void build_obj_list(int last, struct object **list, item_tester tester,
 
 		/* Show full slot labels for equipment (or quiver in subwindow) */
 		if (equip) {
-			strnfmt(buf, sizeof(buf), "%-14s: ", equip_mention(player, i));
+			const char *mention = equip_mention(player, i);
+			size_t u8len = utf8_strlen(mention);
+
+			if (u8len < 14) {
+				strnfmt(buf, sizeof(buf), "%s%*s", mention,
+					(int)(14 - u8len), " ");
+			} else {
+				char *mention_copy = string_make(mention);
+
+				if (u8len > 14) {
+					utf8_clipto(mention_copy, 14);
+				}
+				strnfmt(buf, sizeof(buf), "%s", mention_copy);
+				string_free(mention_copy);
+			}
 			my_strcpy(items[num_obj].equip_label, buf,
 					  sizeof(items[num_obj].equip_label));
 		} else if ((in_term || dead) && quiver) {
@@ -638,7 +652,7 @@ bool get_item_allow(const struct object *obj, unsigned char ch, cmd_code cmd,
 	/* Look for the inscription */
 	n = check_for_inscrip(obj, verify_inscrip);
 
-	/* Also look for for the inscription '!*' */
+	/* Also look for the inscription '!*' */
 	if (!is_harmless)
 		n += check_for_inscrip(obj, "!*");
 
@@ -1251,7 +1265,7 @@ bool textui_get_item(struct object **choice, const char *pmt, const char *str,
 		z_info->floor_size;
 
 	floor_list = mem_zalloc(floor_max * sizeof(*floor_list));
-	throwing_list = mem_zalloc(throwing_max * sizeof(*floor_list));
+	throwing_list = mem_zalloc(throwing_max * sizeof(*throwing_list));
 	olist_mode = 0;
 	item_mode = mode;
 	item_cmd = cmd;

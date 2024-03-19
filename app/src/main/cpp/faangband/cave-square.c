@@ -1,4 +1,4 @@
- /**
+/**
  * \file cave-square.c
  * \brief functions for dealing with individual squares
  *
@@ -538,22 +538,21 @@ bool square_isoccupied(struct chunk *c, struct loc grid) {
 }
 
 /**
- * True if the the player knows the terrain of the square
+ * True if the player knows the terrain of the square
  */
 bool square_isknown(struct chunk *c, struct loc grid) {
-	if (c != cave) return false;
-	if (player->cave == NULL) return false;
+	if (c != cave && (!player || c != player->cave)) return false;
+	if (!player->cave) return false;
 	return square(player->cave, grid)->feat == FEAT_NONE ? false : true;
 }
 
 /**
- * True if the the player's knowledge of the terrain of the square is wrong
+ * True if the player's knowledge of the terrain of the square is wrong
  * or missing
  */
-bool square_isnotknown(struct chunk *c, struct loc grid) {
-	if (c != cave) return false;
-	if (player->cave == NULL) return true;
-	return square(player->cave, grid)->feat != square(c, grid)->feat;
+bool square_ismemorybad(struct chunk *c, struct loc grid) {
+	return !square_isknown(c, grid)
+		|| square(player->cave, grid)->feat != square(cave, grid)->feat;
 }
 
 /**
@@ -885,6 +884,14 @@ bool square_isprojectable(struct chunk *c, struct loc grid) {
 }
 
 /**
+ * True if the square could be used as a feeling square.
+ */
+bool square_allowsfeel(struct chunk *c, struct loc grid) {
+	return square_ispassable(c, grid) && !square_isdamaging(c, grid) &&
+		!square_isfall(c, grid);
+}
+
+/**
  * True if the square allows line-of-sight.
  */
 bool square_allowslos(struct chunk *c, struct loc grid) {
@@ -1140,6 +1147,18 @@ bool square_isbelievedwall(struct chunk *c, struct loc grid)
 	return !square_isprojectable(player->cave, grid);
 }
 
+
+/**
+ * Checks if a square is known by the player to be passable
+ */
+bool square_isknownpassable(struct chunk *c, struct loc grid)
+{
+	if (!square_isknown(c, grid))
+		return false;
+
+	return square_ispassable(player->cave, grid);
+}
+
 /**
  * Checks if a square is in a cul-de-sac
  */
@@ -1268,6 +1287,45 @@ void square_excise_pile(struct chunk *c, struct loc grid) {
 }
 
 /**
+ * Remove all imagined objects from a floor pile.
+ *
+ * \param p_c is the chunk for a player's point of view which will be tested
+ * for the imagined objects.
+ * \param c is the chunk (typically cave) which holds the orphaned objects
+ * corresponding to the imagined objects in p_c.
+ * \param grid is the grid to check for imagined objects.
+ *
+ * If calling square_excise_pile() on p_c it will necessary to call this
+ * function first to avoid leaving dangling references (via the known pointer
+ * in orphaned objects within c's object list).
+ */
+void square_excise_all_imagined(struct chunk *p_c, struct chunk *c,
+		struct loc grid)
+{
+	struct object *obj;
+
+	assert(square_in_bounds(p_c, grid));
+	obj = square_object(p_c, grid);
+	while (obj) {
+		struct object *next = obj->next;
+
+		if (obj->notice & OBJ_NOTICE_IMAGINED) {
+			struct object *original;
+
+			assert(c->objects && c->objects[obj->oidx]);
+			original = c->objects[obj->oidx];
+			square_excise_object(p_c, grid, obj);
+			delist_object(p_c, obj);
+			object_delete(p_c, NULL, &obj);
+			original->known = NULL;
+			delist_object(c, original);
+			object_delete(c, p_c, &original);
+		}
+		obj = next;
+	}
+}
+
+/**
  * Excise an object from a floor pile and delete it while doing the other
  * necessary bookkeeping.  Normally, this is only called for the chunk
  * representing the true nature of the environment and not the one
@@ -1293,24 +1351,69 @@ void square_delete_object(struct chunk *c, struct loc grid, struct object *obj, 
 }
 
 /**
- * Sense the existence of objects on a grid in the current level
+ * Helper for square_sense_pile() and square_know_pile():  remove known
+ * location for the requested items that are not on this grid.
  */
-void square_sense_pile(struct chunk *c, struct loc grid)
+static void forget_remembered_objects(struct chunk *c, struct chunk *knownc,
+		struct loc grid, bool (*pred)(const struct object*))
+{
+	struct object *obj = square_object(knownc, grid);
+
+	while (obj) {
+		struct object *next = obj->next;
+		struct object *original = c->objects[obj->oidx];
+
+		assert(original);
+		if (!square_holds_object(c, grid, original)) {
+			if (!pred || (*pred)(original)) {
+				square_excise_object(knownc, grid, obj);
+				obj->grid = loc(0, 0);
+
+				/*
+				 * Delete objects which no longer exist anywhere
+				 */
+				if (obj->notice & OBJ_NOTICE_IMAGINED) {
+					delist_object(knownc, obj);
+					object_delete(knownc, NULL, &obj);
+					original->known = NULL;
+					delist_object(c, original);
+					object_delete(c, knownc, &original);
+				}
+			}
+		}
+		obj = next;
+	}
+}
+
+/**
+ * Sense the existence of objects on a grid in the current level
+ *
+ * If pred is not NULL, only modify an object, o, if (*pred)(o) is true.
+ */
+void square_sense_pile(struct chunk *c, struct loc grid,
+		bool (*pred)(const struct object*))
 {
 	struct object *obj;
 
 	if (c != cave) return;
 
-	/* Sense every item on this grid */
+	/* Sense the requested classes of items on this grid */
 	for (obj = square_object(c, grid); obj; obj = obj->next) {
-		object_sense(player, obj);
+		if (!pred || (*pred)(obj)) {
+			object_sense(player, obj);
+		}
 	}
+
+	forget_remembered_objects(c, player->cave, grid, pred);
 }
 
 /**
  * Update the player's knowledge of the objects on a grid in the current level
+ *
+ * If pred is not NULL, only modify an object, o, if (*pred)(o) is true.
  */
-void square_know_pile(struct chunk *c, struct loc grid)
+void square_know_pile(struct chunk *c, struct loc grid,
+		bool (*pred)(const struct object*))
 {
 	struct object *obj;
 
@@ -1318,35 +1421,20 @@ void square_know_pile(struct chunk *c, struct loc grid)
 
 	object_lists_check_integrity(c, player->cave);
 
-	/* Know every item on this grid, greater knowledge for the player grid */
+	/*
+	 * Know every item of the requested classes on this grid with greater
+	 * knowledge for the player grid.
+	 */
 	for (obj = square_object(c, grid); obj; obj = obj->next) {
-		object_see(player, obj);
-		if (loc_eq(grid, player->grid)) {
-			object_touch(player, obj);
-		}
-	}
-
-	/* Remove known location of anything not on this grid */
-	obj = square_object(player->cave, grid);
-	while (obj) {
-		struct object *next = obj->next;
-		assert(c->objects[obj->oidx]);
-		if (!square_holds_object(c, grid, c->objects[obj->oidx])) {
-			struct object *original = c->objects[obj->oidx];
-			square_excise_object(player->cave, grid, obj);
-			obj->grid = loc(0, 0);
-
-			/* Delete objects which no longer exist anywhere */
-			if (obj->notice & OBJ_NOTICE_IMAGINED) {
-				delist_object(player->cave, obj);
-				object_delete(player->cave, NULL, &obj);
-				original->known = NULL;
-				delist_object(c, original);
-				object_delete(c, player->cave, &original);
+		if (!pred || (*pred)(obj)) {
+			object_see(player, obj);
+			if (loc_eq(grid, player->grid)) {
+				object_touch(player, obj);
 			}
 		}
-		obj = next;
 	}
+
+	forget_remembered_objects(c, player->cave, grid, pred);
 }
 
 
@@ -1549,18 +1637,27 @@ void square_add_door(struct chunk *c, struct loc grid, bool closed) {
 
 void square_open_door(struct chunk *c, struct loc grid)
 {
-	square_remove_all_traps(c, grid);
+	struct trap_kind *lock = lookup_trap("door lock");
+
+	assert(square_iscloseddoor(c, grid) || square_issecretdoor(c, grid));
+	assert(lock);
+	square_remove_all_traps_of_type(c, grid, lock->tidx);
 	square_set_feat(c, grid, FEAT_OPEN);
 }
 
 void square_close_door(struct chunk *c, struct loc grid)
 {
+	assert(square_isopendoor(c, grid));
 	square_set_feat(c, grid, FEAT_CLOSED);
 }
 
 void square_smash_door(struct chunk *c, struct loc grid)
 {
-	square_remove_all_traps(c, grid);
+	struct trap_kind *lock = lookup_trap("door lock");
+
+	assert(square_isdoor(c, grid));
+	assert(lock);
+	square_remove_all_traps_of_type(c, grid, lock->tidx);
 	square_set_feat(c, grid, FEAT_BROKEN);
 }
 
@@ -1570,8 +1667,11 @@ void square_unlock_door(struct chunk *c, struct loc grid) {
 }
 
 void square_destroy_door(struct chunk *c, struct loc grid) {
+	struct trap_kind *lock = lookup_trap("door lock");
+
 	assert(square_isdoor(c, grid));
-	square_remove_all_traps(c, grid);
+	assert(lock);
+	square_remove_all_traps_of_type(c, grid, lock->tidx);
 	square_set_feat(c, grid, FEAT_FLOOR);
 }
 
@@ -1588,7 +1688,10 @@ void square_disable_trap(struct chunk *c, struct loc grid)
 
 void square_destroy_decoy(struct chunk *c, struct loc grid)
 {
-	square_remove_all_traps(c, grid);
+	struct trap_kind *decoy_kind = lookup_trap("decoy");
+
+	assert(decoy_kind);
+	square_remove_all_traps_of_type(c, grid, decoy_kind->tidx);
 	c->decoy = loc(0, 0);
 	if (los(c, player->grid, grid) && !player->timed[TMD_BLIND]){
 		msg("The decoy is destroyed!");

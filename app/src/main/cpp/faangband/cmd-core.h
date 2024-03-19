@@ -93,6 +93,9 @@ typedef enum cmd_code {
 	CMD_OPEN,
 	CMD_CLOSE,
 	CMD_RUN,
+	CMD_EXPLORE,
+	CMD_NAVIGATE_UP,
+	CMD_NAVIGATE_DOWN,
 	CMD_HOLD,
 	CMD_ALTER,
 	CMD_STEAL,
@@ -162,7 +165,7 @@ typedef enum cmd_code {
 	CMD_WIZ_WIZARD_LIGHT,
 
 	/* Hors categorie Commands */
-	CMD_SUICIDE,
+	CMD_RETIRE,
 
 	CMD_HELP,
 	CMD_REPEAT,

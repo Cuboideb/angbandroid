@@ -604,6 +604,8 @@ struct store *store_home(struct player *p)
 	int i;
 	struct town *hometown = NULL;
 
+	if (OPT(player, birth_thrall) && !p->home) return NULL; 
+
 	for (i = 0; i < world->num_towns; i++) {
 		if (world->towns[i].index == p->home) {
 			hometown = &world->towns[i];
@@ -789,14 +791,26 @@ int price_item(struct store *store, const struct object *obj,
 
 	/* Get the value of the stack of wands, or a single item */
 	if (tval_can_have_charges(obj)) {
-		price = MIN(object_value_real(obj, qty), object_value(obj, qty));
+		if (store_buying) {
+			price = MIN(object_value_real(obj, qty),
+				object_value(obj, qty));
+		} else {
+			price = MAX(object_value_real(obj, qty),
+				object_value(obj, qty));
+		}
 	} else {
-		price = MIN(object_value_real(obj, 1), object_value(obj, 1));
+		if (store_buying) {
+			price = MIN(object_value_real(obj, 1),
+				object_value(obj, 1));
+		} else {
+			price = MAX(object_value_real(obj, 1),
+				object_value(obj, 1));
+		}
 	}
 
 	/* Worthless items */
 	if (price <= 0) {
-		return 0;
+		return (store_buying) ? 0 : qty;
 	}
 
 	/* Compute the racial factor */
@@ -1075,6 +1089,8 @@ void home_carry(struct object *obj)
 {
 	struct object *temp_obj;
 	struct store *store = store_home(player);
+
+	if (!store) return;
 
 	/* Check each existing object (try to combine) */
 	for (temp_obj = store->stock; temp_obj; temp_obj = temp_obj->next) {

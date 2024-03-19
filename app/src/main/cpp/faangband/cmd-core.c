@@ -76,6 +76,9 @@ static const struct command_info game_cmds[] =
 	{ CMD_GO_DOWN, "go down stairs", do_cmd_go_down, false, true, 0 },
 	{ CMD_WALK, "walk", do_cmd_walk, true, true, 0 },
 	{ CMD_RUN, "run", do_cmd_run, true, true, 0 },
+	{ CMD_EXPLORE, "explore", do_cmd_explore, false, true, 0 },
+	{ CMD_NAVIGATE_UP, "navigate up", do_cmd_navigate_up, false, true, 0 },
+	{ CMD_NAVIGATE_DOWN, "navigate down", do_cmd_navigate_down, false, true, 0 },
 	{ CMD_JUMP, "jump", do_cmd_jump, false, true, 0 },
 	{ CMD_OPEN, "open", do_cmd_open, true, true, 99 },
 	{ CMD_CLOSE, "close", do_cmd_close, true, true, 99 },
@@ -114,7 +117,7 @@ static const struct command_info game_cmds[] =
 	{ CMD_BUY, "buy", do_cmd_buy, false, false, 0 },
 	{ CMD_RETRIEVE, "retrieve", do_cmd_retrieve, false, false, 0 },
 	{ CMD_USE, "use", do_cmd_use, false, true, 0 },
-	{ CMD_SUICIDE, "kill character", do_cmd_suicide, false, false, 0 },
+	{ CMD_RETIRE, "retire character", do_cmd_retire, false, false, 0 },
 	{ CMD_HELP, "help", NULL, false, false, 0 },
 	{ CMD_REPEAT, "repeat", NULL, false, false, 0 },
 

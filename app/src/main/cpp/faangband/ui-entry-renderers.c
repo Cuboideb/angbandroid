@@ -1,6 +1,6 @@
 /**
  * \file ui-entry-renderers.c
- * \brief Define backend handling for some parts of the second character screen
+ * \brief Define backend handling for character screen and equippable comparison
  *
  * Copyright (c) 2020 Eric Branlund
  *
@@ -542,7 +542,7 @@ static void show_combined_generic(const struct renderer_info *info,
 
 /**
  * Result is  0 (no resistance)), 1 (resistance), 2 (vulnerable), 3 (immune),
- * 4 (unknown), 5 (not present).
+ * 4 (unknown), 5 (not present), 6 (resistance and vulnerable).
  */
 static int convert_vanilla_res_level(int i)
 {
@@ -552,6 +552,8 @@ static int convert_vanilla_res_level(int i)
 		result = 4;
 	} else if (i == UI_ENTRY_VALUE_NOT_PRESENT) {
 		result = 5;
+	} else if (i == UI_ENTRY_RESIST0_RES_VUL) {
+		result = 6;
 	} else if (i >= 3) {
 		result = 3;
 	} else if (i >= 1) {
@@ -577,46 +579,48 @@ static void renderer_COMPACT_RESIST_RENDERER_WITH_COMBINED_AUX(
 	/*
 	 * Fastest varying is no timed effect, timed resistance,
 	 * timed vulnerability, timed immunity, unknown timed effect,
-	 * no value for timed effect
+	 * no value for timed effect, timed resistance + timed vulnerability
 	 */
-	const int combined_effect_tbl[6][6] = {
+	const int combined_effect_tbl[7][7] = {
 		/* No permanent effect */
-		{ 2, 6,  9, 11, 2, 2 },
+		{  2,  6,  9, 11,  2,  2, 18 },
 		/* Permanent resistance */
-		{ 3, 7, 10, 12, 3, 3 },
+		{  3,  7, 10, 12,  3,  3, 19 },
 		/* Permanent vulnerability */
-		{ 4, 8,  4, 13, 4, 4 },
+		{  4,  8,  4, 13,  4,  4, 20 },
 		/* Permanent immunity */
-		{ 5, 5,  5,  5, 5, 5 },
+		{  5,  5,  5,  5,  5,  5,  5 },
 		/* Unknown permanent effect */
-		{ 0, 0,  0,  0, 0, 0 },
+		{  0,  0,  0,  0,  0,  0,  0 },
 		/* No value for permanent effect */
-		{ 1, 1,  1,  1, 1, 1 }
+		{  1,  1,  1,  1,  1,  1,  1 },
+		/* Permanent resistance + permanent vulnerability */
+		{ 14, 15, 16, 17, 14, 14, 21 }
 	};
 	struct loc p = details->value_position;
-	int color_offset = (details->alternate_color_first) ? 14 : 0;
+	int color_offset = (details->alternate_color_first) ? 22 : 0;
 	struct ui_entry_combiner_funcs combiner;
 	int vc, ac;
 	int i;
 
 	/* Check for defaults that are too short in list-ui-entry-renders.h. */
-	assert(info->ncolors >= 28 && info->nlabcolors >= 13 &&
-		info->nsym >= 14);
+	assert(info->ncolors >= 44 && info->nlabcolors >= 13 &&
+		info->nsym >= 22);
 
 	for (i = 0; i < n; ++i) {
 		int untimed_effect = convert_vanilla_res_level(vals[i]);
 		int timed_effect = convert_vanilla_res_level(auxvals[i]);
 		int palette_index;
 
-		assert(untimed_effect >= 0 && untimed_effect < 6 &&
-			timed_effect >= 0 && timed_effect < 6);
+		assert(untimed_effect >= 0 && untimed_effect < 7 &&
+			timed_effect >= 0 && timed_effect < 7);
 		palette_index =
 			combined_effect_tbl[untimed_effect][timed_effect];
 		Term_putch(p.x, p.y,
 			info->colors[palette_index + color_offset],
 			info->symbols[palette_index]);
 		p = loc_sum(p, details->position_step);
-		color_offset ^= 14;
+		color_offset ^= 22;
 	}
 
 	if (nlabel <= 0 && !details->show_combined) {
@@ -629,19 +633,21 @@ static void renderer_COMPACT_RESIST_RENDERER_WITH_COMBINED_AUX(
 	(*combiner.vec_func)(n, vals, auxvals, &vc, &ac);
 
 	if (nlabel > 0) {
-		const int combined_label_tbl[6][6] = {
+		const int combined_label_tbl[7][7] = {
 			/* No permanent effect */
-			{ 1, 5, 8, 10, 1, 1 },
+			{ 1, 5, 8, 10, 1, 1, 1 },
 			/* Permanent resistance */
-			{ 2, 6, 9, 11, 2, 2 },
+			{ 2, 6, 9, 11, 2, 2, 2 },
 			/* Permanent vulnerability */
-			{ 3, 7, 3, 12, 3, 3 },
+			{ 3, 7, 3, 12, 3, 3, 3 },
 			/* Permanent immunity */
-			{ 4, 4, 4,  4, 4, 4 },
+			{ 4, 4, 4,  4, 4, 4, 4 },
 			/* Unknown permanent effect */
-			{ 1, 5, 8, 10, 1, 1 },
+			{ 1, 5, 8, 10, 1, 1, 1 },
 			/* No value for permanent effect */
-			{ 1, 5, 8, 10, 1, 1 }
+			{ 1, 5, 8, 10, 1, 1, 1 },
+			/* Permanent resistance + permanent vulnerability */
+			{ 1, 5, 8, 10, 1, 1, 1 }
 		};
 		int palette_index;
 
@@ -649,8 +655,8 @@ static void renderer_COMPACT_RESIST_RENDERER_WITH_COMBINED_AUX(
 			int untimed_effect = convert_vanilla_res_level(vc);
 			int timed_effect = convert_vanilla_res_level(ac);
 
-			assert(untimed_effect >= 0 && untimed_effect < 6 &&
-				timed_effect >= 0 && timed_effect < 6);
+			assert(untimed_effect >= 0 && untimed_effect < 7 &&
+				timed_effect >= 0 && timed_effect < 7);
 			palette_index =
 				combined_label_tbl[untimed_effect][timed_effect];
 		} else {
@@ -1074,68 +1080,65 @@ static void renderer_NUMERIC_AS_SIGN_RENDERER_WITH_COMBINED_AUX(
 	int i;
 
 	/* Check for defaults that are too short in list-ui-entry-renders.h. */
-	assert(info->ncolors >= 14 && info->nlabcolors >= 6 && info->nsym >= 7);
+	assert(info->ncolors >= 22 && info->nlabcolors >= 10
+		&& info->nsym >= 11);
+
+	if (ui_entry_combiner_get_funcs(info->combiner_index, &combiner)) {
+		assert(0);
+	}
 
 	for (i = 0; i < n; ++i) {
-		int palette_index = 2;
+		struct ui_entry_combiner_state cst;
+		int palette_index;
 
-		if (vals[i] == UI_ENTRY_UNKNOWN_VALUE || (vals[i] == 0 &&
-			auxvals[i] == UI_ENTRY_UNKNOWN_VALUE)) {
+		(*combiner.init_func)(vals[i], 0, &cst);
+		(*combiner.accum_func)(auxvals[i], 0, &cst);
+		(*combiner.finish_func)(&cst);
+		if (vals[i] == UI_ENTRY_UNKNOWN_VALUE || (vals[i] == 0
+				&& auxvals[i] == UI_ENTRY_UNKNOWN_VALUE)) {
 			palette_index = 0;
-		} else if (vals[i] == UI_ENTRY_VALUE_NOT_PRESENT) {
+		} else if (cst.accum == UI_ENTRY_VALUE_NOT_PRESENT) {
 			palette_index = 1;
-		} else if (vals[i] > 0) {
-			palette_index = 3;
-		} else if (vals[i] < 0) {
-			palette_index = 4;
-		}
-		if (auxvals[i] > 0 && auxvals[i] != UI_ENTRY_UNKNOWN_VALUE &&
-			auxvals[i] != UI_ENTRY_VALUE_NOT_PRESENT) {
-			if (vals[i] == 0) {
-				palette_index = 5;
-			}
-		} else if (auxvals[i] < 0 &&
-			auxvals[i] != UI_ENTRY_UNKNOWN_VALUE &&
-			auxvals[i] != UI_ENTRY_VALUE_NOT_PRESENT) {
-			if (vals[i] == 0) {
-				palette_index = 6;
-			}
+		} else {
+			palette_index =
+				((cst.accum > 0) ?
+					5 : ((cst.accum < 0) ? 8 : 2))
+				+ ((auxvals[i] > 0) ?
+					1 : ((auxvals[i] < 0) ? 2 : 0));
 		}
 		Term_putch(p.x, p.y,
 			info->colors[palette_index + color_offset],
 			info->symbols[palette_index]);
 		p = loc_sum(p, details->position_step);
-		color_offset ^= 7;
+		color_offset ^= 11;
 	}
 
 	if (nlabel <= 0 && !details->show_combined) {
 		return;
 	}
 
-	if (ui_entry_combiner_get_funcs(info->combiner_index, &combiner)) {
-		assert(0);
-	}
 	(*combiner.vec_func)(n, vals, auxvals, &vc, &ac);
 
 	if (nlabel > 0) {
 		int palette_index;
 
-		if (! details->known_rune) {
+		if (!details->known_rune) {
 			palette_index = 0;
-		} else if (vc == UI_ENTRY_UNKNOWN_VALUE ||
-			vc == UI_ENTRY_VALUE_NOT_PRESENT || vc == 0) {
-			if (ac == UI_ENTRY_UNKNOWN_VALUE ||
-				ac == UI_ENTRY_VALUE_NOT_PRESENT || ac == 0) {
+		} else {
+			struct ui_entry_combiner_state cst;
+
+			(*combiner.init_func)(vc, 0, &cst);
+			(*combiner.accum_func)(ac, 0, &cst);
+			(*combiner.finish_func)(&cst);
+			if (cst.accum == UI_ENTRY_UNKNOWN_VALUE
+					|| cst.accum == UI_ENTRY_VALUE_NOT_PRESENT) {
 				palette_index = 1;
-			} else if (ac > 0) {
-				palette_index = 4;
 			} else {
-				palette_index = 5;
+				palette_index =
+					((cst.accum > 0) ? 4 :
+						((cst.accum < 0) ? 7 : 1))
+					+ ((ac > 0) ? 1 : ((ac < 0) ? 2 : 0));
 			}
-		} else if (vc > 0) {
-			palette_index = 2;
-		} else  {
-			palette_index = 3;
 		}
 		if (details->vertical_label) {
 			p = details->label_position;
@@ -1214,7 +1217,7 @@ static void renderer_NUMERIC_RENDERER_WITH_COMBINED_AUX(
 	const struct renderer_info *info)
 {
 	struct loc p = details->value_position;
-	int color_offset = (details->alternate_color_first) ? 7 : 0;
+	int color_offset = (details->alternate_color_first) ? 11 : 0;
 	int nbuf = info->ndigit + ((info->sign == UI_ENTRY_NO_SIGN) ? 0 : 1);
 	wchar_t *buffer = mem_alloc(nbuf * sizeof(*buffer));
 	struct ui_entry_combiner_funcs combiner;
@@ -1222,61 +1225,54 @@ static void renderer_NUMERIC_RENDERER_WITH_COMBINED_AUX(
 	int i;
 
 	/* Check for defaults that are too short in list-ui-entry-renders.h. */
-	assert(info->ncolors >= 14 && info->nlabcolors >= 6 && info->nsym >= 7);
+	assert(info->ncolors >= 22 && info->nlabcolors >= 10
+		&& info->nsym >= 7);
+
+	if (ui_entry_combiner_get_funcs(info->combiner_index, &combiner)) {
+		assert(0);
+	}
 
 	for (i = 0; i < n; ++i) {
+		struct ui_entry_combiner_state cst;
 		int palette_index;
 
-		if (vals[i] == UI_ENTRY_UNKNOWN_VALUE || (vals[i] == 0 &&
-			auxvals[i] == UI_ENTRY_UNKNOWN_VALUE)) {
+		(*combiner.init_func)(vals[i], 0, &cst);
+		(*combiner.accum_func)(auxvals[i], 0, &cst);
+		(*combiner.finish_func)(&cst);
+		if (vals[i] == UI_ENTRY_UNKNOWN_VALUE || (vals[i] == 0
+				&& auxvals[i] == UI_ENTRY_UNKNOWN_VALUE)) {
 			palette_index = 0;
 			format_int(0, false, info->symbols[0],
 				info->symbols[0], true,
 				info->sign == UI_ENTRY_ALWAYS_SIGN, nbuf,
 				buffer);
-		} else if (vals[i] == UI_ENTRY_VALUE_NOT_PRESENT) {
+		} else if (cst.accum == UI_ENTRY_VALUE_NOT_PRESENT) {
 			palette_index = 1;
 			format_int(0, false, info->symbols[1],
 				info->symbols[1], true,
 				info->sign == UI_ENTRY_ALWAYS_SIGN, nbuf,
 				buffer);
-		} else if (vals[i] > 0) {
-			palette_index = 3;
-			format_int(vals[i], false, info->symbols[2],
-				info->symbols[3], true,
-				info->sign == UI_ENTRY_ALWAYS_SIGN,
-				nbuf, buffer);
-		} else if (vals[i] < 0) {
-			int v;
-			bool o;
-
-			palette_index = 4;
-			if (vals[i] == INT_MIN) {
-				v = -(INT_MIN + 1);
-				o = true;
-			} else {
-				v = -vals[i];
-				o = false;
-			}
-			format_int(v, o, info->symbols[2], info->symbols[4],
-				false, info->sign != UI_ENTRY_NO_SIGN, nbuf,
-				buffer);
-		} else if (auxvals[i] > 0 &&
-			auxvals[i] != UI_ENTRY_UNKNOWN_VALUE &&
-			auxvals[i] != UI_ENTRY_VALUE_NOT_PRESENT) {
-			palette_index = 5;
-			format_int(auxvals[i], false, info->symbols[2],
-				info->symbols[5], true,
+		} else if (cst.accum == 0) {
+			palette_index = (auxvals[i] > 0) ?
+				3 : ((auxvals[i] < 0) ? 4 : 2);
+			format_int(0, false, info->symbols[palette_index],
+				info->symbols[palette_index], true,
 				info->sign == UI_ENTRY_ALWAYS_SIGN, nbuf,
 				buffer);
-		} else if (auxvals[i] < 0 &&
-			auxvals[i] != UI_ENTRY_UNKNOWN_VALUE &&
-			auxvals[i] != UI_ENTRY_VALUE_NOT_PRESENT) {
+		} else if (cst.accum > 0) {
+			palette_index = (auxvals[i] > 0) ?
+				6 : ((auxvals[i] < 0) ? 7 : 5);
+			format_int(cst.accum, false, info->symbols[2],
+				info->symbols[5], true,
+				info->sign == UI_ENTRY_ALWAYS_SIGN,
+				nbuf, buffer);
+		} else {
 			int v;
 			bool o;
 
-			palette_index = 6;
-			if (auxvals[i] == INT_MIN) {
+			palette_index = (auxvals[i] > 0) ?
+				9 : ((auxvals[i] < 0) ? 10 : 8);
+			if (vals[i] == INT_MIN) {
 				v = -(INT_MIN + 1);
 				o = true;
 			} else {
@@ -1286,12 +1282,6 @@ static void renderer_NUMERIC_RENDERER_WITH_COMBINED_AUX(
 			format_int(v, o, info->symbols[2], info->symbols[6],
 				false, info->sign != UI_ENTRY_NO_SIGN, nbuf,
 				buffer);
-		} else {
-			palette_index = 2;
-			format_int(0, false, info->symbols[2],
-				info->symbols[3], true,
-				info->sign == UI_ENTRY_ALWAYS_SIGN,
-				nbuf, buffer);
 		}
 		safe_queue_chars(p.x, p.y, nbuf,
 			info->colors[palette_index + color_offset], buffer);
@@ -1301,7 +1291,7 @@ static void renderer_NUMERIC_RENDERER_WITH_COMBINED_AUX(
 				info->units_label);
 		}
 		p = loc_sum(p, details->position_step);
-		color_offset ^= 7;
+		color_offset ^= 11;
 	}
 
 	mem_free(buffer);
@@ -1310,30 +1300,28 @@ static void renderer_NUMERIC_RENDERER_WITH_COMBINED_AUX(
 		return;
 	}
 
-	if (ui_entry_combiner_get_funcs(info->combiner_index, &combiner)) {
-		assert(0);
-	}
 	(*combiner.vec_func)(n, vals, auxvals, &vc, &ac);
 
 	if (nlabel > 0) {
 		int palette_index;
 
-		if (! details->known_rune) {
+		if (!details->known_rune) {
 			palette_index = 0;
-		} else if (vc == 0 || vc == UI_ENTRY_UNKNOWN_VALUE ||
-			vc == UI_ENTRY_VALUE_NOT_PRESENT) {
-			if (ac == 0 || ac == UI_ENTRY_UNKNOWN_VALUE ||
-				ac == UI_ENTRY_VALUE_NOT_PRESENT) {
-				palette_index = 1;
-			} else if (ac > 0) {
-				palette_index = 4;
-			} else {
-				palette_index = 5;
-			}
-		} else if (vc > 0) {
-			palette_index = 2;
 		} else {
-			palette_index = 3;
+			struct ui_entry_combiner_state cst;
+
+			(*combiner.init_func)(vc, 0, &cst);
+			(*combiner.accum_func)(ac, 0, &cst);
+			(*combiner.finish_func)(&cst);
+			if (cst.accum == UI_ENTRY_UNKNOWN_VALUE
+					|| cst.accum == UI_ENTRY_VALUE_NOT_PRESENT) {
+				palette_index = 1;
+			} else {
+				palette_index =
+					((cst.accum > 0) ? 4 :
+						((cst.accum < 0) ? 7 : 1))
+					+ ((ac > 0) ? 1 : ((ac < 0) ? 2 : 0));
+			}
 		}
 		if (details->vertical_label) {
 			p = details->label_position;

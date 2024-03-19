@@ -738,7 +738,8 @@ static const char *show_speed(void)
 {
 	static char buffer[10];
 	int tmp = player->state.speed;
-	if (player->timed[TMD_FAST]) tmp -= 10;
+	if (player->timed[TMD_FAST])
+		tmp -= (player_has(player, PF_ENHANCE_MAGIC)) ? 13 : 10;
 	if (player->timed[TMD_SLOW]) tmp += 10;
 	if (tmp == 110) return "Normal";
 	int multiplier = 10 * extract_energy[tmp] / extract_energy[110];
@@ -887,7 +888,8 @@ static struct panel *get_panel_skills(void) {
 
 	/* Speed */
 	skill = player->state.speed;
-	if (player->timed[TMD_FAST]) skill -= 10;
+	if (player->timed[TMD_FAST])
+		skill -= (player_has(player, PF_ENHANCE_MAGIC)) ? 13 : 10;
 	if (player->timed[TMD_SLOW]) skill += 10;
 	attr = skill < 110 ? COLOUR_L_UMBER : COLOUR_L_GREEN;
 	panel_line(p, attr, "Speed", "%s", show_speed());
@@ -1176,7 +1178,12 @@ void write_character_dump(ang_file *fff)
 		{
 			file_putf(fff, "> %s\n", message_str((int16_t)i));
 		}
-		file_putf(fff, "\nKilled by %s.\n\n", player->died_from);
+		if (streq(player->died_from, "Retiring")) {
+			file_putf(fff, "\nRetired.\n\n");
+		} else {
+			file_putf(fff, "\nKilled by %s.\n\n",
+				player->died_from);
+		}
 	}
 
 
@@ -1220,24 +1227,26 @@ void write_character_dump(ang_file *fff)
 	file_putf(fff, "\n\n");
 
 	/* Dump the Home -- if anything there */
-	store_stock_list(home, home_list, z_info->store_inven_max);
-	if (home->stock_num) {
-		/* Header */
-		file_putf(fff, "  [Home Inventory]\n\n");
+	if (home) {
+		store_stock_list(home, home_list, z_info->store_inven_max);
+		if (home->stock_num) {
+			/* Header */
+			file_putf(fff, "  [Home Inventory]\n\n");
 
-		/* Dump all available items */
-		for (i = 0; i < z_info->store_inven_max; i++) {
-			struct object *obj = home_list[i];
-			if (!obj) break;
-			object_desc(o_name, sizeof(o_name), obj,
-				ODESC_PREFIX | ODESC_FULL, player);
-			file_putf(fff, "%c) %s\n", I2A(i), o_name);
+			/* Dump all available items */
+			for (i = 0; i < z_info->store_inven_max; i++) {
+				struct object *obj = home_list[i];
+				if (!obj) break;
+				object_desc(o_name, sizeof(o_name), obj,
+							ODESC_PREFIX | ODESC_FULL, player);
+				file_putf(fff, "%c) %s\n", I2A(i), o_name);
 
-			object_info_chardump(fff, obj, 5, 72);
+				object_info_chardump(fff, obj, 5, 72);
+			}
+
+			/* Add an empty line */
+			file_putf(fff, "\n\n");
 		}
-
-		/* Add an empty line */
-		file_putf(fff, "\n\n");
 	}
 
 	/* Dump character history */
@@ -1259,10 +1268,19 @@ void write_character_dump(ang_file *fff)
 
 		file_putf(fff, "  [%s]\n\n", title);
 		for (opt = 0; opt < OPT_MAX; opt++) {
-			if (option_type(opt) != i) continue;
+			const char *desc;
+			size_t u8len;
 
-			file_putf(fff, "%-45s: %s (%s)\n",
-			        option_desc(opt),
+			if (option_type(opt) != i) continue;
+			desc = option_desc(opt);
+			u8len = utf8_strlen(desc);
+			if (u8len < 45) {
+				file_putf(fff, "%s%*s", desc,
+					(int)(45 - u8len), " ");
+			} else {
+				file_putf(fff, "%s", desc);
+			}
+			file_putf(fff, ": %s (%s)\n",
 			        player->opts.opt[opt] ? "yes" : "no ",
 			        option_name(opt));
 		}

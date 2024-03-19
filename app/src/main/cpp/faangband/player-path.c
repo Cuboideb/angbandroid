@@ -21,14 +21,18 @@
 #include "cave.h"
 #include "cmds.h"
 #include "game-world.h"
+#include "generate.h"
 #include "init.h"
 #include "mon-predicate.h"
+#include "obj-gear.h"
 #include "obj-ignore.h"
 #include "obj-util.h"
 #include "player-calcs.h"
 #include "player-path.h"
 #include "player-timed.h"
 #include "player-util.h"
+#include "trap.h"
+#include "z-queue.h"
 
 /**
  * ------------------------------------------------------------------------
@@ -36,205 +40,1349 @@
  * ------------------------------------------------------------------------ */
 
 /**
- * Maximum size around the player to consider in the pathfinder
+ * This is an opaque type for communicating the distances, in expected
+ * movement turns, from a player's grid to other grids in the cave.
  */
-#define MAX_PF_RADIUS 100
+struct pfdistances {
+	/* This is height * width entries to store the distances. */
+	int *buffer;
+	/* This is height pointers to the start of each row in buffer. */
+	int **rows;
+	/* This is the grid from which the distances are computed. */
+	struct loc start;
+	/*
+	 * These are the dimensions of the arrays, copied from the player's
+	 * view of the cave.
+	 */
+	int height, width;
+};
 
 /**
- * Maximum distance to consider in the pathfinder
+ * This is a patched version (non-overlapping squares of patch_size by
+ * patch_size; patch size is a power of 2) of pfdistances for use in
+ * find_path().
  */
-#define MAX_PF_LENGTH 500
+struct pfdistances_patched {
+	int ***patches;
+	int patch_size, patch_shift, patch_mask;
+	int npatchy, npatchx;
+	int height, width;
+};
 
 /**
- * Bounds of the search rectangle
+ * Scale factor for distances in an array of path distances; used to allow for
+ * fractional turns; must be positive
  */
-static struct loc top_left, bottom_right;
-
-/**
- * Array of distances from the player
- */
-static int path_distance[MAX_PF_RADIUS][MAX_PF_RADIUS];
-
-/**
- * Pathfinding results
- */
-static int path_step_dir[MAX_PF_LENGTH];
-static int path_step_idx;
+#define PF_SCL 16
 
 /**
  * Determine whether a grid is OK for the pathfinder to check
  */
-static bool is_valid_pf(struct loc grid)
+static bool is_valid_pf(struct player *p, struct loc grid, bool only_known,
+		bool forbid_traps)
 {
-	/* Unvisited means allowed */
-	if (!square_isknown(cave, grid)) return true;
+	/*
+	 * If only_known is true, do not want to consider unremembered squares;
+	 * otherwise, they are acceptable.
+	 */
+	if (!square_isknown(p->cave, grid)) return !only_known;
 
-	/* No damaging terrain */
-	if (square_isdamaging(cave, grid)) return false;
-
-	/* No trapped squares (unless trapsafe) */
-	if (square_isvisibletrap(cave, grid) &&	!player_is_trapsafe(player)) {
+	/*
+	 * For all remaining tests, use the player's memory of what's there
+	 * to avoid leaking information if the terrain has changed.
+	 */
+	/* No damaging terrain or empty space */
+	if (square_isdamaging(p->cave, grid) || square_isfall(p->cave, grid)) {
 		return false;
 	}
 
-	/* Require open space */
-	return (square_ispassable(cave, grid));
+	/* No trapped squares if forbidding traps unless trapsafe */
+	if (forbid_traps && square_isvisibletrap(p->cave, grid)
+			&& !player_is_trapsafe(p)) {
+		return false;
+	}
+
+	/* All remaining passable terrain is okay. */
+	if (square_ispassable(p->cave, grid)) {
+		return true;
+	}
+
+	/*
+	 * Some impassable terrain can be traversed fairly easily by modifying
+	 * the terrain so allow those kinds.
+	 */
+	if (square_iscloseddoor(p->cave, grid)
+			|| square_isrubble(p->cave, grid)) {
+		return true;
+	}
+
+	/* Reject all other impassable terrain. */
+	return false;
 }
 
 /**
- * Get pathfinding region
+ * Help compute_unlocked_penalty(), compute_locked_penalty(), and
+ * compute_rubble_penalty():  convert a penalty in standard turns to one in
+ * movement turns.
  */
-static void get_pathfind_region(void)
+static int convert_turn_penalty(int penalty, struct player *p)
 {
-	top_left.x = MAX(player->grid.x - MAX_PF_RADIUS / 2, 0);
-	top_left.y = MAX(player->grid.y - MAX_PF_RADIUS / 2, 0);
+	/*
+	 * If a turn moving takes a different amount of energy than a turn
+	 * doing something other than moving, adjust the penalty.
+	 */
+	int moving_energy = energy_per_move(p);
 
-	bottom_right.x = MIN(player->grid.x + MAX_PF_RADIUS / 2 - 1, cave->width);
-	bottom_right.y = MIN(player->grid.y + MAX_PF_RADIUS / 2 - 1, cave->height);
+	if (moving_energy != z_info->move_energy) {
+		if (moving_energy > 0) {
+			struct my_rational factor = my_rational_construct(
+				z_info->move_energy, moving_energy);
+			unsigned int adjusted, remainder;
+
+			adjusted = my_rational_to_uint(&factor, penalty,
+				&remainder);
+			if (adjusted < INT_MAX) {
+				penalty = (int)adjusted;
+				/* Round to the nearest integer. */
+				if (remainder >= (factor.d + 1) / 2) {
+					++penalty;
+				}
+			} else {
+				penalty = INT_MAX;
+			}
+		} else {
+			penalty = INT_MAX;
+		}
+	}
+	return penalty;
 }
 
 /**
- * Get the path distance info for a grid
+ * Help prepare_pfdistances() and find_path():  compute the penalty to
+ * distance for going through a known closed door that is unlocked.
  */
-static int path_dist(struct loc grid)
+static int compute_unlocked_penalty(struct player *p)
 {
-	return path_distance[grid.y - top_left.y][grid.x - top_left.x];
+	/* An unlocked door takes one turn to open. */
+	return convert_turn_penalty(PF_SCL, p);
 }
 
 /**
- * Set the path distance info for a grid
+ * Help prepare_pfdistances() and find_path():  compute the penalty to
+ * distance for going through a known closed door that is locked.
+ *
+ * Treats the power of the lock as not readily known to the player and assumes
+ * the maximum power currently used, 7.  See the calls to square_set_door_lock()
+ * in gen-util.c's place_closed_door() and cmd-cave.c's do_cmd_lock_door().
+ * Approximates the lighting state when unlocking the door with the current
+ * lighting state.
  */
-static void set_path_dist(struct loc grid, int dist)
+static int compute_locked_penalty(struct player *p)
 {
-	assert(grid.y >= top_left.y);
-	assert(grid.x >= top_left.x);
-	assert(grid.y < bottom_right.y);
-	assert(grid.x < bottom_right.x);
-	path_distance[grid.y - top_left.y][grid.x - top_left.x] = dist;
+	int chance = calc_unlocking_chance(p, 7, p->state.cur_light < 1
+		&& !player_has(p, PF_UNLIGHT));
+	int penalty;
+
+	if (chance <= 0) {
+		/* It can not be unlocked. */
+		penalty = INT_MAX;
+	} else if (chance >= 100) {
+		/* It takes one turn to unlock and open. */
+		penalty = PF_SCL;
+	} else {
+		/*
+		 * On average, it takes 100 / chance turns to unlock and open.
+		 * Round the result to the nearest integer after scaling by
+		 * PF_SCL.
+		 */
+		struct my_rational avg_turns =
+			my_rational_construct(100, chance);
+		unsigned int scl_turns, remainder;
+
+		scl_turns = my_rational_to_uint(&avg_turns, PF_SCL, &remainder);
+		if (scl_turns < INT_MAX) {
+			penalty = (int)scl_turns;
+			if (remainder >= (avg_turns.d + 1) / 2) {
+				++penalty;
+			}
+		} else {
+			penalty = INT_MAX;
+		}
+	}
+
+	return convert_turn_penalty(penalty, p);
 }
 
 /**
- * Initialize terrain information
+ * Help prepare_pfdistances() and find_path():  compute the penalty to distance
+ * for going through known impassable rubble.
+ *
+ * Duplicates logic from do_cmd_tunnel_aux().
  */
-static void path_dist_info_init(void)
+static int compute_rubble_penalty(struct player *p)
 {
+	int weapon_slot = slot_by_name(p, "weapon");
+	struct object *current_weapon = slot_object(p, weapon_slot);
+	struct object *best_digger = player_best_digger(p, false);
+	struct player_state local_state, *used_state;
+	int digging_chances[DIGGING_MAX], num_digger = 1;
+	bool swapped_digger;
+	int penalty;
+
+	if (best_digger != current_weapon && (!current_weapon
+			|| obj_can_takeoff(current_weapon))) {
+		swapped_digger = true;
+		if (best_digger) {
+			num_digger = best_digger->number;
+			best_digger->number = 1;
+		}
+		p->body.slots[weapon_slot].obj = best_digger;
+		memcpy(&local_state, &p->state, sizeof(local_state));
+		calc_bonuses(p, &local_state, false, true);
+		used_state = &local_state;
+	} else {
+		swapped_digger = false;
+		used_state = &p->state;
+	}
+	calc_digging_chances(used_state, digging_chances);
+	if (swapped_digger) {
+		if (best_digger) {
+			best_digger->number = num_digger;
+		}
+		p->body.slots[weapon_slot].obj = current_weapon;
+		calc_bonuses(p, &local_state, false, true);
+	}
+	if (digging_chances[DIGGING_RUBBLE] <= 0) {
+		/* Can not dig through rubble at all. */
+		penalty = INT_MAX;
+	} else if (digging_chances[DIGGING_RUBBLE] >= 1600) {
+		/* Takes one turn to dig through rubble. */
+		penalty = PF_SCL;
+	} else {
+		/*
+		 * On average, it takes 1600 / digging_chances[DIGGING_RUBBLE]
+		 * turns to dig through rubble.  Round the result to the nearest
+		 * integer after scaling by PF_SCL.
+		 */
+		struct my_rational avg_turns = my_rational_construct(1600,
+			digging_chances[DIGGING_RUBBLE]);
+		unsigned int scl_turns, remainder;
+
+		scl_turns = my_rational_to_uint(&avg_turns, PF_SCL,
+			&remainder);
+		if (scl_turns < INT_MAX) {
+			penalty = (int)scl_turns;
+			if (remainder >= (avg_turns.d + 1) / 2) {
+				++penalty;
+			}
+		} else {
+			penalty = INT_MAX;
+		}
+	}
+
+	return convert_turn_penalty(penalty, p);
+}
+
+/**
+ * Help prepare_pfdistances() and find_path():  compute the penalty to
+ * distance for walking through trees.
+ * Ignore elven druids/rangers for now.
+ */
+static int compute_tree_penalty(struct player *p)
+{
+	/* Ents, elves, druids, rangers, flyers can move easily */
+	if (player_has(p, PF_WOODEN) || player_has(p, PF_WOODSMAN) ||
+		player_has(p, PF_FLYING) || player_has(p, PF_ELVEN)) {
+		return 0;
+	}
+
+	/* Otherwise take one extra turn. */
+	return convert_turn_penalty(PF_SCL, p);
+}
+
+/**
+ * Help prepare_pfdistances() and find_path():  compute the penalty to
+ * distance for walking through passable rubble.
+ */
+static int compute_passable_rubble_penalty(struct player *p)
+{
+	/* Dwarves, flyers can move easily */
+	if (player_has(p, PF_DWARVEN) || player_has(p, PF_FLYING)) {
+		return 0;
+	}
+
+	/* Otherwise take one extra turn. */
+	return convert_turn_penalty(PF_SCL, p);
+}
+
+/**
+ * Compute the distances, in movement turns, from a given location to all
+ * locations in the cave.
+ *
+ * \param p is the player of interest.
+ * \param start is the starting point for the distance calculations.
+ * \param only_known will, if true, cause unknown grids to be treated as
+ * unreachable.
+ * \param forbid_traps will, if true, cause grids with known visible traps
+ * to be treated as unreachable.
+ * \return a pointer to the opaque distance array type.  If not NULL, that
+ * pointer should be passed to release_pfdistances() when it is no longer
+ * needed.  The returned result will be NULL if p->cave is NULL or start
+ * is not a valid location in p->cave.
+ *
+ * The computed distances use the player's memory of the cave.  When
+ * only_known is false, grids that the player does not remember and are
+ * not on the boundary of the cave are treated as if they were easily passable.
+ */
+struct pfdistances *prepare_pfdistances(struct player *p, struct loc start,
+		bool only_known, bool forbid_traps)
+{
+	struct pfdistances *result;
 	struct loc grid;
+	struct queue *pending;
+	int unlocked_penalty, locked_penalty, rubble_penalty, prubble_penalty,
+		tree_penalty;
 
-	/* Set distance of all grids in the region to -1 */
-	for (grid.y = 0; grid.y < MAX_PF_RADIUS; grid.y++)
-		for (grid.x = 0; grid.x < MAX_PF_RADIUS; grid.x++)
-			path_distance[grid.y][grid.x] = -1;
+	if (!p->cave || !square_in_bounds_fully(p->cave, start)) {
+		return NULL;
+	}
 
-	/* Set distance of valid grids to MAX_PF_LENGTH */
-	for (grid.y = top_left.y; grid.y < bottom_right.y; grid.y++)
-		for (grid.x = top_left.x; grid.x < bottom_right.x; grid.x++)
-			if (is_valid_pf(grid))
-				set_path_dist(grid, MAX_PF_LENGTH);
+	result = mem_alloc(sizeof(*result));
+	result->buffer = mem_alloc(p->cave->height * p->cave->width
+		* sizeof(*result->buffer));
+	result->rows = mem_alloc(p->cave->height * sizeof(*result->rows));
+	result->start = start;
+	result->height = p->cave->height;
+	result->width = p->cave->width;
 
-	/* Set distance of the player's grid to 0 */
-	set_path_dist(player->grid, 0);
+	/* Set up the row pointers. */
+	for (grid.y = 0; grid.y < result->height; ++grid.y) {
+		result->rows[grid.y] = result->buffer + grid.y * result->width;
+	}
+
+	/*
+	 * Mark the outer edge as unreachable (negative distance).  Keeps
+	 * things in bounds without extra checks later.  Inner grids may
+	 * be unreachable; otherwise they start with the assumption of
+	 * the maximum possible distance.
+	 */
+	grid.y = 0;
+	for (grid.x = 0; grid.x < result->width; ++grid.x) {
+		result->rows[0][grid.x] = -1;
+	}
+	for (grid.y = 1; grid.y < result->height - 1; ++grid.y) {
+		result->rows[grid.y][0] = -1;
+		for (grid.x = 1; grid.x < result->width - 1; ++grid.x) {
+			result->rows[grid.y][grid.x] = (is_valid_pf(p, grid,
+				only_known, forbid_traps)) ?  INT_MAX : -1;
+		}
+		result->rows[grid.y][result->width - 1] = -1;
+	}
+	for (grid.x = 0; grid.x < result->width; ++grid.x) {
+		result->rows[result->height - 1][grid.x] = -1;
+	}
+
+	/* The distance to the starting point is zero. */
+	result->rows[result->start.y][result->start.x] = 0;
+
+	/* Precompute quantities to penalize traversing some terrain;
+	 * we ignore slowing in water and speedups in trees for now. */
+	unlocked_penalty = compute_unlocked_penalty(p);
+	locked_penalty = compute_locked_penalty(p);
+	rubble_penalty = compute_rubble_penalty(p);
+	prubble_penalty = compute_passable_rubble_penalty(p);
+	tree_penalty = compute_tree_penalty(p);
+
+	/*
+	 * Set up a queue with the feasible points that remain to be
+	 * considered.  The length of the perimeter of the cave is a guess
+	 * at how many feasible points may be present at once.  Will try to
+	 * resize if that turns out to be inadequate.
+	 */
+	pending = q_new(2 * (result->width + result->height - 2));
+	/* The starting point is the point to consider. */
+	q_push_int(pending, grid_to_i(result->start, result->width));
+
+	/*
+	 * For a feasible point, check the eight neighors to see if they
+	 * are feasible.
+	 */
+	do {
+		int cur_distance, i;
+
+		i_to_grid(q_pop_int(pending), result->width, &grid);
+		cur_distance = result->rows[grid.y][grid.x];
+		/*
+		 * Move one grid, i.e. PF_SCL, to get to the next grid.  If
+		 * that exceeds the maximum distance possible, have no
+		 * feasible points from the one under consideration.
+		 */
+		if (cur_distance >= INT_MAX - PF_SCL) {
+			continue;
+		}
+		cur_distance += PF_SCL;
+
+		/* Try the neighbors. */
+		for (i = 0; i < 8; ++i) {
+			struct loc next = loc_sum(grid, ddgrid_ddd[i]);
+
+			/*
+			 * Skip points that are unreachable or which have
+			 * already been reached by a path which is at least
+			 * as short as the path under consideration.
+			 */
+			if (result->rows[next.y][next.x] <= cur_distance) {
+				continue;
+			}
+			/*
+			 * Add next as a feasible point; penalize some terrain
+			 * if it is known and hard to traverse.
+			 */
+			if (!square_isknown(p->cave, next)
+					|| square_ispassable(p->cave, next)) {
+				result->rows[next.y][next.x] = cur_distance;
+			} else {
+				int penalty, penalized_distance;
+
+				if (square_iscloseddoor(p->cave, next)) {
+					penalty = (square_islockeddoor(p->cave,
+						next)) ? locked_penalty :
+						unlocked_penalty;
+				} else if (square_isrubble(p->cave, next)) {
+					if (square_ispassable(p->cave, next)) {
+						penalty = prubble_penalty;
+					} else {
+						penalty = rubble_penalty;
+					}
+				} else if (square_istree(p->cave, next)) {
+					penalty = tree_penalty;
+				} else {
+					/*
+					 * Should not happen, treat it as
+					 * completely impassable.
+					 */
+					continue;
+				}
+
+				if (cur_distance >= INT_MAX - penalty) {
+					/*
+					 * Will exceed the maximum allowed
+					 * distance so next is not feasible.
+					 */
+					continue;
+				}
+				penalized_distance = cur_distance + penalty;
+				if (result->rows[next.y][next.x]
+						<= penalized_distance) {
+					/*
+					 * Already have a path there that is
+					 * shorter or the same length.  Do not
+					 * need to consider this one.
+					 */
+					continue;
+				}
+				result->rows[next.y][next.x] =
+					penalized_distance;
+			}
+
+			assert(q_len(pending) <= q_size(pending)
+				&& q_size(pending) > 0);
+			if (q_len(pending) == q_size(pending)) {
+				if (q_size(pending) > SIZE_MAX / 2
+						|| q_resize(pending,
+						2 * q_size(pending))) {
+					/*
+					 * Can not hold the new pending
+					 * feasible grid so skip it.
+					 */
+					continue;
+				}
+			}
+			q_push_int(pending, grid_to_i(next, result->width));
+		}
+	} while (q_len(pending) > 0);
+
+	q_free(pending);
+
+	return result;
 }
 
 /**
- * Try to find a path from the player's grid
- * \param grid the target grid
+ * Return the expected number of movement turns to reach the given grid.
+ *
+ * \param a is a distance array previously computed for a player.
+ * \param grid is the desired destination grid.
+ * \return -1 if the destination grid is outside the bounds of a or is
+ * unreachable.  Otherwise, return the expected number of movement turns to
+ * return the destination grid.
  */
-static bool set_up_path_distances(struct loc grid)
+int pfdistances_to_turncount(const struct pfdistances *a, struct loc grid)
+{
+	if (!a || grid.y < 0 || grid.y >= a->height || grid.x < 0 ||
+			grid.x >= a->width || a->rows[grid.y][grid.x] < 0
+			|| a->rows[grid.y][grid.x] == INT_MAX) {
+		return -1;
+	}
+	return a->rows[grid.y][grid.x] / PF_SCL
+		+ (((a->rows[grid.y][grid.x] % PF_SCL) >= (PF_SCL + 1) / 2)
+		? 1 : 0);
+}
+
+/**
+ * Compute a path given a previously computed distances array and a destination.
+ *
+ * \param a is a distance array previously computed for a player.
+ * \param grid is the desired desination grid.
+ * \param step_dirs will, if not NULL, be dereferenced and set to the allocated
+ * memory for the steps of the path in reverse order.  Each step is an index
+ * to the ddgrid array, so *step_dirs[i] will be the direction to move for
+ * the ith (in reverse order) step.  The allocated memory should be released
+ * with mem_free() when it is no longer needed.
+ * \return the number of steps in the path.  That will be -1 if the destination
+ * is unreachable.  That will be zero if the destination is the same grid as
+ * player.  When the number of steps is -1 or zero and step_dirs is not NULL,
+ * *step_dirs will be set to NULL.
+ */
+int pfdistances_to_path(const struct pfdistances *a, struct loc grid,
+		int16_t **step_dirs)
+{
+	int16_t *steps;
+	int allocated, length;
+
+	if (!a || grid.y < 0 || grid.y >= a->height || grid.x < 0 ||
+			grid.x >= a->width || a->rows[grid.y][grid.x] < 0) {
+		if (step_dirs) {
+			*step_dirs = NULL;
+		}
+		return -1;
+	}
+	if (loc_eq(grid, a->start)) {
+		if (step_dirs) {
+			*step_dirs = NULL;
+		}
+		return 0;
+	}
+
+	/* Work backwards from the destination to the starting point. */
+	allocated = 2 + ABS(grid.y - a->start.y) + ABS(grid.x - a->start.x);
+	length = 0;
+	steps = mem_alloc(allocated * sizeof(*steps));
+	while (!loc_eq(grid, a->start)) {
+		int k, best_k = -1, best_distance = a->rows[grid.y][grid.x];
+
+		/* Find the next step. */
+		for (k = 0; k < 8; ++k) {
+			struct loc next = loc_sum(grid, ddgrid_ddd[k]);
+			int try_distance;
+
+			/*
+			 * The impassable boundary imposed on the distances
+			 * array should mean the trial step is always in bounds.
+			 */
+			assert(next.y >= 0 && next.y < a->height
+				&& next.x >= 0 && next.x < a->width);
+			try_distance = a->rows[next.y][next.x];
+			if (try_distance >= 0 && best_distance > try_distance) {
+				best_distance = try_distance;
+				best_k = k;
+			}
+		}
+
+		/*
+		 * Bail out if stepping backwards did not improve the distance.
+		 */
+		if (best_k < 0) {
+			mem_free(steps);
+			if (step_dirs) {
+				*step_dirs = NULL;
+			}
+			return -1;
+		}
+
+		assert(length <= allocated && allocated > 0);
+		if (length == allocated) {
+			if (allocated > INT_MAX / 2
+					|| (size_t)allocated
+					> SIZE_MAX / (2 * sizeof(*steps))) {
+				mem_free(steps);
+				if (step_dirs) {
+					*step_dirs = NULL;
+				}
+				return -1;
+			}
+			allocated *= 2;
+			steps = mem_realloc(steps, allocated * sizeof(*steps));
+		}
+
+		/* Record the opposite of the backward direction. */
+		steps[length] = 10 - ddd[best_k];
+		++length;
+
+		grid = loc_sum(grid, ddgrid_ddd[best_k]);
+	}
+
+	if (step_dirs) {
+		*step_dirs = steps;
+	} else {
+		mem_free(steps);
+	}
+	return length;
+}
+
+/**
+ * Release a path distance array computed by pfdistances_prepare().
+ */
+void release_pfdistances(struct pfdistances *a)
+{
+	if (a) {
+		mem_free(a->buffer);
+		mem_free(a->rows);
+		mem_free(a);
+	}
+}
+
+static void initialize_patched_distances(struct pfdistances_patched *distances,
+		int height, int width)
 {
 	int i;
-	struct point_set *reached = point_set_new(MAX_PF_RADIUS * MAX_PF_RADIUS);
 
-	/* Initialize the pathfinding region */
-	get_pathfind_region();
-	path_dist_info_init();
+	assert(height > 0 && width > 0);
+	distances->patch_shift = 4;
+	distances->patch_size = 1 << distances->patch_shift;
+	distances->patch_mask = distances->patch_size - 1;
+	distances->npatchy = height >> distances->patch_shift;
+	if (height & distances->patch_mask) {
+		++distances->npatchy;
+	}
+	distances->npatchx = width >> distances->patch_shift;
+	if (width & distances->patch_mask) {
+		++distances->npatchx;
+	}
+	distances->height = height;
+	distances->width = width;
+	distances->patches = mem_alloc(distances->npatchy
+		* sizeof(*distances->patches));
+	for (i = 0; i < distances->npatchy; ++i) {
+		distances->patches[i] = mem_zalloc(distances->npatchx
+			* sizeof(**distances->patches));
+	}
+}
 
-	/* Check bounds */
-	if ((grid.x >= top_left.x) && (grid.x < bottom_right.x) &&
-		(grid.y >= top_left.y) && (grid.y < bottom_right.y)) {
-		if ((square(cave, grid)->mon > 0) &&
-			monster_is_visible(square_monster(cave, grid))) {
-			set_path_dist(grid, MAX_PF_LENGTH);
+static void release_patched_distances(struct pfdistances_patched *distances)
+{
+	int i;
+
+	assert(distances->patches && distances->npatchy > 0
+		&& distances->npatchx > 0);
+	for (i = 0; i < distances->npatchy; ++i) {
+		int j;
+
+		assert(distances->patches[i]);
+		for (j = 0; j < distances->npatchx; ++j) {
+			mem_free(distances->patches[i][j]);
 		}
-	} else {
-		bell();
-		return false;
+		mem_free(distances->patches[i]);
+	}
+	mem_free(distances->patches);
+}
+
+static void clear_patched_distances(struct pfdistances_patched *distances)
+{
+	int i;
+
+	assert(distances->patches && distances->npatchy > 0
+		&& distances->npatchx > 0);
+	for (i = 0; i < distances->npatchy; ++i) {
+		int j;
+
+		assert(distances->patches[i]);
+		for (j = 0; j < distances->npatchx; ++j) {
+			mem_free(distances->patches[i][j]);
+			distances->patches[i][j] = NULL;
+		}
+	}
+}
+
+static void initialize_patch(struct pfdistances_patched *distances,
+		struct loc grid, struct player *p, bool only_known,
+		bool forbid_traps)
+{
+	int *block;
+	int patchy, patchx, i;
+	struct loc corner, cursor;
+
+	assert(grid.y >= 0 && grid.y < distances->height
+		&& grid.x >= 0 && grid.x < distances->width);
+	patchy = grid.y >> distances->patch_shift;
+	assert(patchy >= 0 && patchy < distances->npatchy);
+	patchx = grid.x >> distances->patch_shift;
+	assert(patchx >= 0 && patchx < distances->npatchx);
+	assert(!distances->patches[patchy][patchx]);
+	block = mem_alloc(distances->patch_size * distances->patch_size
+		* sizeof(*block));
+	distances->patches[patchy][patchx] = block;
+
+	corner.y = patchy << distances->patch_shift;
+	corner.x = patchx << distances->patch_shift;
+	for (cursor.y = corner.y, i = 0; cursor.y < corner.y
+			+ distances->patch_size; ++cursor.y) {
+		for (cursor.x = corner.x; cursor.x < corner.x
+				+ distances->patch_size; ++cursor.x, ++i) {
+			block[i] = (square_in_bounds_fully(p->cave, cursor)
+				&& is_valid_pf(p, cursor, only_known,
+				forbid_traps)) ? INT_MAX : -1;
+		}
+	}
+}
+
+static bool has_patched_distance(const struct pfdistances_patched *distances,
+		struct loc grid)
+{
+	int patchy, patchx;
+
+	assert(grid.y >= 0 && grid.y < distances->height
+		&& grid.x >= 0 && grid.x < distances->width);
+	patchy = grid.y >> distances->patch_shift;
+	assert(patchy >= 0 && patchy < distances->npatchy);
+	patchx = grid.x >> distances->patch_shift;
+	assert(patchx >= 0 && patchx < distances->npatchx);
+	return distances->patches[patchy][patchx];
+}
+
+static int get_patched_distance(const struct pfdistances_patched *distances,
+		struct loc grid)
+{
+	int patchy, patchx, patchi;
+
+	assert(grid.y >= 0 && grid.y < distances->height
+		&& grid.x >= 0 && grid.x < distances->width);
+	patchy = grid.y >> distances->patch_shift;
+	assert(patchy >= 0 && patchy < distances->npatchy);
+	patchx = grid.x >> distances->patch_shift;
+	assert(patchx >= 0 && patchx < distances->npatchx);
+	assert(distances->patches[patchy][patchx]);
+	patchi = ((grid.y & distances->patch_mask) << distances->patch_shift)
+		+ (grid.x & distances->patch_mask);
+	assert(patchi >= 0 && patchi < distances->patch_size
+		* distances->patch_size);
+	return distances->patches[patchy][patchx][patchi];
+}
+
+static void set_patched_distance(struct pfdistances_patched *distances,
+		struct loc grid, int distance)
+{
+	int patchy, patchx, patchi;
+
+	assert(grid.y >= 0 && grid.y < distances->height
+		&& grid.x >= 0 && grid.x < distances->width);
+	patchy = grid.y >> distances->patch_shift;
+	assert(patchy >= 0 && patchy < distances->npatchy);
+	patchx = grid.x >> distances->patch_shift;
+	assert(patchx >= 0 && patchx < distances->npatchx);
+	assert(distances->patches[patchy][patchx]);
+	patchi = ((grid.y & distances->patch_mask) << distances->patch_shift)
+		+ (grid.x & distances->patch_mask);
+	assert(patchi >= 0 && patchi < distances->patch_size
+		* distances->patch_size);
+	distances->patches[patchy][patchx][patchi] = distance;
+}
+
+static int patched_distances_to_path(const struct pfdistances_patched
+		*distances, struct loc start, struct loc dest,
+		int16_t **step_dirs)
+{
+	int allocated, length, last_distance;
+	int16_t *steps;
+
+	/* Work backwards from the destination to the starting point. */
+	allocated = 2 + ABS(dest.y - start.y) + ABS(dest.x - start.x);
+	length = 0;
+	steps = mem_alloc(allocated * sizeof(*steps));
+	last_distance = INT_MAX;
+	while (!loc_eq(dest, start)) {
+		struct loc best_grid = loc(-1, -1);
+		int k, best_k = -1;
+
+		/* Find the next step. */
+		for (k = 0; k < 8; ++k) {
+			struct loc next = loc_sum(dest, ddgrid_ddd[k]);
+			int try_distance;
+
+			if (!has_patched_distance(distances, next)) {
+				continue;
+			}
+			try_distance = get_patched_distance(distances, next);
+			if (try_distance >= 0 && last_distance > try_distance) {
+				last_distance = try_distance;
+				best_k = k;
+				best_grid = next;
+			}
+		}
+
+		assert(best_k >= 0);
+		assert(best_grid.y >= 0 && best_grid.y < distances->height
+			&& best_grid.x >= 0 && best_grid.x < distances->width);
+		dest = best_grid;
+		assert(length <= allocated && allocated > 0);
+		if (length == allocated) {
+			if (allocated > INT_MAX / 2
+					|| (size_t)allocated
+					> SIZE_MAX / (2 * sizeof(*steps))) {
+				mem_free(steps);
+				if (step_dirs) {
+					*step_dirs = NULL;
+				}
+				return -1;
+			}
+			allocated *= 2;
+			steps = mem_realloc(steps, allocated * sizeof(*steps));
+		}
+
+		/* Record the opposite of the backward direction. */
+		steps[length] = 10 - ddd[best_k];
+		++length;
 	}
 
-	/* Add the player's grid to the set of marked grids */
-	add_to_point_set(reached, player->grid);
+	if (step_dirs) {
+		*step_dirs = steps;
+	} else {
+		mem_free(steps);
+	}
+	return length;
+}
 
-	/* Add the neighbours of any marked grid in the area */
-	for (i = 0; i < reached->n; i++) {
-		int k, cur_distance = path_dist(reached->pts[i]) + 1;
-		for (k = 0; k < 8; k++) {
-			struct loc next = loc_sum(reached->pts[i], ddgrid_ddd[k]);
+/**
+ * Compute the path to the nearest (to the given starting point) known grid
+ * that satisfies the given predicate and is not the same as the starting
+ * point.
+ *
+ * \param p is the player of interest.
+ * \param start is the starting point for the search.
+ * \param pred is the predicate that the destination must satisfy.
+ * \param dest_grid will, if not NULL, be dereferenced and set to the
+ * destination for the path.
+ * \param step_dirs will, if not NULL, be dereferenced and set to the allocated
+ * memory for the steps of the path in reverse order.  Each step is an index
+ * to the ddgrid array, so *step_dirs[i] will be the direction to move for
+ * the ith (in reverse order) step.  The allocated memory should be released
+ * with mem_free() when it is no longer needed.
+ * \return the number of steps in the path.  That will be -1 if no suitable
+ * destination was found.  When the number of steps is -1, *dest_grid will be
+ * set to loc(-1, -1) if dest_grid is not NULL and *step_dirs will be set to
+ * NULL if step_dirs is not NULL.
+ */
+int path_nearest_known(struct player *p, struct loc start,
+		bool (*pred)(struct chunk*, struct loc),
+		struct loc *dest_grid, int16_t **step_dirs)
+{
+	while (1) {
+		struct pfdistances *distances = NULL;
+		struct loc min_grid = loc(-1, -1);
+		int min_turns = INT_MAX;
+		bool only_known = true, forbid_traps = true;
+		struct loc grid;
 
-			/* Enforce length and area bounds */
-			if ((next.y < top_left.y) ||
-				(next.y >= bottom_right.y) ||
-				(next.x < top_left.x) ||
-				(next.x >= bottom_right.x) ||
-				(path_dist(next) <= cur_distance) ||
-				(path_dist(next) > MAX_PF_LENGTH)) {
+		for (grid.y = 0; grid.y < p->cave->height; ++grid.y) {
+			for (grid.x = 0; grid.x < p->cave->width; ++grid.x) {
+
+				if (loc_eq(grid, start)) {
+					continue;
+				}
+				if (square_isknown(p->cave, grid)
+						&& (*pred)(p->cave, grid)) {
+					int turns;
+
+					if (!distances) {
+						distances = prepare_pfdistances(
+							p, start, only_known,
+							forbid_traps);
+					}
+					turns = pfdistances_to_turncount(
+						distances, grid);
+					if (turns > 0 && min_turns > turns) {
+						min_turns = turns;
+						min_grid = grid;
+					}
+				}
+			}
+		}
+
+		if (min_turns < INT_MAX) {
+			int path_length;
+
+			assert(distances
+				&& square_in_bounds(p->cave, min_grid));
+			if (dest_grid) {
+				*dest_grid = min_grid;
+			}
+			path_length = pfdistances_to_path(distances,
+				min_grid, step_dirs);
+			release_pfdistances(distances);
+			assert(path_length > 0);
+			return path_length;
+		}
+
+		release_pfdistances(distances);
+		/*
+		 * No destination was found.  Try looser constraints on the
+		 * grids that can be in the path.
+		 */
+		if (forbid_traps && !player_is_trapsafe(p)) {
+			forbid_traps = false;
+			continue;
+		}
+		if (only_known) {
+			only_known = false;
+			forbid_traps = true;
+			continue;
+		}
+		/* Nothing more to try for passable grids.  Give up. */
+		if (dest_grid) {
+			*dest_grid = loc(-1, -1);
+		}
+		if (step_dirs) {
+			*step_dirs = NULL;
+		}
+		return -1;
+	}
+}
+
+/**
+ * Compute the path to either the nearest (to the starting point) known
+ * passable grid that is not the staring point and has an unknown neighbor or,
+ * if there is not such a grid, to the nearest (to the starting point) known
+ * closed door or known rubble that has an unknown neighbor and a known
+ * neighbor that is passable.
+ *
+ * \param p is the player of interest.
+ * \param start is the starting point for the search.
+ * \param dest_grid will, if not NULL, be dereferenced and set to the
+ * destination for the path.
+ * \param step_dirs will, if not NULL, be dereferenced and set to the allocated
+ * memory for the steps of the path in reverse order.  Each step is an index
+ * to the ddgrid array, so *step_dirs[i] will be the direction to move for
+ * the ith (in reverse order) step.  The allocated memory should be released
+ * with mem_free() when it is no longer needed.
+ * \return the number of steps in the path.  That will be -1 if no suitable
+ * destination was found.  When the number of steps is -1, *dest_grid will be
+ * set to loc(-1, -1) if dest_grid is not NULL and *step_dirs will be set to
+ * NULL if step_dirs is not NULL.
+ */
+int path_nearest_unknown(struct player *p, struct loc start,
+		struct loc *dest_grid, int16_t **step_dirs)
+{
+	while (1) {
+		struct pfdistances *distances = NULL;
+		struct loc min_grid = loc(-1, -1);
+		int min_turns = INT_MAX;
+		bool only_known = true, forbid_traps = true, passable = true;
+		struct loc grid;
+
+		for (grid.y = 0; grid.y < p->cave->height; ++grid.y) {
+			for (grid.x = 0; grid.x < p->cave->width; ++grid.x) {
+				struct loc test_grid;
+				int turns;
+
+				if (loc_eq(grid, start)
+						|| !square_isknown(p->cave,
+						grid)) {
+					continue;
+				}
+				if (passable) {
+					if (!square_ispassable(p->cave, grid)
+							|| count_neighbors(NULL,
+							p->cave, grid,
+							square_isknown, false)
+							== 8) {
+						continue;
+					}
+					test_grid = grid;
+				} else {
+					if ((!square_iscloseddoor(p->cave, grid)
+							&& !square_isrubble(
+							p->cave, grid))
+							|| count_neighbors(NULL,
+							p->cave, grid,
+							square_isknown,
+							false) == 8) {
+						continue;
+					}
+					if (count_neighbors(&test_grid,
+							p->cave, grid,
+							square_isknownpassable,
+							false) == 0 ||
+							loc_eq(test_grid,
+							start)) {
+						continue;
+					}
+				}
+
+				if (!distances) {
+					distances = prepare_pfdistances(
+						p, start, only_known,
+						forbid_traps);
+				}
+				turns = pfdistances_to_turncount(distances,
+					test_grid);
+				if (turns > 0 && min_turns > turns) {
+					min_turns = turns;
+					min_grid = test_grid;
+				}
+			}
+		}
+
+		if (min_turns < INT_MAX) {
+			int path_length;
+
+			assert(distances
+				&& square_in_bounds(p->cave, min_grid));
+			if (dest_grid) {
+				*dest_grid = min_grid;
+			}
+			path_length = pfdistances_to_path(distances,
+				min_grid, step_dirs);
+			release_pfdistances(distances);
+			assert(path_length > 0);
+			return path_length;
+		}
+
+		release_pfdistances(distances);
+		/*
+		 * No destination was found.  Try looser constraints on the
+		 * grids that can be in the path.
+		 */
+		if (forbid_traps && !player_is_trapsafe(p)) {
+			forbid_traps = false;
+			continue;
+		}
+		if (only_known) {
+			only_known = false;
+			forbid_traps = true;
+			continue;
+		}
+		/*
+		 * Looser constraints did not help.  Try looking for known
+		 * closed doors or known rubble with unknown neighbors.
+		 */
+		if (passable) {
+			passable = false;
+			only_known = true;
+			forbid_traps = true;
+			continue;
+		}
+		/* Nothing more to try.  Give up. */
+		if (dest_grid) {
+			*dest_grid = loc(-1, -1);
+		}
+		if (step_dirs) {
+			*step_dirs = NULL;
+		}
+		return -1;
+	}
+}
+
+/**
+ * Compute the path from one location to another using the given player's
+ * knowledge of the cave.
+ *
+ * \param p is the player of interest.
+ * \param start is the starting point for the path.
+ * \param dest is the destination for the path.
+ * \param step_dirs will, if not NULL, be dereferenced and set to the allocated
+ * memory for the steps of the path in reverse order.  Each step is an index
+ * to the ddgrid array, so *step_dirs[i] will be the direction to move for
+ * the ith (in reverse order) step.  The allocated memory should be released
+ * with mem_free() when it is no longer needed.
+ * \return the number of steps in the path.  That will be -1 if the destination
+ * is unreachable.  That will be zero if the destination is the same grid as
+ * player.  When the number of steps is -1 or zero and step_dirs is not NULL,
+ * *step_dirs will be set to NULL.
+ *
+ * find_path() should perform better than prepare_pfdistances(),
+ * pfdistances_to_path(), and release_pfdistances().  When there are paths
+ * of the same distances (in expected turncounts) between start and dest, the
+ * path returned by find_path() may be different than that returned by
+ * pfdistances_to_path().
+ */
+int find_path(struct player *p, struct loc start, struct loc dest,
+		int16_t **step_dirs)
+{
+	/*
+	 * Store the grid at the head of the path in the queue and have
+	 * separate storage for a distance array.  Initialize that distance
+	 * array in patches of patch_size by patch_size to limit overhead from
+	 * parts of the cave that are not traversed when moving to the
+	 * destination.
+	 */
+	struct pfdistances_patched distances;
+	struct priority_queue *pending;
+	struct loc next;
+	int dist_next;
+	int unlocked_penalty, locked_penalty, rubble_penalty, prubble_penalty,
+		tree_penalty;
+	bool only_known, forbid_traps, hit_trap;
+
+	if (!p->cave || !square_in_bounds(p->cave, start)
+			|| !square_in_bounds(p->cave, dest)) {
+		if (step_dirs) {
+			*step_dirs = NULL;
+		}
+		return -1;
+	}
+
+	if (loc_eq(start, dest)) {
+		if (step_dirs) {
+			*step_dirs = NULL;
+		}
+		return 0;
+	}
+
+	/*
+	 * If both the starting point and destination are remembered grids,
+	 * first try paths that only traverse remembered grids.  If there are
+	 * no such paths, then try ones that can include grids that are not
+	 * remembered.
+	 */
+	only_known = square_isknown(p->cave, start)
+		&& square_isknown(p->cave, dest);
+	/*
+	 * First try paths that do not go through grids with known visible
+	 * traps.  If there are no such paths, then try paths that include
+	 * known visible traps.
+	 */
+	if (is_valid_pf(p, dest, only_known, true)) {
+		forbid_traps = true;
+	} else if (is_valid_pf(p, dest, only_known, false)) {
+		forbid_traps = false;
+	} else {
+		/*
+		 * The destination is not reachable because it contains
+		 * known terrain that pathfinding can not traverse.
+		 */
+		if (step_dirs) {
+			*step_dirs = NULL;
+		}
+		return -1;
+	}
+	/*
+	 * Remember if the pathfinding would change because of a known visible
+	 * trap.
+	 */
+	hit_trap = false;
+
+	/* Precompute quantities to penalize traversing some terrain. */
+	unlocked_penalty = compute_unlocked_penalty(p);
+	locked_penalty = compute_locked_penalty(p);
+	rubble_penalty = compute_rubble_penalty(p);
+	prubble_penalty = compute_passable_rubble_penalty(p);
+	tree_penalty = compute_tree_penalty(p);
+
+	initialize_patched_distances(&distances, p->cave->height,
+		p->cave->width);
+
+	/* Set up the priority queue of feasible paths to consider. */
+	pending = qp_new(4 * (2 + MAX(ABS(start.y - dest.y),
+		ABS(start.x - dest.x))));
+
+	initialize_patch(&distances, start, p, only_known, forbid_traps);
+	set_patched_distance(&distances, start, 0);
+	next = start;
+	dist_next = 0;
+	while (1) {
+		int add_grid = -1, add_priority = -1;
+		/* This is the base distance to any neighbor. */
+		int dist_this = dist_next + PF_SCL, i;
+
+		/* Try the neighbors. */
+		for (i = 0; i < 8; ++i) {
+			struct loc this_grid = loc_sum(next, ddgrid_ddd[i]);
+			int dist_stored, dist_remaining, penalty;
+
+			if (loc_eq(this_grid, dest)) {
+				/* Reached the destination. */
+				int length = patched_distances_to_path(
+					&distances, start, dest,
+					step_dirs);
+
+				release_patched_distances(&distances);
+				qp_free(pending, NULL);
+				return length;
+			}
+
+			if (!has_patched_distance(&distances, this_grid)) {
+				initialize_patch(&distances, this_grid,
+					p, only_known, forbid_traps);
+			}
+			dist_stored = get_patched_distance(&distances,
+				this_grid);
+			if (dist_stored <= dist_this) {
+				/*
+				 * Since it is unreachable or already has been
+				 * visited by a path that is not longer than
+				 * this one, do not need to consider it.  If
+				 * not allowing traps and this grid is a known
+				 * visible trap, remember that there is at
+				 * least one trap that affects the pathfinding.
+				 */
+				if (forbid_traps && square_isknown(p->cave,
+						this_grid)
+						&& square_isvisibletrap(
+						p->cave, this_grid)) {
+					hit_trap = true;
+				}
 				continue;
 			}
 
-			/* Add the grid */
-			set_path_dist(next, cur_distance);
-			add_to_point_set(reached, next);
+			/*
+			 * Use A* pathfinding:  add an estimate (in this case
+			 * the Chebyshev distance) to get from this_grid to
+			 * the destination.
+			 */
+			dist_remaining = MAX(ABS(dest.x - this_grid.x),
+				ABS(dest.y - this_grid.y));
+			if (dist_remaining > INT_MAX / PF_SCL
+					|| dist_this >= INT_MAX
+					- PF_SCL * dist_remaining) {
+				/*
+				 * Can not reach the destination from this_grid
+				 * in a reasonable number of turns, so skip
+				 * it.
+				 */
+				continue;
+			}
+			dist_remaining *= PF_SCL;
+
+			if (square_isknown(p->cave, this_grid)
+					&& !square_ispassable(p->cave,
+					this_grid)) {
+				/*
+				 * Penalize the distance for some known but
+				 * impassable terrain.
+				 */
+				if (square_iscloseddoor(p->cave, this_grid)) {
+					penalty = (square_islockeddoor(p->cave,
+						this_grid)) ? locked_penalty :
+						unlocked_penalty;
+				} else if (square_isrubble(p->cave, this_grid)) {
+					if (square_ispassable(p->cave, this_grid)) {
+						penalty = prubble_penalty;
+					} else {
+						penalty = rubble_penalty;
+					}
+				} else if (square_istree(p->cave, this_grid)) {
+					penalty = tree_penalty;
+				} else {
+					/*
+					 * Should not happen, treat it as
+					 * completely impassable.
+					 */
+					penalty = INT_MAX;
+				}
+
+				if (dist_this >= dist_stored - penalty
+						|| dist_this >= INT_MAX -
+						penalty - dist_remaining) {
+					/*
+					 * The penalty makes this path
+					 * no shorter than what has already
+					 * reached this grid or puts the
+					 * destination out of reach.  Skip it.
+					 */
+					continue;
+				}
+			} else {
+				penalty = 0;
+			}
+
+			/* Push what is pending onto the queue. */
+			if (add_grid > 0) {
+				if (qp_len(pending) == qp_size(pending)) {
+					assert(qp_size(pending) > 0);
+					if (qp_size(pending) > SIZE_MAX / 2 ||
+							qp_resize(pending, 2
+							* qp_size(pending),
+							NULL)) {
+						/*
+						 * Could not resize so give
+						 * up.
+						 */
+						release_patched_distances(
+							&distances);
+						qp_free(pending, NULL);
+						if (step_dirs) {
+							*step_dirs = NULL;
+						}
+						return -1;
+					}
+				}
+				qp_push_int(pending, add_priority, add_grid);
+			}
+			add_grid = grid_to_i(this_grid, p->cave->width);
+			add_priority = dist_this + penalty + dist_remaining;
+			set_patched_distance(&distances, this_grid,
+				dist_this + penalty);
 		}
-	}
 
-	/* Grid distances have been recorded, so we can get rid of the point set */
-	point_set_dispose(reached);
-
-	/* Failure to find a path */
-	if (path_dist(grid) == -1 || path_dist(grid) == MAX_PF_LENGTH) {
-		bell();
-		return false;
-	}
-
-	/* Found a path */
-	return true;
-}
-
-/**
- * Fill the array of path step directions
- * \param grid the target grid
- */
-bool find_path(struct loc grid)
-{
-	struct loc new = grid;
-
-	/* Attempt to find a path if necessary */
-	if (loc_eq(new, player->grid)) return false;
-	if (!set_up_path_distances(grid)) return false;
-
-	/* Now travel along the path, backwards */
-	path_step_idx = 0;
-	while (!loc_eq(new, player->grid)) {
-		int k, next_distance = path_dist(new) - 1;
-
-		/* Find the next step */
-		for (k = 0; k < 8; k++) {
-			struct loc next = loc_sum(new, ddgrid_ddd[k]);
-			if (path_dist(next) == next_distance)
-				break;
+		if (add_grid >= 0) {
+			i_to_grid(qp_pushpop_int(pending, add_priority,
+				add_grid), p->cave->width, &next);
+		} else {
+			if (qp_len(pending) == 0) {
+				/*
+				 * Exhausted possible paths without reaching
+				 * the destination.
+				 */
+				if (forbid_traps && !player_is_trapsafe(p)
+						&& hit_trap) {
+					/*
+					 * Retry but allow grids that contain
+					 * known visible traps.
+					 */
+					forbid_traps = false;
+					clear_patched_distances(&distances);
+					initialize_patch(&distances, start,
+						p, only_known, forbid_traps);
+					set_patched_distance(&distances,
+						start, 0);
+					next = start;
+					dist_next = 0;
+					continue;
+				}
+				if (only_known) {
+					/*
+					 * Retry but allow grids that are not
+					 * in the player's memory.
+					 */
+					only_known = false;
+					if (is_valid_pf(p, dest, false, true)) {
+						forbid_traps = true;
+					} else {
+						forbid_traps = false;
+					}
+					hit_trap = false;
+					clear_patched_distances(&distances);
+					initialize_patch(&distances, start,
+						p, only_known, forbid_traps);
+					set_patched_distance(&distances,
+						start, 0);
+					next = start;
+					dist_next = 0;
+					continue;
+				}
+				/* Nothing to retry so give up. */
+				release_patched_distances(&distances);
+				qp_free(pending, NULL);
+				if (step_dirs) {
+					*step_dirs = NULL;
+				}
+				return -1;
+			}
+			i_to_grid(qp_pop_int(pending), p->cave->width, &next);
 		}
-
-		/* Check we haven't exceeded path length */
-		if (path_step_idx >= MAX_PF_LENGTH) return false;
-
-		/* Record the opposite of the backward direction */
-		path_step_dir[path_step_idx++] = 10 - ddd[k];
-		new = loc_sum(new, ddgrid_ddd[k]);
+		/* The relevant patch should already have been initialized. */
+		assert(has_patched_distance(&distances, next));
+		dist_next = get_patched_distance(&distances, next);
 	}
-
-	/* Reduce to the actual number of steps */
-	path_step_idx--;
-	assert(path_step_idx >= 0);
-
-	return true;
 }
 
 /**
@@ -861,87 +2009,143 @@ void run_step(int dir)
 		player->upkeep->update |= (PU_TORCH);
 	} else {
 		/* Continue running */
-		if (!player->upkeep->running_withpathfind) {
+		if (!player->upkeep->steps) {
 			/* Update regular running */
 			if (run_test(player)) {
 				/* Disturb */
 				disturb(player);
 				return;
 			}
-		} else if (path_step_idx < 0) {
+		} else if (player->upkeep->step_count <= 0) {
 			/* Pathfinding, and the path is finished */
 			disturb(player);
-			player->upkeep->running_withpathfind = false;
 			return;
 		} else {
-			struct loc grid = loc_sum(player->grid,
-									  ddgrid[path_step_dir[path_step_idx]]);
+			int next_step_ind = player->upkeep->step_count - 1;
+			int next_step_dir =
+				player->upkeep->steps[next_step_ind];
+			struct loc grid;
+			struct object *obj;
 
-			if (path_step_idx == 0) {
-				/* Known wall */
-				if (square_isknown(cave, grid) &&
-					!square_ispassable(cave, grid)) {
+			assert(player->upkeep->steps);
+			grid = loc_sum(player->grid, ddgrid[next_step_dir]);
+
+			/*
+			 * Automatically deal with some impassable
+			 * terrain if that grid and its immediate neighors are
+			 * known.  Since disturb() flushes queued commands,
+			 * first stop running before pushing the commands to
+			 * deal with the terrain and restart pathfinding.
+			 */
+			if (square_iscloseddoor(player->cave, grid)) {
+				if (count_neighbors(NULL, cave, grid,
+						square_isknown, true) == 9) {
+					struct loc dest =
+						player->upkeep->path_dest;
+
 					disturb(player);
-					player->upkeep->running_withpathfind = false;
+					cmdq_push(CMD_OPEN);
+					cmd_set_arg_direction(cmdq_peek(),
+						"direction", next_step_dir);
+					cmdq_push(CMD_PATHFIND);
+					cmd_set_arg_point(cmdq_peek(),
+						"point", dest);
 					return;
 				}
-			} else if (path_step_idx > 0) {
-				struct object *obj;
+			} else if (square_isrubble(player->cave, grid)
+					&& !square_ispassable(player->cave,
+					grid)) {
+				if (count_neighbors(NULL, cave, grid,
+						square_isknown, true) == 9) {
+					struct loc dest =
+						player->upkeep->path_dest;
 
-				/* If the player has computed a path that is going to end up
-				 * in a wall, we notice this and convert to a normal run. This
-				 * allows us to click on unknown areas to explore the map.
-				 *
-				 * We have to look ahead two, otherwise we don't know which is
-				 * the last direction moved and don't initialise the run
-				 * properly. */
-				grid = loc_sum(player->grid,
-							   ddgrid[path_step_dir[path_step_idx]]);
-
-				/* Known wall */
-				if (square_isknown(cave, grid) &&
-					!square_ispassable(cave, grid)) {
 					disturb(player);
-					player->upkeep->running_withpathfind = false;
+					cmdq_push(CMD_TUNNEL);
+					cmd_set_arg_direction(cmdq_peek(),
+						"direction", next_step_dir);
+					cmdq_push(CMD_PATHFIND);
+					cmd_set_arg_point(cmdq_peek(),
+						"point", dest);
 					return;
 				}
+			}
 
-				/* Visible monsters abort running */
-				if (square(cave, grid)->mon > 0) {
-					struct monster *mon = square_monster(cave, grid);
+			/*
+			 * Known impassable terrain that is not automatically
+			 * handled.
+			 */
+			if (square_isknown(cave, grid) && !square_ispassable(
+					player->cave, grid)) {
+				disturb(player);
+				return;
+			}
 
-					/* Visible monster */
-					if (monster_is_visible(mon)) {
-						disturb(player);
-						player->upkeep->running_withpathfind = false;
-						return;
-					}
+			/* Visible monsters abort running */
+			if (square(cave, grid)->mon > 0) {
+				struct monster *mon =
+					square_monster(cave, grid);
+
+				/* Visible monster */
+				if (monster_is_visible(mon)) {
+					disturb(player);
+					return;
 				}
+			}
 
-				/* Visible objects abort running */
-				for (obj = square_object(cave, grid); obj;
-						obj = obj->next) {
-					/* Visible object */
-					if (obj->known && !ignore_item_ok(player, obj)) {
-						disturb(player);
-						player->upkeep->running_withpathfind = false;
-						return;
-					}
+			/* Visible objects abort running */
+			for (obj = square_object(player->cave, grid); obj;
+					obj = obj->next) {
+				/* Visible object */
+				if (obj->known && !ignore_item_ok(player,
+						obj)) {
+					disturb(player);
+					return;
 				}
+			}
 
+			/*
+			 * If the player has computed a path that is going to
+			 * end up in a wall, we notice this and convert to a
+			 * normal run. This allows us to click on unknown areas
+			 * to explore the map.
+			 *
+			 * We have to look ahead two, otherwise we don't know
+			 * which is the last direction moved and don't
+			 * initialise the run properly.
+			 */
+			if (next_step_ind > 0) {
 				/* Get step after */
-				grid = loc_sum(grid, ddgrid[path_step_dir[path_step_idx - 1]]);
+				grid = loc_sum(grid, ddgrid[
+					player->upkeep->steps[
+					next_step_ind - 1]]);
 
-				/* Known wall, so run the direction we were going */
-				if (square_isknown(cave, grid) &&
-					!square_ispassable(cave, grid)) {
-					player->upkeep->running_withpathfind = false;
-					run_init(path_step_dir[path_step_idx]);
+				/*
+				 * Known impassable terrain that can not be
+				 * automatically handled, so run the direction
+				 * we were going
+				 */
+				if (square_isknown(cave, grid)
+						&& !square_ispassable(
+						player->cave, grid)
+						&& ((!square_iscloseddoor(
+						player->cave, grid)
+						&& !square_isrubble(
+						player->cave, grid))
+						|| count_neighbors(NULL, cave,
+						grid, square_isknown, true)
+						!= 9)) {
+					mem_free(player->upkeep->steps);
+					player->upkeep->steps = NULL;
+					run_init(next_step_dir);
 				}
 			}
 
 			/* Now actually run the step if we're still going */
-			run_cur_dir = path_step_dir[path_step_idx--];
+			if (player->upkeep->steps) {
+				run_cur_dir = next_step_dir;
+				player->upkeep->step_count = next_step_ind;
+			}
 		}
 	}
 
@@ -955,13 +2159,16 @@ void run_step(int dir)
 	/* occurs after movement so that using p->u->running as flag works */
 	if (player->upkeep->running) {
 		player->upkeep->running--;
-	} else if (!player->upkeep->running_withpathfind)
+	} else if (!player->upkeep->steps)
 		return;
 
 	/* Prepare the next step */
 	if (player->upkeep->running) {
 		cmdq_push(CMD_RUN);
 		cmd_set_arg_direction(cmdq_peek(), "direction", 0);
+	} else if (player->upkeep->steps) {
+		mem_free(player->upkeep->steps);
+		player->upkeep->steps = NULL;
 	}
 }
 

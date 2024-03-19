@@ -226,7 +226,7 @@ desc:  The chance to get a beam goes up with your character level.
 
 spell:Light Room:1:2:26:4
 effect:LIGHT_AREA
-effect:SPOT:LIGHT_WEAK:2
+effect:SPHERE:LIGHT_WEAK:2
 dice:1
 desc:Lights up all squares within 2 grids of the player, and hurts
 desc: all light-sensitive monsters in the area of effect.
@@ -284,7 +284,9 @@ effect:IDENTIFY
 desc:Reveals an unknown rune on an object.
 
 spell:Treasure Detection:10:3:60:5
-effect:DETECT_GOLD
+effect:DETECT_ORE
+effect-yx:22:40
+effect:SENSE_GOLD
 effect-yx:22:40
 effect:SENSE_OBJECTS
 effect-yx:22:40
@@ -384,7 +386,9 @@ effect:DETECT_DOORS
 effect-yx:22:40
 effect:DETECT_STAIRS
 effect-yx:22:40
-effect:DETECT_GOLD
+effect:DETECT_ORE
+effect-yx:22:40
+effect:SENSE_GOLD
 effect-yx:22:40
 effect:SENSE_OBJECTS
 effect-yx:22:40
@@ -736,7 +740,7 @@ equip:prayer book:[Novice's Handbook]:1:1:none
 
 spell:Call Light:1:1:10:2
 effect:LIGHT_AREA
-effect:SPOT:LIGHT_WEAK:1:10
+effect:SPHERE:LIGHT_WEAK:1:10
 dice:2d$S
 expr:S:PLAYER_LEVEL:/ 2
 desc:Lights up all squares in a level-dependent area, and hurts
@@ -1017,7 +1021,7 @@ desc:Enables you to see invisible monsters for 24+1d24 turns.
 
 spell:Create Darkness:3:3:10:4
 effect:DARKEN_AREA
-effect:SPOT:DARK_WEAK:1:10
+effect:SPHERE:DARK_WEAK:1:10
 dice:1
 desc:Darkens all squares in a level-dependent area.  If you are in a room,
 desc: the entire room will be darkened as well.
@@ -1281,7 +1285,7 @@ desc: for one turn only.
 
 spell:Call Light:5:3:10:2
 effect:LIGHT_AREA
-effect:SPOT:LIGHT_WEAK:1:10
+effect:SPHERE:LIGHT_WEAK:1:10
 dice:2d$S
 expr:S:PLAYER_LEVEL:/ 2
 desc:Lights up all squares in a level-dependent area, and hurts
@@ -1409,7 +1413,7 @@ equip:food:Ration of Food:1:3:none
 equip:light:Wooden Torch:1:3:none
 equip:sword:Dagger:1:1:none
 equip:soft armour:Soft Leather Armour:1:1:none
-equip:scroll:Word of Recall:1:1:birth_no_recall
+equip:scroll:Word of Recall:1:1:birth_no_recall | birth_thrall
 equip:magic book:[First Spells]:1:1:none
 player-flags:CHOOSE_SPELLS | STEAL
 player-flags:BACKSTAB | TRAP | SLING_SPEED_GREAT
@@ -1443,6 +1447,8 @@ dice:10
 desc:Teleports you randomly up to 10 squares away.
 
 spell:Object Detection:10:3:60:5
+effect:DETECT_ORE
+effect-yx:22:40
 effect:DETECT_GOLD
 effect-yx:22:40
 effect:DETECT_OBJECTS

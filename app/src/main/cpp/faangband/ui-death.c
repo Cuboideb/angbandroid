@@ -52,8 +52,8 @@ static void put_str_centred(int y, int x1, int x2, const char *fmt, ...)
 	tmp = vformat(fmt, vp);
 	va_end(vp);
 
-	/* Centre now */
-	len = strlen(tmp);
+	/* Centre now; account for possible multibyte characters */
+	len = utf8_strlen(tmp);
 	x = x1 + ((x2-x1)/2 - len/2);
 
 	put_str(tmp, y, x);
@@ -61,9 +61,9 @@ static void put_str_centred(int y, int x1, int x2, const char *fmt, ...)
 
 
 /**
- * Display the tombstone
+ * Display the tombstone/retirement screen
  */
-static void print_tomb(void)
+static void display_exit_screen(void)
 {
 	ang_file *fp;
 	char buf[1024];
@@ -71,6 +71,7 @@ static void print_tomb(void)
 	time_t death_time = (time_t)0;
 	bool boat = player->total_winner && player_has(player, PF_ELVEN);
 	bool tree = player->total_winner && player_has(player, PF_WOODEN);
+	bool retired = streq(player->died_from, "Retiring");
 	struct level *lev = &world->levels[player->place];
 
 
@@ -84,11 +85,13 @@ static void print_tomb(void)
 	} else if (boat) {
 		path_build(buf, sizeof(buf), ANGBAND_DIR_SCREENS, "boat.txt");
 		start = 12;
+	} else if (retired) {
+		path_build(buf, sizeof(buf), ANGBAND_DIR_SCREENS, "retire.txt");
 	} else {
 		path_build(buf, sizeof(buf), ANGBAND_DIR_SCREENS, "dead.txt");
 	}
 
-	/* Open the death file */
+	/* Open the background picture */
 	fp = file_open(buf, MODE_READ, FTYPE_TEXT);
 
 	if (fp) {
@@ -118,6 +121,9 @@ static void print_tomb(void)
 		put_str_centred(line++, start, start+31, "Sailed victorious to Aman.");
 	} else if (tree) {
 		put_str_centred(line++,start, start+31, "Retired to Fangorn Forest.");
+	} else if (retired) {
+		put_str_centred(line++, 8, 8+31, "Retired in %s %d.",
+						locality_name(lev->locality), lev->depth);
 	} else {
 		if (lev->depth) {
 			put_str_centred(line++, start, start+31, "Killed in %s %d",
@@ -477,7 +483,7 @@ static void death_info(const char *title, int row)
 	}
 
 	/* Home -- if anything there */
-	if (home->stock) {
+	if (home && home->stock) {
 		int page;
 		struct object *obj = home->stock;
 
@@ -630,8 +636,8 @@ void death_screen(void)
 		display_winner();
 	}
 
-	/* Tombstone */
-	print_tomb();
+	/* Tombstone/retiring */
+	display_exit_screen();
 
 	/* Flush all input and output */
 	event_signal(EVENT_INPUT_FLUSH);

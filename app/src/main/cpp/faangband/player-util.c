@@ -259,7 +259,38 @@ void player_change_place(struct player *p, int place)
 
 
 /**
+ * Returns what an incoming damage amount would be after applying a player's
+ * damage reduction.
+ *
+ * \param p is the player of interest.
+ * \param dam is the incoming damaage amount.
+ * \return the damage after the player's damage reduction, if any.
+ */
+int player_apply_damage_reduction(struct player *p, int dam)
+{
+	/* Mega-Hack -- Apply "invulnerability" */
+	if (p->timed[TMD_INVULN] && (dam < 9000)) return 0;
+
+	dam -= p->state.dam_red;
+	if (dam > 0 && p->state.perc_dam_red) {
+		dam -= (dam * p->state.perc_dam_red) / 100 ;
+	}
+
+	return (dam < 0) ? 0 : dam;
+}
+
+
+/**
  * Decreases players hit points and sets death flag if necessary
+ *
+ * \param p is the player of interest.
+ * \param dam is the amount of damage to apply.  If dam is less than
+ * or equal to zero, nothing will be done.  The amount of damage should have
+ * been processed with player_apply_damage_reduction(); that is not done
+ * internally here so the caller can display messages that include the amount of
+ * damage.
+ * \param kb_str is the null-terminated string describing the cause of the
+ * damage.
  *
  * Hack -- this function allows the user to save (or quit) the game
  * when he dies, since the "You die." message is shown before setting
@@ -272,17 +303,7 @@ void take_hit(struct player *p, int dam, const char *kb_str)
 	int warning = (p->mhp * p->opts.hitpoint_warn / 10);
 
 	/* Paranoia */
-	if (p->is_dead) return;
-
-	/* Mega-Hack -- Apply "invulnerability" */
-	if (p->timed[TMD_INVULN] && (dam < 9000)) return;
-
-	/* Apply damage reduction */
-	dam -= p->state.dam_red;
-	if (p->state.perc_dam_red) {
-		dam -= (dam * p->state.perc_dam_red) / 100 ;
-	}
-	if (dam <= 0) return;
+	if (p->is_dead || dam <= 0) return;
 
 	/* Disturb */
 	disturb(p);
@@ -378,10 +399,13 @@ void death_knowledge(struct player *p)
 		obj->known->activation = obj->activation;
 	}
 
-	for (obj = home->stock; obj; obj = obj->next) {
-		object_flavor_aware(p, obj);
-		obj->known->effect = obj->effect;
-		obj->known->activation = obj->activation;
+	/* Thralls may not have a home */
+	if (home) {
+		for (obj = home->stock; obj; obj = obj->next) {
+			object_flavor_aware(p, obj);
+			obj->known->effect = obj->effect;
+			obj->known->activation = obj->activation;
+		}
 	}
 
 	history_unmask_unknown(p);
@@ -444,6 +468,68 @@ int16_t modify_stat_value(int value, int amount)
 
 	/* Return new value */
 	return (value);
+}
+
+/**
+ * Swap player's stats at random, retaining information so they can be
+ * reverted to their original state.
+ */
+void player_scramble_stats(struct player *p)
+{
+	int max1, cur1, max2, cur2, i, j, swap;
+
+	/* Fisher-Yates shuffling algorithm */
+	for (i = STAT_MAX - 1; i > 0; --i) {
+		j = randint0(i);
+
+		max1 = p->stat_max[i];
+		cur1 = p->stat_cur[i];
+		max2 = p->stat_max[j];
+		cur2 = p->stat_cur[j];
+
+		p->stat_max[i] = max2;
+		p->stat_cur[i] = cur2;
+		p->stat_max[j] = max1;
+		p->stat_cur[j] = cur1;
+
+		/* Record what we did */
+		swap = p->stat_map[i];
+		assert(swap >= 0 && swap < STAT_MAX);
+		p->stat_map[i] = p->stat_map[j];
+		assert(p->stat_map[i] >= 0 && p->stat_map[i] < STAT_MAX);
+		p->stat_map[j] = swap;
+	}
+
+	/* Mark what else needs to be updated */
+	p->upkeep->update |= (PU_BONUS);
+}
+
+/**
+ * Revert all prior swaps to the player's stats.  Has no effect if the
+ * stats have not been swapped.
+ */
+void player_fix_scramble(struct player *p)
+{
+	/* Figure out what stats should be */
+	int new_cur[STAT_MAX];
+	int new_max[STAT_MAX];
+	int i;
+
+	for (i = 0; i < STAT_MAX; ++i) {
+		assert(p->stat_map[i] >= 0 && p->stat_map[i] < STAT_MAX);
+		new_cur[p->stat_map[i]] = p->stat_cur[i];
+		new_max[p->stat_map[i]] = p->stat_max[i];
+	}
+
+	/* Apply new stats and reset stat_map */
+	for (i = 0; i < STAT_MAX; ++i) {
+		p->stat_cur[i] = new_cur[i];
+		p->stat_max[i] = new_max[i];
+		p->stat_map[i] = i;
+	}
+
+	/* Mark what else needs to be updated */
+	p->upkeep->update |= (PU_BONUS);
 }
 
 /**
@@ -640,7 +726,7 @@ int32_t player_adjust_mana_precise(struct player *p, int32_t sp_gain)
 			assert(p->csp > INT16_MIN);
 			p->csp -= 1;
 		} else {
-			p->chp_frac = 0;
+			p->csp_frac = 0;
 		}
 	} else {
 		p->csp = (int16_t)(new_32 >> 16);   /* div 65536 */
@@ -910,8 +996,16 @@ void player_over_exert(struct player *p, int flag, int chance, int amount)
 	/* HP */
 	if (flag & PY_EXERT_HP) {
 		if (randint0(100) < chance) {
-			msg("You cry out in sudden pain!");
-			take_hit(p, randint1(amount), "over-exertion");
+			int dam = player_apply_damage_reduction(p,
+				randint1(amount));
+			char dam_text[32] = "";
+
+			if (dam > 0 && OPT(p, show_damage)) {
+				strnfmt(dam_text, sizeof(dam_text),
+					" (%d)", dam);
+			}
+			msg("You cry out in sudden pain!%s", dam_text);
+			take_hit(p, dam, "over-exertion");
 		}
 	}
 }
@@ -954,17 +1048,29 @@ int player_check_terrain_damage(struct player *p, struct loc grid, bool actual)
 void player_take_terrain_damage(struct player *p, struct loc grid)
 {
 	int dam_taken = player_check_terrain_damage(p, grid, true);
+	int dam_reduced;
 
 	if (!dam_taken) {
 		return;
 	}
 
-	/* Damage the player and inventory */
+	/*
+	 * Damage the player and inventory; inventory damage is based on
+	 * the raw incoming damage and not the value accounting for the
+	 * player's damage reduction.
+	 */
+	dam_reduced = player_apply_damage_reduction(p, dam_taken);
 	if (square_isfiery(cave, grid)) {
-		msg(square_feat(cave, grid)->hurt_msg);
+		char dam_text[32] = "";
+
+		if (dam_reduced > 0 && OPT(p, show_damage)) {
+			strnfmt(dam_text, sizeof(dam_text), " (%d)",
+				dam_reduced);
+		}
+		msg("%s%s", square_feat(cave, grid)->hurt_msg, dam_text);
 		inven_damage(p, PROJ_FIRE, dam_taken);
 	}
-	take_hit(p, dam_taken, square_feat(cave, grid)->die_msg);
+	take_hit(p, dam_reduced, square_feat(cave, grid)->die_msg);
 }
 
 /**
@@ -1761,7 +1867,7 @@ void player_handle_post_move(struct player *p, bool eval_trap,
 		if (is_involuntary) {
 			cmdq_flush();
 		}
-		square_know_pile(cave, p->grid);
+		square_know_pile(cave, p->grid, NULL);
 	}
 
 	/* Some terrain types need special treatment */
@@ -1815,6 +1921,8 @@ void disturb(struct player *p)
 	/* Cancel running */
 	if (p->upkeep->running) {
 		p->upkeep->running = 0;
+		mem_free(p->upkeep->steps);
+		p->upkeep->steps = NULL;
 
 		/* Cancel queued commands */
 		cmdq_flush();

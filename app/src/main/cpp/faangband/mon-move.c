@@ -177,9 +177,7 @@ static bool monster_can_kill(struct monster *mon, struct loc grid)
 	if (!mon1) return true;
 
 	/* No trampling uniques */
-	if (rf_has(mon1->race->flags, RF_UNIQUE) ||
-			(mon1->original_race &&
-			rf_has(mon1->original_race->flags, RF_UNIQUE))) {
+	if (monster_is_unique(mon1)) {
 		return false;
 	}
 
@@ -1044,9 +1042,15 @@ bool multiply_monster(const struct monster *mon)
 	bool result;
 	struct monster_group_info info = { 0, 0, 0 };
 
-	/* Pick an empty location. */
-	if (scatter_ext(cave, &grid, 1, mon->grid, 1, true,
-			square_isempty) > 0) {
+	/*
+	 * Pick an empty location except for uniques:  they can never
+	 * multiply (need a check here as the ones in place_new_monster()
+	 * are not sufficient for a unique shape of a shapechanged monster
+	 * since it may have zero for cur_num in the race structure for the
+	 * shape).
+	 */
+	if (!monster_is_shape_unique(mon) && scatter_ext(cave, &grid,
+			1, mon->grid, 1, true, square_isempty) > 0) {
 		/* Create a new monster (awake, no groups) */
 		result = place_new_monster(cave, grid, mon->race, false, false,
 			info, ORIGIN_DROP_BREED);
@@ -1429,16 +1433,16 @@ static bool monster_turn_attack_glyph(struct monster *mon, struct loc new)
 
 	/* Break the ward */
 	if (randint1(z_info->glyph_hardness) < mon->race->level) {
+		struct trap_kind *rune = lookup_trap("glyph of warding");
+
 		/* Describe observable breakage */
 		if (square_isseen(cave, new)) {
 			msg("The rune of protection is broken!");
-
-			/* Forget the rune */
-			square_forget(cave, new);
 		}
 
 		/* Break the rune */
-		square_destroy_trap(cave, new);
+		assert(rune);
+		square_remove_all_traps_of_type(cave, new, rune->tidx);
 
 		return true;
 	}
@@ -1670,10 +1674,18 @@ static void monster_turn(struct monster *mon)
 				/* Insubstantial monsters go right through */
 			} else if (monster_passes_walls(mon)) {
 				/* If you can destroy a wall, you can destroy a web */
-				square_destroy_trap(cave, mon->grid);
+				struct trap_kind *web = lookup_trap("web");
+
+				assert(web);
+				square_remove_all_traps_of_type(cave,
+					mon->grid, web->tidx);
 			} else if (rf_has(mon->race->flags, RF_CLEAR_WEB)) {
 				/* Clearing costs a turn (assume there are no other "traps") */
-				square_destroy_trap(cave, mon->grid);
+				struct trap_kind *web = lookup_trap("web");
+
+				assert(web);
+				square_remove_all_traps_of_type(cave,
+					mon->grid, web->tidx);
 				return;
 			} else {
 				/* Stuck */

@@ -2,6 +2,8 @@
  * \file ui-effect.c
  * \brief Implement functions for the text UI's handling of effects
  *
+ * Copyright (c) 2021 Eric Branlund
+ *
  * This work is free software; you can redistribute it and/or modify it
  * under the terms of either:
  *
@@ -30,7 +32,7 @@
  * the menu failed
  */
 static struct menu *effect_menu_new(struct effect *effect, int count,
-	bool allow_random)
+		bool allow_random)
 {
 	struct menu *m = menu_new(MN_SKIN_SCROLL,
 		menu_find_iter(MN_ITER_STRINGS));
@@ -50,10 +52,13 @@ static struct menu *effect_menu_new(struct effect *effect, int count,
 		 * effect_menu_destroy().
 		 */
 		ms = mem_alloc((count + 1) * sizeof(*ms));
-		ms[ms_count] = string_make("one of the following at random");
-		width = MAX(width,
-			(int)MIN(strlen(ms[ms_count]) + 3, (size_t)(Term->wid)));
-		++ms_count;
+		if (allow_random) {
+			ms[ms_count] =
+				string_make("one of the following at random");
+			width = MAX(width, (int)MIN(strlen(ms[ms_count])
+				+ 3, (size_t)(Term->wid)));
+			++ms_count;
+		}
 	} else {
 		ms = NULL;
 	}

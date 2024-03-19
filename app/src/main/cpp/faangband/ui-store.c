@@ -228,7 +228,7 @@ static void store_display_recalc(struct store_context *ctx)
 	ctx->scr_places_x[LOC_OWNER] = wid - 2;
 	ctx->scr_places_x[LOC_WEIGHT] = wid - 14;
 
-	/* Add space for for prices */
+	/* Add space for prices */
 	if (!store_is_home(store))
 		ctx->scr_places_x[LOC_WEIGHT] -= 10;
 
@@ -273,6 +273,7 @@ static void store_display_entry(struct menu *menu, int oid, bool cursor, int row
 	char o_name[80];
 	char out_val[160];
 	uint8_t colour;
+	int16_t obj_weight;
 
 	struct store_context *ctx = menu_priv(menu);
 	struct store *store = ctx->store;
@@ -294,8 +295,9 @@ static void store_display_entry(struct menu *menu, int oid, bool cursor, int row
 
 	/* Show weights */
 	colour = curs_attrs[CURS_KNOWN][(int)cursor];
-	strnfmt(out_val, sizeof out_val, "%3d.%d lb", obj->weight / 10,
-			obj->weight % 10);
+	obj_weight = object_weight_one(obj);
+	strnfmt(out_val, sizeof out_val, "%3d.%d lb", obj_weight / 10,
+			obj_weight % 10);
 	c_put_str(colour, out_val, row, ctx->scr_places_x[LOC_WEIGHT]);
 
 	/* Describe an object (fully) in a store */
@@ -693,16 +695,16 @@ static bool store_purchase(struct store_context *ctx, int item, bool single)
 		return false;
 	}
 
-	/* Describe the object (fully) */
-	object_desc(o_name, sizeof(o_name), dummy,
-		ODESC_PREFIX | ODESC_FULL | ODESC_STORE, player);
-
 	/* Attempt to buy it */
 	if (!store_is_home(store)) {
 		bool response;
 
 		bool obj_is_book = tval_is_book_k(obj->kind);
 		bool obj_can_use = !obj_is_book || obj_can_browse(obj);
+
+		/* Describe the object (fully) */
+		object_desc(o_name, sizeof(o_name), dummy,
+			ODESC_PREFIX | ODESC_FULL | ODESC_STORE, player);
 
 		/* Extract the price for the entire stack */
 		price = price_item(store, dummy, false, dummy->number);
@@ -972,7 +974,7 @@ static bool context_menu_store_item(struct store_context *ctx, const int oid, in
 	char header[120];
 
 	object_desc(header, sizeof(header), obj,
-		ODESC_PREFIX | ODESC_FULL | ODESC_STORE, player);
+		ODESC_PREFIX | ODESC_FULL | ((home) ? 0 : ODESC_STORE), player);
 
 	labels = string_make(lower_case);
 	m->selections = labels;
@@ -1218,6 +1220,13 @@ void textui_store_knowledge(struct store *store)
 
 	screen_save();
 	clear_from(0);
+
+	if (!store) {
+		prt("You have no home!", 15, 0);
+		anykey();
+		screen_load();
+		return;
+	}
 
 	store_menu_init(&ctx, store, true);
 	menu_select(&ctx.menu, 0, false);

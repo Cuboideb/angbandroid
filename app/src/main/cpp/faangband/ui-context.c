@@ -751,7 +751,10 @@ int context_menu_object(struct object *obj)
 		ADD_LABEL("Pick up", CMD_PICKUP, valid);
 	}
 
-	ADD_LABEL("Throw", CMD_THROW, MN_ROW_VALID);
+	if (obj_can_throw(obj)) {
+		ADD_LABEL("Throw", CMD_THROW, MN_ROW_VALID);
+	}
+
 	ADD_LABEL("Inscribe", CMD_INSCRIBE, MN_ROW_VALID);
 
 	if (obj_has_inscrip(obj))
@@ -1214,8 +1217,17 @@ static bool cmd_menu(struct command_list *list, void *selection_p)
 		}
 	}
 
-	/* Load the screen */
-	screen_load();
+	/*
+	 * Load the screen.  Do a more expensive update if not breaking out
+	 * all the way from the menus and there may be partially overwritten
+	 * big tiles.
+	 */
+	if (result && screen_save_depth > 1
+			&& (tile_width > 1 || tile_height > 1)) {
+		screen_load_all();
+	} else {
+		screen_load();
+	}
 
 	return result;
 }

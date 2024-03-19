@@ -313,7 +313,7 @@ void lore_update(const struct monster_race *race, struct monster_lore *lore)
 
 	/* Assume some "obvious" flags */
 	create_mon_flag_mask(mask, RFT_OBV, RFT_MAX);
-	mflag_union(lore->flags, mask);
+	rf_union(lore->flags, mask);
 
 	/* Blows */
 	for (i = 0; i < z_info->mon_blows_max; i++) {
@@ -332,7 +332,7 @@ void lore_update(const struct monster_race *race, struct monster_lore *lore)
 		lore->armour_known = true;
 		lore->drop_known = true;
 		create_mon_flag_mask(mask, RFT_RACE_A, RFT_RACE_N, RFT_DROP, RFT_MAX);
-		mflag_union(lore->flags, mask);
+		rf_union(lore->flags, mask);
 		rf_on(lore->flags, RF_FORCE_DEPTH);
 	}
 
@@ -1507,8 +1507,13 @@ void lore_append_spells(textblock *tb, const struct monster_race *race,
 	const char *initial_pronoun;
 	bool know_hp;
 	bitflag current_flags[RSF_SIZE], test_flags[RSF_SIZE];
+	const struct monster_race *old_ref;
 
 	assert(tb && race && lore);
+
+	/* Set the race for expressions in the spells. */
+	old_ref = ref_race;
+	ref_race = race;
 
 	know_hp = lore->armour_known;
 
@@ -1606,6 +1611,9 @@ void lore_append_spells(textblock *tb, const struct monster_race *race,
 
 		textblock_append(tb, ".  ");
 	}
+
+	/* Restore the previous reference. */
+	ref_race = old_ref;
 }
 
 /**

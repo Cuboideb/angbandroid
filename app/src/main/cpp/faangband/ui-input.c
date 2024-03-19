@@ -1455,7 +1455,8 @@ static bool textui_get_rep_dir(int *dp, bool allow_5)
 		inkey_scan = SCAN_OFF;
 
 		if (ke.type == EVT_NONE ||
-			(ke.type == EVT_KBRD && target_dir(ke.key) == 0)) {
+				(ke.type == EVT_KBRD
+				&& !target_dir_allow(ke.key, allow_5))) {
 			prt("Direction or <click> (Escape to cancel)? ", 0, 0);
 			ke = inkey_ex();
 		}
@@ -1815,10 +1816,16 @@ ui_event textui_get_command(int *count)
 				}
 
 				case '^': {
-					char ch;
 					/* Allow "control chars" to be entered */
-					if (get_com("Control: ", &ch))
-						ke.key.code = KTRL(ch);
+					if (!get_com_ex("Control: ", &ke)
+							|| ke.type != EVT_KBRD) {
+						continue;
+					}
+					if (ENCODE_KTRL(ke.key.code)) {
+						ke.key.code = KTRL(ke.key.code);
+					} else {
+						ke.key.mods |= KC_MOD_CONTROL;
+					}
 					break;
 				}
 			}

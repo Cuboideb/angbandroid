@@ -1410,39 +1410,20 @@ static void modifier_to_skill(int modind, int *skillind, int *skill2mod_num,
 
 static int get_timed_element_effect(const struct player *p, int ind)
 {
-	int result;
+	int i;
 
-	switch (ind) {
-	case ELEM_ACID:
-		result = p->timed[TMD_OPP_ACID] ? RES_BOOST_NORMAL : RES_LEVEL_BASE;
-		break;
-
-	case ELEM_ELEC:
-		result = p->timed[TMD_OPP_ELEC] ? RES_BOOST_NORMAL : RES_LEVEL_BASE;
-		break;
-
-	case ELEM_FIRE:
-		result = p->timed[TMD_OPP_FIRE] ? RES_BOOST_NORMAL : RES_LEVEL_BASE;
-		break;
-
-	case ELEM_COLD:
-		result = p->timed[TMD_OPP_COLD] ? RES_BOOST_NORMAL : RES_LEVEL_BASE;
-		break;
-
-	case ELEM_POIS:
-		result = p->timed[TMD_OPP_POIS] ? RES_BOOST_NORMAL : RES_LEVEL_BASE;
-		break;
-
-	default:
-		result = RES_LEVEL_BASE;
-		break;
+	for (i = 0; i < TMD_MAX; ++i) {
+		if (p->timed[i] && timed_effects[i].temp_resist == ind) {
+			return RES_BOOST_NORMAL;
+		}
 	}
-	return result;
+	return RES_LEVEL_BASE;
 }
 
 
 static int get_timed_modifier_effect(const struct player *p, int ind)
 {
+	bool enhance = player_has(p, PF_ENHANCE_MAGIC);
 	int result;
 
 	/* Mimics calculations made in player-calcs.c. */
@@ -1453,11 +1434,12 @@ static int get_timed_modifier_effect(const struct player *p, int ind)
 		break;
 
 	case OBJ_MOD_INFRA:
-		result = (p->timed[TMD_SINFRA]) ? 5 : 0;
+		result = (p->timed[TMD_SINFRA]) ? ((enhance) ? 8 : 5) : 0;
 		break;
 
 	case OBJ_MOD_SPEED:
-		result = (p->timed[TMD_FAST] || p->timed[TMD_SPRINT]) ? 10 : 0;
+		result = (p->timed[TMD_FAST] || p->timed[TMD_SPRINT]) ?
+			((enhance) ? 13 : 10) : 0;
 		if (p->timed[TMD_STONESKIN]) {
 			result -= 5;
 		}
@@ -1470,7 +1452,7 @@ static int get_timed_modifier_effect(const struct player *p, int ind)
 		break;
 
 	case OBJ_MOD_STEALTH:
-		result = (p->timed[TMD_STEALTH]) ? 10 : 0;
+		result = (p->timed[TMD_STEALTH]) ? ((enhance) ? 13 : 10) : 0;
 		break;
 
 	default:
