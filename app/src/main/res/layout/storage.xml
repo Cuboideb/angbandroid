@@ -36,21 +36,45 @@
 		android:layout_height="wrap_content">
 
 		<Button android:id="@+id/btn_import"
-			android:layout_weight="1"
-			android:layout_width="0dp"
+			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="IMPORT" />
 
 		<Button android:id="@+id/btn_export"
-			android:layout_weight="1"
-			android:layout_width="0dp"
+			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="EXPORT" />
 
 		<Button android:id="@+id/btn_rename"
-			android:layout_weight="1"
-			android:layout_width="0dp"
+			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="RENAME" />
+
+		<Button android:id="@+id/btn_duplicate"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="DUPLICATE" />
+
+		<Button android:id="@+id/btn_exit"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="BACK" />
+	</LinearLayout>
+
+	<LinearLayout
+		android:id="@+id/narrow_layout"
+		android:visibility="gone"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<Button android:id="@+id/btn_duplicate_v2"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="DUPLICATE" />
+
+		<Button android:id="@+id/btn_exit_v2"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="BACK" />
 	</LinearLayout>
 </LinearLayout>

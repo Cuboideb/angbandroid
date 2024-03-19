@@ -21,6 +21,7 @@ package org.rephial.xyangband;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -31,6 +32,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextMenu;
@@ -368,6 +370,12 @@ public class GameActivity extends Activity {
 		Point size = new Point();
 		display.getSize(size);
 		return size;
+	}
+
+	public static float getDpWidth(Context ctx) {
+		DisplayMetrics displayMetrics = ctx.getResources().getDisplayMetrics();
+		float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+		return dpWidth;
 	}
 
 	@Override

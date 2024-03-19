@@ -58,29 +58,67 @@ public class StorageActivity extends Activity {
 
 		this.root = this.cwd = Preferences.getAngbandBaseDirectory();
 
-		Button b1 = this.rootView.findViewById(R.id.btn_export);
-		b1.setOnClickListener(new View.OnClickListener() {
+		Button btn = this.rootView.findViewById(R.id.btn_export);
+		btn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				launchExport();
 			}
 		});
 
-		Button b2 = this.rootView.findViewById(R.id.btn_import);
-		b2.setOnClickListener(new View.OnClickListener() {
+		btn = this.rootView.findViewById(R.id.btn_import);
+		btn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				launchImport();
 			}
 		});
 
-		Button b3 = this.rootView.findViewById(R.id.btn_rename);
-		b3.setOnClickListener(new View.OnClickListener() {
+		btn = this.rootView.findViewById(R.id.btn_rename);
+		btn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				launchRename();
 			}
 		});
+
+		btn = this.rootView.findViewById(R.id.btn_duplicate);
+		btn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				launchDuplicate();
+			}
+		});
+
+		btn = this.rootView.findViewById(R.id.btn_duplicate_v2);
+		btn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				launchDuplicate();
+			}
+		});
+
+		btn = this.rootView.findViewById(R.id.btn_exit);
+		btn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				finish();
+			}
+		});
+
+		btn = this.rootView.findViewById(R.id.btn_exit_v2);
+		btn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				finish();
+			}
+		});
+
+		if (GameActivity.getDpWidth(this) < 600) {
+			this.rootView.findViewById(R.id.btn_exit).setVisibility(View.GONE);
+			this.rootView.findViewById(R.id.btn_duplicate).setVisibility(View.GONE);
+			this.rootView.findViewById(R.id.narrow_layout).setVisibility(View.VISIBLE);
+		}
 
 		initListView();
 	}
@@ -275,6 +313,41 @@ public class StorageActivity extends Activity {
 						storage.refreshItems();
 					}
 				});
+	}
+
+	private void launchDuplicate()
+	{
+		final File source = this.getSelectedFile();
+
+		if (source == null || !source.isFile()) {
+			GameActivity.infoAlert(this, "Select a file");
+			return;
+		}
+
+		String name = source.getName() + "_copy";
+		File target = new File(this.cwd, name);
+
+		if (target.isDirectory()) {
+			GameActivity.infoAlert(this, "A directory already exists with this name " + name);
+			return;
+		}
+
+		try {
+			final OutputStream targetStream = new FileOutputStream(target);
+			final InputStream sourceStream = new FileInputStream(source);
+
+			this.copyStream(sourceStream, targetStream);
+
+			sourceStream.close();
+			targetStream.close();
+		}
+		catch (IOException e)
+		{
+			GameActivity.infoAlert(this, e.getMessage());
+			return;
+		}
+
+		this.refreshItems();
 	}
 
 	public static void copyStream(InputStream source, OutputStream target) throws IOException
