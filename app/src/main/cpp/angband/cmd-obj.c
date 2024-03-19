@@ -201,7 +201,6 @@ void do_cmd_inscribe(struct command *cmd)
 		return;
 
 	obj->note = quark_add(str);
-	string_free((char *)str);
 
 	player->upkeep->notice |= (PN_COMBINE | PN_IGNORE);
 	player->upkeep->redraw |= (PR_INVEN | PR_EQUIP);
@@ -646,7 +645,7 @@ static void use_aux(struct command *cmd, struct object *obj, enum use use,
 		 * items, ODESC_ALTNUM means that the work_obj's number doesn't
 		 * need to be adjusted).
 		 */
-		if (!deduct_before) {
+		if (used && !deduct_before) {
 			assert(!from_floor);
 			if (use == USE_CHARGE) {
 				obj->pval--;

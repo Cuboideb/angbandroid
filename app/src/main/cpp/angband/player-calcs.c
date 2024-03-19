@@ -1516,7 +1516,7 @@ static void calc_mana(struct player *p, struct player_state *state, bool update)
 
 		/* Add weight */
 		if (obj_local)
-			cur_wgt += obj_local->weight;
+			cur_wgt += object_weight_one(obj_local);
 	}
 
 	/* Determine the weight allowance */
@@ -1629,7 +1629,7 @@ static void calc_light(struct player *p, struct player_state *state,
 		amt += obj->modifiers[OBJ_MOD_LIGHT];
 
 		/* Adjustment to allow UNLIGHT players to use +1 LIGHT gear */
-		if ((obj->modifiers[OBJ_MOD_LIGHT] > 0) && player_has(p, PF_UNLIGHT)) {
+		if ((obj->modifiers[OBJ_MOD_LIGHT] > 0) && pf_has(state->pflags, PF_UNLIGHT)) {
 			amt--;
 		}
 
@@ -1664,6 +1664,31 @@ void calc_digging_chances(struct player_state *state, int chances[DIGGING_MAX])
 		chances[i] = MAX(0, chances[i]);
 }
 
+/*
+ * Return the chance, out of 100, for unlocking a locked door with the given
+ * lock power.
+ *
+ * \param p is the player trying to unlock the door.
+ * \param lock_power is the power of the lock.
+ * \param lock_unseen, if true, assumes the player does not have sufficient
+ * light to work with the lock.
+ */
+int calc_unlocking_chance(const struct player *p, int lock_power,
+		bool lock_unseen)
+{
+	int skill = p->state.skills[SKILL_DISARM_PHYS];
+
+	if (lock_unseen || p->timed[TMD_BLIND]) {
+		skill /= 10;
+	}
+	if (p->timed[TMD_CONFUSED] || p->timed[TMD_IMAGE]) {
+		skill /= 10;
+	}
+
+	/* Always allow some chance of unlocking. */
+	return MAX(2, skill - 4 * lock_power);
+}
+
 /**
  * Calculate the blows a player would get.
  *
@@ -1682,7 +1707,7 @@ int calc_blows(struct player *p, const struct object *obj,
 	int div;
 	int blow_energy;
 
-	int weight = (obj == NULL) ? 0 : obj->weight;
+	int weight = (obj == NULL) ? 0 : object_weight_one(obj);
 	int min_weight = p->class->min_weight;
 
 	/* Enforce a minimum "weight" (tenth pounds) */
@@ -1758,7 +1783,7 @@ static void adjust_skill_scale(int *v, int num, int den, int minv)
 		*v += (MAX(minv, ABS(*v)) * num) / den;
 	} else {
 		/*
-		 * To mimic what (value * (den * num)) / num would give for
+		 * To mimic what (value * (den + num)) / den would give for
 		 * positive value, need to round up the adjustment.
 		 */
 		*v -= (MAX(minv, ABS(*v)) * -num + den - 1) / den;
@@ -2015,12 +2040,12 @@ void calc_bonuses(struct player *p, struct player_state *state, bool known_only,
 	calc_light(p, state, update);
 
 	/* Unlight - needs change if anything but resist is introduced for dark */
-	if (player_has(p, PF_UNLIGHT) && character_dungeon) {
+	if (pf_has(state->pflags, PF_UNLIGHT) && character_dungeon) {
 		state->el_info[ELEM_DARK].res_level = 1;
 	}
 
 	/* Evil */
-	if (player_has(p, PF_EVIL) && character_dungeon) {
+	if (pf_has(state->pflags, PF_EVIL) && character_dungeon) {
 		state->el_info[ELEM_NETHER].res_level = 1;
 		state->el_info[ELEM_HOLY_ORB].res_level = -1;
 	}
@@ -2159,20 +2184,12 @@ void calc_bonuses(struct player *p, struct player_state *state, bool known_only,
 	if (p->timed[TMD_TERROR]) {
 		state->speed += 10;
 	}
-	if (p->timed[TMD_OPP_ACID] && (state->el_info[ELEM_ACID].res_level < 2)) {
-			state->el_info[ELEM_ACID].res_level++;
-	}
-	if (p->timed[TMD_OPP_ELEC] && (state->el_info[ELEM_ELEC].res_level < 2)) {
-			state->el_info[ELEM_ELEC].res_level++;
-	}
-	if (p->timed[TMD_OPP_FIRE] && (state->el_info[ELEM_FIRE].res_level < 2)) {
-			state->el_info[ELEM_FIRE].res_level++;
-	}
-	if (p->timed[TMD_OPP_COLD] && (state->el_info[ELEM_COLD].res_level < 2)) {
-			state->el_info[ELEM_COLD].res_level++;
-	}
-	if (p->timed[TMD_OPP_POIS] && (state->el_info[ELEM_POIS].res_level < 2)) {
-			state->el_info[ELEM_POIS].res_level++;
+	for (i = 0; i < TMD_MAX; ++i) {
+		if (p->timed[i] && timed_effects[i].temp_resist != -1
+				&& state->el_info[timed_effects[i].temp_resist].res_level
+				< 2) {
+			state->el_info[timed_effects[i].temp_resist].res_level++;
+		}
 	}
 	if (p->timed[TMD_CONFUSED]) {
 		adjust_skill_scale(&state->skills[SKILL_DEVICE], -1, 4, 0);
@@ -2236,8 +2253,10 @@ void calc_bonuses(struct player *p, struct player_state *state, bool known_only,
 	/* Analyze launcher */
 	state->heavy_shoot = false;
 	if (launcher) {
-		if (hold < launcher->weight / 10) {
-			state->to_h += 2 * (hold - launcher->weight / 10);
+		int16_t launcher_weight = object_weight_one(launcher);
+
+		if (hold < launcher_weight / 10) {
+			state->to_h += 2 * (hold - launcher_weight / 10);
 			state->heavy_shoot = true;
 		}
 
@@ -2258,7 +2277,7 @@ void calc_bonuses(struct player *p, struct player_state *state, bool known_only,
 		if (!state->heavy_shoot) {
 			state->num_shots += extra_shots;
 			state->ammo_mult += extra_might;
-			if (player_has(p, PF_FAST_SHOT)) {
+			if (pf_has(state->pflags, PF_FAST_SHOT)) {
 				state->num_shots += p->lev / 3;
 			}
 		}
@@ -2272,20 +2291,22 @@ void calc_bonuses(struct player *p, struct player_state *state, bool known_only,
 	state->heavy_wield = false;
 	state->bless_wield = false;
 	if (weapon) {
+		int16_t weapon_weight = object_weight_one(weapon);
+
 		/* It is hard to hold a heavy weapon */
-		if (hold < weapon->weight / 10) {
-			state->to_h += 2 * (hold - weapon->weight / 10);
+		if (hold < weapon_weight / 10) {
+			state->to_h += 2 * (hold - weapon_weight / 10);
 			state->heavy_wield = true;
 		}
 
 		/* Normal weapons */
 		if (!state->heavy_wield) {
 			state->num_blows = calc_blows(p, weapon, state, extra_blows);
-			state->skills[SKILL_DIGGING] += (weapon->weight / 10);
+			state->skills[SKILL_DIGGING] += weapon_weight / 10;
 		}
 
 		/* Divine weapon bonus for blessed weapons */
-		if (player_has(p, PF_BLESS_WEAPON)
+		if (pf_has(state->pflags, PF_BLESS_WEAPON)
 				&& (weapon->tval == TV_HAFTED
 				|| of_has(state->flags, OF_BLESSED))) {
 			state->to_h += 2;

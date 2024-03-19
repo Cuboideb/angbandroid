@@ -587,7 +587,8 @@ void process_world(struct chunk *c)
 
 	/* Take damage from poison */
 	if (player->timed[TMD_POISONED]) {
-		take_hit(player, 1, "poison");
+		take_hit(player, player_apply_damage_reduction(player, 1),
+			"poison");
 		if (player->is_dead) {
 			return;
 		}
@@ -608,7 +609,8 @@ void process_world(struct chunk *c)
 		}
 
 		/* Take damage */
-		take_hit(player, i, "a fatal wound");
+		take_hit(player, player_apply_damage_reduction(player, i),
+			"a fatal wound");
 		if (player->is_dead) {
 			return;
 		}
@@ -706,7 +708,8 @@ void process_world(struct chunk *c)
 		i = (PY_FOOD_STARVE - player->timed[TMD_FOOD]) / 10;
 
 		/* Take damage */
-		take_hit(player, i, "starvation");
+		take_hit(player, player_apply_damage_reduction(player, i),
+			"starvation");
 		if (player->is_dead) {
 			return;
 		}
@@ -771,8 +774,8 @@ void process_world(struct chunk *c)
 
 	/*** Involuntary Movement ***/
 
-	/* Delayed Word-of-Recall */
-	if (player->word_recall) {
+	/* Delayed Word-of-Recall; suspended in arenas */
+	if (player->word_recall && !player->upkeep->arena_level) {
 		/* Count down towards recall */
 		player->word_recall--;
 
@@ -950,7 +953,7 @@ void process_player(void)
 				!player->timed[TMD_PARALYZED] &&
 				!player->timed[TMD_TERROR] &&
 				!player->timed[TMD_AFRAID])
-				effect_simple(EF_DETECT_GOLD, source_none(), "0", 0, 0, 0, 3, 3, NULL);
+				effect_simple(EF_DETECT_ORE, source_none(), "0", 0, 0, 0, 3, 3, NULL);
 		}
 
 		/* Paralyzed or Knocked Out player gets no turn */

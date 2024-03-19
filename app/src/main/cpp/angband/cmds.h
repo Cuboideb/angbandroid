@@ -36,6 +36,9 @@ void move_player(int dir, bool disarm);
 void do_cmd_walk(struct command *cmd);
 void do_cmd_jump(struct command *cmd);
 void do_cmd_run(struct command *cmd);
+void do_cmd_explore(struct command *cmd);
+void do_cmd_navigate_up(struct command *cmd);
+void do_cmd_navigate_down(struct command *cmd);
 void do_cmd_pathfind(struct command *cmd);
 void do_cmd_hold(struct command *cmd);
 void do_cmd_rest(struct command *cmd);
@@ -46,7 +49,7 @@ void do_cmd_mon_command(struct command *cmd);
 
 /* cmd-misc.c */
 void do_cmd_wizard(void);
-void do_cmd_suicide(struct command *cmd);
+void do_cmd_retire(struct command *cmd);
 void do_cmd_note(void);
 
 /* cmd-obj.c */

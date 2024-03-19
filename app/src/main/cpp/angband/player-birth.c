@@ -599,6 +599,7 @@ static void player_outfit(struct player *p)
 		if (prop->subtype == OFT_LIGHT) of_on(p->obj_k->flags, i);
 		if (prop->subtype == OFT_DIG) of_on(p->obj_k->flags, i);
 		if (prop->subtype == OFT_THROW) of_on(p->obj_k->flags, i);
+		if (prop->subtype == OFT_CURSE_ONLY) of_on(p->obj_k->flags, i);
 	}
 
 	/* Give the player starting equipment */
@@ -1213,8 +1214,6 @@ void do_cmd_choose_name(struct command *cmd)
 
 	/* Set player name */
 	my_strcpy(player->full_name, str, sizeof(player->full_name));
-
-	string_free((char *) str);
 }
 
 void do_cmd_choose_history(struct command *cmd)
@@ -1228,8 +1227,6 @@ void do_cmd_choose_history(struct command *cmd)
 	/* Get the new history */
 	cmd_get_arg_string(cmd, "history", &str);
 	player->history = string_make(str);
-
-	string_free((char *) str);
 }
 
 void do_cmd_accept_character(struct command *cmd)

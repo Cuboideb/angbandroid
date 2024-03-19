@@ -297,7 +297,7 @@ bool square_isshop(struct chunk *c, struct loc grid);
 bool square_isplayer(struct chunk *c, struct loc grid);
 bool square_isoccupied(struct chunk *c, struct loc grid);
 bool square_isknown(struct chunk *c, struct loc grid);
-bool square_isnotknown(struct chunk *c, struct loc grid);
+bool square_ismemorybad(struct chunk *c, struct loc grid);
 
 /* SQUARE INFO PREDICATES */
 bool square_ismark(struct chunk *c, struct loc grid);
@@ -331,6 +331,7 @@ bool square_iswebbable(struct chunk *c, struct loc grid);
 bool square_is_monster_walkable(struct chunk *c, struct loc grid);
 bool square_ispassable(struct chunk *c, struct loc grid);
 bool square_isprojectable(struct chunk *c, struct loc grid);
+bool square_allowsfeel(struct chunk *c, struct loc grid);
 bool square_allowslos(struct chunk *c, struct loc grid);
 bool square_isstrongwall(struct chunk *c, struct loc grid);
 bool square_isbright(struct chunk *c, struct loc grid);
@@ -356,6 +357,7 @@ bool square_changeable(struct chunk *c, struct loc grid);
 bool square_in_bounds(struct chunk *c, struct loc grid);
 bool square_in_bounds_fully(struct chunk *c, struct loc grid);
 bool square_isbelievedwall(struct chunk *c, struct loc grid);
+bool square_isknownpassable(struct chunk *c, struct loc grid);
 bool square_suits_stairs_well(struct chunk *c, struct loc grid);
 bool square_suits_stairs_ok(struct chunk *c, struct loc grid);
 bool square_allows_summon(struct chunk *c, struct loc grid);
@@ -373,8 +375,10 @@ void square_excise_pile(struct chunk *c, struct loc grid);
 void square_excise_all_imagined(struct chunk *p_c, struct chunk *c,
 		struct loc grid);
 void square_delete_object(struct chunk *c, struct loc grid, struct object *obj, bool do_note, bool do_light);
-void square_sense_pile(struct chunk *c, struct loc grid);
-void square_know_pile(struct chunk *c, struct loc grid);
+void square_sense_pile(struct chunk *c, struct loc grid,
+		bool (*pred)(const struct object*));
+void square_know_pile(struct chunk *c, struct loc grid,
+		bool (*pred)(const struct object*));
 int square_num_walls_adjacent(struct chunk *c, struct loc grid);
 int square_num_walls_diagonal(struct chunk *c, struct loc grid);
 

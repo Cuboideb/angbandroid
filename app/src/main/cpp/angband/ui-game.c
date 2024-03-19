@@ -197,7 +197,7 @@ struct cmd_info cmd_util[] =
 
 	{ "Save and don't quit", { KTRL('S') }, CMD_NULL, save_game, NULL, 0, NULL, NULL, NULL, 0 },
 	{ "Save and quit", { KTRL('X') }, CMD_NULL, textui_quit, NULL, 0, NULL, NULL, NULL, 0 },
-	{ "Kill character and quit", { 'Q' }, CMD_NULL, textui_cmd_suicide, NULL, 0, NULL, NULL, NULL, 0 },
+	{ "Retire character and quit", { 'Q' }, CMD_NULL, textui_cmd_retire, NULL, 0, NULL, NULL, NULL, 0 },
 	{ "Redraw the screen", { KTRL('R') }, CMD_NULL, do_cmd_redraw, NULL, 0, NULL, NULL, NULL, 0 },
 
 	{ "Save \"screen dump\"", { ')' }, CMD_NULL, do_cmd_save_screen, NULL, 0, NULL, NULL, NULL, 0 }
@@ -216,6 +216,7 @@ struct cmd_info cmd_hidden[] =
 	{ "Steal from a monster", { 's' }, CMD_STEAL, NULL, NULL, 0, NULL, NULL, NULL, 0 },
 	{ "Walk", { ';' }, CMD_WALK, NULL, NULL, 0, NULL, NULL, NULL, 0 },
 	{ "Start running", { '.', ',' }, CMD_RUN, NULL, NULL, 0, NULL, NULL, NULL, 0 },
+	{ "Start exploring", { 'p' }, CMD_EXPLORE, NULL, NULL, 0, NULL, NULL, NULL, 0 },
 	{ "Stand still", { ',', '.' }, CMD_HOLD, NULL, NULL, 0, NULL, NULL, NULL, 0 },
 	{ "Center map", { KTRL('L'), '@' }, CMD_NULL, do_cmd_center_map, NULL, 0, NULL, NULL, NULL, 0 },
 	{ "Toggle wizard mode", { KTRL('W') }, CMD_NULL, do_cmd_wizard, NULL, 0, NULL, NULL, NULL, 0 },

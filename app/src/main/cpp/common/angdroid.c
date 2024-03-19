@@ -579,12 +579,12 @@ static errr Term_pict_android(int x, int y, int n,
 	for (i = 0; i < n; i++) {
 
 		int a = ap[i];
-		byte c = (byte)cp[i];
+		uint8_t c = (uint8_t)cp[i];
 
 		/* Ascii text */
 		if ((c & 0x80) == 0) {
 			int ta = COLOUR_DARK;
-			byte tc = (byte)' ';
+			uint8_t tc = (uint8_t)' ';
 			switch ((a >> 8) & 0x03) {
 				case BG_SAME: ta = a & 0x7F; break;
 				case BG_DARK: ta = COLOUR_SHADE; break;
@@ -595,7 +595,7 @@ static errr Term_pict_android(int x, int y, int n,
 		/* Graphic tile */
 		else {
 			resu = waddtile(td->win, x, y, a, c,
-				tap[i], (byte)tcp[i]);
+				tap[i], (uint8_t)tcp[i]);
 		}
 		if (resu) break;
 	}

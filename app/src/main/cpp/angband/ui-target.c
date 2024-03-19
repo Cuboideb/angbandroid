@@ -29,6 +29,7 @@
 #include "obj-util.h"
 #include "player-attack.h"
 #include "player-calcs.h"
+#include "player-path.h"
 #include "player-timed.h"
 #include "project.h"
 #include "target.h"
@@ -184,6 +185,14 @@ void target_display_help(bool monster, bool object, bool free)
 		text_out("' ignores selection.");
 	}
 
+	text_out(" '");
+	text_out_c(COLOUR_L_GREEN, ">");
+	text_out("', '");
+	text_out_c(COLOUR_L_GREEN, "<");
+	text_out("', and '");
+	text_out_c(COLOUR_L_GREEN, "x");
+	text_out("' select nearest stairs or unexplored area.");
+
 	/* Reset */
 	text_out_indent = 0;
 }
@@ -214,11 +223,16 @@ static bool is_running_keymap(struct keypress ch)
 
 /**
  * Perform the minimum "whole panel" adjustment to ensure that the given
- * location is contained inside the current panel, and return true if any
- * such adjustment was performed. Optionally accounts for the targeting
- * help window.
+ * location is contained inside the current panel.  Optionally accounts
+ * for the targeting help window.  If targets is not NULL and the panel
+ * changes, reset the list of interesting targets.  If show_interesting
+ * and target_index are not NULL, reset whether in free targeting mode or
+ * not depending on whether the new coordinates are in the list of
+ * interesting targets.
  */
-static bool adjust_panel_help(int y, int x, bool help)
+static void adjust_panel_help(int y, int x, bool help,
+		struct player *p, int mode, struct point_set **targets,
+		bool *show_interesting, int *target_index)
 {
 	bool changed = false;
 
@@ -263,7 +277,29 @@ static bool adjust_panel_help(int y, int x, bool help)
 		if (modify_panel(t, wy, wx)) changed = true;
 	}
 
-	return (changed);
+	if (changed) {
+		handle_stuff(p);
+		if (targets) {
+			/* Recalculate interesting grids */
+			point_set_dispose(*targets);
+			*targets = target_get_monsters(mode, NULL, true);
+		}
+	}
+
+	if (show_interesting && target_index) {
+		/* Turn interesting mode off if they clicked a boring spot... */
+		*show_interesting = false;
+
+		/* ...but turn it on if they clicked an interesting spot */
+		for (j = 0; j < point_set_size(*targets); j++) {
+			if (y == (*targets)->pts[j].y
+					&& x == (*targets)->pts[j].x) {
+				*target_index = j;
+				*show_interesting = true;
+				break;
+			}
+		}
+	}
 }
 
 
@@ -1043,7 +1079,9 @@ static int draw_path(uint16_t path_n, struct loc *path_g, wchar_t *c, int *a,
 				 * an object; make it act like an object.
 				 */
 				colour = COLOUR_YELLOW;
-			} else if (!square_isprojectable(cave, grid)) {
+			} else if (square_isknown(cave, grid)
+					&& !square_isprojectable(player->cave,
+					grid)) {
 				/* The camouflaged monster looks like a wall. */
 				colour = COLOUR_BLUE;
 			} else {
@@ -1057,12 +1095,12 @@ static int draw_path(uint16_t path_n, struct loc *path_g, wchar_t *c, int *a,
 			/* Known objects are yellow. */
 			colour = COLOUR_YELLOW;
 
-		else if (!square_isprojectable(cave, grid) &&
-				 (square_isknown(cave, grid) || square_isseen(cave, grid)))
+		else if (square_isknown(cave, grid)
+				&& !square_isprojectable(player->cave, grid)) {
 			/* Known walls are blue. */
 			colour = COLOUR_BLUE;
 
-		else if (!square_isknown(cave, grid) && !square_isseen(cave, grid)) {
+		} else if (!square_isknown(cave, grid)) {
 			/* Unknown squares are grey. */
 			pastknown = true;
 			colour = COLOUR_L_DARK;
@@ -1222,7 +1260,8 @@ bool target_set_interactive(int mode, int x, int y)
 			x = targets->pts[target_index].x;
 
 			/* Adjust panel if needed */
-			if (adjust_panel_help(y, x, help)) handle_stuff(player);
+			adjust_panel_help(y, x, help, player, mode, NULL,
+				NULL, NULL);
 		}
 
 		/* Update help */
@@ -1318,26 +1357,12 @@ bool target_set_interactive(int mode, int x, int y)
 			x = MAX(0, MIN(x, cave->width - 1));
 			y = MAX(0, MIN(y, cave->height - 1));
 
-			/* Adjust panel if needed */
-			if (adjust_panel_help(y, x, help)) {
-				handle_stuff(player);
-
-				/* Recalculate interesting grids */
-				point_set_dispose(targets);
-				targets = target_get_monsters(mode, NULL, true);
-			}
-
-			/* Turn interesting mode off if they clicked a boring spot... */
-			show_interesting = false;
-
-			/* ...but turn it on if they clicked an interesting spot */
-			for (int i = 0; i < point_set_size(targets); i++) {
-				if (y == targets->pts[i].y && x == targets->pts[i].x) {
-					target_index = i;
-					show_interesting = true;
-					break;
-				}
-			}
+			/*
+			 * Adjust panel and target list if needed; also
+			 * adjust interesting mode
+			 */
+			adjust_panel_help(y, x, help, player, mode, &targets,
+				&show_interesting, &target_index);
 
 		} else if (event_is_key(press, ESCAPE) || event_is_key(press, 'q')) {
 			/* Cancel */
@@ -1423,6 +1448,62 @@ bool target_set_interactive(int mode, int x, int y)
 				targets = target_get_monsters(mode, NULL, true);
 			}
 
+		} else if (event_is_key(press, '>')) {
+			struct loc new_grid;
+
+			if (path_nearest_known(player, loc(x, y),
+					square_isdownstairs, &new_grid, NULL)
+					> 0) {
+				x = new_grid.x;
+				y = new_grid.y;
+				/*
+				 * Adjust panel and target list if needed; also
+				 * adjust interesting mode
+				 */
+				adjust_panel_help(y, x, help, player, mode,
+					&targets, &show_interesting,
+					&target_index);
+			} else {
+				bell();
+			}
+
+		} else if (event_is_key(press, '<')) {
+			struct loc new_grid;
+
+			if (path_nearest_known(player, loc(x, y),
+					square_isupstairs, &new_grid, NULL)
+					> 0) {
+				x = new_grid.x;
+				y = new_grid.y;
+				/*
+				 * Adjust panel and target list if needed; also
+				 * adjust interesting mode
+				 */
+				adjust_panel_help(y, x, help, player, mode,
+					&targets, &show_interesting,
+					&target_index);
+			} else {
+				bell();
+			}
+
+		} else if (event_is_key(press, 'x')) {
+			struct loc new_grid;
+
+			if (path_nearest_unknown(player, loc(x, y), &new_grid,
+					NULL) > 0) {
+				x = new_grid.x;
+				y = new_grid.y;
+				/*
+				 * Adjust panel and target list if needed; also
+				 * adjust interesting mode
+				 */
+				adjust_panel_help(y, x, help, player, mode,
+					&targets, &show_interesting,
+					&target_index);
+			} else {
+				bell();
+			}
+
 		} else if (event_is_key(press, '?')) {
 			/* Toggle help text */
 			help = !help;
@@ -1487,14 +1568,9 @@ bool target_set_interactive(int mode, int x, int y)
 				x = MAX(1, MIN(x, cave->width - 2));
 				y = MAX(1, MIN(y, cave->height - 2));
 
-				/* Adjust panel if needed */
-				if (adjust_panel_help(y, x, help)) {
-					handle_stuff(player);
-
-					/* Recalculate interesting grids */
-					point_set_dispose(targets);
-					targets = target_get_monsters(mode, NULL, true);
-				}
+				/* Adjust panel and target list if needed */
+				adjust_panel_help(y, x, help, player, mode,
+					&targets, NULL, NULL);
 			}
 		}
 		/* End of while finally */

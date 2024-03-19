@@ -223,6 +223,7 @@ static void store_base_power(struct artifact_set_data *data)
 	struct object_kind *kind;
 	int *fake_total_power;
 	int **fake_tv_power;
+	struct my_rational frac;
 
 	data->max_power = 0;
 	data->min_power = INHIBIT_POWER + 1;
@@ -270,11 +271,15 @@ static void store_base_power(struct artifact_set_data *data)
 		data->base_art_alloc[i] = art->alloc_prob;
 	}
 
-	data->avg_power = mean(fake_total_power, num);
-	data->var_power = variance(fake_total_power, num);
+	/*
+	 * Pass frac but do not use its value so get the previous behavior
+	 * of rounding the result down.
+	 */
+	data->avg_power = mean(fake_total_power, num, &frac);
+	data->var_power = variance(fake_total_power, num, false, false, &frac);
 	for (i = 0; i < TV_MAX; i++) {
 		if (data->tv_num[i]) {
-			data->avg_tv_power[i] = mean(fake_tv_power[i], data->tv_num[i]);
+			data->avg_tv_power[i] = mean(fake_tv_power[i], data->tv_num[i], &frac);
 		}
 	}
 
@@ -1396,6 +1401,14 @@ static void artifact_prep(struct artifact *art, const struct object_kind *kind,
 	mem_free(art->brands);
 	art->brands = NULL;
 	copy_brands(&art->brands, kind->brands);
+	mem_free(art->curses);
+	art->curses = NULL;
+	if (kind->curses) {
+		art->curses = mem_alloc(z_info->curse_max
+			* sizeof(*art->curses));
+		memcpy(art->curses, kind->curses, z_info->curse_max
+			* sizeof(*art->curses));
+	}
 	art->activation = NULL;
 	string_free(art->alt_msg);
 	art->alt_msg = NULL;
@@ -1893,21 +1906,24 @@ static void add_high_resist(struct artifact *art,
 static void add_brand(struct artifact *art)
 {
 	int count;
-	struct brand *brand;
+	struct brand *brand = NULL;
 
 	/* Mostly only one brand */
 	if (art->brands && randint0(4)) return;
 
 	/* Get a random brand */
 	for (count = 0; count < MAX_TRIES; count++) {
-		if (!append_random_brand(&art->brands, &brand)) continue;
+		int pick = randint1(z_info->brand_max - 1);
+
+		if (!append_brand(&art->brands, pick)) continue;
+		brand = &brands[pick];
 		file_putf(log_file, "Adding brand: %sx%d\n", brand->name,
 				  brand->multiplier);
 		break;
 	}
 
 	/* Frequently add the corresponding resist */
-	if (randint0(4)) {
+	if (brand && randint0(4)) {
 		size_t i;
 		for (i = ELEM_BASE_MIN; i < ELEM_HIGH_MIN; i++) {
 			if (streq(brand->name, projections[i].name) &&
@@ -1924,17 +1940,20 @@ static void add_brand(struct artifact *art)
 static void add_slay(struct artifact *art)
 {
 	int count;
-	struct slay *slay;
+	struct slay *slay = NULL;
 
 	for (count = 0; count < MAX_TRIES; count++) {
-		if (!append_random_slay(&art->slays, &slay)) continue;
+		int pick = randint1(z_info->slay_max - 1);
+
+		if (!append_slay(&art->slays, pick)) continue;
+		slay = &slays[pick];
 		file_putf(log_file, "Adding slay: %sx%d\n", slay->name,
 				  slay->multiplier);
 		break;
 	}
 
 	/* Frequently add more slays if the first choice is weak */
-	if (randint0(4) && (slay->power < 105)) {
+	if (slay && randint0(4) && (slay->power < 105)) {
 		add_slay(art);
 	}
 }

@@ -59,7 +59,7 @@ void do_cmd_go_up(struct command *cmd)
 
 	/* Verify stairs */
 	if (!square_isupstairs(cave, player->grid)) {
-		msg("I see no up staircase here.");
+		do_cmd_navigate_up(cmd);
 		return;
 	}
 
@@ -100,7 +100,7 @@ void do_cmd_go_down(struct command *cmd)
 
 	/* Verify stairs */
 	if (!square_isdownstairs(cave, player->grid)) {
-		msg("I see no down staircase here.");
+		do_cmd_navigate_down(cmd);
 		return;
 	}
 
@@ -138,7 +138,7 @@ void do_cmd_go_down(struct command *cmd)
 /**
  * Determine if a given grid may be "opened"
  */
-static bool do_cmd_open_test(struct loc grid)
+static bool do_cmd_open_test(struct player *p, struct loc grid)
 {
 	/* Must have knowledge */
 	if (!square_isknown(cave, grid)) {
@@ -149,6 +149,10 @@ static bool do_cmd_open_test(struct loc grid)
 	/* Must be a closed door */
 	if (!square_iscloseddoor(cave, grid)) {
 		msgt(MSG_NOTHING_TO_OPEN, "You see nothing there to open.");
+		if (square_iscloseddoor(p->cave, grid)) {
+			square_forget(cave, grid);
+			square_light_spot(cave, grid);
+		}
 		return false;
 	}
 
@@ -165,33 +169,17 @@ static bool do_cmd_open_test(struct loc grid)
  */
 static bool do_cmd_open_aux(struct loc grid)
 {
-	int i, j;
 	bool more = false;
 
 	/* Verify legality */
-	if (!do_cmd_open_test(grid)) return (false);
+	if (!do_cmd_open_test(player, grid)) return (false);
 
 	/* Locked door */
 	if (square_islockeddoor(cave, grid)) {
-		/* Disarm factor */
-		i = player->state.skills[SKILL_DISARM_PHYS];
+		int chance = calc_unlocking_chance(player,
+			square_door_power(cave, grid), no_light(player));
 
-		/* Penalize some conditions */
-		if (player->timed[TMD_BLIND] || no_light(player))
-			i = i / 10;
-		if (player->timed[TMD_CONFUSED] || player->timed[TMD_IMAGE])
-			i = i / 10;
-
-		/* Extract the lock power */
-		j = square_door_power(cave, grid);
-
-		/* Extract the difficulty XXX XXX XXX */
-		j = i - (j * 4);
-
-		/* Always have a small chance of success */
-		if (j < 2) j = 2;
-
-		if (randint0(100) < j) {
+		if (randint0(100) < chance) {
 			/* Message */
 			msgt(MSG_LOCKPICK, "You have picked the lock.");
 
@@ -273,7 +261,7 @@ void do_cmd_open(struct command *cmd)
 	obj = chest_check(player, grid, CHEST_OPENABLE);
 
 	/* Check for door */
-	if (!obj && !do_cmd_open_test(grid)) {
+	if (!obj && !do_cmd_open_test(player, grid)) {
 		/* Cancel repeat */
 		disturb(player);
 		return;
@@ -323,7 +311,7 @@ void do_cmd_open(struct command *cmd)
 /**
  * Determine if a given grid may be "closed"
  */
-static bool do_cmd_close_test(struct loc grid)
+static bool do_cmd_close_test(struct player *p, struct loc grid)
 {
 	/* Must have knowledge */
 	if (!square_isknown(cave, grid)) {
@@ -338,6 +326,11 @@ static bool do_cmd_close_test(struct loc grid)
 	if (!square_isopendoor(cave, grid) && !square_isbrokendoor(cave, grid)) {
 		/* Message */
 		msg("You see nothing there to close.");
+		if (square_isopendoor(p->cave, grid)
+				|| square_isbrokendoor(p->cave, grid)) {
+			square_forget(cave, grid);
+			square_light_spot(cave, grid);
+		}
 
 		/* Nope */
 		return (false);
@@ -369,7 +362,7 @@ static bool do_cmd_close_aux(struct loc grid)
 	bool more = false;
 
 	/* Verify legality */
-	if (!do_cmd_close_test(grid)) return (false);
+	if (!do_cmd_close_test(player, grid)) return (false);
 
 	/* Broken door */
 	if (square_isbrokendoor(cave, grid)) {
@@ -417,7 +410,7 @@ void do_cmd_close(struct command *cmd)
 	grid = loc_sum(player->grid, ddgrid[dir]);
 
 	/* Verify legality */
-	if (!do_cmd_close_test(grid)) {
+	if (!do_cmd_close_test(player, grid)) {
 		/* Cancel repeat */
 		disturb(player);
 		return;
@@ -448,7 +441,7 @@ void do_cmd_close(struct command *cmd)
 /**
  * Determine if a given grid may be "tunneled"
  */
-static bool do_cmd_tunnel_test(struct loc grid)
+static bool do_cmd_tunnel_test(struct player *p, struct loc grid)
 {
 
 	/* Must have knowledge */
@@ -460,12 +453,21 @@ static bool do_cmd_tunnel_test(struct loc grid)
 	/* Titanium */
 	if (square_isperm(cave, grid)) {
 		msg("This seems to be permanent rock.");
+		if (!square_isperm(p->cave, grid)) {
+			square_memorize(cave, grid);
+			square_light_spot(cave, grid);
+		}
 		return (false);
 	}
 
 	/* Must be a wall/door/etc */
 	if (!(square_isdiggable(cave, grid) || square_iscloseddoor(cave, grid))) {
 		msg("You see nothing there to tunnel.");
+		if (square_isdiggable(p->cave, grid)
+				|| square_iscloseddoor(p->cave, grid)) {
+			square_forget(cave, grid);
+			square_light_spot(cave, grid);
+		}
 		return (false);
 	}
 
@@ -521,20 +523,24 @@ static bool do_cmd_tunnel_aux(struct loc grid)
 	bool okay = false;
 	bool gold = square_hasgoldvein(cave, grid);
 	bool rubble = square_isrubble(cave, grid);
+	bool digger_swapped = false;
 	int weapon_slot = slot_by_name(player, "weapon");
 	struct object *current_weapon = slot_object(player, weapon_slot);
 	struct object *best_digger = NULL;
 	struct player_state local_state;
 	struct player_state *used_state = &player->state;
 	int oldn = 1, dig_idx;
+	const char *with_clause = current_weapon == NULL ? "with your hands" : "with your weapon";
 
 	/* Verify legality */
-	if (!do_cmd_tunnel_test(grid)) return (false);
+	if (!do_cmd_tunnel_test(player, grid)) return (false);
 
 	/* Find what we're digging with and our chance of success */
 	best_digger = player_best_digger(player, false);
 	if (best_digger != current_weapon &&
 			(!current_weapon || obj_can_takeoff(current_weapon))) {
+		digger_swapped = true;
+		with_clause = "with your swap digger";
 		/* Use only one without the overhead of gear_obj_for_use(). */
 		if (best_digger) {
 			oldn = best_digger->number;
@@ -560,7 +566,7 @@ static bool do_cmd_tunnel_aux(struct loc grid)
 	okay = (chance > randint0(1600));
 
 	/* Swap back */
-	if (best_digger != current_weapon) {
+	if (digger_swapped) {
 		if (best_digger) {
 			best_digger->number = oldn;
 		}
@@ -573,7 +579,7 @@ static bool do_cmd_tunnel_aux(struct loc grid)
 		/* Rubble is a special case - could be handled more generally NRM */
 		if (rubble) {
 			/* Message */
-			msg("You have removed the rubble.");
+			msg("You have removed the rubble %s.", with_clause);
 
 			/* Place an object (except in town) */
 			if ((randint0(100) < 10) && player->depth) {
@@ -592,9 +598,9 @@ static bool do_cmd_tunnel_aux(struct loc grid)
 		} else if (gold) {
 			/* Found treasure */
 			place_gold(cave, grid, player->depth, ORIGIN_FLOOR);
-			msg("You have found something!");
+			msg("You have found something digging %s!", with_clause);
 		} else {
-			msg("You have finished the tunnel.");
+			msg("You have finished the tunnel %s.", with_clause);
 		}
 		/* On the surface, new terrain may be exposed to the sun. */
 		if (cave->depth == 0) expose_to_sun(cave, grid, is_daytime());
@@ -605,17 +611,17 @@ static bool do_cmd_tunnel_aux(struct loc grid)
 	} else if (chance > 0) {
 		/* Failure, continue digging */
 		if (rubble)
-			msg("You dig in the rubble.");
+			msg("You dig in the rubble %s.", with_clause);
 		else
-			msg("You tunnel into the %s.",
-				square_apparent_name(player->cave, grid));
+			msg("You tunnel into the %s %s.",
+				square_apparent_name(player->cave, grid), with_clause);
 		more = true;
 	} else {
 		/* Don't automatically repeat if there's no hope. */
 		if (rubble) {
-			msg("You dig in the rubble with little effect.");
+			msg("You dig in the rubble %s with little effect.", with_clause);
 		} else {
-			msg("You chip away futilely at the %s.",
+			msg("You chip away futilely %s at the %s.", with_clause,
 				square_apparent_name(player->cave, grid));
 		}
 	}
@@ -645,7 +651,7 @@ void do_cmd_tunnel(struct command *cmd)
 	grid = loc_sum(player->grid, ddgrid[dir]);
 
 	/* Oops */
-	if (!do_cmd_tunnel_test(grid)) {
+	if (!do_cmd_tunnel_test(player, grid)) {
 		/* Cancel repeat */
 		disturb(player);
 		return;
@@ -676,7 +682,7 @@ void do_cmd_tunnel(struct command *cmd)
 /**
  * Determine if a given grid may be "disarmed"
  */
-static bool do_cmd_disarm_test(struct loc grid)
+static bool do_cmd_disarm_test(struct player *p, struct loc grid)
 {
 	/* Must have knowledge */
 	if (!square_isknown(cave, grid)) {
@@ -691,6 +697,10 @@ static bool do_cmd_disarm_test(struct loc grid)
 	/* Look for a trap */
 	if (!square_isdisarmabletrap(cave, grid)) {
 		msg("You see nothing there to disarm.");
+		if (square_isdisarmabletrap(p->cave, grid)) {
+			square_memorize_traps(cave, grid);
+			square_light_spot(cave, grid);
+		}
 		return false;
 	}
 
@@ -712,7 +722,7 @@ static bool do_cmd_lock_door(struct loc grid)
 	bool more = false;
 
 	/* Verify legality */
-	if (!do_cmd_disarm_test(grid)) return false;
+	if (!do_cmd_disarm_test(player, grid)) return false;
 
 	/* Get the "disarm" factor */
 	i = player->state.skills[SKILL_DISARM_PHYS];
@@ -769,7 +779,7 @@ static bool do_cmd_disarm_aux(struct loc grid)
 	bool more = false;
 
 	/* Verify legality */
-	if (!do_cmd_disarm_test(grid)) return (false);
+	if (!do_cmd_disarm_test(player, grid)) return (false);
 
     /* Choose first player trap */
 	while (trap) {
@@ -808,8 +818,9 @@ static bool do_cmd_disarm_aux(struct loc grid)
 		player_exp_gain(player, 1 + power);
 
 		/* Trap is gone */
-		square_forget(cave, grid);
-		square_destroy_trap(cave, grid);
+		if (!square_remove_trap(cave, grid, trap, true)) {
+			assert(0);
+		}
 	} else if (randint0(100) < chance) {
 		event_signal(EVENT_INPUT_FLUSH);
 		msg("You failed to disarm the %s.", trap->kind->name);
@@ -867,7 +878,7 @@ void do_cmd_disarm(struct command *cmd)
 	obj = chest_check(player, grid, CHEST_TRAPPED);
 
 	/* Verify legality */
-	if (!obj && !do_cmd_disarm_test(grid)) {
+	if (!obj && !do_cmd_disarm_test(player, grid)) {
 		/* Cancel repeat */
 		disturb(player);
 		return;
@@ -1082,13 +1093,28 @@ void move_player(int dir, bool disarm)
 				square_light_spot(cave, grid);
 			}
 		} else {
-			if (square_isrubble(cave, grid))
+			if (square_isrubble(cave, grid)) {
 				msgt(MSG_HITWALL,
 					 "There is a pile of rubble blocking your way.");
-			else if (square_iscloseddoor(cave, grid))
+				if (!square_isrubble(player->cave, grid)) {
+					square_memorize(cave, grid);
+					square_light_spot(cave, grid);
+				}
+			} else if (square_iscloseddoor(cave, grid)) {
 				msgt(MSG_HITWALL, "There is a door blocking your way.");
-			else
+				if (!square_iscloseddoor(player->cave, grid)) {
+					square_memorize(cave, grid);
+					square_light_spot(cave, grid);
+				}
+			} else {
 				msgt(MSG_HITWALL, "There is a wall blocking your way.");
+				if (square_ispassable(player->cave, grid)
+						|| square_isrubble(player->cave, grid)
+						|| square_iscloseddoor(player->cave, grid)) {
+					square_forget(cave, grid);
+					square_light_spot(cave, grid);
+				}
+			}
 		}
 		/*
 		 * No move but do not refund energy:  primarily so that
@@ -1149,9 +1175,10 @@ void move_player(int dir, bool disarm)
 			 * The autopickup is a side effect of the move:
 			 * whatever command triggered the move will be the
 			 * target for CMD_REPEAT rather than repeating the
-			 * autopickup.
+			 * autopickup, and the autopickup won't trigger
+			 * bloodlust.
 			 */
-			cmdq_peek()->is_background_command = true;
+			cmdq_peek()->background_command = 2;
 		} else {
 			/* No move made so no energy spent. */
 			player->upkeep->energy_use = 0;
@@ -1164,7 +1191,7 @@ void move_player(int dir, bool disarm)
 /**
  * Determine if a given grid may be "walked"
  */
-static bool do_cmd_walk_test(struct loc grid)
+static bool do_cmd_walk_test(struct player *p, struct loc grid)
 {
 	int m_idx = square(cave, grid)->mon;
 	struct monster *mon = cave_monster(cave, m_idx);
@@ -1172,14 +1199,14 @@ static bool do_cmd_walk_test(struct loc grid)
 	/* Allow attack on obvious monsters if unafraid */
 	if (m_idx > 0 && monster_is_obvious(mon)) {
 		/* Handle player fear */
-		if (player_of_has(player, OF_AFRAID)) {
+		if (player_of_has(p, OF_AFRAID)) {
 			/* Extract monster name (or "it") */
 			char m_name[80];
 			monster_desc(m_name, sizeof(m_name), mon, MDESC_DEFAULT);
 
 			/* Message */
 			msgt(MSG_AFRAID, "You are too afraid to attack %s!", m_name);
-			equip_learn_flag(player, OF_AFRAID);
+			equip_learn_flag(p, OF_AFRAID);
 
 			/* Nope */
 			return (false);
@@ -1192,21 +1219,35 @@ static bool do_cmd_walk_test(struct loc grid)
 	if (!square_isknown(cave, grid))
 		return true;
 
-	/* Require open space */
+	/*
+	 * Require open space; if the messaging indicates what is there and
+	 * that does not agree with the player's memory then update the
+	 * player's memory
+	 */
 	if (!square_ispassable(cave, grid)) {
 		if (square_isrubble(cave, grid)) {
 			/* Rubble */
 			msgt(MSG_HITWALL, "There is a pile of rubble in the way!");
+			if (!square_isrubble(p->cave, grid)) {
+				square_memorize(cave, grid);
+				square_light_spot(cave, grid);
+			}
 		} else if (square_iscloseddoor(cave, grid)) {
 			/* Door */
 			return true;
 		} else {
 			/* Wall */
 			msgt(MSG_HITWALL, "There is a wall in the way!");
+			if (square_ispassable(p->cave, grid)
+					|| square_isrubble(p->cave, grid)
+					|| square_iscloseddoor(p->cave, grid)) {
+				square_forget(cave, grid);
+				square_light_spot(cave, grid);
+			}
 		}
 
 		/* Cancel repeat */
-		disturb(player);
+		disturb(p);
 
 		/* Nope */
 		return (false);
@@ -1233,8 +1274,11 @@ void do_cmd_walk(struct command *cmd)
 	/* If we're in a web, deal with that */
 	if (square_iswebbed(cave, player->grid)) {
 		/* Clear the web, finish turn */
+		struct trap_kind *web = lookup_trap("web");
+
 		msg("You clear the web.");
-		square_destroy_trap(cave, player->grid);
+		assert(web);
+		square_remove_all_traps_of_type(cave, player->grid, web->tidx);
 		player->upkeep->energy_use = z_info->move_energy;
 		return;
 	}
@@ -1246,7 +1290,7 @@ void do_cmd_walk(struct command *cmd)
 	
 	/* Verify walkability */
 	grid = loc_sum(player->grid, ddgrid[dir]);
-	if (!do_cmd_walk_test(grid))
+	if (!do_cmd_walk_test(player, grid))
 		return;
 
 	player->upkeep->energy_use = energy_per_move(player);
@@ -1271,8 +1315,11 @@ void do_cmd_jump(struct command *cmd)
 	/* If we're in a web, deal with that */
 	if (square_iswebbed(cave, player->grid)) {
 		/* Clear the web, finish turn */
+		struct trap_kind *web = lookup_trap("web");
+
 		msg("You clear the web.");
-		square_destroy_trap(cave, player->grid);
+		assert(web);
+		square_remove_all_traps_of_type(cave, player->grid, web->tidx);
 		player->upkeep->energy_use = z_info->move_energy;
 		return;
 	}
@@ -1283,14 +1330,13 @@ void do_cmd_jump(struct command *cmd)
 
 	/* Verify walkability */
 	grid = loc_sum(player->grid, ddgrid[dir]);
-	if (!do_cmd_walk_test(grid))
+	if (!do_cmd_walk_test(player, grid))
 		return;
 
 	player->upkeep->energy_use = energy_per_move(player);
 
 	move_player(dir, false);
 }
-
 
 /**
  * Start running.
@@ -1309,8 +1355,11 @@ void do_cmd_run(struct command *cmd)
 	/* If we're in a web, deal with that */
 	if (square_iswebbed(cave, player->grid)) {
 		/* Clear the web, finish turn */
+		struct trap_kind *web = lookup_trap("web");
+
 		msg("You clear the web.");
-		square_destroy_trap(cave, player->grid);
+		assert(web);
+		square_remove_all_traps_of_type(cave, player->grid, web->tidx);
 		player->upkeep->energy_use = z_info->move_energy;
 		return;
 	}
@@ -1321,7 +1370,7 @@ void do_cmd_run(struct command *cmd)
 	/* Get location */
 	if (dir) {
 		grid = loc_sum(player->grid, ddgrid[dir]);
-		if (!do_cmd_walk_test(grid))
+		if (!do_cmd_walk_test(player, grid))
 			return;
 			
 		/* Hack: convert repeat count to running count */
@@ -1336,6 +1385,195 @@ void do_cmd_run(struct command *cmd)
 
 	/* Start run */
 	run_step(dir);
+}
+
+/**
+ * Automatically navigate to the nearest downstairs location.
+ *
+ * Note that navigating while confused is not allowed.
+ */
+void do_cmd_navigate_down(struct command *cmd)
+{
+	int visible_monster_count = 0;
+
+	/* cancel if confused */
+	if (player->timed[TMD_CONFUSED]) {
+		msg("You cannot explore while confused.");
+	   	return;
+	}
+
+
+	/* If we're in a web, deal with that */
+	if (square_iswebbed(cave, player->grid)) {
+		/* Clear the web, finish turn */
+		msg("You clear the web.");
+		square_destroy_trap(cave, player->grid);
+		player->upkeep->energy_use = z_info->move_energy;
+		return;
+	}
+	
+
+	/* Screen for visible monsters */
+	for (int y = 0; y < cave->height; y++) {
+		for (int x = 0; x < cave->width; x++) {
+			struct loc grid = loc(x, y);
+			
+			if (loc_eq(grid, player->grid)) continue;
+
+			if (square_isoccupied(cave, grid)) {
+				int m_idx = square(cave, grid)->mon;
+				struct monster *mon = cave_monster(cave, m_idx);
+				if (monster_is_obvious(mon)) {
+					visible_monster_count++;
+					break;
+				}
+			}
+		}
+	}
+
+	if (visible_monster_count > 0) {
+		msg("Something is here.");
+		return;
+	}
+
+	assert(!player->upkeep->steps);
+	player->upkeep->step_count = path_nearest_known(player, player->grid,
+		square_isdownstairs, &player->upkeep->path_dest,
+		&player->upkeep->steps);
+	if (player->upkeep->step_count > 0) {
+		player->upkeep->running = player->upkeep->step_count;
+		/* Calculate torch radius */
+		player->upkeep->update |= (PU_TORCH);
+		run_step(0);
+		return;
+	}
+
+	msg("No known path to downstairs.");
+}
+
+/**
+ * Automatically navigate to the nearest upstairs location.
+ *
+ * Note that navigating while confused is not allowed.
+ */
+void do_cmd_navigate_up(struct command *cmd)
+{
+	int visible_monster_count = 0;
+	/* cancel if confused */
+	if (player->timed[TMD_CONFUSED]) {
+		msg("You cannot explore while confused.");
+	   	return;
+	}
+
+
+	/* If we're in a web, deal with that */
+	if (square_iswebbed(cave, player->grid)) {
+		/* Clear the web, finish turn */
+		msg("You clear the web.");
+		square_destroy_trap(cave, player->grid);
+		player->upkeep->energy_use = z_info->move_energy;
+		return;
+	}
+	
+
+	/* Screen for visible monsters */
+	for (int y = 0; y < cave->height; y++) {
+		for (int x = 0; x < cave->width; x++) {
+			struct loc grid = loc(x, y);
+
+			if (loc_eq(grid, player->grid)) continue;
+
+			if (square_isoccupied(cave, grid)) {
+				int m_idx = square(cave, grid)->mon;
+				struct monster *mon = cave_monster(cave, m_idx);
+				if (monster_is_obvious(mon)) {
+					visible_monster_count++;
+					break;
+				}
+			}
+		}
+	}
+
+	if (visible_monster_count > 0) {
+		msg("Something is here.");
+		return;
+	}
+
+	assert(!player->upkeep->steps);
+	player->upkeep->step_count = path_nearest_known(player, player->grid,
+		square_isupstairs, &player->upkeep->path_dest,
+		&player->upkeep->steps);
+	if (player->upkeep->step_count > 0) {
+		player->upkeep->running = player->upkeep->step_count;
+		/* Calculate torch radius */
+		player->upkeep->update |= (PU_TORCH);
+		run_step(0);
+		return;
+	}
+
+	msg("No known path to upstairs.");
+}
+
+/**
+ * Start exploring.
+ *
+ * Note that exploring while confused is not allowed.
+ */
+void do_cmd_explore(struct command *cmd)
+{
+	bool visible_monster = false;
+	/* cancel if confused */
+	if (player->timed[TMD_CONFUSED]) {
+		msg("You cannot explore while confused.");
+	   	return;
+	}
+
+
+	/* If we're in a web, deal with that */
+	if (square_iswebbed(cave, player->grid)) {
+		/* Clear the web, finish turn */
+		msg("You clear the web.");
+		square_destroy_trap(cave, player->grid);
+		player->upkeep->energy_use = z_info->move_energy;
+		return;
+	}
+	
+
+	/* Screen for visible monsters */
+	for (int y = 0; y < cave->height && !visible_monster; y++) {
+		for (int x = 0; x < cave->width; x++) {
+			struct loc grid = loc(x, y);
+			
+			if (loc_eq(grid, player->grid)) continue;
+
+			if (square_isoccupied(cave, grid)) {
+				int m_idx = square(cave, grid)->mon;
+				struct monster *mon = cave_monster(cave, m_idx);
+				if (monster_is_obvious(mon)) {
+					visible_monster = true;
+					break; /* only breaks the inner loop */
+				}
+			}
+		}
+	}
+
+	if (visible_monster) {
+		msg("Something is here.");
+		return;
+	}
+
+	assert(!player->upkeep->steps);
+	player->upkeep->step_count = path_nearest_unknown(player, player->grid,
+		&player->upkeep->path_dest, &player->upkeep->steps);
+	if (player->upkeep->step_count > 0) {
+		player->upkeep->running = player->upkeep->step_count;
+		/* Calculate torch radius */
+		player->upkeep->update |= (PU_TORCH);
+		run_step(0);
+		return;
+	}
+
+	msg("No apparent path for exploration.");
 }
 
 
@@ -1354,11 +1592,14 @@ void do_cmd_pathfind(struct command *cmd)
 	if (player->timed[TMD_CONFUSED])
 		return;
 
-	if (find_path(grid)) {
-		player->upkeep->running = 1000;
+	assert(!player->upkeep->steps);
+	player->upkeep->step_count =
+		find_path(player, player->grid, grid, &player->upkeep->steps);
+	if (player->upkeep->step_count > 0) {
+		player->upkeep->path_dest = grid;
+		player->upkeep->running = player->upkeep->step_count;
 		/* Calculate torch radius */
 		player->upkeep->update |= (PU_TORCH);
-		player->upkeep->running_withpathfind = true;
 		run_step(0);
 	}
 }
@@ -1399,8 +1640,8 @@ void do_cmd_hold(struct command *cmd)
 		/* Turn will be taken exiting the shop */
 		player->upkeep->energy_use = 0;
 	} else {
-	    event_signal(EVENT_SEEFLOOR);
-		square_know_pile(cave, player->grid);
+		event_signal(EVENT_SEEFLOOR);
+		square_know_pile(cave, player->grid, NULL);
 	}
 }
 

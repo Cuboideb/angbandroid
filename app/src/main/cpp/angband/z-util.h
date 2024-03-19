@@ -240,8 +240,13 @@ uint32_t djb2_hash(const char *str);
 /**
  * Mathematical functions
  */
-int mean(const int *nums, int size);
-int variance(const int *nums, int size);
+int add_guardi(int a, int b);
+int sub_guardi(int a, int b);
+int add_guardi16(int16_t a, int16_t b);
+int sub_guardi16(int16_t a, int16_t b);
+int mean(const int *nums, int size, struct my_rational *frac);
+int variance(const int *nums, int size, bool unbiased, bool of_mean,
+		struct my_rational *frac);
 unsigned int gcd(unsigned int a, unsigned int b);
 struct my_rational my_rational_construct(unsigned int numerator,
 		unsigned int denominator);

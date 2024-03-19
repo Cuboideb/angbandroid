@@ -32,7 +32,7 @@
  * the menu failed
  */
 static struct menu *effect_menu_new(struct effect *effect, int count,
-	bool allow_random)
+		bool allow_random)
 {
 	struct menu *m = menu_new(MN_SKIN_SCROLL,
 		menu_find_iter(MN_ITER_STRINGS));
@@ -57,7 +57,7 @@ static struct menu *effect_menu_new(struct effect *effect, int count,
 				string_make("one of the following at random");
 			width = MAX(width, (int)MIN(strlen(ms[ms_count])
 				+ 3, (size_t)(Term->wid)));
-		++ms_count;
+			++ms_count;
 		}
 	} else {
 		ms = NULL;
