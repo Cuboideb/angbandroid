@@ -186,11 +186,14 @@ public class StorageActivity extends Activity {
 		return new File(this.cwd, item);
 	}
 
+	/*
 	private File getDefaultFolder()
 	{
 		return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
 	}
+	*/
 
+	/*
 	private void launchExport()
 	{
 		File source = this.getSelectedFile();
@@ -204,11 +207,28 @@ public class StorageActivity extends Activity {
 		intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Uri.fromFile(this.getDefaultFolder()));
 		this.startActivityForResult(intent, this.OP_EXPORT);
 	}
+	*/
+
+	private void launchExport()
+	{
+		File source = this.getSelectedFile();
+
+		if (source == null || !source.isFile()) {
+			GameActivity.infoAlert(this, "Select a file");
+			return;
+		}
+
+		Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+		intent.addCategory(Intent.CATEGORY_OPENABLE);
+		intent.setType("application/octet-stream");
+		intent.putExtra(Intent.EXTRA_TITLE, source.getName());
+		startActivityForResult(intent, this.OP_EXPORT);
+	}
 
 	private void launchImport()
 	{
 		Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-		intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Uri.fromFile(this.getDefaultFolder()));
+		//intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Uri.fromFile(this.getDefaultFolder()));
 		intent.addCategory(Intent.CATEGORY_OPENABLE);
 		intent.setType("*/*");
 		this.startActivityForResult(intent, this.OP_IMPORT);
@@ -265,6 +285,7 @@ public class StorageActivity extends Activity {
 		}
 	}
 
+	/*
 	protected void performExport(Uri targetUri)
 	{
 		File source = this.getSelectedFile();
@@ -290,6 +311,33 @@ public class StorageActivity extends Activity {
 
 		try {
 			final OutputStream targetStream = this.getContentResolver().openOutputStream(exported.getUri());
+			final InputStream sourceStream = new FileInputStream(source);
+
+			this.copyStream(sourceStream, targetStream);
+
+			sourceStream.close();
+			targetStream.close();
+		}
+		catch (IOException e)
+		{
+			GameActivity.infoAlert(this, e.getMessage());
+			return;
+		}
+
+		GameActivity.infoAlert(this, "File exported");
+	}
+	*/
+
+	protected void performExport(Uri targetUri)
+	{
+		File source = this.getSelectedFile();
+
+		if (source == null) return;
+
+		if (!source.isFile()) return;
+
+		try {
+			final OutputStream targetStream = this.getContentResolver().openOutputStream(targetUri);
 			final InputStream sourceStream = new FileInputStream(source);
 
 			this.copyStream(sourceStream, targetStream);
