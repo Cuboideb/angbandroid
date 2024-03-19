@@ -36,7 +36,6 @@ public class StorageActivity extends Activity {
 	protected ViewGroup rootView;
 	protected String cwd = "";
 	protected String root = "";
-	protected int selection = -1;
 	protected ArrayList<String> names = new ArrayList();
 	protected String prefix = "> ";
 
@@ -86,12 +85,26 @@ public class StorageActivity extends Activity {
 		initListView();
 	}
 
+	private TextView getWidgetSelection()
+	{
+		return this.rootView.findViewById(R.id.txt_selected);
+	}
+
+	private TextView getWidgetFolder()
+	{
+		return this.rootView.findViewById(R.id.txt_desc);
+	}
+
 	private void refreshItems() {
-		this.selection = -1;
+		this.getWidgetSelection().setText("");
 
 		File dir = new File(this.cwd);
 
-		((TextView)this.rootView.findViewById(R.id.txt_desc)).setText(this.cwd);
+		int begin = this.root.length();
+		String txt = this.cwd;
+		if (begin <= txt.length()) txt = txt.substring(begin);
+
+		this.getWidgetFolder().setText(txt);
 
 		this.names = new ArrayList<>();
 
@@ -134,11 +147,7 @@ public class StorageActivity extends Activity {
 		String item = this.names.get(position);
 		GameActivity.log("Navigate to " + item);
 
-		if (this.selection >= 0) {
-			View v = this.fileList.getChildAt(this.selection);
-			((TextView)v).setTextColor(Color.BLACK);
-			this.selection = -1;
-		}
+		this.getWidgetSelection().setText("");
 
 		if (item.equals("..")) {
 			File f = new File(this.cwd).getParentFile();
@@ -157,18 +166,16 @@ public class StorageActivity extends Activity {
 				this.refreshItems();
 			}
 			if (f != null && f.isFile()) {
-				this.selection = position;
-				View v = this.fileList.getChildAt(this.selection);
-				((TextView)v).setTextColor(Color.BLUE);
+				this.getWidgetSelection().setText(item);
 			}
 		}
 	}
 
 	private File getSelectedFile()
 	{
-		if (this.selection < 0) return null;
+		String item = this.getWidgetSelection().getText().toString().trim();
 
-		String item = this.names.get(this.selection);
+		if (item.length() == 0) return null;
 
 		if (item.equals("..")) return null;
 
@@ -188,9 +195,10 @@ public class StorageActivity extends Activity {
 	{
 		File source = this.getSelectedFile();
 
-		if (source == null) return;
-
-		if (!source.isFile()) return;
+		if (source == null || !source.isFile()) {
+			GameActivity.infoAlert(this, "Select a file");
+			return;
+		}
 
 		Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
 		intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Uri.fromFile(this.getDefaultFolder()));
@@ -210,9 +218,10 @@ public class StorageActivity extends Activity {
 	{
 		final File source = this.getSelectedFile();
 
-		if (source == null) return;
-
-		if (!source.isFile()) return;
+		if (source == null || !source.isFile()) {
+			GameActivity.infoAlert(this, "Select a file");
+			return;
+		}
 
 		final StorageActivity storage = this;
 
@@ -347,6 +356,8 @@ public class StorageActivity extends Activity {
 			return;
 		}
 
+		GameActivity.infoAlert(this, "File imported");
+
 		this.refreshItems();
 	}
 
@@ -375,7 +386,7 @@ public class StorageActivity extends Activity {
             public void onItemClick(AdapterView parent,
             	View v, int position, long id)
             {
-			storage.onClick(position);
+				storage.onClick(position);
             }
         });
 	}
