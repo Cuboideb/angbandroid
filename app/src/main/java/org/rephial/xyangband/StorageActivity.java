@@ -124,7 +124,9 @@ public class StorageActivity extends Activity {
 				int da = (fa.isDirectory() ? 1: 0);
 				int db = (fb.isDirectory() ? 1: 0);
 				if (da == db) {
-					return fa.getName().compareTo(fb.getName());
+					String sa = fa.getName().toUpperCase();
+					String sb = fb.getName().toUpperCase();
+					return sa.compareTo(sb);
 				}
 				return (db - da);
 			}
