@@ -324,16 +324,16 @@ public class StorageActivity extends Activity {
 			return;
 		}
 
-		String name = source.getName() + "_copy";
-		File target = new File(this.cwd, name);
+		String name = source.getName();
 
-		if (target.isDirectory()) {
-			GameActivity.infoAlert(this, "A directory already exists with this name " + name);
+		File newFile = this.findSafeName(name, "copy");
+		if (newFile == null) {
+			GameActivity.infoAlert(this, "Too many files");
 			return;
 		}
 
 		try {
-			final OutputStream targetStream = new FileOutputStream(target);
+			final OutputStream targetStream = new FileOutputStream(newFile);
 			final InputStream sourceStream = new FileInputStream(source);
 
 			this.copyStream(sourceStream, targetStream);
@@ -429,6 +429,17 @@ public class StorageActivity extends Activity {
 		GameActivity.infoAlert(this, "File exported");
 	}
 
+	protected File findSafeName(String name, String suffix) {
+		int copy = 0;
+		while (true) {
+			if (++copy >= 1000) {
+				return null;
+			}
+			File newFile = new File(this.cwd, name + "_" + suffix + copy);
+			if (!newFile.exists()) return newFile;
+		}
+	}
+
 	protected void performImport(Uri sourceUri) {
 		try {
 			DocumentFile sourceDoc = DocumentFile.fromSingleUri(this, sourceUri);
@@ -444,23 +455,17 @@ public class StorageActivity extends Activity {
 					return;
 				}
 
+				File newFile = this.findSafeName(name, "old");
+				if (newFile == null) {
+					GameActivity.infoAlert(this, "Too many files");
+					return;
+				}
+
 				File oldFile = new File(this.cwd, name);
 
-				int copy = 0;
-				while (true) {
-					if (++copy >= 200) {
-						GameActivity.infoAlert(this, "Too many files");
-						return;
-					}
-
-					File newFile = new File(this.cwd, name + "_old" + copy);
-					if (!newFile.exists()) {
-						if (!oldFile.renameTo(newFile)) {
-							GameActivity.infoAlert(this, "Can't rename " + oldFile.getName());
-							return;
-						}
-						break;
-					}
+				if (!oldFile.renameTo(newFile)) {
+					GameActivity.infoAlert(this, "Can't rename " + oldFile.getName());
+					return;
 				}
 			}
 

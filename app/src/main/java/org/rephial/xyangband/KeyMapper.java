@@ -495,6 +495,6 @@ public class KeyMapper {
 		return KeyAction.convert(pref.getString("angband.ctrldoubletap", "EnterKey"));
 	}
 	public KeyAction getCenterScreenTapAction() {
-		return KeyAction.convert(pref.getString("angband.centerscreentap", "Space"));
+		return KeyAction.convert(pref.getString("angband.centerscreentap", "Five"));
 	}
 }
