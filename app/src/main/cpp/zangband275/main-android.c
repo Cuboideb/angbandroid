@@ -936,13 +936,13 @@ void angdroid_main()
 	signals_init();
 
 	/* Erase screen */
-	//Term_clear();
-	//Term_fresh();
+	Term_clear();
+	Term_fresh();
 
 	init_angband();
 
 	/* Wait for response */
-	//pause_line(0);
+	pause_line(0);
 
 	/* Hack -- Force graphics reload */
 	control_msg(TERM_CONTROL_CONTEXT, "dummy");
