@@ -1,0 +1,36 @@
+Zangband Options.
+
+Please choose one of the following online help files:
+
+    (0) Zangband Options                (option.txt)
+    (1) User Interface Options          (option.txt#UserInterface)
+    (2) Disturbance Options             (option.txt#Disturbance)
+    (3) Game Play Options               (option.txt#GamePlay)
+    (4) Efficiency Options              (option.txt#Efficiency)
+    (5) Display Options                 (option.txt#Display)
+    (6) Birth Options                   (option.txt#StartUp)
+    (7) Arificial Intelligence Options  (option.txt#AI)
+    (8) Testing Options                 (option.txt#Testing)
+    (9) Base Delay Factor               (option.txt#BaseDelay)
+    (a) Hitpoint Warning                (option.txt#Hitpoint)
+    (b) Autosave Options                (option.txt#Autosave)
+    (c) Window Flags                    (option.txt#Window)
+    (d) Cheating Options                (option.txt#Cheating)
+
+    (?) Help System Commands            (helpinfo.txt)
+
+
+***** [0] option.txt
+***** [1] option.txt#UserInterface
+***** [2] option.txt#Disturbance
+***** [3] option.txt#GamePlay
+***** [4] option.txt#Efficiency
+***** [5] option.txt#Display
+***** [6] option.txt#StartUp
+***** [7] option.txt#AI
+***** [8] option.txt#Testing
+***** [9] option.txt#BaseDelay
+***** [a] option.txt#HitPoint
+***** [b] option.txt#Autosave
+***** [c] option.txt#Window
+***** [d] option.txt#Cheating

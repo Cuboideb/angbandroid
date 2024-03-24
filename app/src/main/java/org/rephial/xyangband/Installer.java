@@ -164,7 +164,7 @@ public class Installer {
 	}
 
 	private boolean doesCrcMatch(int plugin) {
-		//Log.d("Angband","doesCrcMatch "+plugin);
+		Log.d("Angband","doesCrcMatch "+plugin);
 		boolean result = false;
 		try {
 			File f = new File(Preferences.getAngbandFilesDirectory(plugin));
