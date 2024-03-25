@@ -1411,8 +1411,7 @@ static bool player_birth_aux_3(void)
 				auto_round++;
 
 				/* Hack -- Prevent overflow */
-				//if (auto_round >= 1000000L) break;
-				if (auto_round > 10) break;
+				if (auto_round >= 1000000L) break;
 
 				/* Calculate a score for the rolled stats */
 				cur_score = 0;
