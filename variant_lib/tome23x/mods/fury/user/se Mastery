@@ -1,0 +1,212 @@
+  [Fury 1.1.0 Character Sheet]
+
+ Name  : The Fury VII           Age                  1       STR:     11       
+ Sex   : Male                   Height               1       INT:     32       
+ Race  : Spider Ancient         Weight               1       WIS:     24       
+ Class : Master                 Social Class         4       DEX:     21       
+ Body  : Player                                              CON:     17       
+ God   : Varda Elentari                                      CHR:     14       
+                                                                               
+ + To Melee Hit          20 Level             28    Max Hit Points        56   
+ + To Melee Damage        0 Experience     44389    Cur Hit Points       -35   
+ + To Ranged Hit         20 Max Exp        44389    Max SP (Mana)        841   
+ + To Ranged Damage       0 Exp to Adv.    45000    Cur SP (Mana)        729   
+   AC                 21+60 Gold           38818    Piety                158   
+                                                                               
+                         (Miscellaneous Abilities)                             
+ Fighting    : Good         Perception  : Bad          Blows/Round:  1         
+ Bows/Throw  : Good         Searching   : Bad          Shots/Round:  1         
+ Saving Throw: Fair         Disarming   : Poor         Mel.dmg/Rnd:  2-12      
+ Stealth     : Excellent    Magic Device: Good         Infra-Vision: 120 feet  
+                                                       Tactic:       normal    
+                                                       Explor:       normal    
+                         (Character Background)                                
+                                                                               
+                                                                               
+                                                                               
+                                                                               
+
+
+  [Miscellaneous information]
+
+ Joke monsters:        ON
+ Maximize mode:        ON
+ Preserve Mode:        ON
+ Autoscum:             ON
+ Small Levels:         ALWAYS
+ Arena Levels:         ON
+ Always unusual rooms: OFF
+ Persistent Dungeons:  OFF
+
+ Recall Depth:
+        Barrow-Downs: Level 10 (500')
+        Orc Cave: Level 22 (1100')
+        The Old Forest: Level 25 (1250')
+
+ Your body was a Player.
+ You have defeated 780 enemies.
+ You saved 10 princesses.
+ You found 1 of the relic pieces.
+
+ You started your adventure the 43rd Yavie of the 2890th year of the third age.
+ You ended your adventure the 45th Yavie of the 2890th year of the third age.
+ Your adventure lasted 2 days.
+
+     Your Attributes:
+You are dead, killed by an Aranea in the Encircling Sea.
+You are able throw a thick and very resistant spider web.
+Your eyes are sensitive to infrared light.
+You can see invisible creatures.
+You levitate just over the ground.
+You can climb high mountains.
+You have free action.
+You have ESP.
+You are unlucky.
+You are carrying a permanent light.
+You are resistant to acid.
+You are resistant to bright light.
+You are resistant to confusion.
+You are resistant to disenchantment.
+You are resistant to blasts of shards.
+You are completely fearless.
+Your constitution is sustained.
+Your dexterity is sustained.
+Your dexterity is affected by your equipment.
+Your stealth is affected by your equipment.
+Your searching ability is affected by your equipment.
+Your digging ability is affected by your equipment.
+Your speed is affected by your equipment.
+
+Skills (points left: 0)
+          . Weaponmastery                        01.300 [0.400]
+          . Barehand-combat                      02.500 [0.500]
+ - Sneakiness                                    04.375 [0.900]
+          . Stealth                              02.000 [0.400]
+ - Powers                                        32.950 [1.000]
+          . Devices                              09.000 [1.000]
+          . Power                                32.400 [0.600]
+          . Mastery                              32.000 [1.200]
+          . Energy                               00.900 [0.900]
+                   . Fire                        01.000 [1.000]
+                   . Water                       01.000 [1.000]
+                   . Air                         01.000 [1.000]
+                   . Earth                       01.000 [1.000]
+          . Meta                                 01.000 [1.000]
+          . Movement                             01.000 [1.000]
+          . Knowledge                            01.000 [1.000]
+          . Temporal                             01.000 [1.000]
+          . Mind                                 01.000 [1.000]
+          . Nature                               01.000 [1.000]
+          . Runecraft                            00.000 [0.900]
+          . Innate                               00.000 [0.900]
+          . Alchemy                              02.100 [0.400]
+ - Spirituality                                  07.435 [0.550]
+          . Prayer                               16.000 [0.500]
+ - Monster-lore                                  04.800 [0.800]
+          . First-aid                            01.000 [0.600]
+
+
+  [Character Equipment]
+
+e) (nothing)
+f) a Ring of Searching (+1)
+g) a Ring of Fear Resistance
+h) a Ring of Spell
+i) (nothing)
+j) (nothing)
+k) The Amulet of Faramir (+18,+0) [+8] (+5)
+        It can be activated for word of recall every 200 turns if it is being
+    worn. It increases your stealth by 5.  It sustains your dexterity.  It
+    provides resistance to confusion.  It cannot be harmed by acid, cold,
+    lightning or fire.  
+    You found it in the remains of Robin Hood, the Outlaw on level 10 of Orc
+    Cave.
+m) a Brass Lantern (with 1758 turns of light) {25% off}
+    It provides light (radius 2) when fueled.  It cannot be harmed by
+    fire.  
+n) The Leather Scale Mail 'Thalkettoth' (-1) [11,+25] (+3)
+o) a Cloak [1,+0]
+    
+p) a Large Leather Shield of Resist Acid [4,+4]
+q) (nothing)
+s) a Hard Leather Cap of Light [2,+6]
+u) The Set of Leather Gloves 'Cammithrim' [1,+10]
+v) (nothing)
+x) a Pair of Soft Leather Boots [2,+5]
+y) (nothing)
+z) (nothing)
+{) (nothing)
+|) a Shovel (+1)
+    It increases your ability to tunnel by 1.  
+
+
+  [Character Inventory]
+
+a) 3 Flasks of oil
+    
+b) The Wand of Digging of Thrain (16 charges)
+c) a Ring of Slow Digestion
+d) (nothing)
+e) (nothing)
+f) (nothing)
+g) (nothing)
+h) (nothing)
+i) (nothing)
+j) (nothing)
+k) (nothing)
+l) (nothing)
+m) (nothing)
+n) (nothing)
+o) (nothing)
+p) (nothing)
+q) (nothing)
+r) (nothing)
+s) (nothing)
+t) (nothing)
+u) (nothing)
+v) (nothing)
+w) (nothing)
+
+
+  [Home Inventory - Bree ]
+
+a) The Parchment - Map of Thror
+
+
+  [The Museum Inventory - Bree ]
+
+a) The Main Gauche of Maedhros (2d5) (+12,+15) (+3)
+    It provides light
+    (radius 1) forever.  It increases your intelligence, dexterity and 
+    speed by 3.  It is especially deadly against trolls.  It is especially
+    deadly against giants.  It provides immunity to paralysis.  It allows
+    you to see invisible monsters.  It cannot be harmed by acid, cold,
+    lightning or fire.  
+    You found it lying on the floor of a special level.
+b) The Rapier of Antar (1d6) (+0,+6) (+5)
+    It increases your 
+    wisdom and constitution by 5.  It does extra damage from acid, 
+    electricity and fire.  It is especially deadly against dragons.  It is
+    especially deadly against giants.  It cannot be harmed by acid, cold,
+    lightning or fire.  
+    You found it in the remains of The Blubbering idiot, agent of black
+    market, Simon the weak on level 12 of Orc Cave.
+c) The Pike of Carodhrim (2d5) (+3,-3) (+2 attacks)
+    It can be wielded
+    two-handed.  It increases your dexterity, charisma and attack speed by 
+    2.  It does extra damage from electricity.  It produces chaotic
+    effects.  It drains life from your foes.  It is especially deadly
+    against giants.  It is a great bane of demons.  It cannot be harmed by
+    acid, cold, lightning or fire.  
+    You found it in the remains of Old Man Willow on level 25 of The Old
+    Forest.
+d) The Arrow of Formen (1d4) (+9,+11)
+    It does extra damage from fire.  It poisons your foes.  It is
+    especially deadly against dragons.  It is especially deadly against
+    trolls.  It is especially deadly against giants.  It strikes at undead
+    with holy wrath.  It fights against evil with holy fury.  It cannot be
+    harmed by acid, cold, lightning or fire.  
+    You found it in the remains of Robin Hood, the Outlaw on level 10 of Orc
+    Cave.
+
+

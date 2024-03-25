@@ -1,0 +1,602 @@
+  [Fury 2.7.0 Character Sheet]
+
+ Name  : Teriloth               Age                122       STR:     36       
+ Sex   : Male                   Height              97       Int:     26     27
+ Race  : High-Elf               Weight             189       WIS:     22       
+ Class : Jedi                   Social Class        46       DEX:     35       
+ Body  : Player                                              Con:     30     32
+ God   : Manwe Sulimo                                        CHR:     32       
+                                                                               
+ + To Melee Hit         117 Level             36    Hit Points       -5/   560 
+ + To Melee Damage       69 Experience   1021049    Spell Points    183/   183 
+ + To Ranged Hit         65 Max Exp      1129934    Sanity          257/   257 
+ + To Ranged Damage      12 Exp to Adv.  1100000    Piety                -9213 
+   AC                37+133 Gold          249438    Speed            Fast (+5) 
+                                                                               
+                         (Miscellaneous Abilities)                             
+ Fighting    : Legendary[70]Perception  : Excellent    Blows/Round:  11        
+ Bows/Throw  : Legendary[12]Searching   : Excellent    Shots/Round:  1         
+ Saving Throw: Fair         Disarming   : Very Good    Mel.dmg/Rnd:  55d5+759  
+ Stealth     : Heroic       Magic Device: Fair         Infra-Vision: 80 feet   
+                                                       Tactic:       normal    
+                                                       Explor:       normal    
+                         (Character Background)                                
+          You are one of several children of a Noldorin Archer.  You           
+          have light grey eyes, straight blond hair, and a fair                
+          complexion.                                                          
+                                                                               
+
+
+  [Miscellaneous information]
+
+ Joke monsters:        ON
+ Maximize mode:        ON
+ Preserve Mode:        ON
+ Autoscum:             ON
+ Small Levels:         ALWAYS
+ Arena Levels:         ON
+ Always unusual rooms: ON
+ Persistent Dungeons:  OFF
+
+ Recall Depth:
+        Mirkwood: Level 14 (700')
+        Barrow-Downs: Level 10 (500')
+        Orc Cave: Level 14 (700')
+        Isengard: Level 35 (1750')
+
+ Your body was a Player.
+ You have defeated 2452 enemies.
+ You saved no princesses.
+ You found none of the relic pieces.
+
+ You started your adventure the 43rd Yavie of the 2890th year of the third age.
+ You ended your adventure the 47th Yavie of the 2890th year of the third age.
+ Your adventure lasted 4 days.
+
+     Your Attributes:
+You are dead, killed by a Spectral Great Worm of Perplexity on level 35 of Isengard.
+Your eyes are sensitive to infrared light.
+You can see invisible creatures.
+You have free action.
+You regenerate quickly.
+Your appetite is small.
+You have ESP.
+You are lucky.
+You know everything.
+You reflect arrows and bolts.
+You are completely immune to acid.
+You are completely immune to lightning.
+You are completely immune to fire.
+You are completely immune to cold.
+You are resistant to poison.
+You are resistant to bright light.
+You are resistant to darkness.
+You are resistant to confusion.
+You are resistant to sonic attacks.
+You are resistant to disenchantment.
+You are resistant to chaos.
+You are resistant to blasts of shards.
+You are resistant to nether forces.
+You are completely fearless.
+Your eyes are resistant to blindness.
+Your strength is sustained.
+Your wisdom is sustained.
+Your dexterity is sustained.
+Your charisma is sustained.
+Your strength is affected by your equipment.
+Your dexterity is affected by your equipment.
+Your constitution is affected by your equipment.
+Your charisma is affected by your equipment.
+Your stealth is affected by your equipment.
+Your searching ability is affected by your equipment.
+Your infravision is affected by your equipment.
+Your digging ability is affected by your equipment.
+Your speed is affected by your equipment.
+Your weapon has been blessed by the gods.
+Your weapon is very sharp.
+Your weapon drains life from your foes.
+Your weapon burns your foes.
+Your weapon freezes your foes.
+Your weapon strikes at animals with extra force.
+Your weapon is especially deadly against giants.
+
+
+                    adefkmnopsuxz{|@            
+        Add Str   : 2...............            
+        Add Dex   : .4.....3........            
+        Add Con   : .........4......            
+        Add Chr   : 2......3........            
+        Add Stea. : ...35..3........            
+        Add Sear. : ...3...3.4......            
+        Add Infra : .........4......            
+        Add Tun.. : ..............7.            
+        Add Speed : .4.........7....            
+        Vampiric  : +...............            
+        Slay Anim.: +...............            
+        Slay Giant: +...............            
+        Sharpness : +...............            
+        Fire Brand: +...............            
+        Cold Brand: +...............            
+        Sust Str  : +...............            
+        Sust Int  : ................            
+        Sust Wis  : ...+..+.........            
+        Sust Dex  : ....+...........            
+        Sust Con  : ................            
+        Sust Chr  : +...............            
+        Invisible : +..+...+........            
+        Mul life  : ................            
+        Sens Fire : ......+.........            
+        Reflect   : +...............            
+        Free Act  : ......+.........            
+        Hold Life : ................            
+        Imm Acid  : .+....*.+.......            
+        Imm Elec  : .+....*.+.......            
+        Imm Fire  : .+....*.++......            
+        Imm Cold  : .+.+..*.+.......            
+        Res Pois  : ......+.........            
+        Res Fear  : +.....+.........            
+        Res Light : ......+.+......+            
+        Res Dark  : ........+.......            
+        Res Blind : .........+......            
+        Res Conf  : ....+.+.+.......            
+        Res Sound : ......+.........            
+        Res Shard : +..+..+.........            
+        Res Neth  : ......+.........            
+        Res Nexus : ................            
+        Res Chaos : ......+.........            
+        Res Disen : ......+.........            
+        See Invis : ...+...+.+.....+            
+        Digestion : +...............            
+        Regen     : ...+............            
+        Activate  : ....+..+........            
+        Blessed   : +...............            
+        Cursed    : .+.++...........            
+        Precogn.  : ...............+            
+        Sentient  : +...............            
+        Troll.ESP : +........+......            
+        Dragon.ESP: .........+......            
+        Giant.ESP : +...............            
+        Evil.ESP  : ...............+            
+        Good.ESP  : ...............+            
+        Unique.ESP: ...............+            
+        Full ESP  : ...............+            
+
+ Corruption list:
+Dark Maia Hide:
+  Increases your armour class by your level
+  Provides immunity to fire at level 40
+  But reduces speed by your level / 7
+
+
+Skills (points left: 6)
+ - Combat                                        40.984 [0.800]
+          - Weaponmastery                        40.877 [0.850]
+                   . Sword-mastery               40.000 [1.000]
+          . Archery                              03.500 [0.600]
+ - Sneakiness                                    04.450 [0.900]
+          . Stealth                              05.000 [1.000]
+          . Disarming                            23.900 [0.900]
+ - Powers                                        31.410 [1.000]
+          . Devices                              06.450 [1.150]
+          . Nature                               08.000 [1.000]
+          . Jedi                                 35.000 [1.000]
+ - Spirituality                                  11.840 [0.400]
+          . Prayer                               01.000 [0.500]
+          . Mindcraft                            10.000 [1.000]
+ - Monster-lore                                  00.000 [0.500]
+          . First-aid                            01.000 [0.600]
+
+Abilities
+ * Extra Max Blow(1)
+ * Extra Max Blow(2)
+ * Spread blows
+
+
+  [Character Equipment]
+
+a) a Lightsaber of *Slay Giant* (E:420511, L:32) (5d5) (+20,+11) [10,+0] (+2)
+        It increases your strength and charisma by 2.  It does extra damage 
+    from fire and frost.  It drains life from your foes.  It is very sharp
+    and can cut your foes.  It is especially deadly against giants.  It is
+    especially deadly against natural creatures.  It makes you invisible.  
+    It sustains your strength and charisma.  It makes you completely
+    fearless.  It provides resistance to shards.  It allows you to sense
+    the presence of trolls and giants.  It slows your metabolism.  It
+    reflects bolts and arrows.  It has been blessed by the gods.  
+    You found it lying in a vault on level 8 of Barrow-Downs.
+d) The Metal Boomerang of Beor (4d5) (+8,+12) (+4 to speed) {cursed}
+    It increases 
+    your dexterity and speed by 4.  It provides resistance to acid, 
+    electricity, fire and cold.  It is cursed.  It cannot be harmed by
+    acid, cold, lightning or fire.  
+    You found it lying in a vault on level 7 of Barrow-Downs.
+e) a Ring of Slaying (+8,+11)
+    It cannot be
+    harmed by acid, cold, lightning or fire.  
+    You bought it from the Black Market.
+f) The Ring of Eresgalas (+3) {cursed}
+    It increases your stealth and 
+    searching by 3.  It makes you invisible.  It sustains your wisdom.  It
+    provides resistance to cold and shards.  It allows you to see
+    invisible monsters.  It speeds your regenerative powers.  It is
+    cursed.  It cannot be harmed by acid, cold, lightning or fire.  
+    You found it in the remains of Barney the Dinosaur on level 8 of
+    Barrow-Downs.
+k) The Amulet of Faramir (+18,+0) [+8] (+5) {cursed}
+    It can be activated for word of recall every 200 turns if
+    it is being worn. It increases your stealth by 5.  It sustains your 
+    dexterity.  It provides resistance to confusion.  It is cursed.  It
+    cannot be harmed by acid, cold, lightning or fire.  
+    You found it lying in a vault on level 8 of Barrow-Downs.
+m) a Brass Lantern (with 12201 turns of light)
+    It provides
+    light (radius 2) when fueled.  It cannot be harmed by fire.  
+n) The Paper Armour 'Ellorimon' [4,+10]
+    It
+    sustains your wisdom.  It provides immunity to acid, electricity, fire
+     and cold.  It provides immunity to paralysis.  It makes you
+    completely fearless.  It provides resistance to poison, light, sound, 
+    shards, nether, chaos and disenchantment.  It renders you especially
+    vulnerable to fire.  It cannot be harmed by acid, cold, lightning or
+    fire.  
+    You found it lying in a vault on level 7 of Barrow-Downs.
+o) The Elven Cloak of Peregrin Took [4,+16] (+3)
+    It can be
+    activated for satisfy hunger every 100 turns if it is being worn. It 
+    increases your dexterity, charisma, stealth, searching and luck by 3.  
+    It makes you invisible.  It allows you to see invisible monsters.  It
+    cannot be harmed by acid, cold, lightning or fire.  
+    You found it lying in a vault on level 7 of Barrow-Downs.
+p) The Large Leather Shield of Celegorm [4,+20]
+    It provides
+    resistance to acid, electricity, fire, cold, light, dark and confusion
+    .  It cannot be harmed by acid, cold, lightning or fire.  
+    You found it lying in a vault on level 7 of Barrow-Downs.
+s) a Dwarven Iron Helm of Seeing [5,+5] (+4 to searching)
+    It increases 
+    your constitution, searching and infravision by 4.  It provides
+    resistance to fire and blindness.  It allows you to see invisible
+    monsters.  It allows you to sense the presence of trolls and dragons.  
+    
+    You found it lying in a vault on level 3 of Barrow-Downs.
+u) a Set of Mithril Gauntlets of Slaying (+6,+5) [4,+17]
+x) a Pair of Metal Shod Boots of Speed [6,+9] (+7)
+z) (nothing)
+{) (nothing)
+|) a Gnomish Shovel of Digging (+7)
+
+
+  [Character Inventory]
+
+a) 29 Rations of Cram
+    
+b) 5 Flasks of oil
+    
+c) a Potion of Cure Light Insanity
+d) 3 Scrolls of Word of Recall
+    
+e) a Scroll of Identify
+f) a Silver Rod of the Istari of Recall (200/200)
+    It can hold
+    more mana.  It can cast spells for a lesser mana cost.  It can cast
+    spells faster.  It regenerates its mana faster.  
+    You found it lying in a vault on level 8 of Barrow-Downs.
+g) The Anchor of Space-Time
+h) The Augmented Chain Mail of Caspanion (-2) [16,+20] (+3)
+i) The Metal Brigandine Armour of the Rohirrim [19,+15] (+2)
+j) The Leather Jerkin of Tom Bombadil [40,+0] (+1)
+k) The Jedi Robe of Turil [6,+3]
+l) The Small Mithril Shield of Thorin [3,+25] (+4)
+m) The Sabre 'Careth Asdriag' (2d7) (+6,+8) (+2 to speed)
+n) The Cutlass 'Gondricam' (2d5) (+10,+11) (+3)
+o) The Broad Sword 'Aranruth' (3d5) (+20,+12) (+4)
+p) The Broad Sword 'Guthwine' (4d4) (+6,+7) (+1)
+q) The Scimitar 'Haradekket' (4d3) (+9,+11) (+2 attacks)
+r) a Lightsaber (E:650, L:11) (5d5) (+3,+3) [10,+0]
+s) The Halberd 'Osondir' (3d7) (+6,+9) (+3)
+t) The Short Bow of Amrod (x4) (+12,+15) (+2)
+u) (nothing)
+v) (nothing)
+w) (nothing)
+
+
+  [Home Inventory - Bree ]
+
+a) a Holy Tome of Manwe Sulimo
+b) 10 Potions of Cure Light Insanity
+c) a Wooden Rod of Nothing (10/10)
+d) a Rod Tip of Recall (80 Mana to cast)
+e) a Dazzling Ring of Fear Resistance
+    It grants you
+    the power of illuminate if it is being worn.  It provides light
+    (radius 2) forever.  It makes you completely fearless.  It provides
+    resistance to light.  It cannot be harmed by acid, cold, lightning or
+    fire.  
+    You found it in the remains of a Cold-drake on level 2 of Barrow-Downs.
+f) The Chain Mail of Arvedui (-2) [14,+15] (+2)
+    
+    It increases your strength and charisma by 2.  It provides resistance 
+    to acid, electricity, fire, cold, blindness, shards and nexus.  It
+    cannot be harmed by acid, cold, lightning or fire.  
+    You found it lying in a vault on level 8 of Barrow-Downs.
+g) an Elven Augmented Chain Mail (-2 to accuracy) [16,+9] (+3 to stealth)
+    It increases 
+    your stealth by 3.  It provides resistance to acid, electricity, fire, 
+    cold and disenchantment.  It allows you to sense the presence of orcs.
+    It cannot be harmed by acid, cold, lightning or fire.  
+    You found it lying in a vault on level 1 of Barrow-Downs.
+h) The Cloak 'Colannon' [1,+15] (+3 to speed)
+    It can be
+    activated for teleport (range 100) every 45 turns if it is being worn. 
+    It increases your stealth and speed by 3.  It provides resistance to 
+    acid and nexus.  It cannot be harmed by acid, cold, lightning or fire.
+    
+    You found it lying in a vault on level 8 of Barrow-Downs.
+i) The Metal Cap of Thengel [3,+12] (+3)
+    It increases 
+    your wisdom, charisma and luck by 3.  It provides resistance to 
+    confusion.  It cannot be harmed by acid, cold, lightning or fire.  
+    You found it lying in a vault on level 8 of Barrow-Downs.
+j) The Dagger of Peregrin (E:10, L:1) (1d5) (+4,+6)
+    It can be
+    activated for frost bolt (6d8) every 7+d7 turns if it is being worn. 
+    It does extra damage from frost.  It provides resistance to cold and 
+    chaos.  It cannot be harmed by acid, cold, lightning or fire.  
+    You found it lying in a vault on level 8 of Barrow-Downs.
+k) a Lightsaber of the Maiar (E:57750, L:26) (5d5) (+25,+17) [10,+1]
+    It provides
+    light (radius 1) forever.  It is very sharp and can cut your foes.  It
+    is especially deadly against trolls.  It is especially deadly against
+    giants.  It makes you invisible.  It provides immunity to paralysis.  
+    It makes you completely fearless.  It provides resistance to 
+    electricity.  It allows you to see invisible monsters.  It allows you
+    to sense the presence of trolls and giants.  It reflects bolts and
+    arrows.  It produces an electric sheath.  It has been blessed by the
+    gods.  It cannot be harmed by acid, cold, lightning or fire.  
+    You found it lying in a vault on level 3 of Barrow-Downs.
+l) a Lightsaber of *Slay Giant* (E:21271, L:23) (5d5) (+12,+8) [10,+0] (+3)
+    It increases 
+    your strength by 3.  It poisons your foes.  It is very sharp and can
+    cut your foes.  It is especially deadly against giants.  It sustains 
+    your strength and charisma.  It makes you completely fearless.  It
+    provides resistance to cold and shards.  It allows you to sense the
+    presence of giants.  It reflects bolts and arrows.  It drains 
+    experience.  It has been blessed by the gods.  
+    You found it lying in a vault on level 5 of Barrow-Downs.
+m) a  The Fury's Lightsaber (E:12982, L:20) (5d5) (+8,+3) [10,+0]
+    It is very
+    sharp and can cut your foes.  It makes you completely fearless.  It
+    reflects bolts and arrows.  It produces an electric sheath.  It has
+    been blessed by the gods.  It induces random teleportation.  It cannot
+    be harmed by electricity.  
+n) a Fiery Lightsaber (E:650, L:11) (5d5) (+4,+3) [10,+0]
+    It provides light (radius 1) forever.  It
+    does extra damage from fire.  It is very sharp and can cut your foes.  
+    It makes you completely fearless.  It provides resistance to fire.  It
+    reflects bolts and arrows.  It has been blessed by the gods.  It
+    cannot be harmed by fire.  
+    You found it lying in a vault on level 3 of Barrow-Downs.
+o) a Lightsaber (E:650, L:11) (5d5) (+0,+0) [10,+0]
+    It is very
+    sharp and can cut your foes.  It makes you completely fearless.  It
+    reflects bolts and arrows.  It has been blessed by the gods.  
+p) The Harp of Thorin (+2 to stealth)
+    It can
+    be activated for mass charm every 750 turns if it is being worn. It
+    grants you the power of remove fear if it is being worn.  It increases 
+    your charisma, stealth, infravision, ability to tunnel and luck by 2.  
+    It sustains your charisma.  It cannot be harmed by acid, cold,
+    lightning or fire.  
+    You found it lying in a vault on level 8 of Barrow-Downs.
+q) The Parchment - Map of Thror
+
+
+  [Home Inventory - Caras Galadhon ]
+
+a) The Chain Mail of Peregrin Took (+3,+5) [14,+11] (+2)
+    It can be
+    activated for rays of fear in every direction if it is being worn. It
+    provides light (radius 1) forever.  It increases your strength by 2.  
+    It sustains your strength.  It makes you completely fearless.  It
+    allows you to sense the presence of trolls.  It speeds your
+    regenerative powers.  It cannot be harmed by acid, cold, lightning or
+    fire.  
+    You found it lying in a vault on level 11 of Mirkwood.
+b) an Elven Jedi Robe of Resist Cold [6,+16] (+3 to stealth)
+    It increases 
+    your stealth by 3.  It provides resistance to acid, electricity, fire, 
+    cold, poison, confusion and chaos.  It allows you to sense the
+    presence of orcs.  It cannot be harmed by acid, cold, lightning or
+    fire.  
+    You found it lying in a vault on level 12 of Mirkwood.
+c) a Dwarven Gnomish Helm of the Noldor [5,+9] (+7)
+    It can be
+    activated for detect treasure every 10+d20 turns if it is being worn. 
+    It increases your dexterity, constitution, searching and infravision
+     by 7.  It sustains your dexterity.  It provides resistance to fire.  
+    It allows you to sense the presence of orcs, trolls and dragons.  
+    You found it lying in a vault on level 11 of Mirkwood.
+d) a Pair of Metal Shod Boots of Dwarvish Endurance [6,+3] (+6 to infravision)
+    It increases 
+    your constitution and infravision by 6.  It provides resistance to 
+    dark.  
+    You found it lying in a vault on level 8 of Barrow-Downs.
+e) a Chaotic Lightsaber of Slay Animal (E:650, L:11) (5d5) (+6,+3) [10,+0]
+f) a Lightsaber (E:650, L:11) (5d5) (+0,+0) [10,+0]
+
+
+  [The Museum Inventory - Bree ]
+
+a) The Augmented Chain Mail of Adond (-2 to accuracy) [16,+8]
+    It sustains 
+    your strength, intelligence and constitution.  It provides immunity to
+    paralysis.  It makes you completely fearless.  It provides resistance 
+    to shards and nether.  It cannot be harmed by acid, cold, lightning or
+    fire.  
+    You found it lying in a vault on level 8 of Barrow-Downs.
+b) The Bar Chain Mail 'Ndung' (-48,-3) [18,+11](20%)
+    It increases
+     your hit points by 20%.  It sustains your dexterity.  It makes you
+    completely fearless.  It provides resistance to life draining, acid
+     and dark.  It cannot be harmed by acid, cold, lightning or fire.  
+    You found it lying in a vault on level 7 of Barrow-Downs.
+c) The Padded Armour of Iarnur [4,+0]
+    It sustains 
+    your constitution and charisma.  It provides resistance to fire and 
+    cold.  It cannot be harmed by acid, cold, lightning or fire.  
+    You found it in the remains of The Blubbering idiot, agent of black
+    market, Simon the weak on level 2 of Barrow-Downs.
+d) The Cloak 'Holcolleth' [1,+4] (+2)
+    It can be activated
+    for sleep nearby monsters every 55 turns if it is being worn. It 
+    increases your intelligence, wisdom, stealth and speed by 2.  It
+    provides resistance to acid.  It cannot be harmed by acid, cold,
+    lightning or fire.  
+    You found it lying on the floor of a special level.
+e) The Broad Axe 'Uindim' (2d6) (-4,+2)
+    It can be wielded
+    two-handed.  It does extra damage from fire.  It poisons your foes.  
+    It drains life from your foes.  It aggravates nearby creatures.  It
+    cannot be harmed by acid, cold, lightning or fire.  
+    You found it lying in a vault on level 8 of Barrow-Downs.
+f) The Dagger 'Belangil' (2d4) (+6,+9) (+2)
+    It can be
+    activated for frost ball (48) every 5+d5 turns if it is being worn. It 
+    increases your dexterity, speed and attack speed by 2.  It does extra
+    damage from frost.  It poisons your foes.  It provides resistance to 
+    cold.  It allows you to see invisible monsters.  It slows your
+    metabolism.  It speeds your regenerative powers.  It cannot be harmed
+    by acid, cold, lightning or fire.  
+    You found it lying in a vault on level 8 of Barrow-Downs.
+g) The Dagger of Rilia (2d4) (+4,+3)
+    It can be
+    activated for stinking cloud (12), rad. 3, every 4+d4 turns if it is
+    being worn. It poisons your foes.  It is especially deadly against
+    orcs.  It provides resistance to poison and disenchantment.  It cannot
+    be harmed by acid, cold, lightning or fire.  
+    You found it lying in a vault on level 8 of Barrow-Downs.
+h) a Short Sword of Life (1d7) (+14,+6)(20%)
+    It increases
+     your hit points by 20%.  It provides resistance to life draining.  
+    You found it lying in a vault on level 8 of Barrow-Downs.
+i) The Long Sword 'Elvagil' (3d4) (+5,+7) (+2)
+    It increases 
+    your dexterity, charisma and stealth by 2.  It is especially deadly
+    against orcs.  It is especially deadly against trolls.  It allows you
+    to levitate.  It allows you to see invisible monsters.  It allows you
+    to sense the presence of orcs and trolls.  It cannot be harmed by
+    acid, cold, lightning or fire.  
+    You found it lying in a vault on level 8 of Barrow-Downs.
+j) The Two-Handed Sword of Erelire (4d6) (+6,+9) (+1)
+    It must be
+    wielded two-handed.  It increases your wisdom and constitution by 1.  
+    It does extra damage from acid and frost.  It produces chaotic
+    effects.  It strikes at undead with holy wrath.  It cannot be harmed
+    by acid, cold, lightning or fire.  
+    You found it lying in a vault on level 2 of Barrow-Downs.
+k) The Trident of Rhunir (2d5) (+14,+8) [4,+0]
+    It can be
+    wielded two-handed.  It provides light (radius 1) forever.  It does
+    extra damage from fire.  It drains life from your foes.  It is a great
+    bane of dragons.  It is a great bane of undead.  It fights against
+    evil with holy fury.  It cannot be harmed by acid, cold, lightning or
+    fire.  
+    You found it lying in a vault on level 8 of Barrow-Downs.
+l) The Lucerne Hammer 'Darin' (4d5) (+9,+5) (+2)
+    It can be
+    wielded two-handed.  It increases your dexterity by 2.  It is
+    especially deadly against giants.  It is a great bane of demons.  It
+    is a great bane of undead.  It cannot be harmed by acid, cold,
+    lightning or fire.  
+    You found it lying in a vault on level 8 of Barrow-Downs.
+m) The Metal Boomerang of Nelorie (4d5) (+6,+7) {cursed}
+    It is
+    especially deadly against giants.  It is especially deadly against
+    natural creatures.  It is heavily cursed.  It cannot be harmed by
+    acid, cold, lightning or fire.  
+    You found it lying in a vault on level 2 of Barrow-Downs.
+
+
+  [The Museum Inventory - Caras Galadhon ]
+
+a) The Ring Mail of Agnosta (-2 to accuracy) [12,+10]
+    It sustains 
+    your intelligence and charisma.  It provides immunity to acid and cold
+    .  It provides resistance to electricity and dark.  It cannot be
+    harmed by acid, cold, lightning or fire.  
+    You found it lying in a vault on level 11 of Mirkwood.
+b) The Metal Brigandine Armour 'Nilgar' (-3 to accuracy) [19,+10]
+    It sustains your 
+    intelligence and wisdom.  It provides immunity to acid and fire.  It
+    provides immunity to paralysis.  It provides resistance to electricity
+    , sound, nether, nexus and disenchantment.  It cannot be harmed by
+    acid, cold, lightning or fire.  
+    You found it lying in a vault on level 12 of Mirkwood.
+c) The Magical Battle Robe of Nenel [2,-9] {cursed}
+    It sustains your 
+    strength and charisma.  It provides resistance to acid and light.  It 
+    drains experience.  It induces random teleportation.  It aggravates
+    nearby creatures.  It is heavily cursed.  It cannot be harmed by acid,
+    cold, lightning or fire.  
+    You found it lying in a vault on level 11 of Mirkwood.
+d) The Cloak of Thorongil [1,+10]
+    It provides
+    immunity to paralysis.  It makes you completely fearless.  It provides
+    resistance to acid.  It allows you to see invisible monsters.  It
+    cannot be harmed by acid, cold, lightning or fire.  
+    You found it lying in a vault on level 12 of Mirkwood.
+e) The Iron Helm 'Holhenneth' [5,+10] (+2)
+    It can be
+    activated for detection every 55+d55 turns if it is being worn. It 
+    increases your intelligence, wisdom and searching by 2.  It provides
+    resistance to blindness.  It allows you to see invisible monsters.  It
+    cannot be harmed by acid, cold, lightning or fire.  
+    You found it lying in a vault on level 11 of Mirkwood.
+f) The Double Axe 'Imphel' (3d6) (+2,+1) {cursed}
+    It must be
+    wielded two-handed.  It is very sharp and can make your foes bleed.  
+    It drains experience.  It induces random teleportation.  It aggravates
+    nearby creatures.  It is heavily cursed.  It cannot be harmed by acid,
+    cold, lightning or fire.  
+    You found it lying in a vault on level 11 of Mirkwood.
+g) The Light War Axe of Helcar (2d5) (+3,+15) (+3)
+    It increases 
+    your intelligence and charisma by 3.  It does extra damage from frost.
+    It sustains your dexterity.  It provides immunity to cold.  It
+    provides resistance to nexus.  It cannot be harmed by acid, cold,
+    lightning or fire.  
+    You found it lying in a vault on level 12 of Mirkwood.
+h) The Dagger of Amlaquen (1d5) (-3,+11) (+1)
+    It increases 
+    your wisdom and charisma by 1.  It does extra damage from acid and 
+    electricity.  It poisons your foes.  It produces chaotic effects.  It
+    drains life from your foes.  It strikes at undead with holy wrath.  It
+    fights against evil with holy fury.  It cannot be harmed by acid,
+    cold, lightning or fire.  
+    You found it lying in a vault on level 11 of Mirkwood.
+i) The Blade of Chaos 'Stormbringer' (6d6) (+16,+16) (+2 attacks) {cursed}
+    It increases 
+    your strength, constitution and attack speed by 2.  It produces
+    chaotic effects.  It drains life from your foes.  It provides immunity
+    to paralysis.  It provides resistance to life draining, confusion, 
+    nether, nexus and chaos.  It prevents teleportation.  It drains 
+    experience.  It is heavily cursed.  It cannot be harmed by acid, cold,
+    lightning or fire.  
+    You found it in the remains of The Stormbringer on level 11 of Mirkwood.
+j) The Long Bow of Legolas (x6) (+17,+19) (+3)
+    
+    It increases your dexterity, stealth and infravision by 3.  It
+    provides immunity to paralysis.  It allows you to sense the presence 
+    of orcs.  It fires missiles with extra might.  It fires missiles
+    excessively fast.  It cannot be harmed by acid, cold, lightning or
+    fire.  
+    You found it lying on the floor of a special level.
+k) The Small Metal Boomerang 'Feangori' (3d4) (+10,+9)
+    It is especially
+    deadly against dragons.  It is especially deadly against trolls.  It
+    is especially deadly against giants.  It is a great bane of demons.  
+    It is a great bane of undead.  It cannot be harmed by acid, cold,
+    lightning or fire.  
+    You found it lying in a vault on level 11 of Mirkwood.
+
+

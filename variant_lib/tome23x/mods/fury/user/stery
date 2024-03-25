@@ -1,0 +1,445 @@
+  [Fury 1.2.3 Character Sheet]
+
+ Name  : The Fury               Age                  1       STR:      7       
+ Sex   : Male                   Height               1       INT:     28       
+ Race  : Spider Ancient         Weight               1       WIS:     21       
+ Class : Master                 Social Class         3       DEX:     20       
+ Body  : Player                                              CON:     16       
+ God   : Melkor Bauglir                                      CHR:     14       
+                                                                               
+ + To Melee Hit          25 Level             39    Max Hit Points        54   
+ + To Melee Damage        5 Experience    899410    Cur Hit Points        -7   
+ + To Ranged Hit         25 Max Exp       899410    Max SP (Mana)       1071   
+ + To Ranged Damage       0 Exp to Adv.   900000    Cur SP (Mana)        990   
+   AC                28+121 Gold           98570    Piety              23972   
+                                                                               
+                         (Miscellaneous Abilities)                             
+ Fighting    : Very Good    Perception  : Fair         Blows/Round:  2         
+ Bows/Throw  : Very Good    Searching   : Fair         Shots/Round:  1         
+ Saving Throw: Fair         Disarming   : Bad          Mel.dmg/Rnd:  14-26     
+ Stealth     : Superb       Magic Device: Good         Infra-Vision: 120 feet  
+                                                       Tactic:       normal    
+                                                       Explor:       normal    
+                         (Character Background)                                
+                                                                               
+                                                                               
+                                                                               
+                                                                               
+
+
+  [Miscellaneous information]
+
+ Joke monsters:        ON
+ Maximize mode:        ON
+ Preserve Mode:        ON
+ Autoscum:             ON
+ Small Levels:         ALWAYS
+ Arena Levels:         ON
+ Always unusual rooms: OFF
+ Persistent Dungeons:  OFF
+
+ Recall Depth:
+        Mirkwood: Level 33 (1650')
+        Barad-Dur: Level 46 (2300')
+        Barrow-Downs: Level 10 (500')
+        Orc Cave: Level 22 (1100')
+        The Old Forest: Level 25 (1250')
+        Moria: Level 50 (2500')
+        Isengard: Level 36 (1800')
+
+ Your body was a Player.
+ You have defeated 2402 enemies.
+ You saved Bree from a dreadful Nazgul.
+ You saved 45 princesses.
+ You found none of the relic pieces.
+
+ You started your adventure the 43rd Yavie of the 2890th year of the third age.
+ You ended your adventure the 47th Yavie of the 2890th year of the third age.
+ Your adventure lasted 4 days.
+
+     Your Attributes:
+You are dead, killed by a Master mystic on level 46 of Barad-Dur.
+You can switch locations with another being.
+You can emit bright light.
+You can drive yourself into a berserk frenzy.
+You can cast magic missiles.
+You are able throw a thick and very resistant spider web.
+You are able to control the space/time continuum.
+You are stunned.
+You are poisoned.
+Your eyes are sensitive to infrared light.
+You can see invisible creatures.
+You levitate just over the ground.
+You can climb high mountains.
+You have free action.
+You regenerate quickly.
+You can sense the presence of trolls.
+You can sense the presence of giants.
+You can sense the presence of evil beings.
+You are very lucky.
+You reflect arrows and bolts.
+You are surrounded with a fiery aura.
+You are surrounded with electricity.
+You are carrying a permanent light.
+You are resistant to acid.
+You are resistant to lightning.
+You are resistant to fire.
+You are resistant to cold.
+You are resistant to bright light.
+You are resistant to confusion.
+You are resistant to sonic attacks.
+You are resistant to nexus attacks.
+You are resistant to nether forces.
+You are completely fearless.
+The space-time continuum cannot be disrupted near you.
+Your strength is sustained.
+Your constitution is sustained.
+Your dexterity is sustained.
+Your charisma is sustained.
+Your intelligence is affected by your equipment.
+Your wisdom is affected by your equipment.
+Your dexterity is affected by your equipment.
+Your constitution is affected by your equipment.
+Your charisma is affected by your equipment.
+Your stealth is affected by your equipment.
+Your searching ability is affected by your equipment.
+Your digging ability is affected by your equipment.
+Your speed is affected by your equipment.
+Your attack speed is affected by your equipment.
+
+ Corruption list:
+Demon Spirit:
+  Increases your intelligence by 1
+  But reduce your charisma by 2
+
+Anti-teleportation:
+  Prevents all teleportations, be it of you or monsters
+
+Swap Position:
+  You can switch locations with another being,
+  unless it resists teleportation.
+  Level=15, Cost=12, Stat=DEX, Difficulty=16
+
+
+Skills (points left: 0)
+          . Barehand-combat                      01.000 [0.500]
+ - Sneakiness                                    08.200 [0.900]
+          . Stealth                              00.000 [0.400]
+ - Powers                                        43.050 [1.000]
+          . Devices                              09.000 [1.000]
+          . Power                                43.800 [0.600]
+          . Mastery                              46.400 [1.200]
+          . Energy                               00.900 [0.900]
+          - Geomancy                             02.200 [0.300]
+                   . Fire                        05.800 [1.000]
+                   . Water                       02.800 [1.000]
+                   . Air                         02.800 [1.000]
+                   . Earth                       02.800 [1.000]
+          . Meta                                 01.000 [1.000]
+          . Movement                             01.000 [1.000]
+          . Knowledge                            01.000 [1.000]
+          . Temporal                             01.000 [1.000]
+          . Mind                                 01.000 [1.000]
+          . Nature                               01.000 [1.000]
+          . Udun                                 00.400 [0.400]
+          . Runecraft                            00.000 [0.900]
+          . Innate                               36.000 [0.900]
+ - Spirituality                                  09.415 [0.550]
+          . Prayer                               06.500 [0.500]
+ - Monster-lore                                  02.880 [0.800]
+          . Symbiosis                            07.600 [0.400]
+          . First-aid                            01.000 [0.600]
+
+
+  [Fates]
+
+You are fated to find a Jug of Milk on level 1.
+
+
+  [Character Equipment]
+
+e) a Ring of Spell [Curse]
+        It has a spell stored inside.  It cannot be harmed by acid, cold,
+    lightning or fire.  
+    You found it in the remains of a Snaga on level 21 of Orc Cave.
+f) a Dazzling Ring of Dexterity (+2)
+g) a Ring of Nexus Resistance
+h) The Ring of Power of Uvatha the Horseman (+1 attack)
+    It 
+    increases your intelligence, dexterity and attack speed by 1.  It
+    makes you invisible.  It sustains your strength and charisma.  It
+    provides resistance to sound and nether.  It speeds your regenerative
+    powers.  It drains experience.  It cannot be dropped while cursed.  It
+    cannot be harmed by acid, cold, lightning or fire.  
+    You found it in the remains of Uvatha the Horseman in the town of Bree .
+i) a Ring of Lightning [+15] {50% off}
+    
+    It can be activated for ball of lightning and resist lightning every
+    50+d50 turns if it is being worn. It provides resistance to 
+    electricity.  It cannot be harmed by acid, cold, lightning or fire.  
+    You bought it from the Rare Jewelry Shop.
+j) (nothing)
+k) The Amulet of Faramir (+18,+0) [+8] (+5)
+    It can be activated for word
+    of recall every 200 turns if it is being worn. It increases your 
+    stealth by 5.  It sustains your dexterity.  It provides resistance to 
+    confusion.  It cannot be harmed by acid, cold, lightning or fire.  
+    It was given to you as a reward.
+m) The Phial of Galadriel (+4)
+    It can be activated for light area
+    (dam 2d15) every 10+d10 turns if it is being worn. It provides light
+    (radius 3) forever.  It increases your searching and luck by 4.  It
+    cannot be harmed by acid, cold, lightning or fire.  
+    You found it in the remains of Strygalldwir on level 41 of Barad-Dur.
+n) a Hard Studded Leather of the Maiar (-1 to accuracy) [7,+10]
+    
+    It grants you the power of berserk if it is being worn.  It sustains 
+    your dexterity.  It provides immunity to paralysis.  It makes you
+    completely fearless.  It provides resistance to acid, electricity, 
+    fire, cold, confusion and nexus.  It allows you to sense the presence 
+    of trolls, giants and evil beings.  It has been blessed by the gods.  
+    It cannot be harmed by acid, cold, lightning or fire.  
+    It was given to you as a reward.
+o) a Cloak of Immolation [1,+9]
+    It provides resistance to fire.  It
+    produces a fiery sheath.  It cannot be harmed by acid.  It cannot be
+    harmed by fire.  
+    You found it lying on the ground on level 22 of Orc Cave.
+p) a Small Metal Shield of Reflection [3,+12]
+q) a Large Metal Shield of Electricity [5,+6]
+    It provides
+    resistance to electricity.  It produces an electric sheath.  It cannot
+    be harmed by electricity.  
+    You found it in the remains of Bjorn the Warper on level 43 of Moria.
+s) The Metal Cap of Thengel [3,+12] (+3)
+    
+    It increases your wisdom, charisma and luck by 3.  It provides
+    resistance to confusion.  It cannot be harmed by acid, cold, lightning
+    or fire.  
+    It was given to you as a reward.
+u) The Set of Leather Gloves 'Cammithrim' [1,+10]
+    It can be activated for magic missile
+    (2d6) every 2 turns if it is being worn. It provides light (radius 1)
+    forever.  It sustains your constitution.  It provides immunity to
+    paralysis.  It provides resistance to light.  It cannot be harmed by
+    acid, cold, lightning or fire.  
+    You found it lying on the floor of a special level.
+v) The Set of Cesti of Fingolfin (+10,+10) [5,+20] (+4)
+    It can be activated
+    for arrows (150) every 90+d90 turns if it is being worn. It grants you
+    the power of magic missile if it is being worn.  It increases your 
+    dexterity and luck by 4.  It provides immunity to paralysis.  It
+    provides resistance to acid.  It cannot be harmed by acid, cold,
+    lightning or fire.  
+    It was given to you as a reward.
+x) The Pair of Hard Leather Boots of Nevrast [3,+13] (+3)
+    It increases your constitution, 
+    stealth and speed by 3.  It cannot be harmed by acid, cold, lightning
+    or fire.  
+    It was given to you as a reward.
+y) (nothing)
+z) a Cloaker (49 hp)
+{) (nothing)
+|) The Shovel of Nievor (-10,-7) (+1 to speed)
+    It increases your charisma, ability to
+    tunnel and speed by 1.  It produces chaotic effects.  It is especially
+    deadly against dragons.  It is especially deadly against giants.  It
+    strikes at demons with holy wrath.  It cannot be harmed by acid, cold,
+    lightning or fire.  
+    You found it in the remains of Hagen, son of Alberich on level 34 of
+    Barad-Dur.
+
+
+  [Character Inventory]
+
+a) a Potion of Healing
+b) 2 Potions of Restore Mana
+c) a Golden Rod of Simplicity of Healing (125/125)
+d) a Golden Rod of Nothing (125/125)
+e) The Wand of Digging of Thrain (18 charges)
+f) (nothing)
+g) (nothing)
+h) (nothing)
+i) (nothing)
+j) (nothing)
+k) (nothing)
+l) (nothing)
+m) (nothing)
+n) (nothing)
+o) (nothing)
+p) (nothing)
+q) (nothing)
+r) (nothing)
+s) (nothing)
+t) (nothing)
+u) (nothing)
+v) (nothing)
+w) (nothing)
+
+
+  [Home Inventory - Bree ]
+
+a) The Augmented Chain Mail of Caspanion (-2) [16,+20] (+3)
+    It can be activated for destroy doors and traps every 10
+    turns if it is being worn. It increases your intelligence, wisdom and 
+    constitution by 3.  It provides resistance to acid, poison, confusion
+     and shards.  It cannot be harmed by acid, cold, lightning or fire.  
+    You found it in the remains of a Grave wight in the town of Bree .
+b) The Filthy Rag of the Wight [1,-1] (+6 to searching) {cursed}
+    It 
+    increases your intelligence, searching and spell power by 6.  It
+    provides resistance to blindness and confusion.  It renders you
+    especially vulnerable to fire.  It allows you to see invisible
+    monsters.  It is heavily cursed.  It cannot be harmed by acid, cold,
+    lightning or fire.  
+c) a Dwarven Pick (+3)
+d) The Key of Thorin
+e) The Parchment - Map of Thror
+
+
+  [Home Inventory - Caras Galadhon ]
+
+a) The Staff of the Ithryn Luin
+    It can be activated for gain corruption every 10
+    turns.  
+b) a Silver Rod of Charging of Nothing (100/100)
+c) The Necklace of Girion [10,+0] (+5)
+d) The Star of Elendil (+1)
+    It can be activated for light (dam 2d15) & map area every
+    50+d50 turns if it is being worn. It grants you the power of detect
+    curses if it is being worn.  It provides light (radius 4) forever.  It 
+    increases your speed by 1.  It provides resistance to life draining.  
+    It allows you to see invisible monsters.  It cannot be harmed by acid,
+    cold, lightning or fire.  
+    You found it in the remains of Durin's Bane on level 50 of Moria.
+e) The Pearl 'Nimphelos' (+1)
+    It
+    grants you the power of dazzle if it is being worn.  It provides light
+    (radius 3) forever.  It increases your searching and infravision by 1.
+    It cannot be harmed by acid, cold, lightning or fire.  
+    You found it in the remains of Azog, King of the Uruk-Hai on level 22 of
+    Orc Cave.
+f) The Chain Mail of Peregrin Took (+3,+5) [14,+11] (+2)
+    It can be activated for rays of fear in every direction if it
+    is being worn. It provides light (radius 1) forever.  It increases 
+    your strength by 2.  It sustains your strength.  It makes you
+    completely fearless.  It allows you to sense the presence of trolls.  
+    It speeds your regenerative powers.  It cannot be harmed by acid,
+    cold, lightning or fire.  
+    It was given to you as a reward.
+g) The Metal Brigandine Armour of the Rohirrim [19,+15] (+2)
+    It increases your strength, dexterity
+     and speed by 2.  It makes you completely fearless.  It provides
+    resistance to acid, electricity, fire, cold, confusion, sound and 
+    disenchantment.  It cannot be harmed by acid, cold, lightning or fire.
+    
+    You found it in the remains of Bjorn the Warper on level 43 of Moria.
+h) The Leather Scale Mail 'Thalkettoth' (-1) [11,+25] (+3)
+    
+    It increases your dexterity and speed by 3.  It provides resistance to 
+    acid, shards and nexus.  It cannot be harmed by acid, cold, lightning
+    or fire.  
+    You found it lying on the floor of a special level.
+i) The Iron Crown of Laran [0,+0]
+    It sustains your 
+    wisdom.  It provides immunity to paralysis.  It provides resistance to 
+    life draining, acid, fire and nexus.  It allows you to see invisible
+    monsters.  It cannot be harmed by acid, cold, lightning or fire.  
+    You found it in the remains of Durin's Bane on level 50 of Moria.
+j) The Set of Gauntlets 'Paurnen' [2,+15]
+    It
+    can be activated for acid bolt (5d8) every 5+d5 turns if it is being
+    worn. It can be used to store a spell.  It provides resistance to acid
+    .  It cannot be harmed by acid, cold, lightning or fire.  
+    It was given to you as a reward.
+
+
+  [The Museum Inventory - Bree ]
+
+a) The Space-Time Continuum
+    It can be activated for decreasing
+    Charisma.  
+    You found it in the remains of a Forest wight in the town of Bree .
+b) The Dagger 'Belangil' (2d4) (+6,+9) (+2)
+    It
+    can be activated for frost ball (48) every 5+d5 turns if it is being
+    worn. It increases your dexterity, speed and attack speed by 2.  It
+    does extra damage from frost.  It poisons your foes.  It provides
+    resistance to cold.  It allows you to see invisible monsters.  It
+    slows your metabolism.  It speeds your regenerative powers.  It cannot
+    be harmed by acid, cold, lightning or fire.  
+    It was given to you as a reward.
+c) The Quarterstaff 'Anarin' (1d9) (+10,-11) (+1 attack)
+    It can be wielded two-handed.  It 
+    increases your strength, intelligence, wisdom, dexterity, constitution
+     and attack speed by 1.  It does extra damage from electricity and 
+    frost.  It produces chaotic effects.  It drains life from your foes.  
+    It is especially deadly against orcs.  It is a great bane of demons.  
+    It strikes at undead with holy wrath.  It fights against evil with
+    holy fury.  It has been blessed by the gods.  It cannot be harmed by
+    acid, cold, lightning or fire.  
+    You found it in the remains of Old Man Willow on level 25 of The Old
+    Forest.
+
+
+  [The Museum Inventory - Caras Galadhon ]
+
+a) Carcharoth's Favourite Toy
+    It can be activated for teleport (range 100) every 100 turns.  
+    You found it in the remains of a Jade monk on level 18 of Mirkwood.
+b) Gandalf's Portable Pandemonium
+    It
+    can be activated for cure fear every 100 turns.  
+    You found it in the remains of a Jade monk on level 18 of Mirkwood.
+c) The Amulet 'Carwedrin' (+4 to searching)
+    It
+    can be used to store a spell.  It increases your charisma and 
+    searching by 4.  It sustains your wisdom.  It makes you completely
+    fearless.  It provides resistance to poison, light and dark.  It
+    cannot be harmed by acid, cold, lightning or fire.  
+    You found it in the remains of Barney the Dinosaur on level 21 of Mirkwood.
+d) The Full Plate Armour of Isildur [25,+25] (+1)
+    
+    It increases your constitution by 1.  It provides resistance to acid, 
+    electricity, fire, cold, confusion, sound and nexus.  It cannot be
+    harmed by acid, cold, lightning or fire.  
+    It was given to you as a reward.
+e) The Broad Axe 'Orchast' (2d7) (+20,+14) (+4)
+    It can be wielded two-handed.  It can
+    be activated for detect orcs every 10 turns if it is being worn. It 
+    increases your dexterity and searching by 4.  It is especially deadly
+    against orcs.  It cannot be harmed by acid, cold, lightning or fire.  
+    It was given to you as a reward.
+f) The Main Gauche of Maedhros (2d5) (+12,+15) (+3)
+    It increases your intelligence, 
+    dexterity and speed by 3.  It is especially deadly against trolls.  It
+    is especially deadly against giants.  It provides immunity to
+    paralysis.  It allows you to levitate.  It allows you to see invisible
+    monsters.  It cannot be harmed by acid, cold, lightning or fire.  
+    You found it lying on the floor of a special level.
+g) The Short Sword 'Sting' (E:0, L:0) (1d7) (+7,+8) (+2 to speed)
+    It provides light
+    (radius 1) forever.  It increases your strength, dexterity, 
+    constitution, speed and attack speed by 2.  It is especially deadly
+    against orcs.  It strikes at undead with holy wrath.  It fights
+    against evil with holy fury.  It is especially deadly against natural
+    creatures.  It provides immunity to paralysis.  It provides resistance 
+    to light.  It allows you to see invisible monsters.  It allows you to
+    sense the presence of orcs, spiders and undead.  It cannot be harmed
+    by acid, cold, lightning or fire.  
+    You found it lying on the floor of a special level.
+h) a Small Metal Boomerang of the Nazgul (3d4) (-10,-10) (-1) {cursed}
+    It decreases your 
+    charisma by 1.  It allows you to see invisible monsters.  It drains 
+    experience.  It is cursed.  
+    You found it in the remains of a Ghost in the town of Minas Anor .
+i) The Harp of Thorin (+2 to stealth)
+    It
+    can be activated for mass charm every 750 turns if it is being worn. 
+    It grants you the power of remove fear if it is being worn.  It 
+    increases your charisma, stealth, infravision, ability to tunnel and 
+    luck by 2.  It sustains your charisma.  It cannot be harmed by acid,
+    cold, lightning or fire.  
+    You found it in the remains of Durin's Bane on level 50 of Moria.
+
+

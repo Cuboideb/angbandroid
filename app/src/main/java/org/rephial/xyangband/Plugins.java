@@ -22,7 +22,8 @@ final public class Plugins {
 		faangband(5),
 		npp710(6),
 		zangband275(7),
-		tome24x(8);
+		tome23x(8),
+		tome24x(9);
 
 		private int id;
 
@@ -129,6 +130,9 @@ final public class Plugins {
 		if (plugin == Plugin.tome24x.getId())
 			is = Preferences.getResources().openRawResource(R.raw.ziptome24x);
 
+		if (plugin == Plugin.tome23x.getId())
+			is = Preferences.getResources().openRawResource(R.raw.ziptome23x);
+
 		if (plugin == Plugin.zangband275.getId())
 			is = Preferences.getResources().openRawResource(R.raw.zipzangband275);
 
@@ -159,6 +163,9 @@ final public class Plugins {
 		}
 		else if (plugin == Plugin.tome24x.getId()) {
 			is = Preferences.getResources().openRawResource(R.raw.crctome24x);
+		}
+		else if (plugin == Plugin.tome23x.getId()) {
+			is = Preferences.getResources().openRawResource(R.raw.crctome23x);
 		}
 		else if (plugin == Plugin.zangband275.getId()) {
 			is = Preferences.getResources().openRawResource(R.raw.crczangband275);

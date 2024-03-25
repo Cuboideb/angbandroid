@@ -1,0 +1,326 @@
+  [Fury 2.7.0 Character Sheet]
+
+ Name  : The Fury XVI           Age                 36       STR:     20       
+ Sex   : Male                   Height             119       INT:     12       
+ Race  : DarkMaia (Lygrog)      Weight              82       WIS:     12       
+ Class : Ninja                  Social Class        71       DEX:     20       
+ Body  : Player                                              CON:     19       
+ God   : Melkor Bauglir                                      CHR:      4       
+                                                                               
+ + To Melee Hit          16 Level             32    Hit Points       -6/   387 
+ + To Melee Damage       39 Experience    384522    Spell Points     42/    42 
+ + To Ranged Hit         16 Max Exp       384522    Sanity          154/   165 
+ + To Ranged Damage       0 Exp to Adv.   420000    Piety                16852 
+   AC                 0+113 Gold           44365    Speed           Fast (+19) 
+                                                                               
+                         (Miscellaneous Abilities)                             
+ Fighting    : Legendary[5] Perception  : Very Good    Blows/Round:  5         
+ Bows/Throw  : Excellent    Searching   : Excellent    Shots/Round:  1         
+ Saving Throw: Bad          Disarming   : Excellent    Mel.dmg/Rnd:  205-675   
+ Stealth     : Legendary[5] Magic Device: Bad          Infra-Vision: 120 feet  
+                                                       Tactic:       normal    
+                                                       Explor:       normal    
+                         (Character Background)                                
+          You have only recently been corrupted, and you consider              
+          that to have been your true birth. Your piercing black eyes          
+          radiate miserable servility.                                         
+                                                                               
+
+
+  [Miscellaneous information]
+
+ Joke monsters:        ON
+ Maximize mode:        ON
+ Preserve Mode:        ON
+ Autoscum:             ON
+ Small Levels:         ALWAYS
+ Arena Levels:         ON
+ Always unusual rooms: OFF
+ Persistent Dungeons:  OFF
+
+ Recall Depth:
+        Mirkwood: Level 33 (1650')
+        Barrow-Downs: Level 10 (500')
+        Heart of the Earth: Level 26 (1300')
+        Orc Cave: Level 22 (1100')
+        The Old Forest: Level 25 (1250')
+        Moria: Level 46 (2300')
+
+ Your body was a Player.
+ You have defeated 1770 enemies.
+ You saved 33 princesses.
+ You found 1 of the relic pieces.
+
+ You started your adventure the 43rd Yavie of the 2890th year of the third age.
+ You ended your adventure the 45th Yavie of the 2890th year of the third age.
+ Your adventure lasted 2 days.
+
+     Your Attributes:
+You are dead, killed by a Vampire orc on level 46 of Moria.
+You can drain life from a foe.
+You can switch locations with another being.
+You can emit bright light.
+You can create a spear of darkness.
+Your eyes are sensitive to infrared light.
+You can see invisible creatures.
+You can breathe underwater.
+You levitate just over the ground.
+You have free action.
+You regenerate quickly.
+Your appetite is small.
+You can sense the presence of orcs.
+You can sense the presence of trolls.
+You can sense the presence of dragons.
+You can sense the presence of giants.
+You can sense the presence of demons.
+You can sense presence of undead.
+You can sense the presence of evil beings.
+You can sense the presence of animals.
+You can sense the presence of non-living things.
+You are very lucky.
+You know everything.
+You have a firm hold on your life force.
+You are carrying a permanent light.
+You are resistant to acid.
+You are resistant to lightning.
+You are resistant to fire.
+You are resistant to cold.
+You are resistant to poison.
+You are resistant to bright light.
+You are resistant to darkness.
+You are resistant to confusion.
+You are resistant to sonic attacks.
+You are resistant to disenchantment.
+You are resistant to chaos.
+You are completely fearless.
+Your eyes are resistant to blindness.
+Your strength is sustained.
+Your intelligence is sustained.
+Your wisdom is sustained.
+Your constitution is sustained.
+Your dexterity is sustained.
+Your charisma is sustained.
+Your searching ability is affected by your equipment.
+Your infravision is affected by your equipment.
+
+
+                    ekmnosz{@                   
+        Add Str   : ........+                   
+        Add Int   : ........+                   
+        Add Wis   : ........+                   
+        Add Con   : ........+                   
+        Add Chr   : ........+                   
+        Mul SPower: ........+                   
+        Add Sear. : ..4......                   
+        Add Infra : .6.......                   
+        Add Speed : ........+                   
+        Sust Str  : ........+                   
+        Sust Int  : ........+                   
+        Sust Wis  : ........+                   
+        Sust Dex  : ........+                   
+        Sust Con  : ........+                   
+        Sust Chr  : ........+                   
+        Invisible : .........                   
+        Mul life  : .........                   
+        Sens Fire : .........                   
+        Reflect   : .........                   
+        Free Act  : ........+                   
+        Hold Life : ........+                   
+        Res Acid  : ........+                   
+        Res Elec  : ........+                   
+        Res Fire  : ........+                   
+        Res Cold  : ........+                   
+        Res Pois  : ........+                   
+        Res Fear  : ........+                   
+        Res Light : ........+                   
+        Res Dark  : ........+                   
+        Res Blind : ........+                   
+        Res Conf  : ........+                   
+        Res Sound : ........+                   
+        Res Shard : .........                   
+        Res Neth  : .........                   
+        Res Nexus : .........                   
+        Res Chaos : ........+                   
+        Res Disen : ........+                   
+        Levitate  : ........+                   
+        Lite      : ........+                   
+        See Invis : ........+                   
+        Digestion : ........+                   
+        Regen     : ........+                   
+        Activate  : ..+......                   
+        Blessed   : .+.......                   
+        Fly       : ........+                   
+        Orc.ESP   : ........+                   
+        Troll.ESP : ........+                   
+        Dragon.ESP: ........+                   
+        Giant.ESP : ........+                   
+        Demon.ESP : ........+                   
+        Undead.ESP: ........+                   
+        Evil.ESP  : ........+                   
+        Animal.ESP: ........+                   
+        Nlive.ESP : ........+                   
+
+ Corruption list:
+Vampiric Drain:
+  You can drain life from a foe like a vampire.
+  Drains (level+1d(level))*(level/10) hitpoints,
+  heals you and satiates you. Doesn't work on all monsters
+  Level=4, Cost=5, Stat=CON, Difficulty=9
+
+Swap Position:
+  You can switch locations with another being,
+  unless it resists teleportation.
+  Level=15, Cost=12, Stat=DEX, Difficulty=16
+
+Illuminate:
+  You can emit bright light that illuminates an area.
+  Damage=2d(level/2) Radius=(level/10)+1
+  Level=3, Cost=2, Stat=INT, Difficulty=10
+
+
+Skills (points left: 0)
+ - Combat                                        36.800 [0.800]
+                   . Sword-mastery               00.000 [0.400]
+          . Archery                              01.000 [0.600]
+          . Barehand-combat                      36.000 [1.000]
+          . Antimagic                            00.000 [0.550]
+          . Ninja                                04.000 [1.000]
+ - Sneakiness                                    36.505 [0.900]
+          . Stealth                              36.200 [1.400]
+          . Disarming                            36.600 [0.900]
+          . Backstab                             35.000 [2.000]
+          . Stealing                             35.000 [2.000]
+          . Dodging                              35.000 [2.000]
+ - Powers                                        01.060 [0.300]
+          . Devices                              01.050 [1.150]
+          . Udun                                 00.000 [0.400]
+                   . Light                       01.000 [0.300]
+ - Spirituality                                  00.580 [0.400]
+          . Prayer                               03.500 [0.500]
+ - Monster-lore                                  00.000 [0.500]
+          . Symbiosis                            01.000 [0.300]
+          . First-aid                            01.000 [0.600]
+
+Abilities
+ * Extra Max Blow(1)
+ * Extra Max Blow(2)
+ * Spread blows
+
+
+  [Character Equipment]
+
+e) a Ring of Damage (+17)
+k) a Lucky Amulet of Infravision (+6)
+        It increases your infravision and luck by 6.  It has been blessed by
+    the gods.  It cannot be harmed by acid, cold, lightning or fire.  
+    You found it lying on the ground on level 21 of Mirkwood.
+m) The Phial of Galadriel (+4)
+    It can be
+    activated for light area (dam 2d15) every 10+d10 turns if it is being
+    worn. It provides light (radius 3) forever.  It increases your 
+    searching and luck by 4.  It cannot be harmed by acid, cold, lightning
+    or fire.  
+    It was given to you as a reward.
+n) (nothing)
+o) (nothing)
+s) (nothing)
+z) (nothing)
+{) (nothing)
+
+
+  [Character Inventory]
+
+a) a Corrupted Tome of Melkor {100% off}
+    
+b) 40 Rations of Cram
+    
+c) 5 Flasks of oil
+    
+d) a Potion of Healing
+e) 2 Scrolls of Word of Recall
+    
+f) The Anchor of Space-Time
+g) (nothing)
+h) (nothing)
+i) (nothing)
+j) (nothing)
+k) (nothing)
+l) (nothing)
+m) (nothing)
+n) (nothing)
+o) (nothing)
+p) (nothing)
+q) (nothing)
+r) (nothing)
+s) (nothing)
+t) (nothing)
+u) (nothing)
+v) (nothing)
+w) (nothing)
+
+
+  [Home Inventory - Bree ]
+
+a) a Black orc corpse
+b) The Parchment - Map of Thror
+
+
+  [Home Inventory - Caras Galadhon ]
+
+a) a Ring of Protection [+13]
+b) The Necklace of Girion [10,+0] (+5)
+    It can be activated for grow mushrooms
+    every 50+d50 turns if it is being worn. It increases your charisma by 
+    5.  It sustains your charisma.  It provides resistance to poison and 
+    nexus.  It allows you to see invisible monsters.  It cannot be harmed
+    by acid, cold, lightning or fire.  
+    It was given to you as a reward.
+c) The Amulet of Faramir (+18,+0) [+8] (+5)
+    It can be activated for word of recall
+    every 200 turns if it is being worn. It increases your stealth by 5.  
+    It sustains your dexterity.  It provides resistance to confusion.  It
+    cannot be harmed by acid, cold, lightning or fire.  
+    It was given to you as a reward.
+d) The Cloak 'Holcolleth' [1,+4] (+2)
+    It can be activated for sleep nearby
+    monsters every 55 turns if it is being worn. It increases your 
+    intelligence, wisdom, stealth and speed by 2.  It provides resistance 
+    to acid.  It cannot be harmed by acid, cold, lightning or fire.  
+    You found it lying on the floor of a special level.
+
+
+  [The Museum Inventory - Bree ]
+
+a) The Jedi Robe of Agondur [6,+1]
+    It sustains your 
+    wisdom and dexterity.  It provides immunity to acid and electricity.  
+    It makes you completely fearless.  It provides resistance to confusion
+    .  It cannot be harmed by acid, cold, lightning or fire.  
+    You found it in the remains of Old Man Willow on level 25 of The Old
+    Forest.
+b) The Hatchet of the Night (2d6) (+34,+22) (+4) {100% off}
+    It can be activated for vampiric drain (3*100) every 250 turns
+     if it is being worn. It increases your dexterity and stealth by 4.  
+    It drains life from your foes.  It is a great bane of undead.  It
+    provides resistance to dark.  It allows you to see invisible monsters.
+    It drains experience.  It cannot be harmed by acid, cold, lightning or
+    fire.  
+    You stole it from the Weaponsmith.
+c) The Light War Axe 'Cam-tal-crist' (2d5) (+12,+15) (+4)
+    It increases your dexterity by 4.  
+    It is very sharp and can cut your foes.  It is very sharp and can make
+    your foes bleed.  It cannot be harmed by acid, cold, lightning or
+    fire.  
+    It was given to you as a reward.
+
+
+  [The Museum Inventory - Caras Galadhon ]
+
+a) The Chain Mail of Arvedui (-2) [14,+15] (+2)
+    It increases your strength and 
+    charisma by 2.  It provides resistance to acid, electricity, fire, 
+    cold, blindness, shards and nexus.  It cannot be harmed by acid, cold,
+    lightning or fire.  
+    It was given to you as a reward.
+
+

@@ -1,0 +1,155 @@
+  [Fury 1.5.2 Character Sheet]
+
+ Name  : The Fury XXIV          Age                  1       STR:      4       
+ Sex   : Male                   Height               1       INT:     25       
+ Race  : Spider Ancient         Weight               1       WIS:     17       
+ Class : Master                 Social Class         2       DEX:     17       
+ Body  : Player                                              Con:      3      4
+ God   : Nobody                                              CHR:      7       
+                                                                               
+ + To Melee Hit           0 Level             26    Max Hit Points        19   
+ + To Melee Damage       -2 Experience     20805    Cur Hit Points       -54   
+ + To Ranged Hit          0 Max Exp        20805    Max SP (Mana)        655   
+ + To Ranged Damage       0 Exp to Adv.    22500    Cur SP (Mana)        655   
+   AC                  6+11 Gold            2813                               
+                                                                               
+                         (Miscellaneous Abilities)                             
+ Fighting    : Bad          Perception  : Fair         Blows/Round:  1         
+ Bows/Throw  : Bad          Searching   : Fair         Shots/Round:  1         
+ Saving Throw: Bad          Disarming   : Bad          Mel.dmg/Rnd:  0-6       
+ Stealth     : Excellent    Magic Device: Bad          Infra-Vision: 120 feet  
+                                                       Tactic:       normal    
+                                                       Explor:       normal    
+                         (Character Background)                                
+                                                                               
+                                                                               
+                                                                               
+                                                                               
+
+
+  [Miscellaneous information]
+
+ Joke monsters:        ON
+ Maximize mode:        ON
+ Preserve Mode:        ON
+ Autoscum:             ON
+ Small Levels:         ALWAYS
+ Arena Levels:         ON
+ Always unusual rooms: ON
+ Persistent Dungeons:  OFF
+
+ Recall Depth:
+        Barrow-Downs: Level 4 (200')
+
+ Your body was a Player.
+ You have defeated 419 enemies.
+ You saved no princesses.
+
+ You started your adventure the 43rd Yavie of the 2890th year of the third age.
+ You ended your adventure the 43rd Yavie of the 2890th year of the third age.
+ Your adventure lasted 0 days.
+
+     Your Attributes:
+You are dead, killed by a Crypt thing on level 4 of Barrow-Downs.
+You can mind blast your enemies.
+You are able throw a thick and very resistant spider web.
+Your eyes are sensitive to infrared light.
+You can see invisible creatures.
+You levitate just over the ground.
+You can climb high mountains.
+Your appetite is small.
+You have ESP.
+You have normal luck.
+Your stealth is affected by your equipment.
+Your searching ability is affected by your equipment.
+Your digging ability is affected by your equipment.
+
+ Corruption list:
+Glaurung's Spell:
+  Fires a mind blasting bolt (psi damage).
+  Psi Damage (3+(level-1)/5)d3
+  Level=5, Cost=3, Stat=WIS, Difficulty=15
+
+
+Skills (points left: 0)
+          . Barehand-combat                      01.000 [0.500]
+ - Sneakiness                                    03.565 [0.900]
+          . Stealth                              07.600 [0.400]
+ - Powers                                        30.140 [1.000]
+          . Devices                              01.000 [1.000]
+          . Power                                30.600 [0.600]
+          . Mastery                              30.800 [1.200]
+          . Energy                               00.900 [0.900]
+                   . Fire                        01.000 [1.000]
+                   . Water                       01.000 [1.000]
+                   . Air                         01.000 [1.000]
+                   . Earth                       01.000 [1.000]
+          . Meta                                 01.000 [1.000]
+          . Movement                             01.000 [1.000]
+          . Knowledge                            01.000 [1.000]
+          . Temporal                             01.000 [1.000]
+          . Mind                                 01.000 [1.000]
+          . Nature                               01.000 [1.000]
+          . Runecraft                            00.000 [0.900]
+          . Innate                               30.600 [0.900]
+ - Spirituality                                  01.000 [0.550]
+          . Prayer                               00.000 [0.500]
+ - Monster-lore                                  00.000 [0.800]
+          . First-aid                            01.000 [0.600]
+
+
+  [Character Equipment]
+
+e) a Ring of Slow Digestion
+f) a Ring of Searching (+4)
+g) (nothing)
+h) (nothing)
+i) (nothing)
+j) (nothing)
+k) (nothing)
+m) a Brass Lantern (with 3057 turns of light)
+        It provides light (radius 2) when fueled.  It cannot be harmed by
+    fire.  
+n) a Robe [2,+5]
+o) a Cloak [1,+3]
+p) (nothing)
+q) (nothing)
+s) (nothing)
+u) (nothing)
+v) (nothing)
+x) a Pair of Hard Leather Boots of Stealth [3,+2] (+3 to stealth)
+y) (nothing)
+z) (nothing)
+{) (nothing)
+|) a Pick of Digging (+2)
+
+
+  [Character Inventory]
+
+a) The Space-Time Continuum
+b) The Bottomless Bottle
+c) a Ration of Cram
+d) 7 Flasks of oil
+    
+e) a Scroll of Word of Recall
+    
+f) a Silver Rod of the Istari of Nothing (200/200)
+g) an Elven Double Ring Mail (-2 to accuracy) [15,+11] (+1 to stealth)
+h) The Cloak of Curion [1,+11]
+i) The Broken Dagger of Nirnon (1d1) (-2,+2)
+j) (nothing)
+k) (nothing)
+l) (nothing)
+m) (nothing)
+n) (nothing)
+o) (nothing)
+p) (nothing)
+q) (nothing)
+r) (nothing)
+s) (nothing)
+t) (nothing)
+u) (nothing)
+v) (nothing)
+w) (nothing)
+
+

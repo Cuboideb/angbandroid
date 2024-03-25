@@ -12,9 +12,7 @@
         <item>FAangband 2.0.1</item>
         <item>NPPAngband 7.1.0</item>
         <item>Zangband 2.7.5-pre1</item>
-    <!--
-        <item>ToME 2.4.1</item>
-    -->
+        <item>ToME 2.3.8 ah</item>
     </string-array>
     <string-array name="gamePluginNames">
         <item>angband</item>
@@ -25,9 +23,7 @@
         <item>faangband</item>
         <item>npp710</item>
         <item>zangband275</item>
-    <!--
-        <item>tome24x</item>
-    -->
+        <item>tome23x</item>
     </string-array>
     <string-array name="gamePlugins">
         <item>0</item>
@@ -38,6 +34,7 @@
         <item>5</item>
         <item>6</item>
         <item>7</item>
+        <item>8</item>
     </string-array>
 
     <string name="version">0.0.0.1</string>
