@@ -26,4 +26,6 @@ add_subdirectory(npp710)
 
 add_subdirectory(silq)
 
+add_subdirectory(zangband275)
+
 #add_subdirectory(tome24x)

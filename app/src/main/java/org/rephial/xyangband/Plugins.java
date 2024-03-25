@@ -21,7 +21,8 @@ final public class Plugins {
 		silq(4),
 		faangband(5),
 		npp710(6),
-		tome24x(7);
+		zangband275(7),
+		tome24x(8);
 
 		private int id;
 
@@ -128,6 +129,9 @@ final public class Plugins {
 		if (plugin == Plugin.tome24x.getId())
 			is = Preferences.getResources().openRawResource(R.raw.ziptome24x);
 
+		if (plugin == Plugin.zangband275.getId())
+			is = Preferences.getResources().openRawResource(R.raw.zipzangband275);
+
 		return new ZipInputStream(is);
 	}
 	public static String getPluginCrc(int plugin) {
@@ -155,6 +159,9 @@ final public class Plugins {
 		}
 		else if (plugin == Plugin.tome24x.getId()) {
 			is = Preferences.getResources().openRawResource(R.raw.crctome24x);
+		}
+		else if (plugin == Plugin.zangband275.getId()) {
+			is = Preferences.getResources().openRawResource(R.raw.crczangband275);
 		}
 		else {
 			return "";
