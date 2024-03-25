@@ -994,7 +994,7 @@ void angdroid_main()
 	init_angband();
 
 	/* Wait for response */
-	pause_line(0);
+	pause_line(23);
 
 	/* Hack -- Force graphics reload */
 	control_msg(TERM_CONTROL_CONTEXT, "dummy");

@@ -275,6 +275,7 @@ static int toluaI_util_msg_print00(lua_State* tolua_S)
  {
   cptr msg = ((cptr)  tolua_getstring(tolua_S,1,0));
  {
+  android_debug(msg);
   msg_print(msg);
  }
  }

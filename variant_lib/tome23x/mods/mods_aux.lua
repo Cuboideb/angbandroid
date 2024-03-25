@@ -112,10 +112,12 @@ end
 
 function scan_extra_modules()
 	scansubdir(ANGBAND_DIR_MODULES)
+	--msg_print("mod:"..ANGBAND_DIR_MODULES.."max:"..scansubdir_max)
 	for i = 0, scansubdir_max - 1 do
 		if (scansubdir_result[i + 1] ~= ".") and (scansubdir_result[i + 1] ~= "..") then
 			local dir = path_build(ANGBAND_DIR_MODULES, scansubdir_result[i + 1])
 			local file = path_build(dir, "module.lua")
+			--msg_print("file:"..file)
 			if file_exist(file) == TRUE then
 				tome_dofile_anywhere(dir, "module.lua")
 			end
