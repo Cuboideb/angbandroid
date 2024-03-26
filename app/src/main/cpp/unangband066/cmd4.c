@@ -1147,7 +1147,7 @@ static bool visual_mode_command(key_event ke, bool *visual_list_ptr,
 				{
 					/* Restrict direction */
 					if ((a == 0) && (ddy[d] < 0)) d = 0;
-					if ((c == -128) && (ddx[d] < 0)) d = 0;
+					if (((int)c == -128) && (ddx[d] < 0)) d = 0;
 					if ((a == 255) && (ddy[d] > 0)) d = 0;
 					if ((c == 127) && (ddx[d] > 0)) d = 0;
 
