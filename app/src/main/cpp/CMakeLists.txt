@@ -30,4 +30,4 @@ add_subdirectory(zangband275)
 
 add_subdirectory(tome23x)
 
-#add_subdirectory(tome24x)
+add_subdirectory(unangband066)

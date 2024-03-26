@@ -23,7 +23,7 @@ final public class Plugins {
 		npp710(6),
 		zangband275(7),
 		tome23x(8),
-		tome24x(9);
+		unangband066(9);
 
 		private int id;
 
@@ -127,14 +127,14 @@ final public class Plugins {
 		if (plugin == Plugin.silq.getId())
 			is = Preferences.getResources().openRawResource(R.raw.zipsilq);
 
-		if (plugin == Plugin.tome24x.getId())
-			is = Preferences.getResources().openRawResource(R.raw.ziptome24x);
-
 		if (plugin == Plugin.tome23x.getId())
 			is = Preferences.getResources().openRawResource(R.raw.ziptome23x);
 
 		if (plugin == Plugin.zangband275.getId())
 			is = Preferences.getResources().openRawResource(R.raw.zipzangband275);
+
+		if (plugin == Plugin.unangband066.getId())
+			is = Preferences.getResources().openRawResource(R.raw.zipunangband066);
 
 		return new ZipInputStream(is);
 	}
@@ -161,14 +161,14 @@ final public class Plugins {
 		else if (plugin == Plugin.silq.getId()) {
 			is = Preferences.getResources().openRawResource(R.raw.crcsilq);
 		}
-		else if (plugin == Plugin.tome24x.getId()) {
-			is = Preferences.getResources().openRawResource(R.raw.crctome24x);
-		}
 		else if (plugin == Plugin.tome23x.getId()) {
 			is = Preferences.getResources().openRawResource(R.raw.crctome23x);
 		}
 		else if (plugin == Plugin.zangband275.getId()) {
 			is = Preferences.getResources().openRawResource(R.raw.crczangband275);
+		}
+		else if (plugin == Plugin.unangband066.getId()) {
+			is = Preferences.getResources().openRawResource(R.raw.crcunangband066);
 		}
 		else {
 			return "";
