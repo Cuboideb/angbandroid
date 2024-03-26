@@ -2465,7 +2465,7 @@ static errr Term_xtra_x11(int n, int v)
 		}
 
 		/* Subdirectory scan */
-	case TERM_XTRA_SCANSUBDIR:
+	    case TERM_XTRA_SCANSUBDIR:
 		{
 			DIR *directory;
 			struct dirent *entry;

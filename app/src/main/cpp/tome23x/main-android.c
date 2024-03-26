@@ -22,8 +22,10 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
-#include "curses.h"
+#include <dirent.h>
+#include <limits.h>
 
+#include "curses.h"
 #include "angband.h"
 #include "z-term.h"
 
@@ -434,6 +436,17 @@ static errr Term_xtra_android(int n, int v)
 			return 0;
 		}
 
+		case TERM_XTRA_GET_DELAY:
+		{
+			int ret;
+			struct timeval tv;
+
+			ret = gettimeofday(&tv, NULL);
+			Term_xtra_long = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
+
+			return ret;
+		}
+
 		case TERM_XTRA_DELAY:
 		{
 			/*
@@ -442,6 +455,39 @@ static errr Term_xtra_android(int n, int v)
 			if (v > 0)
 				usleep((unsigned int)1000 * v);
 
+			return 0;
+		}
+
+		/* Subdirectory scan */
+		case TERM_XTRA_SCANSUBDIR:
+		{
+			DIR *directory;
+			struct dirent *entry;
+
+			scansubdir_max = 0;
+
+			directory = opendir(scansubdir_dir);
+			if (!directory)
+				return 1;
+
+			while ((entry = readdir(directory)))
+			{
+				char file[PATH_MAX + NAME_MAX + 2];
+				struct stat filedata;
+
+				file[PATH_MAX + NAME_MAX] = 0;
+				strncpy(file, scansubdir_dir, PATH_MAX);
+				strncat(file, "/", 2);
+				strncat(file, entry->d_name, NAME_MAX);
+				if (!stat(file, &filedata) && S_ISDIR((filedata.st_mode)))
+				{
+					string_free(scansubdir_result[scansubdir_max]);
+					scansubdir_result[scansubdir_max] = string_make(entry->d_name);
+					++scansubdir_max;
+				}
+			}
+
+			closedir(directory);
 			return 0;
 		}
 	}
