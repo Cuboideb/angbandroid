@@ -9,7 +9,7 @@
  * Some of the values in this file were chosen to preserve game balance,
  * while others are hard-coded based on the format of old save-files, the
  * definition of arrays in various places, mathematical properties, fast
- * computation, . storage limits, or the format of external text files.
+ * computation, storage limits, or the format of external text files.
  *
  * Changing some of these values will induce crashes or memory errors or
  * savefile mis-reads.  Most of the comments in this file are meant as
