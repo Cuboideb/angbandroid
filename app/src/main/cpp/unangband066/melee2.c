@@ -4377,7 +4377,7 @@ bool tell_allies_not_mflag(int y, int x, u32b flag, cptr saying)
  */
 void tell_ally_death(monster_type *n_ptr, int u, int v, int w)
 {
-	cptr saying = (cptr)u;
+	cptr saying = (cptr)(long)u;
 	(void)v;
 	(void)w;
 

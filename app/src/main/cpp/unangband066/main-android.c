@@ -345,14 +345,12 @@ static errr Term_xtra_android(int n, int v)
 			return 0;
 		}
 
-		/*
 		case TERM_XTRA_CLEAR:
 		{
 			//clear();
 			wclear(td->win);
 			return 0;
 		}
-		*/
 
 		case TERM_XTRA_SHAPE:
 		{
