@@ -461,7 +461,7 @@
  * OPTION: Create and use a hidden directory in the users home directory
  * for storing pref-files and character-dumps.
  */
-#if defined(SET_UID) && ! defined(PRIVATE_USER_PATH)
+#if defined(SET_UID) && ! defined(PRIVATE_USER_PATH) && !defined(ANDROID)
 #define PRIVATE_USER_PATH "~/.angband"
 #endif /* SET_UID */
 
@@ -469,7 +469,7 @@
 /*
  * On multiuser installations, add the "uid" to savefile names
  */
-#if defined(SET_UID) && !defined(PRIVATE_USER_PATHS)
+#if defined(SET_UID) && !defined(PRIVATE_USER_PATHS) && !defined(ANDROID)
 # define SAVEFILE_USE_UID
 #endif /* SET_UID */
 
