@@ -142,7 +142,12 @@ class AdvKeyboard implements OnTouchListener
 	public void toggleLock()
 	{
 		locked = !locked;
-		if (!locked) this.setShiftMode(0);
+		if (locked && shiftMode == 0) {
+			this.changeShiftMode();
+		}
+		if (!locked) {
+			this.setShiftMode(0);
+		}
 	}
 
 	public void exitShiftMode()
