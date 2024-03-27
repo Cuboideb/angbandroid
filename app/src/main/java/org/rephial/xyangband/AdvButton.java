@@ -101,6 +101,7 @@ class AdvButton extends View
 			|| defaultValue.equals("+/-")
 			|| defaultValue.equals("abc")
 			|| defaultValue.equals("kmp")
+			|| defaultValue.equals("lck")
 			|| defaultValue.equals(InputUtils.Menu);
 	}
 
@@ -145,6 +146,11 @@ class AdvButton extends View
 			return;
 		}
 
+		if (action.equals("lck")) {
+			parent.toggleLock();
+			return;
+		}
+
 		if (usingKeymap()) {
 			action = keymap;
 		}
@@ -152,7 +158,7 @@ class AdvButton extends View
 			char code = InputUtils.codeFromName(action);
 			if (code > 0) {
 				state.addKey(code);
-				parent.setShiftMode(0);
+				parent.exitShiftMode();
 				return;
 			}
 		}
@@ -187,7 +193,7 @@ class AdvButton extends View
 
 		InputUtils.processAction(state, action);
 
-		parent.setShiftMode(0);
+		parent.exitShiftMode();
 	}
 
 	public static void closeSoftKeyboard(Activity ctxt, View v)
@@ -394,6 +400,9 @@ class AdvButton extends View
 		}
 		else if (defaultValue.equals("run")
 			&& state.getRunningMode()) {
+			back.setColor(TOGGLED_BG);
+		}
+		else if (defaultValue.equals("lck") && parent.locked) {
 			back.setColor(TOGGLED_BG);
 		}
 		else {

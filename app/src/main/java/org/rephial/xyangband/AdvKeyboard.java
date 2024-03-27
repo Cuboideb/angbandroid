@@ -64,6 +64,7 @@ class AdvKeyboard implements OnTouchListener
 	public boolean skipInput = false;
 	public static int LONG_PRESS = 1;
 	public static int AUTO_HIDE = 2;
+	public boolean locked = false;
 
 	public static int TIMER_LONG_PRESS = 1000;
 	public static int TIMER_AUTO_HIDE = 5000;
@@ -136,6 +137,17 @@ class AdvKeyboard implements OnTouchListener
 		int pad = Math.min(btnWidth, btnHeight);
 		pad = (int)(pad * PADDING);
 		return Math.max(pad, 2);
+	}
+
+	public void toggleLock()
+	{
+		locked = !locked;
+		if (!locked) this.setShiftMode(0);
+	}
+
+	public void exitShiftMode()
+	{
+		if (!locked) this.setShiftMode(0);
 	}
 
 	public void createHandler()
@@ -297,7 +309,7 @@ class AdvKeyboard implements OnTouchListener
 
 	public void changePage()
 	{
-		shiftMode = 0;
+		if (!locked) shiftMode = 0;
 
 		page = (page+1)%MAX_PAGES;
 
@@ -417,6 +429,8 @@ class AdvKeyboard implements OnTouchListener
 			btn.alwaysVisible = info.alwaysVisible;
 		}
 
+		btn.setShiftMode(shiftMode);
+
 		return btn;
 	}
 
@@ -477,7 +491,7 @@ class AdvKeyboard implements OnTouchListener
 			list.add(InputUtils.Escape);
 			list.add(InputUtils.Enter);
 			list.add(".");
-			list.add(" ");
+			list.add("lck");
 			list.add(" ");
 			list.add(InputUtils.Visibility);
 			list.add(InputUtils.Menu);
@@ -503,7 +517,7 @@ class AdvKeyboard implements OnTouchListener
 					list.add("kmp");
 					list.add("run");
 					list.add(".");
-					list.add(" ");
+					list.add("lck");
 					list.add(" ");
 				}				
 				else {

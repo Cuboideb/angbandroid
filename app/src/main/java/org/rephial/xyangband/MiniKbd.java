@@ -435,6 +435,7 @@ class MiniKbd extends View
 
 		if (label.equals("lck")) {
 			locked = !locked;
+			if (!locked) setShiftMode(0);
 			resetSelection();
 			return false;
 		}
@@ -455,7 +456,8 @@ class MiniKbd extends View
 		}
 
 		if (key.paging && key.pageText.length() == 1
-			&& Character.isAlphabetic(key.pageText.charAt(0))) {
+			&& Character.isAlphabetic(key.pageText.charAt(0))
+			&& !locked) {
 			setShiftMode(0);
 		}
 
