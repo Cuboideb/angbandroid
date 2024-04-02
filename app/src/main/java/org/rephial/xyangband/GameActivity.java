@@ -100,6 +100,7 @@ public class GameActivity extends Activity {
 	protected final int CONTEXTMENU_FIX_FAB = 17;
 	protected final int CONTEXTMENU_IMPORT_KEYS = 18;
 	protected final int CONTEXTMENU_LIBDIR = 19;
+	protected final int CONTEXTMENU_KBD_POSITION = 20;
 
 	public static final int TERM_CONTROL_LIST_KEYS = 1;
 	public static final int TERM_CONTROL_CONTEXT = 2;
@@ -566,20 +567,7 @@ public class GameActivity extends Activity {
 			if (screenLayout != null) screenLayout.removeAllViews();
 			screenLayout = null;
 
-			boolean makeMiniKbd = false;
-			boolean makeAdvKeyboard = false;
-			boolean makeRibbon = false;
-
-			if (Preferences.getEnableSoftInput()) {
-				if (Preferences.isKeyboardVisible()) {
-
-					makeAdvKeyboard = Preferences.getUseAdvKeyboard();
-					makeMiniKbd = !makeAdvKeyboard;
-				}
-				else {
-					makeRibbon = true;
-				}
-			}
+			int inputMode = Preferences.getInputMode();
 
 			ribbonZone = null;
 			bottomRibbon = null;
@@ -588,8 +576,7 @@ public class GameActivity extends Activity {
 			advKeyboard = null;
 			miniKeyboard = null;
 
-			screenLayout = (RelativeLayout)getLayoutInflater()
-				.inflate(R.layout.term_layout, null);
+			screenLayout = (RelativeLayout)getLayoutInflater().inflate(R.layout.term_layout, null);
 
 			FrameLayout frameTerm = screenLayout.findViewById(R.id.frameTermOverlay);
 
@@ -603,7 +590,7 @@ public class GameActivity extends Activity {
 
 			int position = Preferences.getInputWidgetPosition();
 
-			boolean vertical = (position != 0);
+			boolean vertical = (position != Preferences.KBD_CENTER);
 
 			FrameLayout frameInput = lstFrameInput[position];
 
@@ -642,7 +629,7 @@ public class GameActivity extends Activity {
 						FrameLayout.LayoutParams.WRAP_CONTENT);
 			}
 
-			if (makeAdvKeyboard) {
+			if (inputMode == Preferences.INPUT_ADV_KBD) {
 				if (Preferences.getKeyboardHeight() == 0) {
 					resetAdvKeyboardHeight();
 				}
@@ -651,12 +638,12 @@ public class GameActivity extends Activity {
 				advKeyboard.mainView.setLayoutParams(lparams);
 				frameInput.addView(advKeyboard.mainView);
 			}
-			else if (makeMiniKbd) {
+			else if (inputMode == Preferences.INPUT_MINI_KBD) {
 				miniKeyboard = new MiniKbd(this);
 				miniKeyboard.setLayoutParams(lparams);
 				frameInput.addView(miniKeyboard);
 			}
-			else if (makeRibbon) {
+			else if (inputMode == Preferences.INPUT_RIBBON) {
 				ribbonZone = new LinearLayout(this);
 				ribbonZone.setOrientation(LinearLayout.VERTICAL);
 				ribbonZone.setLayoutParams(lparams);
@@ -806,6 +793,7 @@ public class GameActivity extends Activity {
 			menu.add(0, CONTEXTMENU_KEYMAPS, 0, "Manage Keymaps");
 		}
 		else if (Preferences.getEnableSoftInput()) {
+			menu.add(0, CONTEXTMENU_KBD_POSITION, 0, "Keyboard Position");
 			menu.add(0, CONTEXTMENU_VKEY_ITEM, 0, "Show Button Ribbon");
 		}
 		else {
@@ -843,6 +831,31 @@ public class GameActivity extends Activity {
 		editor.show();
 	}
 
+	public void setKeyboardPosition()
+	{
+		final String[] list = {
+			"Center",
+			"Bottom-Left",
+			"Bottom-Right",
+			"Top-Left",
+			"Top-Right",
+		};
+		int current = Preferences.getKeyboardPosition();
+		if (current >= 0 && current < list.length) {
+			list[current] = "* " + list[current];
+		}
+		listAlert(this, "Keyboard Position", list,
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialogInterface, int idx) {
+						if (idx >= 0 && idx < list.length) {
+							Preferences.setKeyboardPosition(idx);
+							rebuildViews();
+						}
+					}
+				});
+	}
+
 	@Override
 	public boolean onContextItemSelected(MenuItem aItem) {
 		Intent intent;
@@ -858,6 +871,9 @@ public class GameActivity extends Activity {
 				adjustSize(false);
 				state.nativew.lockWithTimer.waitAndRelease();
 			}
+			return true;
+		case CONTEXTMENU_KBD_POSITION:
+			this.setKeyboardPosition();
 			return true;
 		case CONTEXTMENU_RUNNING:
 			state.setRunningMode(!state.getRunningMode());
@@ -945,7 +961,7 @@ public class GameActivity extends Activity {
 
 		arr.toArray(list);
 
-		listAlert("Select the source Profile", list,
+		listAlert(this,"Select the source Profile", list,
 			new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
@@ -955,9 +971,9 @@ public class GameActivity extends Activity {
 		);
 	}
 
-	public void listAlert(String title, String[] list,
+	public static void listAlert(Activity ctx, String title, String[] list,
 		DialogInterface.OnClickListener okHandler) {
-		new AlertDialog.Builder(this)
+		new AlertDialog.Builder(ctx)
 				.setItems(list, okHandler)
 				.setTitle(title)
 				.show();

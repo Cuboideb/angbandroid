@@ -30,6 +30,7 @@ final public class Preferences {
 
 	static final String KEY_KEYBOARDOVERLAP = "angband.allowKeyboardOverlap";
 	static final String KEY_KEYBOARDOPACITY = "angband.keyboardOpacity";
+	static final String KEY_KEYBOARDPOSITION = "angband.keyboardPosition";
 	static final String KEY_MIDDLEOPACITY = "angband.middleOpacity";
 	static final String KEY_ENABLETOUCH = "angband.enabletouch";
 
@@ -98,6 +99,11 @@ final public class Preferences {
 	static final int KBD_BOTTOM_RIGHT = 2;
 	static final int KBD_TOP_LEFT = 3;
 	static final int KBD_TOP_RIGHT = 4;
+
+	static final int INPUT_NONE = 0;
+	static final int INPUT_ADV_KBD = 1;
+	static final int INPUT_MINI_KBD = 2;
+	static final int INPUT_RIBBON = 3;
 
 	private static String activityFilesPath;
 
@@ -194,9 +200,22 @@ final public class Preferences {
 	}
 	*/
 
+	/*
 	public static boolean getQwertyNumPad()
 	{
 		return pref.getBoolean(Preferences.KEY_QWERTYNUMPAD, false);
+	}
+	*/
+
+	public static int getInputMode()
+	{
+		if (!getEnableSoftInput()) return INPUT_NONE;
+
+		if (!isKeyboardVisible()) return INPUT_RIBBON;
+
+		if (!getUseAdvKeyboard()) return INPUT_MINI_KBD;
+
+		return INPUT_ADV_KBD;
 	}
 
 	public static boolean getDrawHealthBars()
@@ -284,12 +303,33 @@ final public class Preferences {
 
 	public static int getKeyboardPosition()
 	{
-		return 4;
+		return pref.getInt(Preferences.KEY_KEYBOARDPOSITION, KBD_CENTER);
+	}
+
+	public static void setKeyboardPosition(int value) {
+		SharedPreferences.Editor ed = pref.edit();
+		ed.putInt(Preferences.KEY_KEYBOARDPOSITION, value);
+		ed.commit();
 	}
 
 	public static int getInputWidgetPosition()
 	{
-		return Preferences.isKeyboardVisible() ? Preferences.getKeyboardPosition(): 0;
+		int inputMode = getInputMode();
+
+		if (inputMode == INPUT_RIBBON) return KBD_CENTER;
+
+		if (inputMode == INPUT_ADV_KBD && getKeyboardWidth() >= 80) return KBD_CENTER;
+
+		int position = getKeyboardPosition();
+
+		// Small widgets
+		if (position == KBD_CENTER) {
+			if (inputMode == INPUT_MINI_KBD || getVerticalKeyboard()) {
+				return KBD_BOTTOM_LEFT;
+			}
+		}
+
+		return position;
 	}
 
 	public static boolean getKeyboardOverlap() {
@@ -337,15 +377,17 @@ final public class Preferences {
 
 	public static boolean getVerticalKeyboard()
 	{
-		return getKeyboardWidth() <= 35;
+		return (getInputMode() == INPUT_ADV_KBD) && (getKeyboardWidth() <= 45);
 	}
 
+	/*
 	public static void setVerticalKeyboard(boolean value)
 	{
 		SharedPreferences.Editor ed = pref.edit();
 		ed.putBoolean(Preferences.KEY_USE_VERT_KBD, value);
 		ed.commit();
 	}
+	*/
 
 	public static int getKeyboardHeight() {
 		return pref.getInt(Preferences.KEY_KBD_HEIGHT, 0);

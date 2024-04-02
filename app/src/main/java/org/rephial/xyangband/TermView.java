@@ -576,15 +576,15 @@ public class TermView extends View implements OnGestureListener {
 	{
 		float pctw[] = {0.2f, 0.6f, 0.2f};
 		float pcth[] = {0.33f, 0.33f, 0.34f};
-		int totalw = getWidth() - game_context.getKeyboardWidth();
-		int totalh = getHeight() - game_context.getKeyboardHeight();
+		int totalw = getWidth() - getLeftGap() - getRightGap();
+		int totalh = getHeight() - getVerticalGap();
 
 		for (int i = 0; i < 3; i++) {
 			pctw[i] *= totalw;
 			pcth[i] *= totalh;
 		}
 
-		int x0 = getScrollX() + game_context.getKeyboardWidth();
+		int x0 = getScrollX() + getLeftGap();
 		int y0 = getScrollY();
 
 		int y = y0;
@@ -1619,6 +1619,8 @@ public class TermView extends View implements OnGestureListener {
 	{
 		if (!Preferences.getKeyboardOverlap()) return 0;
 
+		//if (!Preferences.getVerticalKeyboard()) return 0;
+
 		int position = Preferences.getInputWidgetPosition();
 
 		if (position == Preferences.KBD_TOP_RIGHT ||
@@ -1633,7 +1635,7 @@ public class TermView extends View implements OnGestureListener {
 	{
 		if (!Preferences.getKeyboardOverlap()) return 0;
 
-		if (Preferences.isKeyboardVisible() && !Preferences.getVerticalKeyboard()) return 0;
+		//if (!Preferences.getVerticalKeyboard()) return 0;
 
 		int position = Preferences.getInputWidgetPosition();
 
@@ -1649,13 +1651,18 @@ public class TermView extends View implements OnGestureListener {
 	{
 		if (!Preferences.getKeyboardOverlap()) return 0;
 
-		if (Preferences.isKeyboardVisible() && Preferences.getVerticalKeyboard()) return 0;
+		//if (Preferences.getVerticalKeyboard()) return 0;
 
 		int position = Preferences.getInputWidgetPosition();
 
+		/*
 		if (position == Preferences.KBD_CENTER ||
 				position == Preferences.KBD_BOTTOM_RIGHT ||
 				position == Preferences.KBD_BOTTOM_LEFT) {
+			return game_context.getKeyboardHeight();
+		}
+		*/
+		if (position == Preferences.KBD_CENTER) {
 			return game_context.getKeyboardHeight();
 		}
 
