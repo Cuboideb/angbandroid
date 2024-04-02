@@ -93,6 +93,12 @@ final public class Preferences {
 
 	static final String KEY_INSTALLEDVERSION = "angband.installedversion";
 
+	static final int KBD_CENTER = 0;
+	static final int KBD_BOTTOM_LEFT = 1;
+	static final int KBD_BOTTOM_RIGHT = 2;
+	static final int KBD_TOP_LEFT = 3;
+	static final int KBD_TOP_RIGHT = 4;
+
 	private static String activityFilesPath;
 
 	private static SharedPreferences pref;
@@ -274,6 +280,16 @@ final public class Preferences {
 		return pref.getBoolean(Preferences.KEY_QUANTITY_POPUP, true)
 				&& Preferences.getEnableSoftInput()
 				&& !Preferences.isKeyboardVisible();
+	}
+
+	public static int getKeyboardPosition()
+	{
+		return 4;
+	}
+
+	public static int getInputWidgetPosition()
+	{
+		return Preferences.isKeyboardVisible() ? Preferences.getKeyboardPosition(): 0;
 	}
 
 	public static boolean getKeyboardOverlap() {

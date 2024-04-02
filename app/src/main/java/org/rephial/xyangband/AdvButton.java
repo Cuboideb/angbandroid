@@ -54,6 +54,11 @@ class AdvButton extends View
 	public boolean keymapMode = false;
 	public static int DEFAULT_BG = 0x4a4855;
 	public static int TOGGLED_BG = 0x86bf36;
+	public static int HC_DEFAULT_BG = Color.BLACK;
+	public static int HC_TOGGLED_BG = 0x006400;
+	public static int HC_KEYMAP_FG = 0x65fe08;
+	public static int STROKE_FG = 0xDDDDDD;
+	public static int DEFAULT_FG = Color.CYAN;
 	public boolean pressed = false;
 
 	public AdvButton(GameActivity p_context, AdvKeyboard p_parent,
@@ -67,6 +72,11 @@ class AdvButton extends View
 		state = context.state;
 
 		activeValue = defaultValue = p_txt;
+	}
+
+	public boolean useHighContrast()
+	{
+		return true;
 	}
 
 	public void setShiftMode(int mode)
@@ -194,6 +204,7 @@ class AdvButton extends View
 		InputUtils.processAction(state, action);
 
 		parent.exitShiftMode();
+		parent.resetPage();
 	}
 
 	public static void closeSoftKeyboard(Activity ctxt, View v)
@@ -346,18 +357,24 @@ class AdvButton extends View
 	public int calculateAlphaBg()
 	{
 		int min = 10;
-		int max = 200;
+		int max = 220;
 
-		if (parent.opacityMode == 1 && !neverHidden()) {
+		if (!isVisible()) {
 			return min;
 		}
 
 		if (parent.opacityMode == 2) {
-			return max;
+			return 255;
 		}
 
-		// Normal
-		return 80;
+		int p = Preferences.getKeyboardOpacity();
+		p = min + p * (max-min) / 100;
+
+		if (atCenter()) {
+			p = (p * Preferences.getMiddleOpacity()) / 100;
+		}
+
+		return Math.max(p, min);
 	}
 
 	public int calculateAlphaFg()
@@ -365,8 +382,12 @@ class AdvButton extends View
 		int min = TermView.MIN_OPACITY;
 		int max = 255;
 
-		if (parent.opacityMode == 1 && !neverHidden()) {
+		if (!isVisible()) {
 			return min;
+		}
+
+		if (useHighContrast()) {
+			return max;
 		}
 
 		if (parent.opacityMode == 2) {
@@ -383,40 +404,41 @@ class AdvButton extends View
 		return Math.max(p, min);
 	}
 
-	public void setBgColor(Paint back)
+	public int[] getBgColor()
 	{
+		int[] color = {DEFAULT_BG, HC_DEFAULT_BG};
+		int[] toggledColor = {TOGGLED_BG, HC_TOGGLED_BG};
+
 		if (pressed) {
-			back.setColor(TOGGLED_BG);
-			//back.setColor(DEFAULT_BG);
+			color = toggledColor;
 		}
 		else if (defaultValue.equals(" ")) {
-			back.setColor(TOGGLED_BG);
+			color = toggledColor;
 		}
 		else if (usingKeymap()) {
-			back.setColor(DEFAULT_BG);
+			// nothing
 		}
 		else if (defaultValue.equals("kmp") && keymapMode) {
-			back.setColor(TOGGLED_BG);
+			color = toggledColor;
 		}
-		else if (defaultValue.equals("run")
-			&& state.getRunningMode()) {
-			back.setColor(TOGGLED_BG);
+		else if (defaultValue.equals("run") && state.getRunningMode()) {
+			color = toggledColor;
 		}
 		else if (defaultValue.equals("lck") && parent.locked) {
-			back.setColor(TOGGLED_BG);
+			color = toggledColor;
 		}
-		else {
-			back.setColor(DEFAULT_BG);
-		}
+
+		return color;
 	}
 
 	public void setFgColor(Paint fore)
 	{
 		if (usingKeymap()) {
-			fore.setColor(TOGGLED_BG);
+			int color = useHighContrast() ? HC_KEYMAP_FG: TOGGLED_BG;
+			fore.setColor(color);
 		}
 		else {
-			fore.setColor(Color.WHITE);
+			fore.setColor(DEFAULT_FG);
 		}
 	}
 
@@ -435,6 +457,11 @@ class AdvButton extends View
 			label = keymap;
 		}
 		return label;
+	}
+
+	protected boolean drawSmallBox(String label)
+	{
+		return isVisible() && !label.equals(" ") && useHighContrast();
 	}
 
 	protected void onDraw(Canvas canvas)
@@ -461,15 +488,12 @@ class AdvButton extends View
 		if (label.length() > 3) label = label.substring(0, 3);
 		if (label.length() == 1) fore = parent.foreBold;
 
-		setBgColor(back);
-		back.setAlpha(calculateAlphaBg());
-		canvas.drawRect(bounds, back);
+		int[] bgColor = getBgColor();
+		int alphaBg = calculateAlphaBg();
 
-		/*
-		back.setColor(0xAAAAAA);
-		back.setAlpha(calculateAlphaBg());
-		canvas.drawLine(bounds.left, bounds.top, bounds.right, bounds.top, back);
-		*/
+		back.setColor(bgColor[0]);
+		back.setAlpha(alphaBg);
+		canvas.drawRect(bounds, back);
 
 		int tw = getWidth() - pad * 2;
 		int th = getHeight() - pad * 2;
@@ -477,24 +501,35 @@ class AdvButton extends View
 		float w2 = fore.measureText(label);
 		float padx = Math.max((tw - w2) / 2, 0);
 		float h2 = fore.descent() - fore.ascent();
-		float pady = Math.max((th - h2) / 2, 0)	+ fore.descent();
+		float pady = Math.max((th - h2) / 2, 0) + fore.descent();
 
-		/*
-		// Move the label to the top
-		if (pressed) {
-			// ascent is negative
-			pady = th + fore.ascent();
+		if (drawSmallBox(label)) {
+			Rect inner = new Rect();
+			float sw = Math.min(w2 * 1.2f, tw);
+			float sh = Math.min(h2 * 1.1f, th);
+			inner.top = (int) (bounds.top + (th - sh) / 2);
+			inner.left = (int) (bounds.left + (tw - sw) / 2);
+			inner.bottom = (int) (inner.top + sh);
+			inner.right = (int) (inner.left + sw);
+
+			back.setColor(bgColor[1]);
+			back.setAlpha(255);
+			canvas.drawRect(inner, back);
 		}
-		*/
 
 		setFgColor(fore);
-		fore.setShadowLayer(10f, 0, 0, Color.CYAN);
+		//fore.setShadowLayer(10f, 0, 0, Color.CYAN);
 		fore.setAlpha(calculateAlphaFg());
 
 		canvas.drawText(label,
 			bounds.left + padx,
 			bounds.top + th - pady,
 			fore);
+
+		Paint stroke = parent.stroke;
+		stroke.setColor(STROKE_FG);
+		stroke.setAlpha(Math.max(alphaBg, 60));
+		canvas.drawRect(bounds, stroke);
 	}
 
 	@Override

@@ -694,7 +694,7 @@ public class TermView extends View implements OnGestureListener {
 		int w = (int)(winSize.x * 0.10f);
 		int h = (int)(winSize.y * 0.10f);
 
-		int totalw = getWidth();
+		int totalw = getWidth() - getRightGap();
 		int totalh = getHeight() - getVerticalGap();
 
 		int padx = (int)(totalw * 0.01f);
@@ -1615,16 +1615,51 @@ public class TermView extends View implements OnGestureListener {
 		Log.d("Angband","autoSizeFontWidth "+font_text_size);
 	}
 
-	public int getHorizontalGap()
+	public int getRightGap()
 	{
-		return (Preferences.getKeyboardOverlap() ?
-				game_context.getKeyboardWidth(): 0);
+		if (!Preferences.getKeyboardOverlap()) return 0;
+
+		int position = Preferences.getInputWidgetPosition();
+
+		if (position == Preferences.KBD_TOP_RIGHT ||
+				position == Preferences.KBD_BOTTOM_RIGHT) {
+			return game_context.getKeyboardWidth();
+		}
+
+		return 0;
+	}
+
+	public int getLeftGap()
+	{
+		if (!Preferences.getKeyboardOverlap()) return 0;
+
+		if (Preferences.isKeyboardVisible() && !Preferences.getVerticalKeyboard()) return 0;
+
+		int position = Preferences.getInputWidgetPosition();
+
+		if (position == Preferences.KBD_TOP_LEFT ||
+				position == Preferences.KBD_BOTTOM_LEFT) {
+			return game_context.getKeyboardWidth();
+		}
+
+		return 0;
 	}
 
 	public int getVerticalGap()
 	{
-		return (Preferences.getKeyboardOverlap() ?
-				game_context.getKeyboardHeight(): 0);
+		if (!Preferences.getKeyboardOverlap()) return 0;
+
+		if (Preferences.isKeyboardVisible() && Preferences.getVerticalKeyboard()) return 0;
+
+		int position = Preferences.getInputWidgetPosition();
+
+		if (position == Preferences.KBD_CENTER ||
+				position == Preferences.KBD_BOTTOM_RIGHT ||
+				position == Preferences.KBD_BOTTOM_LEFT) {
+			return game_context.getKeyboardHeight();
+		}
+
+		return 0;
 	}
 
 	public void adjustTermSize(int maxWidth, int maxHeight)
@@ -2120,7 +2155,7 @@ public class TermView extends View implements OnGestureListener {
 		}
 		int pad = (int)(h * 0.2f);
 
-		int x0 = getHorizontalGap() + pad;
+		int x0 = getLeftGap() + pad;
 		int y0 = getHeight() - getVerticalGap() - h - pad;
 
 		int max = 5;
@@ -2383,6 +2418,7 @@ public class TermView extends View implements OnGestureListener {
 
 			if (!bounds.contains(floating)) return;
 
+			/*
 			if (Preferences.getKeyboardOverlap()) {
 
 				float kh = game_context.getKeyboardHeightAbsolute();
@@ -2393,6 +2429,7 @@ public class TermView extends View implements OnGestureListener {
 
 				if (bounds.intersect(floating)) return;
 			}
+			*/
 
 			x = x2;
 			y = y2;
@@ -2407,7 +2444,7 @@ public class TermView extends View implements OnGestureListener {
 
 	public void createFloatingButton()
 	{
-		int x = getHorizontalGap() + (getWidth() - getHorizontalGap()) / 2;
+		int x = getLeftGap() + (getWidth() - getLeftGap() - getRightGap()) / 2;
 		int y = (getHeight() - getVerticalGap()) / 2;
 
 		ButtonView b = new ButtonView();

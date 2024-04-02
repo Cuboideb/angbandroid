@@ -54,6 +54,7 @@ class AdvKeyboard implements OnTouchListener
 	public Paint back;
 	public Paint fore;
 	public Paint foreBold;
+	public Paint stroke;
 	public Point winSize;
 	public int opacityMode = 0;
 	public Handler handler;
@@ -100,6 +101,11 @@ class AdvKeyboard implements OnTouchListener
 		fore.setTextAlign(Paint.Align.LEFT);
 		fore.setAntiAlias(true);
 		fore.setTypeface(context.monoFont);
+
+		stroke = new Paint();
+		stroke.setStyle(Paint.Style.STROKE);
+		stroke.setStrokeWidth(2);
+		stroke.setStrokeCap(Paint.Cap.ROUND);
 
 		mainView = new LinearLayout(context);
 		mainView.setOrientation(LinearLayout.VERTICAL);
@@ -152,7 +158,15 @@ class AdvKeyboard implements OnTouchListener
 
 	public void exitShiftMode()
 	{
-		if (!locked) this.setShiftMode(0);
+		if (!locked) {
+			this.setShiftMode(0);
+		}
+	}
+
+	public void resetPage() {
+		if (page != 0 && !locked) {
+			changePage();
+		}
 	}
 
 	public void createHandler()
