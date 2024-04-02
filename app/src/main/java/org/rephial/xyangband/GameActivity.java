@@ -279,11 +279,12 @@ public class GameActivity extends Activity {
 				- quantPopup.root.getMeasuredHeight()
 				- term.getVerticalGap()
 				- pad;
+			int x = term.getRightGap();
 			//log("term h: " + term.getHeight());
 			//log("root h: " + quantPopup.root.getMeasuredHeight());
 			//log("vgap: " + term.getVerticalGap());
 			//log("y: " + y);
-			quantPopup.showAtLocation(term, gravity, 0, y);
+			quantPopup.showAtLocation(term, gravity, x, y);
 		}
 	}
 

@@ -1617,6 +1617,8 @@ public class TermView extends View implements OnGestureListener {
 
 	public int getRightGap()
 	{
+		if (!Preferences.getEnableSoftInput()) return 0;
+
 		if (!Preferences.getKeyboardOverlap()) return 0;
 
 		//if (!Preferences.getVerticalKeyboard()) return 0;
@@ -1633,6 +1635,8 @@ public class TermView extends View implements OnGestureListener {
 
 	public int getLeftGap()
 	{
+		if (!Preferences.getEnableSoftInput()) return 0;
+
 		if (!Preferences.getKeyboardOverlap()) return 0;
 
 		//if (!Preferences.getVerticalKeyboard()) return 0;
@@ -1649,6 +1653,8 @@ public class TermView extends View implements OnGestureListener {
 
 	public int getVerticalGap()
 	{
+		if (!Preferences.getEnableSoftInput()) return 0;
+
 		if (!Preferences.getKeyboardOverlap()) return 0;
 
 		//if (Preferences.getVerticalKeyboard()) return 0;
@@ -1662,6 +1668,7 @@ public class TermView extends View implements OnGestureListener {
 			return game_context.getKeyboardHeight();
 		}
 		*/
+
 		if (position == Preferences.KBD_CENTER) {
 			return game_context.getKeyboardHeight();
 		}
