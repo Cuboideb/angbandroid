@@ -927,7 +927,7 @@ public class ButtonRibbon implements OnClickListener,
 	public boolean canFitButtons(int amount)
 	{
 		int kbdH = context.getKeyboardHeight();
-		Point winSize = context.getWinSize();
+		Point winSize = GxUtils.getWinSize(context);
 		// Calculate the size of a button
 		// We have 2 or 3 rows of buttons
 		int btnSize = kbdH / (dynamic2.getChildCount() > 0 ? 3: 2);
@@ -949,7 +949,7 @@ public class ButtonRibbon implements OnClickListener,
 			screenPct = 0.65f;
 		}
 
-		Point winSize = context.getWinSize();
+		Point winSize = GxUtils.getWinSize(context);
 
 		int kbdH = context.getKeyboardHeight();
 		int maxH = winSize.y - kbdH;
@@ -1425,7 +1425,7 @@ public class ButtonRibbon implements OnClickListener,
 
 			if (desc == null) desc = "";
 			String msg = "Execute command: " + txt + "\n\n" + desc;
-			context.questionAlert(msg,
+			context.questionAlert(context, msg,
 					new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {

@@ -171,7 +171,7 @@ class MiniKbd extends View
 		int min = 20;
 		int max = 60;
 
-		Point winSize = context.getMySize();
+		Point winSize = GxUtils.getWinSize(context);
 
 		int pctH = min + Preferences.getKeyboardHeight() * (max-min) / 100;
 		key_hgt = (winSize.y * pctH / 100) / rows;

@@ -114,7 +114,7 @@ public class StorageActivity extends Activity {
 			}
 		});
 
-		if (GameActivity.getDpWidth(this) < 600) {
+		if (GxUtils.getDpWidth(this) < 600) {
 			this.rootView.findViewById(R.id.btn_exit).setVisibility(View.GONE);
 			this.rootView.findViewById(R.id.btn_duplicate).setVisibility(View.GONE);
 			this.rootView.findViewById(R.id.narrow_layout).setVisibility(View.VISIBLE);

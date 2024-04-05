@@ -82,7 +82,7 @@ public class FastKeysPopup extends PopupWindow
         if (position.equals("Hidden")) return;
 
         int gravity = Gravity.TOP;
-        int pad = (int)context.toDips(5);
+        int pad = (int)GxUtils.toDips(context, 5);
         int y = pad;
         int x = pad;
 

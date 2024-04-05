@@ -129,7 +129,7 @@ class AdvKeyboard implements OnTouchListener
 			rows[i] = ll;
 		}
 
-		winSize = context.getMySize();
+		winSize = GxUtils.getWinSize(context);
 
 		reloadKeymaps();
 

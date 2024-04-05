@@ -255,12 +255,6 @@ public class GameActivity extends Activity {
 		}
 	}
 
-	public float toDips(float dps)
-	{
-		return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dps,
-				this.getResources().getDisplayMetrics());
-	}
-
 	public void runQuantityPopup(String message, int maxValue, int initialValue)
 	{
 		if (term != null && Preferences.getQuantityPopupEnabled()) {
@@ -272,7 +266,7 @@ public class GameActivity extends Activity {
 				quantPopup.configure(message, maxValue, initialValue);
 			}
 			int gravity = Gravity.RIGHT | Gravity.TOP;
-			int pad = (int)toDips(20);
+			int pad = (int)GxUtils.toDips(this,20);
 			quantPopup.root.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED), 
 				MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
 			int y = term.getHeight()
@@ -363,21 +357,6 @@ public class GameActivity extends Activity {
 			break;
 		}
 		return super.onMenuItemSelected(featureId, item);
-	}
-
-	public Point getMySize()
-	{
-		WindowManager wm2 = this.getWindowManager();
-		Display display = wm2.getDefaultDisplay();
-		Point size = new Point();
-		display.getSize(size);
-		return size;
-	}
-
-	public static float getDpWidth(Context ctx) {
-		DisplayMetrics displayMetrics = ctx.getResources().getDisplayMetrics();
-		float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-		return dpWidth;
 	}
 
 	@Override
@@ -493,14 +472,6 @@ public class GameActivity extends Activity {
 			}
 		}
 		lastKeys = keys;
-	}
-
-	public Point getWinSize()
-	{
-		Point aux = new Point();
-		WindowManager wm2 = this.getWindowManager();
-		wm2.getDefaultDisplay().getSize(aux);
-		return aux;
 	}
 
 	public void rebuildButtonRibbon()
@@ -696,7 +667,7 @@ public class GameActivity extends Activity {
 	public void resetAdvKeyboardHeight()
 	{
 		// Estimate keyboard height
-		Point size = getMySize();
+		Point size = GxUtils.getWinSize(this);
 		float pct = 0f;
 		if (size.x > 0 && size.y > 0) {
 			pct = (size.x / 10.0f) * (5.0f / size.y) * 100.0f;
@@ -972,17 +943,17 @@ public class GameActivity extends Activity {
 		);
 	}
 
-	public static void listAlert(Activity ctx, String title, String[] list,
+	public static void listAlert(Activity owner, String title, String[] list,
 		DialogInterface.OnClickListener okHandler) {
-		new AlertDialog.Builder(ctx)
+		new AlertDialog.Builder(owner)
 				.setItems(list, okHandler)
 				.setTitle(title)
 				.show();
 	}
 
-	public void questionAlert(String msg,
+	public void questionAlert(Activity owner, String msg,
 		DialogInterface.OnClickListener okHandler) {
-		new AlertDialog.Builder(this)
+		new AlertDialog.Builder(owner)
 			//.setTitle("Angband")
 			.setMessage(msg)
 			.setCancelable(true)

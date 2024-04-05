@@ -36,7 +36,7 @@ public class FastKeysPopupV2 extends PopupWindow
         context = p_context;
 
         setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
-        //setHeight((int)context.toDips(350));
+        //setHeight((int)GxUtils.toDips(context, 350));
 
         //setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT,
         //        ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -133,7 +133,7 @@ public class FastKeysPopupV2 extends PopupWindow
         if (position.equals("Hidden")) return;
 
         int gravity = Gravity.TOP;
-        int pad = (int)context.toDips(5);
+        int pad = (int)GxUtils.toDips(context,5);
         int y = pad;
         int x = pad;
 
