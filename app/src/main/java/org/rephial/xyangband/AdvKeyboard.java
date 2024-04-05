@@ -512,8 +512,8 @@ class AdvKeyboard implements OnTouchListener
 			list.add(InputUtils.Enter);
 			list.add(".");
 			list.add("lck");
-			list.add(" ");
-			list.add(InputUtils.Visibility);
+			list.add(InputUtils.SpaceBar);
+			list.add(InputUtils.BlackWhite);
 			list.add(InputUtils.Menu);
 			list.add(page == 0 ? "+/-": "abc");
 			list.add("kmp");
@@ -531,14 +531,14 @@ class AdvKeyboard implements OnTouchListener
 
 			for (int i = 0; i < 2; i++) {
 				if (grp[i] == 0) {
-					list.add(InputUtils.Visibility);
+					list.add(InputUtils.BlackWhite);
 					list.add(InputUtils.Menu);
 					list.add(page == 0 ? "+/-": "abc");
 					list.add("kmp");
 					list.add("run");
 					list.add(".");
 					list.add("lck");
-					list.add(" ");
+					list.add(InputUtils.SpaceBar);
 				}				
 				else {
 					list.add(InputUtils.Escape);

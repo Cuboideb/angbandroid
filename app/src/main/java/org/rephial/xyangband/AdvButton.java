@@ -102,34 +102,32 @@ class AdvButton extends View
 
 	public boolean neverKeymap()
 	{
-		return defaultValue.equals(InputUtils.Visibility)
-			|| defaultValue.equals(InputUtils.Enter)
-			|| defaultValue.equals(InputUtils.Escape)
-			|| defaultValue.equals(InputUtils.Shift)
-			//|| defaultValue.equals(InputUtils.BackSpace)
-			//|| defaultValue.equals(" ")
-			|| defaultValue.equals("+/-")
-			|| defaultValue.equals("abc")
-			|| defaultValue.equals("kmp")
-			|| defaultValue.equals("lck")
-			|| defaultValue.equals(InputUtils.Menu);
+		String[] blackList = {
+				InputUtils.BlackWhite,
+				InputUtils.Enter,
+				InputUtils.Escape,
+				InputUtils.Shift,
+				"+/-",
+				"abc",
+				"kmp",
+				"lck",
+				InputUtils.Menu
+		};
+
+		return Arrays.asList(blackList).contains(defaultValue);
 	}
 
 	public boolean neverHidden()
 	{
 		if (alwaysVisible) return true;
 
-		return defaultValue.equals(InputUtils.Visibility)
-			|| defaultValue.equals(InputUtils.Enter)
-			|| defaultValue.equals(InputUtils.Escape)
-			//|| defaultValue.equals(" ")
-			//|| defaultValue.equals(".")
-			//|| defaultValue.equals("run")
-			//|| defaultValue.equals("+/-")
-			//|| defaultValue.equals("abc")
-			//|| defaultValue.equals("kmp")
-			//|| defaultValue.equals(InputUtils.Menu)
-			;
+		String[] blackList = {
+				InputUtils.BlackWhite,
+				InputUtils.Enter,
+				InputUtils.Escape
+		};
+
+		return Arrays.asList(blackList).contains(defaultValue);
 	}
 
 	public boolean usingKeymap()
@@ -173,7 +171,7 @@ class AdvButton extends View
 			}
 		}
 
-		if (action.equals(InputUtils.Visibility)) {
+		if (action.equals(InputUtils.BlackWhite)) {
 			parent.changeOpacityMode();
 			return;
 		}
@@ -199,6 +197,10 @@ class AdvButton extends View
 			invalidate();
 			context.refreshInputWidgets();
 			return;
+		}
+
+		if (action.equals(InputUtils.SpaceBar)) {
+			action = " ";
 		}
 
 		InputUtils.processAction(state, action);
@@ -412,7 +414,7 @@ class AdvButton extends View
 		if (pressed) {
 			color = toggledColor;
 		}
-		else if (defaultValue.equals(" ")) {
+		else if (defaultValue.equals(InputUtils.SpaceBar)) {
 			color = toggledColor;
 		}
 		else if (usingKeymap()) {

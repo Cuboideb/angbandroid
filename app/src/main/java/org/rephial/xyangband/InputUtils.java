@@ -7,6 +7,8 @@ import java.util.ArrayList;
 class InputUtils
 {
     public static String Visibility = "⎘";
+    public static String BlackWhite = "◧";
+    public static String SpaceBar = "▭";
 	public static String Menu = "▤";
 	public static String Shift = "⇧";
 	public static String BackSpace = "⌫";
