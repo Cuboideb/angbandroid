@@ -310,6 +310,8 @@ public class StorageActivity extends Activity {
 							return;
 						}
 
+						GameActivity.infoAlert(storage, "Done! Renamed to " + input);
+
 						storage.refreshItems();
 					}
 				});
@@ -340,14 +342,15 @@ public class StorageActivity extends Activity {
 
 			sourceStream.close();
 			targetStream.close();
+
+			GameActivity.infoAlert(this, "Done! New file: " + newFile.getName());
+
+			this.refreshItems();
 		}
 		catch (IOException e)
 		{
 			GameActivity.infoAlert(this, e.getMessage());
-			return;
 		}
-
-		this.refreshItems();
 	}
 
 	public static void copyStream(InputStream source, OutputStream target) throws IOException
@@ -448,6 +451,8 @@ public class StorageActivity extends Activity {
 
 			File targetFile = new File(this.cwd, name);
 
+			File newFile = null;
+
 			if (targetFile.exists()) {
 
 				if (targetFile.isDirectory()) {
@@ -455,7 +460,7 @@ public class StorageActivity extends Activity {
 					return;
 				}
 
-				File newFile = this.findSafeName(name, "old");
+				newFile = this.findSafeName(name, "old");
 				if (newFile == null) {
 					GameActivity.infoAlert(this, "Too many files");
 					return;
@@ -477,16 +482,18 @@ public class StorageActivity extends Activity {
 
 			sourceStream.close();
 			targetStream.close();
+
+			String msg = "File imported.";
+			if (newFile != null) msg += " Old file renamed to " + newFile.getName();
+
+			GameActivity.infoAlert(this, msg);
+
+			this.refreshItems();
 		}
 		catch (IOException e)
 		{
 			GameActivity.infoAlert(this, e.getMessage());
-			return;
 		}
-
-		GameActivity.infoAlert(this, "File imported");
-
-		this.refreshItems();
 	}
 
 	@Override
