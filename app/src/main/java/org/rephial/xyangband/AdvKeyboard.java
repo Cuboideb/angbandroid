@@ -303,7 +303,8 @@ class AdvKeyboard implements OnTouchListener
 	public void changeOpacityMode()
 	{
 		if (opacityMode == 2) {
-			setOpacityMode(0);
+			setOpacityMode(1);
+			context.state.opaqueWidgets = false;
 			return;
 		}
 		setOpacityMode((opacityMode+1)%2);
