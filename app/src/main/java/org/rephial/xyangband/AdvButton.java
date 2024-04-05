@@ -415,7 +415,7 @@ class AdvButton extends View
 			color = toggledColor;
 		}
 		else if (defaultValue.equals(InputUtils.SpaceBar)) {
-			color = toggledColor;
+			//color = toggledColor;
 		}
 		else if (usingKeymap()) {
 			// nothing

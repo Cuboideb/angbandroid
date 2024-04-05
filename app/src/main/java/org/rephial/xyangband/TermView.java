@@ -1181,13 +1181,13 @@ public class TermView extends View implements OnGestureListener {
 		}
 	}
 
-	public void drawMap(Canvas p_canvas, ButtonView btn)
+	public boolean drawMap(Canvas p_canvas, ButtonView btn)
 	{
 		String map = state.getMap();
-		if (map == null) return;
+		if (map == null) return false;
 
 		String[] parts = map.split(":");
-		if (parts.length < 3) return;
+		if (parts.length < 3) return false;
 
 		float x0 = btn.x + getScrollX();
 		float y0 = btn.y + getScrollY();
@@ -1209,6 +1209,9 @@ public class TermView extends View implements OnGestureListener {
 		int w = Integer.parseInt(parts[0]);
 		int h = Integer.parseInt(parts[1]);
 
+		int minw = Math.max(tw * w, 100);
+		int minh = Math.max(th * h, 100);
+
 		Paint paint = dirZoneFill;
 		if (btn.isBeingDragged()) {
 			paint.setColor(color_drag);
@@ -1219,8 +1222,8 @@ public class TermView extends View implements OnGestureListener {
 		paint.setAlpha(opacity);
 
 		// Remember size
-		btn.w = w*tw;
-		btn.h = h*th;
+		btn.w = minw;
+		btn.h = minh;
 
 		RectF rect = new RectF(x0, y0, x0+btn.w, y0+btn.h);
 		p_canvas.drawRect(rect, paint);
@@ -1285,6 +1288,8 @@ public class TermView extends View implements OnGestureListener {
 				}
 			}
 		}
+
+		return true;
 	}
 
 	public void drawFloatingButtons(Canvas p_canvas)
@@ -1299,17 +1304,24 @@ public class TermView extends View implements OnGestureListener {
 
 			ButtonView btn = (ButtonView)v;
 
+			String label = btn.label;
+			int opaMult = btn.opacity;
+			int sizeMult = btn.sizeMult;
+
 			if (btn.action.equals("overview")) {
-				drawMap(p_canvas, btn);
-				continue;
+				if (drawMap(p_canvas, btn)) continue;
+
+				// Unsupported variant
+				label = "ovw";
+				opaMult = 0;
+				sizeMult = 0;
 			}
 
 			// Percentage of current font size
 			int min = 150;
 			int max = 500;
-			int mult = btn.sizeMult;
-			if (mult == 0) mult = Preferences.getFabMult();
-			int pct = min + mult * (max-min) / 100;
+			if (sizeMult == 0) sizeMult = Preferences.getFabMult();
+			int pct = min + sizeMult * (max-min) / 100;
 
 			int fab_font_size = font_text_size;
 			fab_font_size = pct * fab_font_size / 100;
@@ -1318,11 +1330,9 @@ public class TermView extends View implements OnGestureListener {
 
 			min = MIN_OPACITY;
 			max = 255;
-			mult = btn.opacity;
-			if (mult == 0) mult = Preferences.getKeyboardOpacity();
-			int _alphaFg = min + mult * (max-min) / 100;
+			if (opaMult == 0) opaMult = Preferences.getKeyboardOpacity();
+			int _alphaFg = min + opaMult * (max-min) / 100;
 
-			String label = btn.label;
 			String icon = "";
 
 			if (label.length() == 0) {
