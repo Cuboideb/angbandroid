@@ -315,12 +315,14 @@ final public class Preferences {
 
 	public static int getKeyboardPosition()
 	{
-		return pref.getInt(Preferences.KEY_KEYBOARDPOSITION, KBD_CENTER);
+		String s = pref.getString(Preferences.KEY_KEYBOARDPOSITION, ""+KBD_CENTER);
+		//GameActivity.log("Position: " + s);
+		return Integer.parseInt(s);
 	}
 
 	public static void setKeyboardPosition(int value) {
 		SharedPreferences.Editor ed = pref.edit();
-		ed.putInt(Preferences.KEY_KEYBOARDPOSITION, value);
+		ed.putString(Preferences.KEY_KEYBOARDPOSITION, Integer.toString(value));
 		ed.commit();
 	}
 

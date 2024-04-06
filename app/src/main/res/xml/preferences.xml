@@ -33,6 +33,11 @@
 		<CheckBoxPreference android:key="angband.enable_soft_input" android:defaultValue="true" android:title="Enable Software Input" android:summary="If hidden, tap bottom left corner to enable" />
 		<CheckBoxPreference android:key="angband.allowKeyboardOverlap" android:defaultValue="true" android:title="@string/preferences_keyboardOverlap_title" android:summary="@string/preferences_keyboardOverlap_summary" />
 		<PreferenceScreen android:title="Soft Keyboard options" android:summary="Configure type and size of qwerty keyboard">
+			<ListPreference android:key="angband.keyboardPosition"
+				android:title="Keyboard Position"
+				android:defaultValue="0"
+				android:entries="@array/keyboardPositionDesc"
+				android:entryValues="@array/keyboardPositionKey" />
 			<org.rephial.xyangband.SeekBarPreference android:key="angband.keyboardOpacity" android:title="Keyboard Opacity" seekBar:min="0" seekBar:max="100" seekBar:defaultVal="50" />
 			<org.rephial.xyangband.SeekBarPreference android:key="angband.middleOpacity" android:title="Middle Opacity" seekBar:min="0" seekBar:max="100" seekBar:defaultVal="100" />
 			<CheckBoxPreference android:key="angband.use_adv_keyboard" android:defaultValue="true" android:title="Use Full Keyboard" android:summary="Turn OFF to display a mini-keyboard" />

@@ -203,4 +203,20 @@
 
     <string name="def_dpad_color1">Darker Gray</string>
     <string name="def_dpad_color2">Gray</string>
+
+    <string-array name="keyboardPositionKey">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
+    <string-array name="keyboardPositionDesc">
+        <item>Center</item>
+        <item>Bottom-Left</item>
+        <item>Bottom-Right</item>
+        <item>Top-Left</item>
+        <item>Top-Right</item>
+    </string-array>
 </resources>
