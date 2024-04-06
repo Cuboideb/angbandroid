@@ -224,6 +224,11 @@ public class GameActivity extends Activity {
 				resetDim = true;
 				state.nativew.disableGraphics();
 			}
+
+			if (key.equals(Preferences.KEY_USE_VERT_KBD) ||
+				key.equals(Preferences.KEY_KEYBOARDPOSITION)) {
+				term.resetDragOffset();
+			}
 		}
 
 		if (adjust && state.characterPlaying()) {
@@ -593,6 +598,11 @@ public class GameActivity extends Activity {
 					new FrameLayout.LayoutParams(
 						FrameLayout.LayoutParams.WRAP_CONTENT,
 						FrameLayout.LayoutParams.WRAP_CONTENT);
+
+				// Do not touch the top menu of the device. Add top margin
+				if (position == Preferences.KBD_TOP_RIGHT || position == Preferences.KBD_TOP_LEFT) {
+					lparams.setMargins(0, 50, 0, 0);
+				}
 			}
 			else {
 				lparams =
@@ -682,7 +692,7 @@ public class GameActivity extends Activity {
 		int n;
 
 		if (Preferences.getActivePlugin().enableSubWindows()) {
-			n = Integer.valueOf(getString(R.string.def_number_subwindows));
+			n = Integer.valueOf(Preferences.defNumSubWindows);
 			Preferences.setNumberSubWindows(n);
 		}
 		else {
@@ -690,13 +700,13 @@ public class GameActivity extends Activity {
 		}
 		Preferences.setKeyboardOverlap(true);
 
-		n = Integer.valueOf(getString(R.string.def_rows_subwindows));
+		n = Integer.valueOf(Preferences.defRowsSubWindows);
 		Preferences.setRowsSubWindows(n);
 
 		Preferences.setEnableSoftInput(true);
 
 		Preferences.setUseAdvKeyboard(true);
-		//Preferences.setVerticalKeyboard(false);
+		Preferences.setVerticalKeyboard(false);
 		Preferences.setKeyboardWidth(100);
 		Preferences.setKeyboardHeight(100);
 		//Preferences.setMiddleOpacity(100);
@@ -713,17 +723,17 @@ public class GameActivity extends Activity {
 		boolean toggle = false;
 
 		if (horizontal) {
-			n = Integer.valueOf(getString(R.string.def_font_subwindows));
+			n = Integer.valueOf(Preferences.defFontSubWindows);
 			Preferences.setFontSizeSubWindows(n);
 
 			Preferences.setColumnsSubWindows(25);
 			toggle = (ribbonZone == null);
 		}
 		else {
-			n = Integer.valueOf(getString(R.string.def_font_subwindows));
+			n = Integer.valueOf(Preferences.defFontSubWindows);
 			Preferences.setFontSizeSubWindows(n);
 
-			n = Integer.valueOf(getString(R.string.def_cols_subwindows));
+			n = Integer.valueOf(Preferences.defColsSubWindows);
 			Preferences.setColumnsSubWindows(n);
 
 			toggle = (ribbonZone != null);
@@ -822,6 +832,7 @@ public class GameActivity extends Activity {
 					public void onClick(DialogInterface dialogInterface, int idx) {
 						if (idx >= 0 && idx < list.length) {
 							Preferences.setKeyboardPosition(idx);
+							term.resetDragOffset();
 							rebuildViews();
 						}
 					}

@@ -332,7 +332,7 @@ final public class Preferences {
 
 		if (inputMode == INPUT_RIBBON) return KBD_CENTER;
 
-		if (inputMode == INPUT_ADV_KBD && getKeyboardWidth() >= 80) return KBD_CENTER;
+		//if (inputMode == INPUT_ADV_KBD && getKeyboardWidth() >= 80) return KBD_CENTER;
 
 		int position = getKeyboardPosition();
 
@@ -391,17 +391,17 @@ final public class Preferences {
 
 	public static boolean getVerticalKeyboard()
 	{
-		return (getInputMode() == INPUT_ADV_KBD) && (getKeyboardWidth() <= 45);
+		return getInputMode() == INPUT_ADV_KBD &&
+				(pref.getBoolean(KEY_USE_VERT_KBD, false) ||
+						getKeyboardWidth() <= 15);
 	}
 
-	/*
 	public static void setVerticalKeyboard(boolean value)
 	{
 		SharedPreferences.Editor ed = pref.edit();
 		ed.putBoolean(Preferences.KEY_USE_VERT_KBD, value);
 		ed.commit();
 	}
-	*/
 
 	public static int getKeyboardHeight() {
 		return pref.getInt(Preferences.KEY_KBD_HEIGHT, 0);
