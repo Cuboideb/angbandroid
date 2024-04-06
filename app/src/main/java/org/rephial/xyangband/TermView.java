@@ -1209,8 +1209,8 @@ public class TermView extends View implements OnGestureListener {
 		int w = Integer.parseInt(parts[0]);
 		int h = Integer.parseInt(parts[1]);
 
-		int minw = Math.max(tw * w, 100);
-		int minh = Math.max(th * h, 100);
+		int minw = Math.max(tw * w, 70);
+		int minh = Math.max(th * h, 70);
 
 		Paint paint = dirZoneFill;
 		if (btn.isBeingDragged()) {
@@ -2725,6 +2725,19 @@ public class TermView extends View implements OnGestureListener {
 		public void dismiss()
 		{
 			target.action = actionTxt.getText().toString().trim();
+
+			if (target.action.equals("overview")) {
+				int overview = 0;
+				for (ButtonView btn: getButtons()) {
+					if (btn.action.equals("overview")) {
+						++overview;
+					}
+				}
+				if (overview > 1) {
+					target.action = ""; // Ignore
+					GameActivity.infoAlert(game_context, "An overview button already exists");
+				}
+			}
 
 			target.label = labelTxt.getText().toString().trim();
 

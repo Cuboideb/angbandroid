@@ -117,6 +117,13 @@ final public class Preferences {
 	private static int fontSize = 17;
 	private static Resources resources;
 
+	public static String defNumSubWindows;
+	public static String defFontSubWindows;
+	public static String defColsSubWindows;
+	public static String defRowsSubWindows;
+	public static String dpadColor1;
+	public static String dpadColor2;
+
 	private static KeyMapper keymapper;
 
 	public static Context context;
@@ -149,6 +156,13 @@ final public class Preferences {
 		versionCode = pVersionCode;
 
 		keymapper = new KeyMapper(pref);
+
+		defNumSubWindows = resources.getString(R.string.def_number_subwindows);
+		defFontSubWindows = resources.getString(R.string.def_font_subwindows);
+		defRowsSubWindows = resources.getString(R.string.def_rows_subwindows);
+		defColsSubWindows = resources.getString(R.string.def_cols_subwindows);
+		dpadColor1 = resources.getString(R.string.def_dpad_color1);
+		dpadColor2 = resources.getString(R.string.def_dpad_color2);
 	}
 
 	public static HashMap<String,String> getAllPrefs()
@@ -245,9 +259,7 @@ final public class Preferences {
 
 	public static String getDPadColor(int colorIdx) {
 		String key = "angband.dpad_color" + colorIdx;
-		String defValue = (colorIdx == 1) ?
-			resources.getString(R.string.def_dpad_color1):
-			resources.getString(R.string.def_dpad_color2);
+		String defValue = (colorIdx == 1) ? dpadColor1: dpadColor2;
 		return pref.getString(key, defValue);
 	}
 
@@ -613,8 +625,7 @@ final public class Preferences {
 
 	public static int getNumberSubWindows()
 	{
-		String str = pref.getString(KEY_NUM_SUBW,
-			resources.getString(R.string.def_number_subwindows));
+		String str = pref.getString(KEY_NUM_SUBW, defNumSubWindows);
 		return Integer.parseInt(str);
 	}
 
@@ -627,8 +638,7 @@ final public class Preferences {
 
 	public static int getFontSizeSubWindows()
 	{
-		String s = resources.getString(R.string.def_font_subwindows);
-		return pref.getInt(KEY_FONT_SUBW, Integer.parseInt(s));
+		return pref.getInt(KEY_FONT_SUBW, Integer.parseInt(defFontSubWindows));
 	}
 
 	public static void setFontSizeSubWindows(int value)
@@ -640,8 +650,7 @@ final public class Preferences {
 
 	public static int getColumnsSubWindows()
 	{
-		String s = resources.getString(R.string.def_cols_subwindows);
-		return pref.getInt(KEY_COLS_SUBW, Integer.parseInt(s));
+		return pref.getInt(KEY_COLS_SUBW, Integer.parseInt(defColsSubWindows));
 	}
 
 	public static void setColumnsSubWindows(int value)
@@ -653,8 +662,7 @@ final public class Preferences {
 
 	public static int getRowsSubWindows()
 	{
-		String s = resources.getString(R.string.def_rows_subwindows);
-		return pref.getInt(KEY_ROWS_SUBW, Integer.parseInt(s));
+		return pref.getInt(KEY_ROWS_SUBW, Integer.parseInt(defRowsSubWindows));
 	}
 
 	public static void setRowsSubWindows(int value)
