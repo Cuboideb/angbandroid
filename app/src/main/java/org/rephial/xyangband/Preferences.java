@@ -8,6 +8,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.Log;
 
+import java.util.Locale;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -76,7 +77,10 @@ final public class Preferences {
 	static final String KEY_KBD_HEIGHT = "angband.keyboard_height";
 	static final String KEY_KBD_WIDTH = "angband.keyboard_width";
 
-	static final String KEY_QWERTYNUMPAD = "angband.qwertynumpad";
+	static final String KEY_STORAGE = "angband.storage";
+	static final String KEY_TMP_STORAGE = "angband.tmp_storage";
+
+	//static final String KEY_QWERTYNUMPAD = "angband.qwertynumpad";
 
 	static final String KEY_USEICONS = "angband.useicons";
 
@@ -105,7 +109,7 @@ final public class Preferences {
 	static final int INPUT_MINI_KBD = 2;
 	static final int INPUT_RIBBON = 3;
 
-	private static String activityFilesPath;
+	//private static String activityFilesPath;
 
 	private static SharedPreferences pref;
 	private static int[] gamePlugins;
@@ -132,17 +136,17 @@ final public class Preferences {
 
 	public static final int MICROCHASM_GX = 500;
 
+	public static String angbandBaseDir = null;
+
 	Preferences() {}
 
-	public static void init(Context p_context, File filesDir,
-			Resources res, SharedPreferences sharedPrefs,
-			String pVersion, long pVersionCode) {
+	public static void init(Context pContext, String pVersion, long pVersionCode) {
 
-		context = p_context;
+		context = pContext;
 
-		activityFilesPath = filesDir.getAbsolutePath();
-		pref = sharedPrefs;
-		resources = res;
+		//activityFilesPath = filesDir.getAbsolutePath();
+		pref = context.getSharedPreferences(Preferences.NAME, context.MODE_PRIVATE);
+		resources = context.getResources();
 
 		String[] gamePluginsStr = resources.getStringArray(R.array.gamePlugins);
 		gamePlugins = (int[])Array.newInstance(int.class, gamePluginsStr.length);
@@ -163,6 +167,8 @@ final public class Preferences {
 		defColsSubWindows = resources.getString(R.string.def_cols_subwindows);
 		dpadColor1 = resources.getString(R.string.def_dpad_color1);
 		dpadColor2 = resources.getString(R.string.def_dpad_color2);
+
+		manageStorage();
 	}
 
 	public static HashMap<String,String> getAllPrefs()
@@ -173,6 +179,49 @@ final public class Preferences {
     		snap.put(entry.getKey(), entry.getValue().toString());
 		}
 		return snap;
+	}
+
+	public static void manageStorage()
+	{
+		GameActivity.log("STORAGE CONFIGURATION");
+
+		String tmp = getTmpStorage().toLowerCase();
+		if (tmp.equals("internal") || tmp.equals("external")) {
+			setStorage(tmp);
+		}
+		String storage = getStorage();
+		if (storage.equals("internal")) {
+			angbandBaseDir = context.getFilesDir().getAbsolutePath();
+		}
+		else { // external
+			angbandBaseDir = context.getExternalFilesDir(null).getAbsolutePath();
+		}
+
+		GameActivity.log(storage + ": " + angbandBaseDir);
+	}
+
+	public static String getTmpStorage()
+	{
+		return pref.getString(KEY_TMP_STORAGE, "External");
+	}
+
+	public static void setTmpStorage(String value)
+	{
+		SharedPreferences.Editor ed = pref.edit();
+		ed.putString(Preferences.KEY_TMP_STORAGE, value);
+		ed.commit();
+	}
+
+	public static String getStorage()
+	{
+		return pref.getString(KEY_STORAGE, "external");
+	}
+
+	public static void setStorage(String value)
+	{
+		SharedPreferences.Editor ed = pref.edit();
+		ed.putString(Preferences.KEY_STORAGE, value);
+		ed.commit();
 	}
 
 	public static void addChanged(String key)
@@ -833,7 +882,7 @@ final public class Preferences {
 	}
 
 	public static String getAngbandBaseDirectory() {
-		return context.getExternalFilesDir(null).getAbsolutePath();
+		return angbandBaseDir;
 	}
 
 	public static String getAngbandFilesDirectory(int pluginId) {
@@ -846,9 +895,11 @@ final public class Preferences {
 		return getAngbandBaseDirectory() + "/lib" + dir;
 	}
 
+	/*
 	public static String getActivityFilesDirectory() {
 		return activityFilesPath;
 	}
+	*/
 
 	public static String getActivePluginName() {
 		return getPluginName(getActivePlugin().getId());

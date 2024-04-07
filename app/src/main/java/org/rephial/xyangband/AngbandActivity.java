@@ -70,9 +70,6 @@ public class AngbandActivity extends Activity
 
 		Preferences.init (
 			this,
-			getFilesDir(),
-			getResources(),
-			getSharedPreferences(Preferences.NAME, MODE_PRIVATE),
 			version,
 			versionCode
 		);

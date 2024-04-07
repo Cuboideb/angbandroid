@@ -6,6 +6,12 @@
 		</Preference>
 		<org.rephial.xyangband.ProfileListPreference android:title="@string/preferences_gameplugin_title" android:key="angband.gameplugin" android:summary="@string/preferences_gameplugin_summary" android:entries="@array/gamePluginDescriptions" android:entryValues="@array/gamePlugins" />
 		<org.rephial.xyangband.ProfileCheckBoxPreference android:title="@string/preferences_skipwelcome_title" android:key="angband.skipwelcome" android:defaultValue="false" android:summary="@string/preferences_skipwelcome_summary" />
+		<ListPreference android:key="angband.tmp_storage"
+			android:title="Storage Location"
+			android:summary="Restart required"
+			android:entries="@array/storageLocations"
+			android:entryValues="@array/storageLocations"
+			android:defaultValue="External" />
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/display_category">
 		<CheckBoxPreference android:key="angband.fullscreen" android:defaultValue="true" android:title="@string/preferences_fullscreen_title" android:summary="@string/preferences_fullscreen_summary" />

@@ -187,9 +187,10 @@ public class Installer {
 		boolean result = true;
 		try {
 			File f = new File(Preferences.getAngbandFilesDirectory(plugin));
-			f.mkdirs();
 			String abs_path = f.getAbsolutePath();
-			//Log.v("Angband", "installing to " + abs_path);
+			GameActivity.log("Installing to " + abs_path);
+
+			f.mkdirs();
 
 			// copy game files
 			ZipInputStream zis = Plugins.getPluginZip(plugin);
@@ -202,8 +203,11 @@ public class Installer {
 				File myfile = new File(filename);
 
 				// Avoid path traversal vulnerability
-				if (!myfile.getCanonicalPath().startsWith(abs_path)) {
-					throw new SecurityException();
+				if (Preferences.getStorage().equals("external")) {
+					String canonical = myfile.getCanonicalPath();
+					if (!canonical.startsWith(abs_path)) {
+						throw new SecurityException("Invalid filename: " + canonical);
+					}
 				}
 
 				if (ze.isDirectory()) {
