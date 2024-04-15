@@ -76,7 +76,7 @@ class AdvButton extends View
 
 	public boolean useHighContrast()
 	{
-		return true;
+		return Preferences.getHighContrastKbd();
 	}
 
 	public void setShiftMode(int mode)

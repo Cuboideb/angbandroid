@@ -50,6 +50,7 @@
 			<CheckBoxPreference android:key="angband.use_vert_keyboard" android:defaultValue="false" android:title="Vertical Keyboard" android:summary="Less columns, more rows" android:dependency="angband.use_adv_keyboard" />
 			<CheckBoxPreference android:key="angband.show_adv_keymaps" android:defaultValue="true" android:dependency="angband.use_adv_keyboard" android:title="Show keymaps if keymap mode is ON" />
 			<CheckBoxPreference android:key="angband.auto_hide_adv_kbd" android:defaultValue="false" android:dependency="angband.use_adv_keyboard" android:title="Hide keys after 5 seconds" />
+			<CheckBoxPreference android:key="angband.high_contrast_kdb" android:defaultValue="false" android:dependency="angband.use_adv_keyboard" android:title="High Contrast Visuals" />
 			<org.rephial.xyangband.SeekBarPreference android:key="angband.keyboard_width" android:title="Keyboard Width" android:dependency="angband.use_adv_keyboard" seekBar:min="0" seekBar:max="100" seekBar:defaultVal="100" />
 			<org.rephial.xyangband.SeekBarPreference android:key="angband.keyboard_height" android:title="Keyboard Height" seekBar:min="0" seekBar:max="100" seekBar:defaultVal="0" />
 		</PreferenceScreen>

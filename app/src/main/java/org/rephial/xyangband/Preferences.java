@@ -76,6 +76,8 @@ final public class Preferences {
 	static final String KEY_KBD_HEIGHT = "angband.keyboard_height";
 	static final String KEY_KBD_WIDTH = "angband.keyboard_width";
 
+	static final String KEY_KBD_HIGH_CONTRAST = "angband.high_contrast_kbd";
+
 	static final String KEY_STORAGE = "angband.storage";
 	static final String KEY_TMP_STORAGE = "angband.tmp_storage";
 
@@ -278,6 +280,11 @@ final public class Preferences {
 		if (!getUseAdvKeyboard()) return INPUT_MINI_KBD;
 
 		return INPUT_ADV_KBD;
+	}
+
+	public static boolean getHighContrastKbd()
+	{
+		return pref.getBoolean(KEY_KBD_HIGH_CONTRAST, false);
 	}
 
 	public static boolean getDrawHealthBars()
