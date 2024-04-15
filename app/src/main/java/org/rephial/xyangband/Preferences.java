@@ -8,7 +8,6 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.Log;
 
-import java.util.Locale;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -29,22 +28,22 @@ final public class Preferences {
 	static final String KEY_FULLSCREEN = "angband.fullscreen";
 	static final String KEY_ORIENTATION = "angband.orientation";
 
-	static final String KEY_KEYBOARDOVERLAP = "angband.allowKeyboardOverlap";
-	static final String KEY_KEYBOARDOPACITY = "angband.keyboardOpacity";
-	static final String KEY_KEYBOARDPOSITION = "angband.keyboardPosition";
-	static final String KEY_MIDDLEOPACITY = "angband.middleOpacity";
-	static final String KEY_ENABLETOUCH = "angband.enabletouch";
+	static final String KEY_KEYBOAR_DOVERLAP = "angband.allowKeyboardOverlap";
+	static final String KEY_KEYBOARD_OPACITY = "angband.keyboardOpacity";
+	static final String KEY_KEYBOARD_POSITION = "angband.keyboardPosition";
+	static final String KEY_MIDDLE_OPACITY = "angband.middleOpacity";
+	static final String KEY_ENABLE_TOUCH = "angband.enabletouch";
 
-	static final String KEY_TOUCHRIGHT = "angband.touchright";
-	static final String KEY_TOUCHMULTIPLIER = "angband.touchmultiplier";
-	static final String KEY_TOUCHDRAG = "angband.enable_touch_drag";
+	static final String KEY_TOUCH_RIGHT = "angband.touchright";
+	static final String KEY_TOUCH_MULTIPLIER = "angband.touchmultiplier";
+	static final String KEY_TOUCH_DRAG = "angband.enable_touch_drag";
 	static final String KEY_TOUCH_DRAG_OFFSET = "angband.touch_drag_offset";
 
-	static final String KEY_RIBBONBUTTONMULT = "angband.ribbonbuttonmult";
-	static final String KEY_SHOWAUTOLIST = "angband.showautolist";
+	static final String KEY_RIBBON_BUTTON_MULT = "angband.ribbonbuttonmult";
+	static final String KEY_SHOW_AUTO_LIST = "angband.showautolist";
 	static final String KEY_RIBBON_ROWS = "angband.ribbon_rows";
 
-	static final String KEY_USERKEYMAPS = "angband.userkeymaps";
+	static final String KEY_USER_KEYMAPS = "angband.userkeymaps";
 
 	static final String KEY_NUM_SUBW = "angband.n_subwindows";
 	static final String KEY_FONT_SUBW = "angband.font_size_subwindows";
@@ -59,13 +58,13 @@ final public class Preferences {
 	static final String KEY_MULT_TOP_BAR = "angband.mult_top_bar";
 
 	static final String KEY_CENTERTAP = "angband.centerscreentap";
-	static final String KEY_PORTRAITKB = "angband.portraitkb";
-	static final String KEY_LANDSCAPEKB = "angband.landscapekb";
-	static final String KEY_PORTRAITFONTSIZE = "angband.portraitfontsize";
-	static final String KEY_LANDSCAPEFONTSIZE = "angband.landscapefontsize";
+	static final String KEY_PORTRAIT_KB = "angband.portraitkb";
+	static final String KEY_LANDSCAPE_KB = "angband.landscapekb";
+	static final String KEY_PORTRAIT_FONT_SIZE = "angband.portraitfontsize";
+	static final String KEY_LANDSCAPE_FONT_SIZE = "angband.landscapefontsize";
 
-	static final String KEY_TERMWIDTH = "angband.termwidth";
-	static final String KEY_TERMHEIGHT = "angband.termheight";
+	static final String KEY_TERM_WIDTH = "angband.termwidth";
+	static final String KEY_TERM_HEIGHT = "angband.termheight";
 
 	static final String KEY_SIL_GX = "angband.sil_gx";
 
@@ -82,19 +81,19 @@ final public class Preferences {
 
 	//static final String KEY_QWERTYNUMPAD = "angband.qwertynumpad";
 
-	static final String KEY_USEICONS = "angband.useicons";
+	static final String KEY_USE_ICONS = "angband.useicons";
 
-	static final String KEY_COREKEYMAPS = "angband.corekeymaps";
-	static final String KEY_COMMANDMODE = "angband.commandmode";
+	static final String KEY_CORE_KEYMAPS = "angband.corekeymaps";
+	static final String KEY_COMMAND_MODE = "angband.commandmode";
 
-	static final String KEY_GAMEPLUGIN = "angband.gameplugin";
-	static final String KEY_GAMEPROFILE = "angband.gameprofile";
-	static final String KEY_SKIPWELCOME = "angband.skipwelcome";
+	static final String KEY_GAME_PLUGIN = "angband.gameplugin";
+	static final String KEY_GAME_PROFILE = "angband.gameprofile";
+	static final String KEY_SKIP_WELCOME = "angband.skipwelcome";
 
 	static final String KEY_GRAPHICS = "angband.graphics";
 
 	static final String KEY_PROFILES = "angband.profiles";
-	static final String KEY_ACTIVEPROFILE = "angband.activeprofile";
+	static final String KEY_ACTIVE_PROFILE = "angband.activeprofile";
 
 	static final String KEY_INSTALLEDVERSION = "angband.installedversion";
 
@@ -353,7 +352,7 @@ final public class Preferences {
 	}
 
 	public static boolean getIconsEnabled() {
-		return pref.getBoolean(Preferences.KEY_USEICONS, true);
+		return pref.getBoolean(Preferences.KEY_USE_ICONS, true);
 	}
 
 	public static boolean getQuantityPopupEnabled() {
@@ -364,14 +363,14 @@ final public class Preferences {
 
 	public static int getKeyboardPosition()
 	{
-		String s = pref.getString(Preferences.KEY_KEYBOARDPOSITION, ""+KBD_CENTER);
+		String s = pref.getString(Preferences.KEY_KEYBOARD_POSITION, ""+KBD_CENTER);
 		//GameActivity.log("Position: " + s);
 		return Integer.parseInt(s);
 	}
 
 	public static void setKeyboardPosition(int value) {
 		SharedPreferences.Editor ed = pref.edit();
-		ed.putString(Preferences.KEY_KEYBOARDPOSITION, Integer.toString(value));
+		ed.putString(Preferences.KEY_KEYBOARD_POSITION, Integer.toString(value));
 		ed.commit();
 	}
 
@@ -396,21 +395,21 @@ final public class Preferences {
 	}
 
 	public static boolean getKeyboardOverlap() {
-		return pref.getBoolean(Preferences.KEY_KEYBOARDOVERLAP, true);
+		return pref.getBoolean(Preferences.KEY_KEYBOAR_DOVERLAP, true);
 	}
 
 	public static void setKeyboardOverlap(boolean value) {
 		SharedPreferences.Editor ed = pref.edit();
-		ed.putBoolean(Preferences.KEY_KEYBOARDOVERLAP, value);
+		ed.putBoolean(Preferences.KEY_KEYBOAR_DOVERLAP, value);
 		ed.commit();
 	}
 
 	public static boolean getShowAutoList() {
-		return pref.getBoolean(Preferences.KEY_SHOWAUTOLIST, false);
+		return pref.getBoolean(Preferences.KEY_SHOW_AUTO_LIST, false);
 	}
 
 	public static int getMiddleOpacity() {
-		return pref.getInt(Preferences.KEY_MIDDLEOPACITY, 100);
+		return pref.getInt(Preferences.KEY_MIDDLE_OPACITY, 100);
 	}
 
 	public static boolean getUseAdvKeyboard()
@@ -483,17 +482,17 @@ final public class Preferences {
 	}
 
 	public static int getTouchMultiplier() {
-		return pref.getInt(Preferences.KEY_TOUCHMULTIPLIER, 0);
+		return pref.getInt(Preferences.KEY_TOUCH_MULTIPLIER, 0);
 	}
 
 	public static void setTouchMultiplier(int value) {
 		SharedPreferences.Editor ed = pref.edit();
-		ed.putInt(Preferences.KEY_TOUCHMULTIPLIER, value);
+		ed.putInt(Preferences.KEY_TOUCH_MULTIPLIER, value);
 		ed.commit();
 	}
 
 	public static boolean getTouchDragEnabled() {
-		return pref.getBoolean(Preferences.KEY_TOUCHDRAG, true);
+		return pref.getBoolean(Preferences.KEY_TOUCH_DRAG, true);
 	}
 
 	public static boolean getAutoHideKeys() {
@@ -513,7 +512,7 @@ final public class Preferences {
 	}
 
 	public static int getRibbonButtonMult() {
-		return pref.getInt(Preferences.KEY_RIBBONBUTTONMULT, 50);
+		return pref.getInt(Preferences.KEY_RIBBON_BUTTON_MULT, 50);
 	}
 
 	public static boolean getDebugKeycodes()
@@ -548,7 +547,7 @@ final public class Preferences {
 			value = 100;
 		}
 		SharedPreferences.Editor ed = pref.edit();
-		ed.putInt(Preferences.KEY_MIDDLEOPACITY, value);
+		ed.putInt(Preferences.KEY_MIDDLE_OPACITY, value);
 		ed.commit();
 	}
 
@@ -619,18 +618,18 @@ final public class Preferences {
 
 	public static String getUserKeymaps()
 	{
-		return pref.getString(Preferences.KEY_USERKEYMAPS, "");
+		return pref.getString(Preferences.KEY_USER_KEYMAPS, "");
 	}
 
 	public static void setUserKeymaps(String value)
 	{
 		SharedPreferences.Editor ed = pref.edit();
-		ed.putString(Preferences.KEY_USERKEYMAPS, value);
+		ed.putString(Preferences.KEY_USER_KEYMAPS, value);
 		ed.commit();
 	}
 
 	public static int getKeyboardOpacity() {
-		return pref.getInt(Preferences.KEY_KEYBOARDOPACITY, 50);
+		return pref.getInt(Preferences.KEY_KEYBOARD_OPACITY, 50);
 	}
 
 	public static void setKeyboardOpacity(int value)
@@ -642,7 +641,7 @@ final public class Preferences {
 			value = 100;
 		}
 		SharedPreferences.Editor ed = pref.edit();
-		ed.putInt(Preferences.KEY_KEYBOARDOPACITY, value);
+		ed.putInt(Preferences.KEY_KEYBOARD_OPACITY, value);
 		ed.commit();
 	}
 
@@ -658,19 +657,19 @@ final public class Preferences {
 	}
 
 	public static boolean getPortraitKeyboard() {
-		return pref.getBoolean(Preferences.KEY_PORTRAITKB, true);
+		return pref.getBoolean(Preferences.KEY_PORTRAIT_KB, true);
 	}
 	public static void setPortraitKeyboard(boolean value) {
 		SharedPreferences.Editor ed = pref.edit();
-		ed.putBoolean(Preferences.KEY_PORTRAITKB, value);
+		ed.putBoolean(Preferences.KEY_PORTRAIT_KB, value);
 		ed.commit();
 	}
 	public static boolean getLandscapeKeyboard() {
-		return pref.getBoolean(Preferences.KEY_LANDSCAPEKB, false);
+		return pref.getBoolean(Preferences.KEY_LANDSCAPE_KB, false);
 	}
 	public static void setLandscapeKeyboard(boolean value) {
 		SharedPreferences.Editor ed = pref.edit();
-		ed.putBoolean(Preferences.KEY_LANDSCAPEKB, value);
+		ed.putBoolean(Preferences.KEY_LANDSCAPE_KB, value);
 		ed.commit();
 	}
 
@@ -737,22 +736,22 @@ final public class Preferences {
 
 	public static int getTermWidth()
 	{
-		return pref.getInt(Preferences.KEY_TERMWIDTH, 80);
+		return pref.getInt(Preferences.KEY_TERM_WIDTH, 80);
 	}
 	public static void setTermWidth(int value)
 	{
 		SharedPreferences.Editor ed = pref.edit();
-		ed.putInt(Preferences.KEY_TERMWIDTH, value);
+		ed.putInt(Preferences.KEY_TERM_WIDTH, value);
 		ed.commit();
 	}
 	public static int getTermHeight()
 	{
-		return pref.getInt(Preferences.KEY_TERMHEIGHT, 24);
+		return pref.getInt(Preferences.KEY_TERM_HEIGHT, 24);
 	}
 	public static void setTermHeight(int value)
 	{
 		SharedPreferences.Editor ed = pref.edit();
-		ed.putInt(Preferences.KEY_TERMHEIGHT, value);
+		ed.putInt(Preferences.KEY_TERM_HEIGHT, value);
 		ed.commit();
 	}
 	public static void setSize(int width, int height)
@@ -765,60 +764,60 @@ final public class Preferences {
 
 	public static void setCoreKeymaps(String k) {
 		SharedPreferences.Editor ed = pref.edit();
-		ed.putString(Preferences.KEY_COREKEYMAPS, k);
+		ed.putString(Preferences.KEY_CORE_KEYMAPS, k);
 		ed.commit();
 	}
 
 	public static String getCoreKeymaps()
 	{
-		return pref.getString(Preferences.KEY_COREKEYMAPS, "");
+		return pref.getString(Preferences.KEY_CORE_KEYMAPS, "");
 	}
 
 	public static void setCommandMode(boolean k) {
 		SharedPreferences.Editor ed = pref.edit();
-		ed.putBoolean(Preferences.KEY_COMMANDMODE, k);
+		ed.putBoolean(Preferences.KEY_COMMAND_MODE, k);
 		ed.commit();
 	}
 
 	public static boolean getCommandMode()
 	{
-		return pref.getBoolean(Preferences.KEY_COMMANDMODE, false);
+		return pref.getBoolean(Preferences.KEY_COMMAND_MODE, false);
 	}
 
 	public static int getPortraitFontSize() {
-		return pref.getInt(Preferences.KEY_PORTRAITFONTSIZE, 0);
+		return pref.getInt(Preferences.KEY_PORTRAIT_FONT_SIZE, 0);
 	}
 	public static void setPortraitFontSize(int value) {
 		SharedPreferences.Editor ed = pref.edit();
-		ed.putInt(Preferences.KEY_PORTRAITFONTSIZE, value);
+		ed.putInt(Preferences.KEY_PORTRAIT_FONT_SIZE, value);
 		ed.commit();
 	}
 	public static int getLandscapeFontSize() {
-		return pref.getInt(Preferences.KEY_LANDSCAPEFONTSIZE, 0);
+		return pref.getInt(Preferences.KEY_LANDSCAPE_FONT_SIZE, 0);
 	}
 	public static void setLandscapeFontSize(int value) {
 		SharedPreferences.Editor ed = pref.edit();
-		ed.putInt(Preferences.KEY_LANDSCAPEFONTSIZE, value);
+		ed.putInt(Preferences.KEY_LANDSCAPE_FONT_SIZE, value);
 		ed.commit();
 	}
 
 	public static boolean getEnableTouch() {
-		return pref.getBoolean(Preferences.KEY_ENABLETOUCH, true);
+		return pref.getBoolean(Preferences.KEY_ENABLE_TOUCH, true);
 	}
 
 	public static void setEnableTouch(boolean value) {
 		SharedPreferences.Editor ed = pref.edit();
-		ed.putBoolean(Preferences.KEY_ENABLETOUCH, value);
+		ed.putBoolean(Preferences.KEY_ENABLE_TOUCH, value);
 		ed.commit();
 	}
 
 	public static boolean getTouchRight() {
-		return pref.getBoolean(Preferences.KEY_TOUCHRIGHT, true);
+		return pref.getBoolean(Preferences.KEY_TOUCH_RIGHT, true);
 	}
 
 	public static void setTouchRight(boolean value) {
 		SharedPreferences.Editor ed = pref.edit();
-		ed.putBoolean(Preferences.KEY_TOUCHRIGHT, value);
+		ed.putBoolean(Preferences.KEY_TOUCH_RIGHT, value);
 		ed.commit();
 	}
 
@@ -929,7 +928,7 @@ final public class Preferences {
 				// the very first time.
 				// ...there is probably an override to get around this in ListPreference.
 				SharedPreferences.Editor ed = pref.edit();
-				ed.putString(Preferences.KEY_GAMEPLUGIN, String.valueOf(getActiveProfile().getPlugin()));
+				ed.putString(Preferences.KEY_GAME_PLUGIN, String.valueOf(getActiveProfile().getPlugin()));
 				ed.commit();
 			}
 			else {
@@ -960,7 +959,7 @@ final public class Preferences {
 
 	public static Profile getActiveProfile() {
 		ProfileList pl = getProfiles();
-		int id = pref.getInt(Preferences.KEY_ACTIVEPROFILE, 0);
+		int id = pref.getInt(Preferences.KEY_ACTIVE_PROFILE, 0);
 		Profile p = pl.findById(id);
 		if (p == null) {
 			p = pl.get(0);
@@ -972,7 +971,7 @@ final public class Preferences {
 	public static void setActiveProfile(Profile p) {
 		ProfileList pl = getProfiles();
 		SharedPreferences.Editor ed = pref.edit();
-		ed.putInt(Preferences.KEY_ACTIVEPROFILE, p.id);
+		ed.putInt(Preferences.KEY_ACTIVE_PROFILE, p.id);
 		ed.commit();
 	}
 

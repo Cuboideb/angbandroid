@@ -21,7 +21,6 @@ package org.rephial.xyangband;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -32,12 +31,9 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -46,20 +42,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import androidx.annotation.NonNull;
-
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import java.util.LinkedHashMap;
 
 public class GameActivity extends Activity {
 
@@ -217,13 +207,13 @@ public class GameActivity extends Activity {
 				adjust = true;
 			}
 
-			if (key.equals(Preferences.KEY_GAMEPLUGIN)) {
+			if (key.equals(Preferences.KEY_GAME_PLUGIN)) {
 				resetDim = true;
 				state.nativew.disableGraphics();
 			}
 
 			if (key.equals(Preferences.KEY_USE_VERT_KBD) ||
-				key.equals(Preferences.KEY_KEYBOARDPOSITION)) {
+				key.equals(Preferences.KEY_KEYBOARD_POSITION)) {
 				term.resetDragOffset();
 			}
 		}

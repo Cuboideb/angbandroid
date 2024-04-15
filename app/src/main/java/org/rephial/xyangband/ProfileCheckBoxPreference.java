@@ -16,7 +16,7 @@ public class ProfileCheckBoxPreference extends CheckBoxPreference
 
     @Override
     protected boolean persistBoolean(boolean value) {
-		if (getKey().compareTo(Preferences.KEY_SKIPWELCOME)==0) {
+		if (getKey().compareTo(Preferences.KEY_SKIP_WELCOME)==0) {
 			Preferences.getActiveProfile().setSkipWelcome(value);
 			Preferences.saveProfiles();
 
@@ -33,7 +33,7 @@ public class ProfileCheckBoxPreference extends CheckBoxPreference
     @Override
     protected boolean getPersistedBoolean(boolean defaultReturnValue) {
 		boolean val = defaultReturnValue;
-		if (getKey().compareTo(Preferences.KEY_SKIPWELCOME)==0) {
+		if (getKey().compareTo(Preferences.KEY_SKIP_WELCOME)==0) {
 			val = Preferences.getActiveProfile().getSkipWelcome();
 		}
 		return val;

@@ -29,11 +29,6 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 import android.view.WindowManager;
 
-import org.rephial.xyangband.R;
-
-import java.util.prefs.PreferenceChangeEvent;
-import java.util.prefs.PreferenceChangeListener;
-
 public class PreferencesActivity
 	extends PreferenceActivity implements OnSharedPreferenceChangeListener,
 		OnPreferenceChangeListener {
@@ -47,7 +42,7 @@ public class PreferencesActivity
 		addPreferencesFromResource(R.xml.preferences);
 
 		// Enable or disable keyboard transparency based on overlap setting
-		findPreference(Preferences.KEY_KEYBOARDOVERLAP).setOnPreferenceChangeListener(this);
+		findPreference(Preferences.KEY_KEYBOAR_DOVERLAP).setOnPreferenceChangeListener(this);
 		//findPreference(Preferences.KEY_KEYBOARDOPACITY).setEnabled(Preferences.getKeyboardOverlap());
 		//findPreference(Preferences.KEY_MIDDLEOPACITY).setEnabled(Preferences.getKeyboardOverlap());
 	}
@@ -105,14 +100,14 @@ public class PreferencesActivity
 		}
 		else if (pref instanceof ProfileCheckBoxPreference) {
 			ProfileCheckBoxPreference pcPref = (ProfileCheckBoxPreference) pref;
-			if (key.compareTo(Preferences.KEY_SKIPWELCOME) == 0) {
+			if (key.compareTo(Preferences.KEY_SKIP_WELCOME) == 0) {
 				pcPref.setChecked(Preferences.getActiveProfile().getSkipWelcome());
 			}
 		}
 		else if (pref instanceof PreferenceScreen) {
 			setSummaryAll((PreferenceScreen) pref);
 		}
-		else if (key.compareTo(Preferences.KEY_GAMEPROFILE) == 0) {
+		else if (key.compareTo(Preferences.KEY_GAME_PROFILE) == 0) {
 			pref.setSummary(Preferences.getActiveProfile().getName());
 		}
 		else if (key.compareTo(Preferences.KEY_CENTERTAP) == 0) {
@@ -123,7 +118,7 @@ public class PreferencesActivity
 
 	public void	onSharedPreferenceChanged(SharedPreferences
 										  sharedPreferences, String key) {
-		if (key.compareTo(Preferences.KEY_ACTIVEPROFILE)==0
+		if (key.compareTo(Preferences.KEY_ACTIVE_PROFILE)==0
 			|| key.compareTo(Preferences.KEY_PROFILES)==0) {
 			setSummaryAll(getPreferenceScreen());
 		}
