@@ -76,6 +76,8 @@ class AdvKeyboard implements OnTouchListener
 	public int numRows = 5;
 	public int numCols = 10;
 
+	public boolean highContrast = false;
+
 	public static class KeyInfo
 	{
 		String trigger;
@@ -89,6 +91,8 @@ class AdvKeyboard implements OnTouchListener
 	{
 		context = p_context;
 		state = context.state;
+
+		highContrast = Preferences.getHighContrastKbd();
 
 		back = new Paint();
 

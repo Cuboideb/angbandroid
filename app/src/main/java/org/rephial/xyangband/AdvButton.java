@@ -58,7 +58,8 @@ class AdvButton extends View
 	public static int HC_TOGGLED_BG = 0x006400;
 	public static int HC_KEYMAP_FG = 0x65fe08;
 	public static int STROKE_FG = 0xDDDDDD;
-	public static int DEFAULT_FG = Color.CYAN;
+	public static int DEFAULT_FG = Color.WHITE;
+	public static int HC_DEFAULT_FG = Color.CYAN;
 	public boolean pressed = false;
 
 	public AdvButton(GameActivity p_context, AdvKeyboard p_parent,
@@ -76,7 +77,7 @@ class AdvButton extends View
 
 	public boolean useHighContrast()
 	{
-		return Preferences.getHighContrastKbd();
+		return parent.highContrast;
 	}
 
 	public void setShiftMode(int mode)
@@ -440,7 +441,8 @@ class AdvButton extends View
 			fore.setColor(color);
 		}
 		else {
-			fore.setColor(DEFAULT_FG);
+			int color = useHighContrast() ? HC_DEFAULT_FG: DEFAULT_FG;
+			fore.setColor(color);
 		}
 	}
 
@@ -520,7 +522,9 @@ class AdvButton extends View
 		}
 
 		setFgColor(fore);
-		//fore.setShadowLayer(10f, 0, 0, Color.CYAN);
+		if (!useHighContrast()) {
+			fore.setShadowLayer(10f, 0, 0, Color.CYAN);
+		}
 		fore.setAlpha(calculateAlphaFg());
 
 		canvas.drawText(label,
